@@ -14,10 +14,7 @@ test_that("create_ae_overview_table works", {
 
   expect_s7_class(tbl, FunctionReport::ClinicalTable)
   expect_equal(tbl@type, "ae_overview")
-  expect_true(any(grepl(
-    "Subjects with at least one TEAE",
-    tbl@data$Category
-  )))
+  expect_true(any(grepl("Subjects with at least one TEAE", tbl@data$Category, fixed = TRUE)))
 })
 
 test_that("create_ae_soc_table works", {
