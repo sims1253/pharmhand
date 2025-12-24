@@ -279,16 +279,28 @@ CompositeFormat <- S7::new_class(
 
 #' Apply a composite format
 #'
+#' Substitutes placeholder values into a composite format template. Each
+#' placeholder in the template (e.g., `{n}`) is replaced with the corresponding
+#' formatted value.
+#'
 #' @param fmt CompositeFormat object
 #' @param ... Named values matching template placeholders
 #'
 #' @return Formatted character string
+#'
+#' @note This function uses simple string substitution via `gsub()`. If a
+#'   placeholder name accidentally appears as literal text in the template
+#'   (not as a placeholder), it will also be replaced. Ensure placeholder names
+#'   are unique and unlikely to appear as regular text in templates.
+#'
 #' @export
 apply_composite <- function(fmt, ...) {
   values <- list(...)
 
   result <- fmt@template
 
+  # Note: gsub replaces ALL occurrences of the placeholder pattern.
+  # If the placeholder name appears as literal text, it will also be replaced.
   for (name in names(values)) {
     spec <- fmt@specs[[name]]
     if (is.null(spec)) {

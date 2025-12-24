@@ -53,12 +53,14 @@ analyze_study_OneArmStudy <- S7::method(analyze_study, OneArmStudy) <- function(
 #' S7 method for analyzing TwoArmStudy objects.
 #'
 #' @param x A TwoArmStudy object
+#' @param ... Additional arguments (currently unused, for method consistency)
 #'
 #' @return The modified TwoArmStudy object with results
 #' @export
 #' @name analyze_study_TwoArmStudy
 analyze_study_TwoArmStudy <- S7::method(analyze_study, TwoArmStudy) <- function(
-  x
+  x,
+  ...
 ) {
   # Analyze
   adam <- ADaMData(data = x@data, trt_var = x@group_var)

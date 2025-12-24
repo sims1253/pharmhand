@@ -90,11 +90,17 @@ S7::method(to_word, ClinicalTable) <- function(x, ...) {
 }
 
 #' @describeIn to_word Method for ClinicalPlot
+#' @note The temporary file created for the plot image persists until the
+#'   returned external_img object is embedded in a Word document and saved.
+#'   For reports with many plots, temp files may accumulate during processing.
+#'   Files are cleaned up when R's temp directory is cleared (session end or
+#'   system cleanup).
 #' @noRd
 S7::method(to_word, ClinicalPlot) <- function(x, ...) {
-  # Create temporary file for plot
+  # Create temporary file for plot.
+  # Note: Cannot delete immediately as officer::external_img stores a file path
+  # reference that is read when the document is actually rendered/saved.
   tmp <- tempfile(fileext = ".png")
-  # File will be cleaned up by OS/session end
 
   # Extract plot object (handle ggsurvplot)
   plot_obj <- if (x@is_survival) x@plot$plot else x@plot
@@ -232,21 +238,40 @@ save_as_png <- function(x, path = NULL) {
 
 #' Save ClinicalTable as PDF
 #'
-#' Saves a ClinicalTable's flextable to a PDF file.
+#' Saves a ClinicalTable's flextable to a PDF file. Uses webshot2 for
+#' high-quality HTML-to-PDF conversion if available, otherwise falls back
+#' to image-based export via flextable::save_as_image().
 #'
 #' @param x A ClinicalTable object
 #' @param path Optional file path. If NULL, creates a temp file.
 #'
 #' @return The file path where the PDF was saved
+#'
+#' @note The image-based fallback may result in lower quality output compared
+#'   to native PDF rendering. For best results, install the webshot2 package.
+#'
 #' @keywords internal
 save_as_pdf <- function(x, path = NULL) {
   if (is.null(path)) {
     path <- tempfile(fileext = ".pdf")
   }
-  flextable::save_as_docx(x@flextable, path = tempfile(fileext = ".docx")) |>
-    invisible()
-  # flextable doesn't have direct PDF export, use image route
-  flextable::save_as_image(x@flextable, path = path)
+
+  # Try webshot2 for higher quality PDF export
+  if (requireNamespace("webshot2", quietly = TRUE)) {
+    # Create temporary HTML file
+    tmp_html <- tempfile(fileext = ".html")
+    on.exit(unlink(tmp_html), add = TRUE)
+
+    flextable::save_as_html(x@flextable, path = tmp_html)
+    webshot2::webshot(tmp_html, file = path, selector = "body")
+  } else {
+    # Fallback to image-based export
+    cli::cli_inform(
+      c("i" = "Using image-based PDF export (install {.pkg webshot2} for better quality)")
+    )
+    flextable::save_as_image(x@flextable, path = path)
+  }
+
   path
 }
 

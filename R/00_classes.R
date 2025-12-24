@@ -937,7 +937,15 @@ AnalysisMeta <- S7::new_class(
     filters = S7::new_property(S7::class_list, default = list()),
     row_id = S7::new_property(S7::class_character, default = ""),
     derivation = S7::new_property(S7::class_character, default = ""),
-    timestamp = S7::new_property(S7::class_any, default = NULL),
+    timestamp = S7::new_property(
+      S7::class_any,
+      default = NULL,
+      validator = function(value) {
+        if (!is.null(value) && !inherits(value, "POSIXct")) {
+          "timestamp must be NULL or POSIXct"
+        }
+      }
+    ),
     package_version = S7::new_property(S7::class_character, default = ""),
     r_version = S7::new_property(S7::class_character, default = "")
   )

@@ -134,7 +134,7 @@ write_docx_ClinicalReport <- S7::method(
       if (S7::S7_inherits(item, ClinicalTable)) {
         doc <- flextable::body_add_flextable(doc, item@flextable)
       } else if (S7::S7_inherits(item, ClinicalPlot)) {
-        # Extract plot
+        # Extract plot to temp file
         tmp <- tempfile(fileext = ".png")
         ggplot2::ggsave(
           tmp,
@@ -149,8 +149,8 @@ write_docx_ClinicalReport <- S7::method(
           width = item@width,
           height = item@height
         )
-        # Cleanup temp file
-        on.exit(unlink(tmp), add = TRUE)
+        # Cleanup temp file immediately after adding to document
+        unlink(tmp)
       }
       doc <- officer::body_add_par(doc, "", style = "Normal") # Spacer
     }

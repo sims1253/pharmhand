@@ -18,6 +18,11 @@ NULL
 #' @param title Table title (default: "Overview of Adverse Events")
 #' @param trt_var Treatment variable name (default: "TRT01A")
 #' @param subjid_var Subject ID variable name (default: "USUBJID")
+#' @param relationship_values Character vector of AEREL values considered as
+#'   "related" to treatment. Default: c("PROBABLE", "POSSIBLE", "RELATED").
+#' @param discontinuation_action Character value in AEACN indicating drug
+#'   discontinuation. Default: "DRUG WITHDRAWN".
+#' @param fatal_outcome Character value in AEOUT indicating death. Default: "FATAL".
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #'
 #' @return A ClinicalTable object
@@ -28,6 +33,9 @@ create_ae_overview_table <- function(
   title = "Overview of Adverse Events",
   trt_var = "TRT01A",
   subjid_var = "USUBJID",
+  relationship_values = c("PROBABLE", "POSSIBLE", "RELATED"),
+  discontinuation_action = "DRUG WITHDRAWN",
+  fatal_outcome = "FATAL",
   autofit = TRUE
 ) {
   if (!is.data.frame(adae)) {
@@ -75,7 +83,7 @@ create_ae_overview_table <- function(
     rel_teae <- adae |>
       dplyr::filter(
         .data$TRTEMFL == "Y",
-        .data$AEREL %in% c("PROBABLE", "POSSIBLE", "RELATED")
+        .data$AEREL %in% relationship_values
       )
     categories[[2]] <- summarize_category(
       rel_teae,
@@ -96,7 +104,7 @@ create_ae_overview_table <- function(
   # 4. Leading to Discontinuation
   if ("TRTEMFL" %in% names(adae) && "AEACN" %in% names(adae)) {
     disc <- adae |>
-      dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == "DRUG WITHDRAWN")
+      dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == discontinuation_action)
     categories[[4]] <- summarize_category(
       disc,
       "Subjects with AE leading to discontinuation"
@@ -106,7 +114,7 @@ create_ae_overview_table <- function(
   # 5. Deaths (based on AEOUT)
   if ("TRTEMFL" %in% names(adae) && "AEOUT" %in% names(adae)) {
     fatal <- adae |>
-      dplyr::filter(.data$TRTEMFL == "Y", .data$AEOUT == "FATAL")
+      dplyr::filter(.data$TRTEMFL == "Y", .data$AEOUT == fatal_outcome)
     categories[[5]] <- summarize_category(fatal, "Deaths")
   }
 

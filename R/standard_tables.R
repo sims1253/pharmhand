@@ -153,6 +153,65 @@ create_region_table <- function(
   )
 }
 
+# Internal helper for category summary tables (medical history, conmeds, etc.)
+# @keywords internal
+create_category_summary_table <- function(
+  adsl,
+  analysis_data,
+  category_var,
+  category_label,
+  title,
+  type,
+  footnotes,
+  trt_var = "TRT01P",
+  autofit = TRUE
+) {
+  trt_n <- adsl |>
+    dplyr::group_by(!!rlang::sym(trt_var)) |>
+    dplyr::summarise(N = dplyr::n(), .groups = "drop")
+
+  summary_data <- analysis_data |>
+    dplyr::group_by(!!rlang::sym(trt_var), !!rlang::sym(category_var)) |>
+    dplyr::summarise(
+      n_subj = dplyr::n_distinct(.data$USUBJID),
+      .groups = "drop"
+    ) |>
+    dplyr::left_join(trt_n, by = trt_var) |>
+    dplyr::mutate(
+      pct = round(.data$n_subj / .data$N * 100, 1),
+      display = paste0(.data$n_subj, " (", .data$pct, "%)")
+    ) |>
+    dplyr::select(
+      !!rlang::sym(category_var),
+      !!rlang::sym(trt_var),
+      "display"
+    ) |>
+    tidyr::pivot_wider(
+      names_from = !!rlang::sym(trt_var),
+      values_from = "display",
+      values_fill = "0 (0.0%)"
+    )
+
+  # Rename category column to the display label
+  names(summary_data)[names(summary_data) == category_var] <- category_label
+  summary_data <- summary_data |>
+    dplyr::arrange(.data[[category_label]])
+
+  ft <- create_hta_table(
+    summary_data,
+    title = title,
+    footnotes = footnotes,
+    autofit = autofit
+  )
+
+  ClinicalTable(
+    data = summary_data,
+    flextable = ft,
+    type = type,
+    title = title
+  )
+}
+
 #' Create Medical History Table
 #'
 #' @param adsl ADSL data frame
@@ -171,49 +230,19 @@ create_medical_history_table <- function(
   soc_var = "MHBODSYS",
   autofit = TRUE
 ) {
-  trt_n <- adsl |>
-    dplyr::group_by(!!rlang::sym(trt_var)) |>
-    dplyr::summarise(N = dplyr::n(), .groups = "drop")
-
-  mh_summary <- admh |>
-    dplyr::group_by(!!rlang::sym(trt_var), !!rlang::sym(soc_var)) |>
-    dplyr::summarise(
-      n_subj = dplyr::n_distinct(.data$USUBJID),
-      .groups = "drop"
-    ) |>
-    dplyr::left_join(trt_n, by = trt_var) |>
-    dplyr::mutate(
-      pct = round(.data$n_subj / .data$N * 100, 1),
-      display = paste0(.data$n_subj, " (", .data$pct, "%)")
-    ) |>
-    dplyr::select(
-      !!rlang::sym(soc_var),
-      !!rlang::sym(trt_var),
-      "display"
-    ) |>
-    tidyr::pivot_wider(
-      names_from = !!rlang::sym(trt_var),
-      values_from = "display",
-      values_fill = "0 (0.0%)"
-    ) |>
-    dplyr::rename(`Body System` = !!rlang::sym(soc_var)) |>
-    dplyr::arrange(.data$`Body System`)
-
-  ft <- create_hta_table(
-    mh_summary,
+  create_category_summary_table(
+    adsl = adsl,
+    analysis_data = admh,
+    category_var = soc_var,
+    category_label = "Body System",
     title = title,
+    type = "medical_history",
     footnotes = c(
       "ITT Population",
       "n (%) = Number (percentage) of subjects with at least one condition"
     ),
+    trt_var = trt_var,
     autofit = autofit
-  )
-
-  ClinicalTable(
-    data = mh_summary,
-    flextable = ft,
-    type = "medical_history",
-    title = title
   )
 }
 
@@ -235,49 +264,19 @@ create_conmeds_table <- function(
   class_var = "CMCLAS",
   autofit = TRUE
 ) {
-  trt_n <- adsl |>
-    dplyr::group_by(!!rlang::sym(trt_var)) |>
-    dplyr::summarise(N = dplyr::n(), .groups = "drop")
-
-  cm_summary <- adcm |>
-    dplyr::group_by(!!rlang::sym(trt_var), !!rlang::sym(class_var)) |>
-    dplyr::summarise(
-      n_subj = dplyr::n_distinct(.data$USUBJID),
-      .groups = "drop"
-    ) |>
-    dplyr::left_join(trt_n, by = trt_var) |>
-    dplyr::mutate(
-      pct = round(.data$n_subj / .data$N * 100, 1),
-      display = paste0(.data$n_subj, " (", .data$pct, "%)")
-    ) |>
-    dplyr::select(
-      !!rlang::sym(class_var),
-      !!rlang::sym(trt_var),
-      "display"
-    ) |>
-    tidyr::pivot_wider(
-      names_from = !!rlang::sym(trt_var),
-      values_from = "display",
-      values_fill = "0 (0.0%)"
-    ) |>
-    dplyr::rename(`Medication Class` = !!rlang::sym(class_var)) |>
-    dplyr::arrange(.data$`Medication Class`)
-
-  ft <- create_hta_table(
-    cm_summary,
+  create_category_summary_table(
+    adsl = adsl,
+    analysis_data = adcm,
+    category_var = class_var,
+    category_label = "Medication Class",
     title = title,
+    type = "conmeds",
     footnotes = c(
       "ITT Population",
       "n (%) = Number (percentage) of subjects taking at least one medication"
     ),
+    trt_var = trt_var,
     autofit = autofit
-  )
-
-  ClinicalTable(
-    data = cm_summary,
-    flextable = ft,
-    type = "conmeds",
-    title = title
   )
 }
 

@@ -159,6 +159,17 @@ ShiftLayer <- S7::new_class(
 #'
 #' @export
 #'
+#' @usage
+#' LayeredTable(
+#'   data = data.frame(),
+#'   trt_var = "TRT01P",
+#'   pop_filter = NULL,
+#'   layers = list(),
+#'   title = NULL,
+#'   metadata = list(),
+#'   big_n = NULL
+#' )
+#'
 #' @param data Source data frame
 #' @param trt_var Treatment variable name
 #' @param pop_filter Population filter expression

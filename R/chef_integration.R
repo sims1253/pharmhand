@@ -163,6 +163,35 @@ create_chef_endpoint <- function(
   stats = list(),
   criteria = list()
 ) {
+
+  # Input validation
+  if (!is.character(name) || length(name) != 1 || nchar(name) == 0) {
+    cli::cli_abort("{.arg name} must be a non-empty character string")
+  }
+
+  if (!is.character(variable) || length(variable) != 1 || nchar(variable) == 0) {
+    cli::cli_abort("{.arg variable} must be a non-empty character string")
+  }
+
+  valid_types <- c("binary", "continuous", "tte", "count")
+  if (!is.character(type) || length(type) != 1 || !type %in% valid_types) {
+    cli::cli_abort(
+      "{.arg type} must be one of: {.val {valid_types}}"
+    )
+  }
+
+  if (!is.character(strata)) {
+    cli::cli_abort("{.arg strata} must be a character vector")
+  }
+
+  if (!is.list(stats)) {
+    cli::cli_abort("{.arg stats} must be a list")
+  }
+
+  if (!is.list(criteria)) {
+    cli::cli_abort("{.arg criteria} must be a list")
+  }
+
   list(
     name = name,
     variable = variable,

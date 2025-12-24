@@ -4,10 +4,12 @@
 \alias{analyze_study_TwoArmStudy}
 \title{Analyze TwoArmStudy}
 \usage{
-analyze_study_TwoArmStudy(x)
+analyze_study_TwoArmStudy(x, ...)
 }
 \arguments{
 \item{x}{A TwoArmStudy object}
+
+\item{...}{Additional arguments (currently unused, for method consistency)}
 }
 \value{
 The modified TwoArmStudy object with results

@@ -6,7 +6,7 @@ Maintainer: First Last <first.last@example.com>
 Authors@R:
     person("Maximilian", "Scholz", , "dev.scholz@mailbox.org", role = c("aut", "cre"))
 Description: Wrapper for officer, flextable and similar R to MS Office packages for creating clinical study reports. Supports ADaM formats.
-License: GPL-3 + file LICENSE
+License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
@@ -39,7 +39,8 @@ Suggests:
     styler,
     yaml,
     checkmate,
-    rprojroot
+    rprojroot,
+    webshot2
 Remotes:
     hta-pharma/chef,
     hta-pharma/chefStats,
