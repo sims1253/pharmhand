@@ -5,7 +5,7 @@ S7 method for analyzing TwoArmStudy objects.
 ## Usage
 
 ``` r
-analyze_study_TwoArmStudy(x)
+analyze_study_TwoArmStudy(x, ...)
 ```
 
 ## Arguments
@@ -13,6 +13,10 @@ analyze_study_TwoArmStudy(x)
 - x:
 
   A TwoArmStudy object
+
+- ...:
+
+  Additional arguments (currently unused, for method consistency)
 
 ## Value
 

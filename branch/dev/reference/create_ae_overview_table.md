@@ -12,6 +12,9 @@ create_ae_overview_table(
   title = "Overview of Adverse Events",
   trt_var = "TRT01A",
   subjid_var = "USUBJID",
+  relationship_values = c("PROBABLE", "POSSIBLE", "RELATED"),
+  discontinuation_action = "DRUG WITHDRAWN",
+  fatal_outcome = "FATAL",
   autofit = TRUE
 )
 ```
@@ -37,6 +40,20 @@ create_ae_overview_table(
 - subjid_var:
 
   Subject ID variable name (default: "USUBJID")
+
+- relationship_values:
+
+  Character vector of AEREL values considered as "related" to treatment.
+  Default: c("PROBABLE", "POSSIBLE", "RELATED").
+
+- discontinuation_action:
+
+  Character value in AEACN indicating drug discontinuation. Default:
+  "DRUG WITHDRAWN".
+
+- fatal_outcome:
+
+  Character value in AEOUT indicating death. Default: "FATAL".
 
 - autofit:
 

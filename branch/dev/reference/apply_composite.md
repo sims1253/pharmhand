@@ -1,6 +1,8 @@
 # Apply a composite format
 
-Apply a composite format
+Substitutes placeholder values into a composite format template. Each
+placeholder in the template (e.g., `{n}`) is replaced with the
+corresponding formatted value.
 
 ## Usage
 
@@ -21,3 +23,11 @@ apply_composite(fmt, ...)
 ## Value
 
 Formatted character string
+
+## Note
+
+This function uses simple string substitution via
+[`gsub()`](https://rdrr.io/r/base/grep.html). If a placeholder name
+accidentally appears as literal text in the template (not as a
+placeholder), it will also be replaced. Ensure placeholder names are
+unique and unlikely to appear as regular text in templates.

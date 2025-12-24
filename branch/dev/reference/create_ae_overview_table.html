@@ -46,6 +46,9 @@ related AEs, SAEs, and discontinuations.</p>
 <span>  title <span class="op">=</span> <span class="st">"Overview of Adverse Events"</span>,</span>
 <span>  trt_var <span class="op">=</span> <span class="st">"TRT01A"</span>,</span>
 <span>  subjid_var <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
+<span>  relationship_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PROBABLE"</span>, <span class="st">"POSSIBLE"</span>, <span class="st">"RELATED"</span><span class="op">)</span>,</span>
+<span>  discontinuation_action <span class="op">=</span> <span class="st">"DRUG WITHDRAWN"</span>,</span>
+<span>  fatal_outcome <span class="op">=</span> <span class="st">"FATAL"</span>,</span>
 <span>  autofit <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -72,6 +75,20 @@ related AEs, SAEs, and discontinuations.</p>
 
 <dt id="arg-subjid-var">subjid_var<a class="anchor" aria-label="anchor" href="#arg-subjid-var"></a></dt>
 <dd><p>Subject ID variable name (default: "USUBJID")</p></dd>
+
+
+<dt id="arg-relationship-values">relationship_values<a class="anchor" aria-label="anchor" href="#arg-relationship-values"></a></dt>
+<dd><p>Character vector of AEREL values considered as
+"related" to treatment. Default: c("PROBABLE", "POSSIBLE", "RELATED").</p></dd>
+
+
+<dt id="arg-discontinuation-action">discontinuation_action<a class="anchor" aria-label="anchor" href="#arg-discontinuation-action"></a></dt>
+<dd><p>Character value in AEACN indicating drug
+discontinuation. Default: "DRUG WITHDRAWN".</p></dd>
+
+
+<dt id="arg-fatal-outcome">fatal_outcome<a class="anchor" aria-label="anchor" href="#arg-fatal-outcome"></a></dt>
+<dd><p>Character value in AEOUT indicating death. Default: "FATAL".</p></dd>
 
 
 <dt id="arg-autofit">autofit<a class="anchor" aria-label="anchor" href="#arg-autofit"></a></dt>
