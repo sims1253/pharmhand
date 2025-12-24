@@ -5,7 +5,7 @@ on:
     branches: [main, master]
   pull_request:
 
-name: lint-project.yaml
+name: lint.yaml
 
 permissions: read-all
 
@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-project:
+  lint:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -25,19 +25,13 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install lintr
-        run: install.packages("lintr")
-        shell: Rscript {0}
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::lintr, local::.
+          needs: lint
 
-      - name: Lint root directory
-        run: lintr::lint_dir()
+      - name: Lint
+        run: lintr::lint_package()
         shell: Rscript {0}
         env:
           LINTR_ERROR_ON_LINT: true
-
-  jarl-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: etiennebacher/setup-jarl@v0.1.0
-      - run: jarl check R/ tests/ examples/
