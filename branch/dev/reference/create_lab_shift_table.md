@@ -37,6 +37,10 @@ create_lab_shift_table(
 
   Table title
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

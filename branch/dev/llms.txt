@@ -491,10 +491,16 @@ For questions, issues, or suggestions, please:
   : Add content to a Word document
 - [`analyze()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze.md)
   : Analyze ADaM datasets
+- [`analyze_ADaMData()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze_ADaMData.md)
+  : Analyze ADaMData
 - [`analyze_soc_pt()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze_soc_pt.md)
   : Analyze Adverse Events by SOC and PT
 - [`analyze_study()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze_study.md)
   : Analyze Study (S7 Method)
+- [`analyze_study_OneArmStudy()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze_study_OneArmStudy.md)
+  : Analyze OneArmStudy
+- [`analyze_study_TwoArmStudy()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze_study_TwoArmStudy.md)
+  : Analyze TwoArmStudy
 - [`apply_clinical_style()`](https://sims1253.github.io/pharmhand/branch/dev/reference/apply_clinical_style.md)
   : Apply Clinical Table Styling
 - [`apply_composite()`](https://sims1253.github.io/pharmhand/branch/dev/reference/apply_composite.md)
@@ -515,6 +521,8 @@ For questions, issues, or suggestions, please:
   : Build a single layer
 - [`build_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/build_table.md)
   : Build a LayeredTable
+- [`calculate_ae_tte_data()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_ae_tte_data.md)
+  : Calculate AE TTE Data for a specific SOC
 - [`calculate_baseline()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_baseline.md)
   : Calculate Baseline Characteristics
 - [`chef_integration`](https://sims1253.github.io/pharmhand/branch/dev/reference/chef_integration.md)
@@ -525,8 +533,14 @@ For questions, issues, or suggestions, please:
   : Composite Format Specification
 - [`create_ae_discontinuation_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_discontinuation_table.md)
   : Create AE Leading to Discontinuation Table
+- [`create_ae_km_plot_for_soc()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_km_plot_for_soc.md)
+  : Create AE KM Plot for a specific SOC
 - [`create_ae_overview_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_overview_table.md)
   : Create AE Overview Table
+- [`create_ae_pt_table_for_soc()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_pt_table_for_soc.md)
+  : Create AE PT Table for a specific SOC
+- [`create_ae_pt_tables_by_soc()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_pt_tables_by_soc.md)
+  : Create AE PT Tables for all SOCs
 - [`create_ae_relationship_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_relationship_table.md)
   : Create AE by Relationship Table
 - [`create_ae_severity_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_severity_table.md)

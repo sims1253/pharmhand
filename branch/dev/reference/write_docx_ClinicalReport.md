@@ -18,6 +18,10 @@ write_docx_ClinicalReport(x, path, add_toc = FALSE, ...)
 
   File path
 
+- add_toc:
+
+  Logical, whether to add table of contents (default: FALSE)
+
 - ...:
 
   Additional arguments

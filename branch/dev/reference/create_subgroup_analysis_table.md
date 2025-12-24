@@ -42,6 +42,10 @@ create_subgroup_analysis_table(
 
   Table title
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

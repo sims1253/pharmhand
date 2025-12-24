@@ -32,6 +32,10 @@ create_hta_table(
 
   Named numeric vector of column widths (optional)
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 A styled flextable object

@@ -13,3 +13,25 @@ AnalysisResults(
   metadata = list()
 )
 ```
+
+## Arguments
+
+- stats:
+
+  A data frame containing the statistical results
+
+- type:
+
+  Character string for result type
+
+- groupings:
+
+  List of grouping variables used
+
+- metadata:
+
+  List of additional metadata
+
+## Value
+
+An AnalysisResults object

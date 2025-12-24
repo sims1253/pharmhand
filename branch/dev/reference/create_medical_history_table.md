@@ -37,6 +37,10 @@ create_medical_history_table(
 
   SOC variable name for MH
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

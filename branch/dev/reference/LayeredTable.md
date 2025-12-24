@@ -56,6 +56,10 @@ attr(out, "row.names") <- row.names
 
   Additional metadata
 
+- big_n:
+
+  Pre-computed treatment group counts (optional)
+
 ## Value
 
 A LayeredTable object

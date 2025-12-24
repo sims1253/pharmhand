@@ -37,6 +37,10 @@ create_common_ae_table(
 
   Treatment variable name
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

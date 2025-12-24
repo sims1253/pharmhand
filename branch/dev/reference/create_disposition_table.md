@@ -37,6 +37,10 @@ create_disposition_table(
 
   Discontinuation reason variable (e.g., DCSREAS)
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

@@ -32,6 +32,10 @@ create_region_table(
 
   Region variable name
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

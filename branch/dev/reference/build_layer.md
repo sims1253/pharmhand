@@ -14,13 +14,10 @@ build_layer(layer, ...)
 
   An AnalysisLayer object
 
-- data:
+- ...:
 
-  Source data frame
-
-- trt_var:
-
-  Treatment variable name
+  Additional arguments passed to layer-specific methods (typically
+  includes `data`, `trt_var`, and `big_n`)
 
 ## Value
 

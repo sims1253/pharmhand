@@ -38,6 +38,10 @@ create_ae_overview_table(
 
   Subject ID variable name (default: "USUBJID")
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 A ClinicalTable object

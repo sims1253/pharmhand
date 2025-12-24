@@ -37,6 +37,10 @@ create_population_summary_table(
 
   Character vector of labels for population flags
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

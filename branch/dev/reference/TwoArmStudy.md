@@ -17,3 +17,33 @@ TwoArmStudy(
   metadata = list()
 )
 ```
+
+## Arguments
+
+- data:
+
+  A data frame containing the study data
+
+- group_var:
+
+  Character string for treatment group variable
+
+- study_id:
+
+  Character string for study identifier
+
+- study_title:
+
+  Character string for study title
+
+- results:
+
+  List of analysis results
+
+- metadata:
+
+  List of additional metadata
+
+## Value
+
+A TwoArmStudy object

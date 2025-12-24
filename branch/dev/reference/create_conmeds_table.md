@@ -37,6 +37,10 @@ create_conmeds_table(
 
   ATC class/category variable name
 
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
 ## Value
 
 ClinicalTable object

@@ -15,3 +15,33 @@ ADaMData(
   metadata = list()
 )
 ```
+
+## Arguments
+
+- data:
+
+  A data frame containing the ADaM dataset
+
+- domain:
+
+  Character string for the ADaM domain (e.g., "ADSL", "ADAE")
+
+- population:
+
+  Character string for population filter (default: "FAS")
+
+- subject_var:
+
+  Character string for subject ID variable (default: "USUBJID")
+
+- trt_var:
+
+  Character string for treatment variable (default: "TRT01P")
+
+- metadata:
+
+  List of additional metadata
+
+## Value
+
+An ADaMData object

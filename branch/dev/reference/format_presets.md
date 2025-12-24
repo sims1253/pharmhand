@@ -16,6 +16,12 @@ fmt_ci()
 fmt_pvalue(threshold = 0.001)
 ```
 
+## Arguments
+
+- threshold:
+
+  Numeric threshold below which to display "\<threshold"
+
 ## Functions
 
 - `fmt_n_pct()`: Count with percentage: "n (xx.x%)"
