@@ -9,9 +9,8 @@ build_layer(layer, ...)
 \arguments{
 \item{layer}{An AnalysisLayer object}
 
-\item{data}{Source data frame}
-
-\item{trt_var}{Treatment variable name}
+\item{...}{Additional arguments passed to layer-specific methods
+(typically includes \code{data}, \code{trt_var}, and \code{big_n})}
 }
 \value{
 A data frame with layer results

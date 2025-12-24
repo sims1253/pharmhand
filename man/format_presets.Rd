@@ -19,6 +19,9 @@ fmt_ci()
 
 fmt_pvalue(threshold = 0.001)
 }
+\arguments{
+\item{threshold}{Numeric threshold below which to display "<threshold"}
+}
 \description{
 Pre-defined format specifications for common clinical table patterns.
 }

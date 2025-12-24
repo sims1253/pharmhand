@@ -26,6 +26,8 @@ create_subgroup_analysis_table(
 \item{subgroups}{List of subgroup variables (e.g. list(AGEGR1="Age Group"))}
 
 \item{title}{Table title}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

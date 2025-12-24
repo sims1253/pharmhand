@@ -23,6 +23,8 @@ create_primary_endpoint_table(
 \item{visit}{Visit to analyze (default: "End of Treatment")}
 
 \item{title}{Table title}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

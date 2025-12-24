@@ -23,6 +23,8 @@ create_disposition_table(
 \item{status_var}{End of study status variable (e.g., EOSSTT)}
 
 \item{reason_var}{Discontinuation reason variable (e.g., DCSREAS)}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

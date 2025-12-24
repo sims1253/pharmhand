@@ -23,6 +23,8 @@ create_vs_by_visit_table(
 \item{visits}{Vector of visits to include}
 
 \item{title}{Table title}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

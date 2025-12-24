@@ -344,6 +344,7 @@ fmt_ci <- function() {
 }
 
 #' @describeIn format_presets P-value with significance threshold
+#' @param threshold Numeric threshold below which to display "<threshold"
 #' @export
 fmt_pvalue <- function(threshold = 0.001) {
   function(p) {

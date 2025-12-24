@@ -112,6 +112,7 @@ create_demographics_table <- function(
 #' @param title Table title
 #' @param trt_var Treatment variable name
 #' @param region_var Region variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_region_table <- function(
@@ -159,6 +160,7 @@ create_region_table <- function(
 #' @param title Table title
 #' @param trt_var Treatment variable name
 #' @param soc_var SOC variable name for MH
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_medical_history_table <- function(
@@ -222,6 +224,7 @@ create_medical_history_table <- function(
 #' @param title Table title
 #' @param trt_var Treatment variable name
 #' @param class_var ATC class/category variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_conmeds_table <- function(
@@ -285,6 +288,7 @@ create_conmeds_table <- function(
 #' @param trt_var Treatment variable name
 #' @param status_var End of study status variable (e.g., EOSSTT)
 #' @param reason_var Discontinuation reason variable (e.g., DCSREAS)
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_disposition_table <- function(
@@ -343,6 +347,7 @@ create_disposition_table <- function(
 #' @param trt_var Treatment variable name
 #' @param pop_flags Character vector of population flag variables
 #' @param pop_labels Character vector of labels for population flags
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_population_summary_table <- function(

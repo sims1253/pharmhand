@@ -165,6 +165,7 @@ ShiftLayer <- S7::new_class(
 #' @param layers List of AnalysisLayer objects
 #' @param title Table title
 #' @param metadata Additional metadata
+#' @param big_n Pre-computed treatment group counts (optional)
 #'
 #' @return A LayeredTable object
 #'
@@ -278,8 +279,8 @@ build_table <- function(table, ...) {
 #' Build a single layer
 #'
 #' @param layer An AnalysisLayer object
-#' @param data Source data frame
-#' @param trt_var Treatment variable name
+#' @param ... Additional arguments passed to layer-specific methods
+#'   (typically includes `data`, `trt_var`, and `big_n`)
 #'
 #' @return A data frame with layer results
 #' @export

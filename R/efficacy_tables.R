@@ -14,6 +14,7 @@ NULL
 #' @param paramcd Parameter code to analyze (default: "SYSBP")
 #' @param visit Visit to analyze (default: "End of Treatment")
 #' @param title Table title
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_primary_endpoint_table <- function(
@@ -94,6 +95,7 @@ create_primary_endpoint_table <- function(
 #' @param params Vector of parameter codes to include
 #' @param visit Visit to analyze
 #' @param title Table title
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_cfb_summary_table <- function(
@@ -114,7 +116,7 @@ create_cfb_summary_table <- function(
     dplyr::summarise(
       n = dplyr::n(),
       Mean_CFB = round(mean(.data$CHG, na.rm = TRUE), 2),
-      SD_CFB = round(sd(.data$AVAL, na.rm = TRUE), 2),
+      SD_CFB = round(sd(.data$CHG, na.rm = TRUE), 2),
       .groups = "drop"
     ) |>
     dplyr::mutate(
@@ -160,6 +162,7 @@ create_cfb_summary_table <- function(
 #' @param paramcd Parameter code to analyze
 #' @param visits Vector of visits to include
 #' @param title Table title
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_vs_by_visit_table <- function(
@@ -226,6 +229,7 @@ create_vs_by_visit_table <- function(
 #' @param params Vector of parameter codes to analyze
 #' @param visit Visit to analyze
 #' @param title Table title
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_lab_summary_table <- function(
@@ -285,6 +289,7 @@ create_lab_summary_table <- function(
 #' @param paramcd Parameter code to analyze
 #' @param visit Visit to analyze
 #' @param title Table title
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_lab_shift_table <- function(
@@ -346,6 +351,7 @@ create_lab_shift_table <- function(
 #' @param visit Visit to analyze
 #' @param subgroups List of subgroup variables (e.g. list(AGEGR1="Age Group"))
 #' @param title Table title
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_subgroup_analysis_table <- function(
@@ -369,11 +375,18 @@ create_subgroup_analysis_table <- function(
   for (var_name in names(subgroups)) {
     label <- subgroups[[var_name]]
 
-    # Determine variable name (handle character vector or named list)
-    # Using .data with string variable for group_by requires distinct handling or ensure it exists
-    # To be safe, we check if variable is in advs (usually subgroup vars are in ADSL, so merging might be needed)
-    # Assuming ADVS contains these or we need to merge.
-    # The original code just used advs which comes from pharmaverseadam::advs which has standard vars.
+    # Check if subgroup variable exists in data
+    if (!var_name %in% names(subgroup_data_raw)) {
+      cli::cli_abort(
+        c(
+          "Subgroup variable {.var {var_name}} not found in advs",
+          "i" = paste(
+            "Consider merging subgroup variables from adsl",
+            "or ensuring they are present in the input data"
+          )
+        )
+      )
+    }
 
     res <- subgroup_data_raw |>
       dplyr::group_by(.data$TRT01P, .data[[var_name]]) |>

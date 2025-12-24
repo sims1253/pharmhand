@@ -23,6 +23,8 @@ create_common_ae_table(
 \item{n_top}{Number of top PTs to show}
 
 \item{trt_var}{Treatment variable name}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

@@ -18,6 +18,7 @@ NULL
 #' @param title Table title (default: "Overview of Adverse Events")
 #' @param trt_var Treatment variable name (default: "TRT01A")
 #' @param subjid_var Subject ID variable name (default: "USUBJID")
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #'
 #' @return A ClinicalTable object
 #' @export
@@ -151,6 +152,7 @@ create_ae_overview_table <- function(
 #' @param trt_n Treatment group counts
 #' @param title Table title
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_ae_soc_table <- function(
@@ -206,6 +208,7 @@ create_ae_soc_table <- function(
 #' @param trt_n Treatment group counts
 #' @param soc SOC value to filter by
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_ae_pt_table_for_soc <- function(
@@ -259,6 +262,7 @@ create_ae_pt_table_for_soc <- function(
 #' @param adae ADAE data frame
 #' @param trt_n Treatment group counts
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return List of ClinicalTable objects
 #' @export
 create_ae_pt_tables_by_soc <- function(
@@ -309,13 +313,18 @@ calculate_ae_tte_data <- function(
     dplyr::left_join(first_event, by = "USUBJID")
 
   # Derive time and event
-  # If TRTDURD is not available, we use a default or derive it
+  # If TRTDURD is not available, derive it from TRTEDT and TRTSDT
   if (!"TRTDURD" %in% names(tte_data)) {
     if ("TRTEDT" %in% names(tte_data) && "TRTSDT" %in% names(tte_data)) {
       tte_data$TRTDURD <- as.numeric(tte_data$TRTEDT - tte_data$TRTSDT) +
         1
     } else {
-      tte_data$TRTDURD <- 100 # Fallback for demo
+      cli::cli_abort(
+        c(
+          "Cannot calculate treatment duration for time-to-event analysis",
+          "x" = "TRTDURD, TRTEDT, and TRTSDT are all missing from the data"
+        )
+      )
     }
   }
 
@@ -369,6 +378,7 @@ create_ae_km_plot_for_soc <- function(
 #' @param title Table title
 #' @param n_top Number of top PTs to show
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_common_ae_table <- function(
@@ -447,6 +457,7 @@ create_common_ae_table <- function(
 #' @param trt_n Treatment group counts
 #' @param title Table title
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_ae_severity_table <- function(
@@ -503,6 +514,7 @@ create_ae_severity_table <- function(
 #' @param trt_n Treatment group counts
 #' @param title Table title
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_ae_relationship_table <- function(
@@ -557,6 +569,7 @@ create_ae_relationship_table <- function(
 #' @param trt_n Treatment group counts
 #' @param title Table title
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_sae_table <- function(
@@ -631,6 +644,7 @@ create_sae_table <- function(
 #' @param trt_n Treatment group counts
 #' @param title Table title
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_ae_discontinuation_table <- function(
@@ -705,6 +719,7 @@ create_ae_discontinuation_table <- function(
 #' @param adsl ADSL data frame
 #' @param title Table title
 #' @param trt_var Treatment variable name
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
 create_deaths_table <- function(

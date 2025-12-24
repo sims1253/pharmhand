@@ -23,6 +23,8 @@ create_conmeds_table(
 \item{trt_var}{Treatment variable name}
 
 \item{class_var}{ATC class/category variable name}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

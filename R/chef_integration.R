@@ -246,8 +246,21 @@ run_chef_pipeline <- function(
   )
 
   # Create mock results for development
+  # Safely extract endpoint names with fallback for malformed endpoints
+
+  endpoint_names <- vapply(
+    endpoints,
+    function(ep) {
+      if (is.null(ep$name) || !is.character(ep$name) || length(ep$name) != 1) {
+        return("Unnamed Endpoint")
+      }
+      ep$name
+    },
+    character(1)
+  )
+
   mock_results <- data.table::data.table(
-    endpoint_id = vapply(endpoints, `[[`, character(1), "name"),
+    endpoint_id = endpoint_names,
     strat_id = "Overall",
     stat_id = "n",
     stat_result_value = NA_real_,

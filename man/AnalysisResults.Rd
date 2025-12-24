@@ -12,6 +12,18 @@ AnalysisResults(
   metadata = list()
 )
 }
+\arguments{
+\item{stats}{A data frame containing the statistical results}
+
+\item{type}{Character string for result type}
+
+\item{groupings}{List of grouping variables used}
+
+\item{metadata}{List of additional metadata}
+}
+\value{
+An AnalysisResults object
+}
 \description{
 Container for pre-calculated statistics.
 }

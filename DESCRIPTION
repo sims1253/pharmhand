@@ -4,9 +4,9 @@ Version: 0.0.0.9000
 Author: First Last [aut, cre]
 Maintainer: First Last <first.last@example.com>
 Authors@R:
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+    person("Maximilian", "Scholz", , "dev.scholz@mailbox.org", role = c("aut", "cre"))
 Description: Wrapper for officer, flextable and similar R to MS Office packages for creating clinical study reports. Supports ADaM formats.
-License: MIT + file LICENSE
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
@@ -20,7 +20,6 @@ Imports:
     tidyr,
     rlang,
     tidyselect,
-    admiral,
     admiraldev,
     gt,
     cli,
@@ -30,6 +29,7 @@ Imports:
     scales,
     patchwork
 Suggests:
+    admiral,
     chef,
     chefStats,
     chefCriteria,
@@ -38,7 +38,8 @@ Suggests:
     lintr,
     styler,
     yaml,
-    checkmate
+    checkmate,
+    rprojroot
 Remotes:
     hta-pharma/chef,
     hta-pharma/chefStats,

@@ -20,6 +20,8 @@ create_hta_table(
 \item{footnotes}{Character vector of footnotes}
 
 \item{col_widths}{Named numeric vector of column widths (optional)}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 A styled flextable object

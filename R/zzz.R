@@ -29,9 +29,11 @@ utils::globalVariables(c(
   "max"
 ))
 
-#' @importFrom stats sd median quantile setNames
+#' @importFrom stats sd median quantile setNames as.formula na.omit
 #' @importFrom rlang %||% .data
 #' @importFrom tidyselect where any_of all_of
+#' @importFrom admiraldev assert_data_frame assert_character_scalar
+#'   assert_character_vector assert_numeric_vector
 NULL
 #' @title Package initialization hook
 #' @description Called when the package is loaded. Registers S7 methods and

@@ -23,6 +23,8 @@ create_lab_summary_table(
 \item{visit}{Visit to analyze}
 
 \item{title}{Table title}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

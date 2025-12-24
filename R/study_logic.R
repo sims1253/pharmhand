@@ -14,6 +14,14 @@ NULL
 #' @export
 analyze_study <- S7::new_generic("analyze_study", "x")
 
+#' Analyze OneArmStudy
+#'
+#' S7 method for analyzing OneArmStudy objects.
+#'
+#' @param x A OneArmStudy object
+#' @param ... Additional arguments
+#'
+#' @return The modified OneArmStudy object with results
 #' @export
 #' @name analyze_study_OneArmStudy
 analyze_study_OneArmStudy <- S7::method(analyze_study, OneArmStudy) <- function(
@@ -23,15 +31,30 @@ analyze_study_OneArmStudy <- S7::method(analyze_study, OneArmStudy) <- function(
   # Implementation using ADaMData and core analysis
   adam <- ADaMData(data = x@data, trt_var = "TRT01P")
 
-  # Default Baseline + Safety analysis
-  baseline <- calculate_baseline(adam, vars = names(x@data)[-1]) # Simplified
-  safety <- analyze_soc_pt(adam)
+  # Baseline analysis - exclude ID and treatment columns explicitly
+  all_vars <- names(x@data)
+  baseline_vars <- all_vars[!all_vars %in% c("USUBJID", "TRT01P")]
+  baseline <- calculate_baseline(adam, vars = baseline_vars)
+
+  results <- list(baseline = baseline)
+
+  # Only analyze safety if AE columns exist
+  if (all(c("AEBODSYS", "AEDECOD") %in% names(x@data))) {
+    results$safety <- analyze_soc_pt(adam)
+  }
 
   # Store results
-  x@results <- list(baseline = baseline, safety = safety)
+  x@results <- results
   return(x)
 }
 
+#' Analyze TwoArmStudy
+#'
+#' S7 method for analyzing TwoArmStudy objects.
+#'
+#' @param x A TwoArmStudy object
+#'
+#' @return The modified TwoArmStudy object with results
 #' @export
 #' @name analyze_study_TwoArmStudy
 analyze_study_TwoArmStudy <- S7::method(analyze_study, TwoArmStudy) <- function(

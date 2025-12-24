@@ -17,6 +17,8 @@ create_deaths_table(
 \item{title}{Table title}
 
 \item{trt_var}{Treatment variable name}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

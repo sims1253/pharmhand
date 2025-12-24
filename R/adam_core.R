@@ -7,6 +7,14 @@
 #' @name adam_core
 NULL
 
+#' Analyze ADaMData
+#'
+#' S7 method for analyzing ADaMData objects.
+#'
+#' @param x An ADaMData object
+#' @param ... Additional arguments
+#'
+#' @return An AnalysisResults object
 #' @export
 #' @name analyze_ADaMData
 analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
@@ -220,8 +228,15 @@ apply_subgroups <- function(data, subgroup_var, analysis_fn, ...) {
   lapply(subgroups, function(sg) {
     sg_data <- df[df[[subgroup_var]] == sg, ]
     if (is_adam) {
-      data_sg <- data
-      data_sg@data <- sg_data
+      # Create a new ADaMData object to avoid mutating the original
+      data_sg <- ADaMData(
+        data = sg_data,
+        domain = data@domain,
+        population = data@population,
+        subject_var = data@subject_var,
+        trt_var = data@trt_var,
+        metadata = data@metadata
+      )
       res <- analysis_fn(data_sg, ...)
     } else {
       res <- analysis_fn(sg_data, ...)

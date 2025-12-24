@@ -23,6 +23,8 @@ create_ae_overview_table(
 \item{trt_var}{Treatment variable name (default: "TRT01A")}
 
 \item{subjid_var}{Subject ID variable name (default: "USUBJID")}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 A ClinicalTable object

@@ -23,6 +23,8 @@ create_population_summary_table(
 \item{pop_flags}{Character vector of population flag variables}
 
 \item{pop_labels}{Character vector of labels for population flags}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

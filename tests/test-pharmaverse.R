@@ -54,7 +54,7 @@ report <- ClinicalReport(
 )
 
 # 6. Export to Word (.docx)
-output_path <- "tests/Example_Pharmaverse_Report.docx"
+output_path <- file.path(tempdir(), "Example_Pharmaverse_Report.docx")
 cli::cli_alert_info("Writing report to {output_path}...")
 write_docx(report, path = output_path)
 

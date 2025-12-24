@@ -12,6 +12,14 @@ NULL
 #'
 #' Base class for ADaM datasets with population filters.
 #'
+#' @param data A data frame containing the ADaM dataset
+#' @param domain Character string for the ADaM domain (e.g., "ADSL", "ADAE")
+#' @param population Character string for population filter (default: "FAS")
+#' @param subject_var Character string for subject ID variable (default: "USUBJID")
+#' @param trt_var Character string for treatment variable (default: "TRT01P")
+#' @param metadata List of additional metadata
+#'
+#' @return An ADaMData object
 #' @export ADaMData
 ADaMData <- S7::new_class(
   "ADaMData",
@@ -65,6 +73,12 @@ ADaMData <- S7::new_class(
 #'
 #' Container for pre-calculated statistics.
 #'
+#' @param stats A data frame containing the statistical results
+#' @param type Character string for result type
+#' @param groupings List of grouping variables used
+#' @param metadata List of additional metadata
+#'
+#' @return An AnalysisResults object
 #' @export AnalysisResults
 AnalysisResults <- S7::new_class(
   "AnalysisResults",
@@ -362,6 +376,13 @@ ClinicalReport <- S7::new_class(
 #' Provides methods for calculating statistics, creating tables and plots,
 #' and performing hypothesis tests.
 #'
+#' @param data A data frame containing the study data
+#' @param study_id Character string for study identifier
+#' @param study_title Character string for study title
+#' @param results List of analysis results
+#' @param metadata List of additional metadata
+#'
+#' @return A OneArmStudy object
 #' @export OneArmStudy
 OneArmStudy <- S7::new_class(
   "OneArmStudy",
@@ -400,6 +421,14 @@ OneArmStudy <- S7::new_class(
 #' Provides methods for comparing treatment groups, creating tables and plots,
 #' and performing hypothesis tests.
 #'
+#' @param data A data frame containing the study data
+#' @param group_var Character string for treatment group variable
+#' @param study_id Character string for study identifier
+#' @param study_title Character string for study title
+#' @param results List of analysis results
+#' @param metadata List of additional metadata
+#'
+#' @return A TwoArmStudy object
 #' @export TwoArmStudy
 TwoArmStudy <- S7::new_class(
   "TwoArmStudy",

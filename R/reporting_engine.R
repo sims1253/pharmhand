@@ -92,6 +92,7 @@ as_gt_AnalysisResults <- S7::method(as_gt, AnalysisResults) <- function(
 #'
 #' @param x ClinicalReport object
 #' @param path File path
+#' @param add_toc Logical, whether to add table of contents (default: FALSE)
 #' @param ... Additional arguments
 #'
 #' @export
@@ -284,6 +285,7 @@ apply_clinical_style <- function(
 #' @param title Table title
 #' @param footnotes Character vector of footnotes
 #' @param col_widths Named numeric vector of column widths (optional)
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #'
 #' @return A styled flextable object
 #' @export

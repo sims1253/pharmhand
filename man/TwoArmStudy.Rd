@@ -14,6 +14,22 @@ TwoArmStudy(
   metadata = list()
 )
 }
+\arguments{
+\item{data}{A data frame containing the study data}
+
+\item{group_var}{Character string for treatment group variable}
+
+\item{study_id}{Character string for study identifier}
+
+\item{study_title}{Character string for study title}
+
+\item{results}{List of analysis results}
+
+\item{metadata}{List of additional metadata}
+}
+\value{
+A TwoArmStudy object
+}
 \description{
 An S7 class for representing and analyzing two-arm clinical studies.
 Provides methods for comparing treatment groups, creating tables and plots,

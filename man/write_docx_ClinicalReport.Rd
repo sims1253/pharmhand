@@ -11,6 +11,8 @@ write_docx_ClinicalReport(x, path, add_toc = FALSE, ...)
 
 \item{path}{File path}
 
+\item{add_toc}{Logical, whether to add table of contents (default: FALSE)}
+
 \item{...}{Additional arguments}
 }
 \description{

@@ -14,6 +14,22 @@ ADaMData(
   metadata = list()
 )
 }
+\arguments{
+\item{data}{A data frame containing the ADaM dataset}
+
+\item{domain}{Character string for the ADaM domain (e.g., "ADSL", "ADAE")}
+
+\item{population}{Character string for population filter (default: "FAS")}
+
+\item{subject_var}{Character string for subject ID variable (default: "USUBJID")}
+
+\item{trt_var}{Character string for treatment variable (default: "TRT01P")}
+
+\item{metadata}{List of additional metadata}
+}
+\value{
+An ADaMData object
+}
 \description{
 Base class for ADaM datasets with population filters.
 }

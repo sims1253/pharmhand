@@ -156,13 +156,24 @@ S7::method(add_to_docx, list(class_rdocx, ClinicalPlot)) <- function(
   content,
   ...
 ) {
-  img <- to_word(content)
-  officer::body_add_img(
+  # Create temporary file for plot
+  tmp <- tempfile(fileext = ".png")
+  plot_obj <- if (content@is_survival) content@plot$plot else content@plot
+  ggplot2::ggsave(
+    filename = tmp,
+    plot = plot_obj,
+    width = content@width,
+    height = content@height,
+    dpi = content@dpi
+  )
+  doc <- officer::body_add_img(
     doc,
-    src = img,
+    src = tmp,
     width = content@width,
     height = content@height
   )
+  unlink(tmp)
+  doc
 }
 
 #' @describeIn add_to_docx Method for rdocx + list of content
@@ -200,6 +211,73 @@ S7::method(add_to_docx, list(class_rdocx, ReportSection)) <- function(
     doc <- add_to_docx(doc, item, ...)
   }
   doc
+}
+
+#' Save ClinicalTable as PNG
+#'
+#' Saves a ClinicalTable's flextable to a PNG file.
+#'
+#' @param x A ClinicalTable object
+#' @param path Optional file path. If NULL, creates a temp file.
+#'
+#' @return The file path where the PNG was saved
+#' @keywords internal
+save_as_png <- function(x, path = NULL) {
+  if (is.null(path)) {
+    path <- tempfile(fileext = ".png")
+  }
+  flextable::save_as_image(x@flextable, path = path)
+  path
+}
+
+#' Save ClinicalTable as PDF
+#'
+#' Saves a ClinicalTable's flextable to a PDF file.
+#'
+#' @param x A ClinicalTable object
+#' @param path Optional file path. If NULL, creates a temp file.
+#'
+#' @return The file path where the PDF was saved
+#' @keywords internal
+save_as_pdf <- function(x, path = NULL) {
+  if (is.null(path)) {
+    path <- tempfile(fileext = ".pdf")
+  }
+  flextable::save_as_docx(x@flextable, path = tempfile(fileext = ".docx")) |>
+    invisible()
+  # flextable doesn't have direct PDF export, use image route
+  flextable::save_as_image(x@flextable, path = path)
+  path
+}
+
+#' Save ClinicalPlot to file
+#'
+#' Saves a ClinicalPlot to a file in the specified format.
+#'
+#' @param x A ClinicalPlot object
+#' @param format Character string for output format ("png", "pdf", "svg")
+#' @param path Optional file path. If NULL, creates a temp file.
+#'
+#' @return The file path where the plot was saved
+#' @keywords internal
+save_plot_as <- function(x, format = "png", path = NULL) {
+  if (is.null(path)) {
+    path <- tempfile(fileext = paste0(".", format))
+  }
+
+  # Extract plot object (handle ggsurvplot)
+  plot_obj <- if (x@is_survival) x@plot$plot else x@plot
+
+  ggplot2::ggsave(
+    filename = path,
+    plot = plot_obj,
+    width = x@width,
+    height = x@height,
+    dpi = x@dpi,
+    device = format
+  )
+
+  path
 }
 
 #' Format clinical content to different output formats

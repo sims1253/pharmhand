@@ -20,6 +20,8 @@ create_region_table(
 \item{trt_var}{Treatment variable name}
 
 \item{region_var}{Region variable name}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

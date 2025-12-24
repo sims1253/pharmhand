@@ -39,6 +39,8 @@ LayeredTable(
 \item{title}{Table title}
 
 \item{metadata}{Additional metadata}
+
+\item{big_n}{Pre-computed treatment group counts (optional)}
 }
 \value{
 A LayeredTable object

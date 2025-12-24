@@ -23,6 +23,8 @@ create_medical_history_table(
 \item{trt_var}{Treatment variable name}
 
 \item{soc_var}{SOC variable name for MH}
+
+\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }
 \value{
 ClinicalTable object

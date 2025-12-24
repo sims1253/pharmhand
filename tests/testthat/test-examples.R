@@ -5,10 +5,20 @@ test_that("Reference reports can be generated", {
 
   # Define paths to example scripts
   # During devtools::test(), we are in tests/testthat
-  # But we should rely on package structure
+  # During R CMD check, inst/examples is copied to the installed location
 
-  pkg_root <- rprojroot::find_package_root_file()
-  examples_dir <- file.path(pkg_root, "inst", "examples")
+  # Try to find package root (works during devtools::test)
+  pkg_root <- tryCatch(
+    rprojroot::find_package_root_file(),
+    error = function(e) NULL
+  )
+
+  if (!is.null(pkg_root)) {
+    examples_dir <- file.path(pkg_root, "inst", "examples")
+  } else {
+    # Fallback for R CMD check: use installed package location
+    examples_dir <- system.file("examples", package = "FunctionReport")
+  }
 
   if (!dir.exists(examples_dir)) {
     skip("Example directory not found")
@@ -17,7 +27,8 @@ test_that("Reference reports can be generated", {
   scripts <- c(
     "baseline_report.R",
     "safety_report.R",
-    "efficacy_report.R"
+    "efficacy_report.R",
+    "reference_report.R"
   )
 
   temp_dir <- tempdir()
@@ -38,7 +49,8 @@ test_that("Reference reports can be generated", {
       script,
       "baseline_report.R" = "generate_baseline_report",
       "safety_report.R" = "generate_safety_report",
-      "efficacy_report.R" = "generate_efficacy_report"
+      "efficacy_report.R" = "generate_efficacy_report",
+      "reference_report.R" = "generate_reference_report"
     )
 
     # Check if function exists
