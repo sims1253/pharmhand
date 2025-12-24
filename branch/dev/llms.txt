@@ -1,0 +1,622 @@
+# FunctionReport
+
+![R](https://img.shields.io/badge/R-4.4.0%2B-blue)![License](https://img.shields.io/badge/License-MIT-green)![Version](https://img.shields.io/badge/Version-0.0.0.9000-orange)
+
+> Wrapper for R to MS Office packages for creating clinical study
+> reports with ADaM format support.
+
+## Description
+
+**FunctionReport** is a comprehensive R package designed for creating
+clinical study reports. It provides a high-level wrapper around popular
+R-to-MS Office packages like
+[`officer`](https://davidgohel.github.io/officer/) and
+[`flextable`](https://davidgohel.github.io/flextable/), specifically
+tailored for clinical trial reporting.
+
+The package supports ADaM (Analysis Data Model) formats and includes:
+
+- **Clinical Tables**: Demographics, adverse events, efficacy tables,
+  and more
+- **Clinical Plots**: Kaplan-Meier, forest plots, waterfall plots,
+  spider plots
+- **Statistical Analysis**: Descriptive statistics, hypothesis testing,
+  survival analysis
+- **Parallel Processing**: Built-in parallelization for large datasets
+- **ADaM Helpers**: Utilities for reading and processing ADaM datasets
+- **Result Classes**: R6 classes for structured result management
+
+## Installation
+
+### Install from CRAN (when available)
+
+``` r
+install.packages("FunctionReport")
+```
+
+### Install from GitHub
+
+``` r
+# Install devtools if not already installed
+if (!require("devtools")) install.packages("devtools")
+
+# Install FunctionReport
+devtools::install_github("yourusername/FunctionReport")
+```
+
+### Install from Local Source
+
+``` r
+# Navigate to the package directory
+setwd("/path/to/Functioneer/FunctionReport")
+
+# Install the package
+devtools::install()
+```
+
+## Main Functions
+
+| Category              | Key Functions                                                                                                                                                                                                                                                                                                                  |
+|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Document Creation** | [`create_word_document()`](https://sims1253.github.io/pharmhand/branch/dev/R/word_document.R%3A20), [`save_word_document()`](https://sims1253.github.io/pharmhand/branch/dev/R/word_document.R%3A48)                                                                                                                           |
+| **Tables**            | [`create_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_tables.R%3A35), [`create_demographics_table()`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_tables.R%3A122), [`create_adverse_events_table()`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_tables.R%3A273) |
+| **Plots**             | [`create_km_plot()`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_plots.R%3A41), [`create_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_plots.R%3A113), [`create_waterfall_plot()`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_plots.R%3A201)                       |
+| **Statistics**        | [`calculate_mean_sd()`](https://sims1253.github.io/pharmhand/branch/dev/R/statistical_helpers.R%3A73), [`perform_ttest()`](https://sims1253.github.io/pharmhand/branch/dev/R/statistical_helpers.R%3A350), [`perform_logrank()`](https://sims1253.github.io/pharmhand/branch/dev/R/statistical_helpers.R%3A602)                |
+| **ADaM**              | [`read_adam()`](https://sims1253.github.io/pharmhand/branch/dev/R/adam_helpers.R%3A36), [`get_adsl()`](https://sims1253.github.io/pharmhand/branch/dev/R/adam_helpers.R%3A108), [`filter_by_population()`](https://sims1253.github.io/pharmhand/branch/dev/R/adam_helpers.R%3A248)                                             |
+| **Parallel**          | [`setup_parallel()`](https://sims1253.github.io/pharmhand/branch/dev/R/parallel_helpers.R%3A48), [`get_optimal_workers()`](https://sims1253.github.io/pharmhand/branch/dev/R/parallel_helpers.R%3A123)                                                                                                                         |
+| **Classes**           | [`ClinicalTable`](https://sims1253.github.io/pharmhand/branch/dev/R/result_classes.R%3A15), [`ClinicalPlot`](https://sims1253.github.io/pharmhand/branch/dev/R/result_classes.R%3A137), [`StudyResult`](https://sims1253.github.io/pharmhand/branch/dev/R/result_classes.R%3A333)                                              |
+
+## Quick Start
+
+### Basic Example: Create a Clinical Report
+
+``` r
+library(FunctionReport)
+
+# Load ADaM data
+adsl <- read_adam("data/adsl.xpt", "ADSL")
+adae <- read_adam("data/adae.xpt", "ADAE")
+
+# Create a Word document
+doc <- create_word_document()
+
+# Add title
+doc <- add_title(doc, "Clinical Study Report", level = 1)
+
+# Add demographics table
+demo_table <- create_demographics_table(adsl, "TRT01P")
+doc <- officer::body_add_flextable(doc, demo_table)
+
+# Add page break
+doc <- add_page_break(doc)
+
+# Add adverse events table
+ae_table <- create_adverse_events_table(adae, "AEBODSYS", "AEDECOD", "TRT01P")
+doc <- officer::body_add_flextable(doc, ae_table)
+
+# Save the document
+save_word_document(doc, "clinical_report.docx")
+```
+
+### Using Result Classes
+
+``` r
+library(FunctionReport)
+
+# Create a study result object
+study <- StudyResult$new(
+  study_id = "STUDY-001",
+  study_title = "Phase III Clinical Trial"
+)
+
+# Add a table
+demo_table <- ClinicalTable$new(
+  data = adsl,
+  title = "Demographics",
+  type = "demographics"
+)
+study$add_table(demo_table, "demographics")
+
+# Add a plot
+km_plot <- ClinicalPlot$new(
+  plot = create_km_plot(fit, data = adtte),
+  title = "Kaplan-Meier Survival Curve",
+  type = "km"
+)
+study$add_plot(km_plot, "survival")
+
+# Generate Word document
+study$to_word("study_report.docx")
+```
+
+### Parallel Processing Example
+
+``` r
+library(FunctionReport)
+
+# Setup parallel processing
+setup_parallel(workers = 4)
+
+# Create multiple tables in parallel
+tables <- create_tables_parallel(
+  data = adsl,
+  group_var = "TRT01P",
+  vars = c("AGE", "SEX", "RACE")
+)
+
+# Create multiple plots in parallel
+plots <- create_plots_parallel(
+  data = adtte,
+  plot_types = c("km", "forest", "waterfall")
+)
+
+# Stop parallel processing
+stop_parallel()
+```
+
+## Features
+
+### Clinical Tables
+
+- **Summary Tables**: Comprehensive summary statistics with customizable
+  grouping
+- **Demographics Tables**: Age, sex, race, ethnicity, and baseline
+  characteristics
+- **Adverse Events Tables**: SOC/PT hierarchy with subject counts and
+  percentages
+- **Efficacy Tables**: Treatment outcomes with statistical comparisons
+- **Population Tables**: Analysis set definitions and subject flow
+- **Subgroup Tables**: Stratified analyses by demographic or clinical
+  factors
+
+### Clinical Plots
+
+- **Kaplan-Meier Plots**: Survival curves with confidence intervals and
+  risk tables
+- **Forest Plots**: Effect sizes and confidence intervals across
+  subgroups
+- **Waterfall Plots**: Tumor size changes for oncology studies
+- **Spider Plots**: Longitudinal tumor measurements
+- **Distribution Plots**: Histograms, box plots, and density plots
+- **Correlation Plots**: Scatter plots with regression lines
+
+### Statistical Analysis
+
+- **Descriptive Statistics**: Mean, SD, median, IQR, N, percentages
+- **Confidence Intervals**: t-distribution and normal approximation
+  methods
+- **Hypothesis Tests**: t-test, Wilcoxon, chi-square, Fisher’s exact
+- **Survival Analysis**: Kaplan-Meier estimation, log-rank test
+- **Effect Sizes**: Cohen’s d, odds ratios, hazard ratios
+- **Sample Size/Power**: Power analysis for common study designs
+
+### ADaM Support
+
+- **Dataset Reading**: Support for XPT, CSV, RDS, and SAS7BDAT formats
+- **Dataset Validation**: Automatic validation of required ADaM
+  variables
+- **Population Filtering**: SAF, FAS, PPS, ITT population definitions
+- **Subgroup Analysis**: Flexible subgroup definitions and filtering
+- **Dataset Merging**: Subject-level merging of multiple ADaM datasets
+
+### Parallel Processing
+
+- **Multiple Backends**: Multisession, multicore, cluster, sequential
+- **Automatic Worker Detection**: Optimal worker count based on CPU and
+  memory
+- **Memory Management**: Automatic garbage collection and memory
+  optimization
+- **Benchmarking Tools**: Performance comparison and bottleneck
+  identification
+- **Caching**: Result caching for expensive computations
+
+### Result Classes
+
+- **ClinicalTable**: Structured table representation with formatting
+  methods
+- **ClinicalPlot**: Structured plot representation with export
+  capabilities
+- **StudyResult**: Complete study result container with document
+  generation
+
+## Modules
+
+### Core Modules
+
+| Module                                                                                           | Description                             | File                      |
+|--------------------------------------------------------------------------------------------------|-----------------------------------------|---------------------------|
+| [`word_document`](https://sims1253.github.io/pharmhand/branch/dev/R/word_document.R)             | Word document creation and manipulation | `R/word_document.R`       |
+| [`clinical_tables`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_tables.R)         | Clinical table creation functions       | `R/clinical_tables.R`     |
+| [`clinical_plots`](https://sims1253.github.io/pharmhand/branch/dev/R/clinical_plots.R)           | Clinical plot creation functions        | `R/clinical_plots.R`      |
+| [`adam_helpers`](https://sims1253.github.io/pharmhand/branch/dev/R/adam_helpers.R)               | ADaM dataset utilities                  | `R/adam_helpers.R`        |
+| [`statistical_helpers`](https://sims1253.github.io/pharmhand/branch/dev/R/statistical_helpers.R) | Statistical analysis functions          | `R/statistical_helpers.R` |
+| [`result_classes`](https://sims1253.github.io/pharmhand/branch/dev/R/result_classes.R)           | R6 classes for results                  | `R/result_classes.R`      |
+| [`parallel_helpers`](https://sims1253.github.io/pharmhand/branch/dev/R/parallel_helpers.R)       | Parallel processing utilities           | `R/parallel_helpers.R`    |
+
+### Supporting Modules
+
+| Module                                                                                       | Description                    | File                    |
+|----------------------------------------------------------------------------------------------|--------------------------------|-------------------------|
+| [`flextable_wrapper`](https://sims1253.github.io/pharmhand/branch/dev/R/flextable_wrapper.R) | Flextable formatting utilities | `R/flextable_wrapper.R` |
+| [`plot_wrapper`](https://sims1253.github.io/pharmhand/branch/dev/R/plot_wrapper.R)           | Plot conversion utilities      | `R/plot_wrapper.R`      |
+| [`table_themes`](https://sims1253.github.io/pharmhand/branch/dev/R/table_themes.R)           | Table styling themes           | `R/table_themes.R`      |
+| [`utils`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R)                         | General utility functions      | `R/utils.R`             |
+| [`soc_pt_helpers`](https://sims1253.github.io/pharmhand/branch/dev/R/soc_pt_helpers.R)       | SOC/PT hierarchy helpers       | `R/soc_pt_helpers.R`    |
+
+## Performance
+
+### Parallelization
+
+The package leverages the **futureverse** ecosystem for parallel
+processing:
+
+``` r
+# Setup parallel backend
+setup_parallel(backend = "multisession", workers = 4)
+
+# Execute operations in parallel
+results <- future_lapply(data_list, function(x) {
+  create_summary_table(x, "TRT01P", c("AGE", "SEX"))
+})
+
+# Automatic parallel table creation
+tables <- create_tables_parallel(data, group_var, vars)
+
+# Automatic parallel plot creation
+plots <- create_plots_parallel(data, plot_types)
+```
+
+### Optimization Features
+
+- **Memory-Efficient Operations**:
+  [`memory_efficient_join()`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R),
+  [`reduce_memory_footprint()`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R)
+- **Data Loading Optimization**:
+  [`optimize_data_loading()`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R),
+  [`read_adam_parallel()`](https://sims1253.github.io/pharmhand/branch/dev/R/adam_helpers.R)
+- **Factor Level Optimization**:
+  [`optimize_factor_levels()`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R)
+- **Caching**:
+  [`cache_set()`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R),
+  [`cache_get()`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R),
+  [`memoize()`](https://sims1253.github.io/pharmhand/branch/dev/R/utils.R)
+
+### Benchmarking
+
+``` r
+# Benchmark parallel vs sequential
+benchmark_parallel_vs_sequential(
+  fn = create_summary_table,
+  data = large_dataset,
+  workers = c(1, 2, 4, 8)
+)
+
+# Find performance bottlenecks
+find_bottlenecks(report_generation_function)
+
+# Generate performance report
+generate_performance_report("performance_report.docx")
+```
+
+## Tests
+
+The package includes comprehensive test coverage using **testthat**:
+
+``` r
+# Run all tests
+testthat::test_dir("tests/testthat")
+
+# Run specific test file
+testthat::test_file("tests/testthat/test-clinical-tables.R")
+
+# Run tests with coverage
+covr::package_coverage()
+```
+
+### Test Categories
+
+- **Unit Tests**: Individual function testing
+- **Integration Tests**: Multi-function workflow testing
+- **Regression Tests**: Output consistency verification
+- **Performance Tests**: Benchmark and optimization validation
+
+## Contributing
+
+We welcome contributions to FunctionReport! Please follow these
+guidelines:
+
+### Development Setup
+
+``` bash
+# Clone the repository
+git clone https://github.com/yourusername/FunctionReport.git
+cd FunctionReport
+
+# Install development dependencies
+devtools::install_dev_deps()
+
+# Run linter
+lintr::lint_dir("R")
+
+# Run tests
+devtools::test()
+```
+
+### Code Style
+
+- Follow the [tidyverse style guide](https://style.tidyverse.org/)
+
+- Use `styler` for automatic formatting:
+
+  ``` r
+  styler::style_pkg()
+  ```
+
+- Run `lintr` before submitting:
+
+  ``` r
+  lintr::lint_package()
+  ```
+
+### Submitting Changes
+
+1.  Fork the repository
+2.  Create a feature branch (`git checkout -b feature/amazing-feature`)
+3.  Commit your changes (`git commit -m 'Add amazing feature'`)
+4.  Push to the branch (`git push origin feature/amazing-feature`)
+5.  Open a Pull Request
+
+### Documentation
+
+- Use roxygen2 for function documentation
+- Include examples in `@examples` blocks
+- Run `devtools::document()` to update documentation
+
+## License
+
+This package is licensed under the **MIT License**.
+
+    MIT License
+
+    Copyright (c) 2024 FunctionReport Contributors
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+## Acknowledgments
+
+- Built on top of excellent packages:
+  [`officer`](https://davidgohel.github.io/officer/),
+  [`flextable`](https://davidgohel.github.io/flextable/),
+  [`ggplot2`](https://ggplot2.tidyverse.org/)
+- Parallel processing powered by the
+  [futureverse](https://futureverse.org/)
+- Statistical functions based on standard R packages:
+  [`survival`](https://cran.r-project.org/package=survival),
+  [`survminer`](https://cran.r-project.org/package=survminer)
+
+## Contact
+
+For questions, issues, or suggestions, please:
+
+- Open an issue on
+  [GitHub](https://github.com/yourusername/FunctionReport/issues)
+- Contact: <first.last@example.com>
+
+------------------------------------------------------------------------
+
+**FunctionReport** - Streamlining clinical study report generation in R.
+
+# Package index
+
+## All functions
+
+- [`ADaMData()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ADaMData.md)
+  : ADaMData Class
+- [`AnalysisMeta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/AnalysisMeta.md)
+  : AnalysisMeta Class
+- [`AnalysisResults()`](https://sims1253.github.io/pharmhand/branch/dev/reference/AnalysisResults.md)
+  : AnalysisResults Class
+- [`ClinicalPlot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ClinicalPlot.md)
+  : ClinicalPlot Class
+- [`ClinicalReport()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ClinicalReport.md)
+  : ClinicalReport Class
+- [`ClinicalTable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ClinicalTable.md)
+  : ClinicalTable Class
+- [`CountLayer()`](https://sims1253.github.io/pharmhand/branch/dev/reference/CountLayer.md)
+  : Count Layer Class
+- [`DescriptiveLayer()`](https://sims1253.github.io/pharmhand/branch/dev/reference/DescriptiveLayer.md)
+  : Descriptive Layer Class
+- [`HTAEndpoint()`](https://sims1253.github.io/pharmhand/branch/dev/reference/HTAEndpoint.md)
+  : HTAEndpoint Class
+- [`HTASection()`](https://sims1253.github.io/pharmhand/branch/dev/reference/HTASection.md)
+  : HTASection Class
+- [`LayeredTable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/LayeredTable.md)
+  : Layered Table Class
+- [`OneArmStudy()`](https://sims1253.github.io/pharmhand/branch/dev/reference/OneArmStudy.md)
+  : OneArmStudy Class
+- [`PerformanceReport()`](https://sims1253.github.io/pharmhand/branch/dev/reference/PerformanceReport.md)
+  : PerformanceReport Class
+- [`PopulationSection()`](https://sims1253.github.io/pharmhand/branch/dev/reference/PopulationSection.md)
+  : PopulationSection Class
+- [`PrimaryEndpoint()`](https://sims1253.github.io/pharmhand/branch/dev/reference/PrimaryEndpoint.md)
+  : PrimaryEndpoint Class
+- [`ReportSection()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ReportSection.md)
+  : ReportSection Class
+- [`S7_classes`](https://sims1253.github.io/pharmhand/branch/dev/reference/S7_classes.md)
+  : S7 Classes for Clinical Study Reports
+- [`S7_generics`](https://sims1253.github.io/pharmhand/branch/dev/reference/S7_generics.md)
+  : S7 Generics and Methods for Clinical Reports
+- [`S7_registration`](https://sims1253.github.io/pharmhand/branch/dev/reference/S7_registration.md)
+  : S7 Method Registration and Package Initialization
+- [`SOCPTSection()`](https://sims1253.github.io/pharmhand/branch/dev/reference/SOCPTSection.md)
+  : SOCPTSection Class
+- [`SafetyEndpoint()`](https://sims1253.github.io/pharmhand/branch/dev/reference/SafetyEndpoint.md)
+  : SafetyEndpoint Class
+- [`SecondaryEndpoint()`](https://sims1253.github.io/pharmhand/branch/dev/reference/SecondaryEndpoint.md)
+  : SecondaryEndpoint Class
+- [`ShiftLayer()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ShiftLayer.md)
+  : Shift Layer Class
+- [`StudyResult()`](https://sims1253.github.io/pharmhand/branch/dev/reference/StudyResult.md)
+  : StudyResult Class
+- [`SubgroupSection()`](https://sims1253.github.io/pharmhand/branch/dev/reference/SubgroupSection.md)
+  : SubgroupSection Class
+- [`TwoArmStudy()`](https://sims1253.github.io/pharmhand/branch/dev/reference/TwoArmStudy.md)
+  : TwoArmStudy Class
+- [`adam_core`](https://sims1253.github.io/pharmhand/branch/dev/reference/adam_core.md)
+  : High-Performance ADaM Analysis Core
+- [`add_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_content.md)
+  [`add_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_content.md)
+  [`add_section()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_content.md)
+  [`add_content()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_content.md)
+  : Add a table to a StudyResult
+- [`add_layer()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_layer.md)
+  : Add a layer to a LayeredTable
+- [`add_to_docx()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_to_docx.md)
+  : Add content to a Word document
+- [`analyze()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze.md)
+  : Analyze ADaM datasets
+- [`analyze_soc_pt()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze_soc_pt.md)
+  : Analyze Adverse Events by SOC and PT
+- [`analyze_study()`](https://sims1253.github.io/pharmhand/branch/dev/reference/analyze_study.md)
+  : Analyze Study (S7 Method)
+- [`apply_clinical_style()`](https://sims1253.github.io/pharmhand/branch/dev/reference/apply_clinical_style.md)
+  : Apply Clinical Table Styling
+- [`apply_composite()`](https://sims1253.github.io/pharmhand/branch/dev/reference/apply_composite.md)
+  : Apply a composite format
+- [`apply_format()`](https://sims1253.github.io/pharmhand/branch/dev/reference/apply_format.md)
+  : Apply a format specification to values
+- [`apply_subgroups()`](https://sims1253.github.io/pharmhand/branch/dev/reference/apply_subgroups.md)
+  : Apply Subgroup Analysis
+- [`as_flextable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/as_flextable.md)
+  : Convert analysis results to flextable
+- [`as_flextable_AnalysisResults()`](https://sims1253.github.io/pharmhand/branch/dev/reference/as_flextable_AnalysisResults.md)
+  : Convert AnalysisResults to flextable (S7 Method)
+- [`as_gt()`](https://sims1253.github.io/pharmhand/branch/dev/reference/as_gt.md)
+  : Convert analysis results to gt
+- [`as_gt_AnalysisResults()`](https://sims1253.github.io/pharmhand/branch/dev/reference/as_gt_AnalysisResults.md)
+  : Convert AnalysisResults to gt (S7 Method)
+- [`build_layer()`](https://sims1253.github.io/pharmhand/branch/dev/reference/build_layer.md)
+  : Build a single layer
+- [`build_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/build_table.md)
+  : Build a LayeredTable
+- [`calculate_baseline()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_baseline.md)
+  : Calculate Baseline Characteristics
+- [`chef_integration`](https://sims1253.github.io/pharmhand/branch/dev/reference/chef_integration.md)
+  : Chef Pipeline Integration
+- [`chef_to_analysis_results()`](https://sims1253.github.io/pharmhand/branch/dev/reference/chef_to_analysis_results.md)
+  : Convert Chef Results to AnalysisResults
+- [`composite_format()`](https://sims1253.github.io/pharmhand/branch/dev/reference/composite_format.md)
+  : Composite Format Specification
+- [`create_ae_discontinuation_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_discontinuation_table.md)
+  : Create AE Leading to Discontinuation Table
+- [`create_ae_overview_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_overview_table.md)
+  : Create AE Overview Table
+- [`create_ae_relationship_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_relationship_table.md)
+  : Create AE by Relationship Table
+- [`create_ae_severity_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_severity_table.md)
+  : Create AE by Maximum Severity Table
+- [`create_ae_soc_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_soc_table.md)
+  : Create AE by System Organ Class Table
+- [`create_analysis_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_analysis_meta.md)
+  : Create Analysis Metadata
+- [`create_cfb_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_cfb_summary_table.md)
+  : Create Change from Baseline Summary Table
+- [`create_chef_endpoint()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_chef_endpoint.md)
+  : Create Chef Endpoint Specification
+- [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
+  : Helper to create a ClinicalTable from AnalysisResults
+- [`create_common_ae_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_common_ae_table.md)
+  : Create Most Common AE Table
+- [`create_conmeds_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_conmeds_table.md)
+  : Create Concomitant Medications Table
+- [`create_deaths_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_deaths_table.md)
+  : Create Deaths Summary Table
+- [`create_demographics_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_demographics_table.md)
+  : Create Demographics Table
+- [`create_disposition_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_disposition_table.md)
+  : Create Subject Disposition Table
+- [`create_hta_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_table.md)
+  : Create HTA-Style Table
+- [`create_km_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_km_plot.md)
+  : Create Kaplan-Meier Plot
+- [`create_lab_shift_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_lab_shift_table.md)
+  : Create Laboratory Shift Table
+- [`create_lab_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_lab_summary_table.md)
+  : Create Laboratory Summary Table
+- [`create_medical_history_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_medical_history_table.md)
+  : Create Medical History Table
+- [`create_population_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_population_summary_table.md)
+  : Create Analysis Populations Summary Table
+- [`create_primary_endpoint_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_primary_endpoint_table.md)
+  : Create Primary Endpoint Summary Table
+- [`create_region_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_region_table.md)
+  : Create Enrollment by Region Table
+- [`create_sae_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_sae_table.md)
+  : Create SAE Table
+- [`create_study_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_study_report.md)
+  : Create Report from Study
+- [`create_subgroup_analysis_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_subgroup_analysis_table.md)
+  : Create Subgroup Analysis Table
+- [`create_vs_by_visit_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_vs_by_visit_table.md)
+  : Create Vital Signs by Visit Table
+- [`format_ci()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_ci.md)
+  : Format confidence intervals
+- [`format_content()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_content.md)
+  : Format clinical content to different output formats
+- [`format_number()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_number.md)
+  : Format numbers with specified decimal places
+- [`format_percentage()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_percentage.md)
+  : Format values as percentages
+- [`fmt_n_pct()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_presets.md)
+  [`fmt_mean_sd()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_presets.md)
+  [`fmt_median_range()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_presets.md)
+  [`fmt_ci()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_presets.md)
+  [`fmt_pvalue()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_presets.md)
+  : Common Clinical Format Presets
+- [`format_pvalue()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_pvalue.md)
+  : Format p-values
+- [`format_spec()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_spec.md)
+  : Create a Format Specification
+- [`formatting`](https://sims1253.github.io/pharmhand/branch/dev/reference/formatting.md)
+  : Format String Grammar for Clinical Tables
+- [`generate_word()`](https://sims1253.github.io/pharmhand/branch/dev/reference/generate_word.md)
+  : Generate a Word document from a ClinicalReport
+- [`get_chef_stat()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_chef_stat.md)
+  : Register Chef Statistical Functions
+- [`layered_to_flextable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/layered_to_flextable.md)
+  : Convert LayeredTable to flextable
+- [`layers`](https://sims1253.github.io/pharmhand/branch/dev/reference/layers.md)
+  : Layer Composition System for Clinical Tables
+- [`list_chef_stats()`](https://sims1253.github.io/pharmhand/branch/dev/reference/list_chef_stats.md)
+  : List Available Chef Statistical Functions
+- [`reporting_engine`](https://sims1253.github.io/pharmhand/branch/dev/reference/reporting_engine.md)
+  : Optimized Reporting Engine
+- [`run_chef_pipeline()`](https://sims1253.github.io/pharmhand/branch/dev/reference/run_chef_pipeline.md)
+  : Run Chef Pipeline with FunctionReport Integration
+- [`study_logic`](https://sims1253.github.io/pharmhand/branch/dev/reference/study_logic.md)
+  : Consolidated Study Logic
+- [`summarize_content()`](https://sims1253.github.io/pharmhand/branch/dev/reference/summarize_content.md)
+  : Generate a summary of clinical content
+- [`to_word()`](https://sims1253.github.io/pharmhand/branch/dev/reference/to_word.md)
+  : Convert clinical content to Word format
+- [`write_docx()`](https://sims1253.github.io/pharmhand/branch/dev/reference/write_docx.md)
+  : Write clinical content to a Word document
+- [`write_docx_ClinicalReport()`](https://sims1253.github.io/pharmhand/branch/dev/reference/write_docx_ClinicalReport.md)
+  : Write ClinicalReport to Word (S7 Method)
+
