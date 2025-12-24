@@ -1,0 +1,16 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^\.git$
+^\.gitignore$
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+^\.DS_Store$
+^README\.Rmd$
+^README\.md$
+^LICENSE$
+^\.travis\.yml$
+^appveyor\.yml$
+^codecov\.yml$
+^\.github$

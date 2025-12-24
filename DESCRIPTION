@@ -1,0 +1,46 @@
+Package: FunctionReport
+Title: Wrapper for R to MS Office Packages for Clinical Study Reports
+Version: 0.0.0.9000
+Author: First Last [aut, cre]
+Maintainer: First Last <first.last@example.com>
+Authors@R:
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Description: Wrapper for officer, flextable and similar R to MS Office packages for creating clinical study reports. Supports ADaM formats.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.4.0)
+Imports:
+    S7,
+    officer,
+    flextable,
+    dplyr,
+    tidyr,
+    rlang,
+    tidyselect,
+    admiral,
+    admiraldev,
+    gt,
+    cli,
+    data.table,
+    ggplot2,
+    survival,
+    scales,
+    patchwork
+Suggests:
+    chef,
+    chefStats,
+    chefCriteria,
+    pharmaverseadam,
+    testthat (>= 3.0.0),
+    lintr,
+    styler,
+    yaml,
+    checkmate
+Remotes:
+    hta-pharma/chef,
+    hta-pharma/chefStats,
+    hta-pharma/chefCriteria
+Config/testthat/edition: 3

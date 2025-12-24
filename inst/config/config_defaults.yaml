@@ -1,0 +1,281 @@
+# FunctionReport Default Configuration
+#
+# This file contains default configuration for clinical study report generation.
+# It can be overridden at runtime using the configuration API.
+#
+# Configuration Structure:
+# - subgroups: Definitions for analysis subgroups (age, sex, race, etc.)
+# - populations: Definitions for analysis populations (SAF, FAS, PPS, etc.)
+# - soc_config: Configuration for System Organ Class (SOC) handling
+# - pt_config: Configuration for Preferred Term (PT) handling
+# - report_types: Templates for different report types
+# - performance: Performance optimization settings
+
+# Subgroup definitions
+# These define common demographic and baseline subgroups used in clinical analysis
+subgroups:
+  # Age groups
+  age_groups:
+    variable: "AGEGR1"
+    labels:
+      Y_LT65: "< 65 years"
+      Y_GE65: ">= 65 years"
+    order: ["Y_LT65", "Y_GE65"]
+
+  # Sex
+  sex:
+    variable: "SEX"
+    labels:
+      M: "Male"
+      F: "Female"
+      U: "Unknown"
+    order: ["M", "F", "U"]
+
+  # Race categories
+  race:
+    variable: "RACE"
+    labels:
+      WHITE: "White"
+      BLACK: "Black or African American"
+      ASIAN: "Asian"
+      AMERICAN_INDIAN: "American Indian or Alaska Native"
+      NATIVE_HAWAIIAN: "Native Hawaiian or Other Pacific Islander"
+      OTHER: "Other"
+      UNKNOWN: "Unknown"
+    order: ["WHITE", "BLACK", "ASIAN", "AMERICAN_INDIAN", "NATIVE_HAWAIIAN", "OTHER", "UNKNOWN"]
+
+  # Ethnicity
+  ethnicity:
+    variable: "ETHNIC"
+    labels:
+      HISPANIC_OR_LATINO: "Hispanic or Latino"
+      NOT_HISPANIC_OR_LATINO: "Not Hispanic or Latino"
+      UNKNOWN: "Unknown"
+    order: ["HISPANIC_OR_LATINO", "NOT_HISPANIC_OR_LATINO", "UNKNOWN"]
+
+  # Region (geographic)
+  region:
+    variable: "REGION1"
+    labels:
+      REGION_1: "Region 1"
+      REGION_2: "Region 2"
+      REGION_3: "Region 3"
+    order: ["REGION_1", "REGION_2", "REGION_3"]
+
+# Population definitions
+# These define standard analysis populations used in clinical trials
+populations:
+  # Safety Analysis Set
+  SAF:
+    variable: "SAFFL"
+    label: "Safety Analysis Set"
+    description: "Subjects who received at least one dose of study medication"
+    flag_value: "Y"
+
+  # Full Analysis Set
+  FAS:
+    variable: "FASFL"
+    label: "Full Analysis Set"
+    description: "Subjects who received at least one dose and have at least one post-baseline assessment"
+    flag_value: "Y"
+
+  # Per-Protocol Set
+  PPS:
+    variable: "PPSFL"
+    label: "Per-Protocol Set"
+    description: "Subjects without major protocol violations"
+    flag_value: "Y"
+
+  # Intent-to-Treat Set
+  ITT:
+    variable: "ITTFL"
+    label: "Intent-to-Treat Set"
+    description: "All randomized subjects"
+    flag_value: "Y"
+
+# SOC (System Organ Class) configuration
+# Controls how adverse events are grouped and displayed by body system
+soc_config:
+  variable: "AEBODSYS"
+  include_all: true        # If true, include all SOCs found in data
+  custom_order: []         # Custom order (empty = use sort_by)
+  sort_by: "frequency"     # Options: "frequency", "alphabetical"
+  min_subjects: 1         # Minimum number of subjects to include SOC
+  top_n: null              # If set, only include top N SOCs by frequency
+
+# PT (Preferred Term) configuration
+# Controls how individual adverse events are displayed within SOCs
+pt_config:
+  variable: "AEDECOD"
+  include_all: true        # If true, include all PTs found in data
+  sort_by: "frequency"     # Options: "frequency", "alphabetical"
+  min_subjects: 1         # Minimum number of subjects to include PT
+  top_n_per_soc: null      # If set, limit PTs per SOC
+  show_pt_codes: false    # Show PT codes alongside names
+
+# Report type templates
+# Define the structure and sections for different types of reports
+report_types:
+  # Baseline characteristics report
+  baseline:
+    sections:
+      - type: "demographics"
+        title: "Demographics and Baseline Characteristics"
+        include_subgroups: true
+      - type: "disposition"
+        title: "Subject Disposition"
+        include_flowchart: true
+      - type: "medical_history"
+        title: "Medical History"
+      - type: "concomitant_medications"
+        title: "Concomitant Medications"
+    table_format: "compact"
+
+  # Safety report
+  safety:
+    sections:
+      - type: "exposure"
+        title: "Treatment Exposure"
+      - type: "soc_pt"
+        title: "Treatment-Emergent Adverse Events"
+        include_soc_summary: true
+        include_pt_summary: true
+        include_body_system: true
+      - type: "lab_abnormalities"
+        title: "Laboratory Abnormalities"
+        include_shift_tables: true
+      - type: "vital_signs"
+        title: "Vital Signs"
+      - type: "ecg"
+        title: "Electrocardiograms (ECG)"
+    table_format: "detailed"
+
+  # Efficacy report
+  efficacy:
+    sections:
+      - type: "efficacy_endpoints"
+        title: "Efficacy Endpoints"
+        include_change_from_baseline: true
+      - type: "survival"
+        title: "Time-to-Event Analysis"
+        include_km_plot: true
+        include_risk_table: true
+        include_median_survival: true
+      - type: "response_over_time"
+        title: "Response Over Time"
+        include_spider_plot: true
+      - type: "subgroup_analysis"
+        title: "Subgroup Analysis"
+        include_forest_plot: true
+    table_format: "standard"
+
+  # Dossier report (comprehensive)
+  dossier:
+    sections:
+      - type: "executive_summary"
+        title: "Executive Summary"
+      - type: "baseline"
+        title: "Baseline Characteristics"
+      - type: "safety"
+        title: "Safety Results"
+      - type: "efficacy"
+        title: "Efficacy Results"
+      - type: "conclusions"
+        title: "Conclusions"
+    table_format: "comprehensive"
+
+# Performance optimization settings
+# Control caching, parallelization, and docx generation performance
+performance:
+  # Caching configuration
+  cache:
+    enabled: true           # Enable/disable caching
+    max_size_mb: 500        # Maximum cache size in megabytes
+    ttl_hours: 24           # Time-to-live for cached items (hours)
+
+  # Parallel processing configuration
+  parallel:
+    enabled: true           # Enable/disable parallel processing
+    backend: "multisession" # Parallel backend: "multisession", "multicore"
+    workers: null           # Number of workers (null = auto-detect)
+    min_workers: 2          # Minimum number of workers
+    max_workers: null        # Maximum number of workers (null = no limit)
+
+  # Docx generation optimization
+  docx:
+    batch_size: 50          # Number of tables per batch
+    lazy_loading: true      # Defer table rendering until needed
+    compress_images: true   # Compress plot images
+    image_dpi: 150          # DPI for plot images in Word (lower = smaller files)
+    image_format: "png"     # Image format: "png", "jpeg"
+
+  # Memory management
+  memory:
+    prune_data: true        # Remove raw data from tables after rendering
+    max_memory_mb: 4000     # Maximum memory usage before forcing cleanup
+
+# Plot styling settings
+# Control the appearance of generated plots
+plots:
+  # Kaplan-Meier plot settings
+  km:
+    palette: "jco"          # Color palette: "jco", "jco", "npg", "aaas", "grey"
+    conf_int: true          # Show confidence intervals
+    pval: true              # Show log-rank p-value
+    risk_table: false       # Show risk table below plot
+    risk_table_title: "Number at risk"
+    censor_symbol: "+"
+    break_time_by: null     # Break time axis by this value
+
+  # Forest plot settings
+  forest:
+    ref_line: 0             # Reference line position
+    show_pval: true         # Show p-values
+    pval_digits: 3
+    estimate_digits: 2
+    ci_digits: 2
+
+  # Waterfall plot settings
+  waterfall:
+    threshold: -30          # Response threshold percentage
+    responder_color: "#4CAF50"
+    non_responder_color: "#F44336"
+
+  # Spider plot settings
+  spider:
+    connect_lines: false    # Connect subject lines
+    show_mean: true         # Show mean line
+    mean_color: "red"
+    mean_line_width: 1.2
+
+# Table styling settings
+# Control the appearance of generated tables
+tables:
+  # Font settings
+  font_size: 9
+  font_family: "Arial"
+
+  # Border settings
+  border_style: "single"    # "single", "double", "dotted"
+  header_bold: true
+  header_background: "#E6E6FA"
+
+  # Alignment
+  align_first_col: "left"
+  align_numeric_cols: "right"
+
+  # Numeric formatting
+  na_string: ""
+  percent_format: "%.1f%%"
+  decimal_format: "%.2f"
+
+  # Column width
+  autofit: true             # Auto-fit column widths
+  max_col_width: 2          # Maximum column width in inches
+
+# Validation settings
+# Control data validation during report generation
+validation:
+  check_data: true         # Validate input data
+  warn_on_missing: true     # Warn on missing variables
+  stop_on_error: false     # Stop on validation errors
