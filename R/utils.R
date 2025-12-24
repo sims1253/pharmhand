@@ -13,8 +13,8 @@
 #' format_number(45.2345, digits = 2) # Returns "45.23"
 #' format_number(c(1.5, 2.345, 3.6789), digits = 1) # Returns c("1.5", "2.3", "3.7")
 format_number <- function(x, digits = 2) {
-  formatted <- formatC(x, format = "f", digits = digits)
-  return(formatted)
+	formatted <- formatC(x, format = "f", digits = digits)
+	return(formatted)
 }
 
 #' Format values as percentages
@@ -32,8 +32,8 @@ format_number <- function(x, digits = 2) {
 #' format_percentage(0.5, digits = 1) # Returns "50.0%"
 #' format_percentage(c(0.123, 0.456, 0.789), digits = 1) # Returns c("12.3%", "45.6%", "78.9%")
 format_percentage <- function(x, digits = 1) {
-  formatted <- paste0(formatC(x * 100, format = "f", digits = digits), "%")
-  return(formatted)
+	formatted <- paste0(formatC(x * 100, format = "f", digits = digits), "%")
+	return(formatted)
 }
 
 #' Format confidence intervals
@@ -53,12 +53,12 @@ format_percentage <- function(x, digits = 1) {
 #' format_ci(1.23, 4.56, digits = 2) # Returns "1.23, 4.56"
 #' format_ci(c(1.23, 5.67), c(4.56, 8.90), digits = 1) # Returns c("1.2, 4.6", "5.7, 8.9")
 format_ci <- function(lower, upper, digits = 2, separator = ", ") {
-  formatted <- paste0(
-    formatC(lower, format = "f", digits = digits),
-    separator,
-    formatC(upper, format = "f", digits = digits)
-  )
-  return(formatted)
+	formatted <- paste0(
+		formatC(lower, format = "f", digits = digits),
+		separator,
+		formatC(upper, format = "f", digits = digits)
+	)
+	return(formatted)
 }
 
 #' Format p-values
@@ -81,10 +81,10 @@ format_ci <- function(lower, upper, digits = 2, separator = ", ") {
 #' format_pvalue(c(0.0005, 0.0234, 0.4567), digits = 3)
 #' # Returns c("<0.001", "0.023", "0.457")
 format_pvalue <- function(p, digits = 3, threshold = 0.001) {
-  formatted <- ifelse(
-    p < threshold,
-    paste0("<", format(threshold, scientific = FALSE)),
-    formatC(p, format = "f", digits = digits)
-  )
-  return(formatted)
+	formatted <- ifelse(
+		p < threshold,
+		paste0("<", format(threshold, scientific = FALSE)),
+		formatC(p, format = "f", digits = digits)
+	)
+	return(formatted)
 }

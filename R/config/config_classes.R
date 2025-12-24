@@ -10,13 +10,13 @@ NULL
 #'
 #' @keywords internal
 Configuration <- S7::new_class(
-  "Configuration",
-  package = "FunctionReport",
-  properties = list(
-    source = S7::new_property(S7::class_character, default = "yaml"),
-    priority = S7::new_property(S7::class_integer, default = 0L)
-  ),
-  abstract = TRUE
+	"Configuration",
+	package = "FunctionReport",
+	properties = list(
+		source = S7::new_property(S7::class_character, default = "yaml"),
+		priority = S7::new_property(S7::class_integer, default = 0L)
+	),
+	abstract = TRUE
 )
 
 #' SubgroupConfig Class
@@ -42,15 +42,15 @@ Configuration <- S7::new_class(
 #' )
 #' }
 SubgroupConfig <- S7::new_class(
-  "SubgroupConfig",
-  package = "FunctionReport",
-  parent = Configuration,
-  properties = list(
-    variable = S7::new_property(S7::class_character),
-    labels = S7::new_property(S7::class_list, default = list()),
-    order = S7::new_property(S7::class_any),
-    filter_values = S7::new_property(S7::class_any)
-  )
+	"SubgroupConfig",
+	package = "FunctionReport",
+	parent = Configuration,
+	properties = list(
+		variable = S7::new_property(S7::class_character),
+		labels = S7::new_property(S7::class_list, default = list()),
+		order = S7::new_property(S7::class_any),
+		filter_values = S7::new_property(S7::class_any)
+	)
 )
 
 #' PopulationConfig Class
@@ -77,15 +77,15 @@ SubgroupConfig <- S7::new_class(
 #' )
 #' }
 PopulationConfig <- S7::new_class(
-  "PopulationConfig",
-  package = "FunctionReport",
-  parent = Configuration,
-  properties = list(
-    variable = S7::new_property(S7::class_character),
-    label = S7::new_property(S7::class_character),
-    description = S7::new_property(S7::class_any),
-    flag_value = S7::new_property(S7::class_character, default = "Y")
-  )
+	"PopulationConfig",
+	package = "FunctionReport",
+	parent = Configuration,
+	properties = list(
+		variable = S7::new_property(S7::class_character),
+		label = S7::new_property(S7::class_character),
+		description = S7::new_property(S7::class_any),
+		flag_value = S7::new_property(S7::class_character, default = "Y")
+	)
 )
 
 #' SOCConfig Class
@@ -113,17 +113,17 @@ PopulationConfig <- S7::new_class(
 #' )
 #' }
 SOCConfig <- S7::new_class(
-  "SOCConfig",
-  package = "FunctionReport",
-  parent = Configuration,
-  properties = list(
-    variable = S7::new_property(S7::class_character),
-    include_all = S7::new_property(S7::class_logical, default = TRUE),
-    custom_order = S7::new_property(S7::class_any),
-    sort_by = S7::new_property(S7::class_character, default = "frequency"),
-    min_subjects = S7::new_property(S7::class_numeric, default = 1),
-    top_n = S7::new_property(S7::class_any)
-  )
+	"SOCConfig",
+	package = "FunctionReport",
+	parent = Configuration,
+	properties = list(
+		variable = S7::new_property(S7::class_character),
+		include_all = S7::new_property(S7::class_logical, default = TRUE),
+		custom_order = S7::new_property(S7::class_any),
+		sort_by = S7::new_property(S7::class_character, default = "frequency"),
+		min_subjects = S7::new_property(S7::class_numeric, default = 1),
+		top_n = S7::new_property(S7::class_any)
+	)
 )
 
 #' PTConfig Class
@@ -151,17 +151,17 @@ SOCConfig <- S7::new_class(
 #' )
 #' }
 PTConfig <- S7::new_class(
-  "PTConfig",
-  package = "FunctionReport",
-  parent = Configuration,
-  properties = list(
-    variable = S7::new_property(S7::class_character),
-    include_all = S7::new_property(S7::class_logical, default = TRUE),
-    sort_by = S7::new_property(S7::class_character, default = "frequency"),
-    min_subjects = S7::new_property(S7::class_numeric, default = 1),
-    top_n_per_soc = S7::new_property(S7::class_any),
-    show_pt_codes = S7::new_property(S7::class_logical, default = FALSE)
-  )
+	"PTConfig",
+	package = "FunctionReport",
+	parent = Configuration,
+	properties = list(
+		variable = S7::new_property(S7::class_character),
+		include_all = S7::new_property(S7::class_logical, default = TRUE),
+		sort_by = S7::new_property(S7::class_character, default = "frequency"),
+		min_subjects = S7::new_property(S7::class_numeric, default = 1),
+		top_n_per_soc = S7::new_property(S7::class_any),
+		show_pt_codes = S7::new_property(S7::class_logical, default = FALSE)
+	)
 )
 
 #' ConfigurationRegistry Class
@@ -190,17 +190,17 @@ PTConfig <- S7::new_class(
 #' registry <- define_subgroup_config(registry, "custom", "VAR1")
 #' }
 ConfigurationRegistry <- S7::new_class(
-  "ConfigurationRegistry",
-  package = "FunctionReport",
-  properties = list(
-    subgroups = S7::new_property(S7::class_list, default = list()),
-    populations = S7::new_property(S7::class_list, default = list()),
-    soc_config = S7::new_property(S7::class_any),
-    pt_config = S7::new_property(S7::class_any),
-    report_types = S7::new_property(S7::class_list, default = list()),
-    performance = S7::new_property(S7::class_list, default = list()),
-    plots = S7::new_property(S7::class_list, default = list()),
-    tables = S7::new_property(S7::class_list, default = list()),
-    validation = S7::new_property(S7::class_list, default = list())
-  )
+	"ConfigurationRegistry",
+	package = "FunctionReport",
+	properties = list(
+		subgroups = S7::new_property(S7::class_list, default = list()),
+		populations = S7::new_property(S7::class_list, default = list()),
+		soc_config = S7::new_property(S7::class_any),
+		pt_config = S7::new_property(S7::class_any),
+		report_types = S7::new_property(S7::class_list, default = list()),
+		performance = S7::new_property(S7::class_list, default = list()),
+		plots = S7::new_property(S7::class_list, default = list()),
+		tables = S7::new_property(S7::class_list, default = list()),
+		validation = S7::new_property(S7::class_list, default = list())
+	)
 )

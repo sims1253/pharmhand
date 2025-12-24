@@ -8,25 +8,25 @@ NULL
 
 # Silence R CMD check warnings for global variables
 utils::globalVariables(c(
-  ".data",
-  "where",
-  "level",
-  "PT",
-  "SOC",
-  "variable",
-  "value",
-  "N_tot",
-  "pct",
-  "AEBODSYS",
-  "AEDECOD",
-  "USUBJID",
-  "TRT01P",
-  "n",
-  "mean",
-  "sd",
-  "median",
-  "min",
-  "max"
+	".data",
+	"where",
+	"level",
+	"PT",
+	"SOC",
+	"variable",
+	"value",
+	"N_tot",
+	"pct",
+	"AEBODSYS",
+	"AEDECOD",
+	"USUBJID",
+	"TRT01P",
+	"n",
+	"mean",
+	"sd",
+	"median",
+	"min",
+	"max"
 ))
 
 #' @importFrom stats sd median quantile setNames as.formula na.omit
@@ -43,24 +43,24 @@ NULL
 #' @keywords internal
 #' @noRd
 .onLoad <- function(libname, pkgname) {
-  # Register all S7 methods
-  # This is critical for proper generic dispatch
-  S7::methods_register()
+	# Register all S7 methods
+	# This is critical for proper generic dispatch
+	S7::methods_register()
 
-  # Set default options for FunctionReport
-  options(
-    # Performance settings
-    FunctionReport.docx_batch_size = 50,
-    FunctionReport.parallel_threshold = 5,
-    FunctionReport.workers = NULL,
+	# Set default options for FunctionReport
+	options(
+		# Performance settings
+		FunctionReport.docx_batch_size = 50,
+		FunctionReport.parallel_threshold = 5,
+		FunctionReport.workers = NULL,
 
-    # Cache settings
-    FunctionReport.cache_enabled = TRUE,
-    FunctionReport.cache_max_size_mb = 500,
+		# Cache settings
+		FunctionReport.cache_enabled = TRUE,
+		FunctionReport.cache_max_size_mb = 500,
 
-    # Image settings
-    FunctionReport.default_plot_dpi = 300,
-    FunctionReport.default_plot_width = 6,
-    FunctionReport.default_plot_height = 4
-  )
+		# Image settings
+		FunctionReport.default_plot_dpi = 300,
+		FunctionReport.default_plot_width = 6,
+		FunctionReport.default_plot_height = 4
+	)
 }

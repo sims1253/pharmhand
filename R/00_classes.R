@@ -22,51 +22,51 @@ NULL
 #' @return An ADaMData object
 #' @export ADaMData
 ADaMData <- S7::new_class(
-  "ADaMData",
-  package = "FunctionReport",
-  properties = list(
-    data = S7::new_property(
-      S7::class_data.frame,
-      default = data.frame(),
-      validator = function(value) {
-        admiraldev::assert_data_frame(value)
-        NULL
-      }
-    ),
-    domain = S7::new_property(
-      S7::class_character,
-      default = "",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    population = S7::new_property(
-      S7::class_character,
-      default = "FAS",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    subject_var = S7::new_property(
-      S7::class_character,
-      default = "USUBJID",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    trt_var = S7::new_property(
-      S7::class_character,
-      default = "TRT01P",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"ADaMData",
+	package = "FunctionReport",
+	properties = list(
+		data = S7::new_property(
+			S7::class_data.frame,
+			default = data.frame(),
+			validator = function(value) {
+				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		domain = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		population = S7::new_property(
+			S7::class_character,
+			default = "FAS",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		subject_var = S7::new_property(
+			S7::class_character,
+			default = "USUBJID",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		trt_var = S7::new_property(
+			S7::class_character,
+			default = "TRT01P",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' AnalysisResults Class
@@ -81,14 +81,14 @@ ADaMData <- S7::new_class(
 #' @return An AnalysisResults object
 #' @export AnalysisResults
 AnalysisResults <- S7::new_class(
-  "AnalysisResults",
-  package = "FunctionReport",
-  properties = list(
-    stats = S7::new_property(S7::class_data.frame, default = data.frame()),
-    type = S7::new_property(S7::class_character, default = ""),
-    groupings = S7::new_property(S7::class_list, default = list()),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"AnalysisResults",
+	package = "FunctionReport",
+	properties = list(
+		stats = S7::new_property(S7::class_data.frame, default = data.frame()),
+		type = S7::new_property(S7::class_character, default = ""),
+		groupings = S7::new_property(S7::class_list, default = list()),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' Abstract base class for all clinical content
@@ -96,14 +96,14 @@ AnalysisResults <- S7::new_class(
 #' @keywords internal
 #' @noRd
 ClinicalContent <- S7::new_class(
-  "ClinicalContent",
-  package = "FunctionReport",
-  properties = list(
-    type = S7::new_property(S7::class_character),
-    title = S7::new_property(S7::class_any),
-    metadata = S7::new_property(S7::class_list, default = list())
-  ),
-  abstract = TRUE
+	"ClinicalContent",
+	package = "FunctionReport",
+	properties = list(
+		type = S7::new_property(S7::class_character),
+		title = S7::new_property(S7::class_any),
+		metadata = S7::new_property(S7::class_list, default = list())
+	),
+	abstract = TRUE
 )
 
 #' ClinicalTable Class
@@ -131,35 +131,35 @@ ClinicalContent <- S7::new_class(
 #' )
 #' }
 ClinicalTable <- S7::new_class(
-  "ClinicalTable",
-  package = "FunctionReport",
-  parent = ClinicalContent,
-  properties = list(
-    data = S7::new_property(
-      class = S7::class_data.frame,
-      validator = function(value) {
-        admiraldev::assert_data_frame(value)
-        NULL
-      }
-    ),
-    flextable = S7::new_property(S7::class_any),
-    type = S7::new_property(S7::class_character),
-    title = S7::new_property(S7::class_any),
-    metadata = S7::new_property(S7::class_list, default = list()),
-    # Computed properties (read-only)
-    n_rows = S7::new_property(
-      class = S7::class_integer,
-      getter = function(self) nrow(self@data)
-    ),
-    n_cols = S7::new_property(
-      class = S7::class_integer,
-      getter = function(self) ncol(self@data)
-    ),
-    column_names = S7::new_property(
-      class = S7::class_character,
-      getter = function(self) names(self@data)
-    )
-  )
+	"ClinicalTable",
+	package = "FunctionReport",
+	parent = ClinicalContent,
+	properties = list(
+		data = S7::new_property(
+			class = S7::class_data.frame,
+			validator = function(value) {
+				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		flextable = S7::new_property(S7::class_any),
+		type = S7::new_property(S7::class_character),
+		title = S7::new_property(S7::class_any),
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed properties (read-only)
+		n_rows = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) nrow(self@data)
+		),
+		n_cols = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) ncol(self@data)
+		),
+		column_names = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) names(self@data)
+		)
+	)
 )
 
 #' ClinicalPlot Class
@@ -190,53 +190,53 @@ ClinicalTable <- S7::new_class(
 #' plot <- ClinicalPlot(plot = p, type = "scatter", title = "MPG vs HP")
 #' }
 ClinicalPlot <- S7::new_class(
-  "ClinicalPlot",
-  package = "FunctionReport",
-  parent = ClinicalContent,
-  properties = list(
-    plot = S7::new_property(
-      class = S7::class_any,
-      validator = function(value) {
-        if (!inherits(value, c("ggplot", "ggsurvplot", "gg"))) {
-          cli::cli_abort("Plot must be a ggplot or ggsurvplot object")
-        }
-        NULL
-      }
-    ),
-    data = S7::new_property(S7::class_any),
-    type = S7::new_property(S7::class_any),
-    title = S7::new_property(S7::class_any),
-    width = S7::new_property(
-      S7::class_numeric,
-      default = 6,
-      validator = function(value) {
-        admiraldev::assert_numeric_vector(value, len = 1)
-        NULL
-      }
-    ),
-    height = S7::new_property(
-      S7::class_numeric,
-      default = 4,
-      validator = function(value) {
-        admiraldev::assert_numeric_vector(value, len = 1)
-        NULL
-      }
-    ),
-    dpi = S7::new_property(
-      S7::class_numeric,
-      default = 300,
-      validator = function(value) {
-        admiraldev::assert_numeric_vector(value, len = 1)
-        NULL
-      }
-    ),
-    metadata = S7::new_property(S7::class_list, default = list()),
-    # Computed property for survival plots
-    is_survival = S7::new_property(
-      class = S7::class_logical,
-      getter = function(self) inherits(self@plot, "ggsurvplot")
-    )
-  )
+	"ClinicalPlot",
+	package = "FunctionReport",
+	parent = ClinicalContent,
+	properties = list(
+		plot = S7::new_property(
+			class = S7::class_any,
+			validator = function(value) {
+				if (!inherits(value, c("ggplot", "ggsurvplot", "gg"))) {
+					cli::cli_abort("Plot must be a ggplot or ggsurvplot object")
+				}
+				NULL
+			}
+		),
+		data = S7::new_property(S7::class_any),
+		type = S7::new_property(S7::class_any),
+		title = S7::new_property(S7::class_any),
+		width = S7::new_property(
+			S7::class_numeric,
+			default = 6,
+			validator = function(value) {
+				admiraldev::assert_numeric_vector(value, len = 1)
+				NULL
+			}
+		),
+		height = S7::new_property(
+			S7::class_numeric,
+			default = 4,
+			validator = function(value) {
+				admiraldev::assert_numeric_vector(value, len = 1)
+				NULL
+			}
+		),
+		dpi = S7::new_property(
+			S7::class_numeric,
+			default = 300,
+			validator = function(value) {
+				admiraldev::assert_numeric_vector(value, len = 1)
+				NULL
+			}
+		),
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed property for survival plots
+		is_survival = S7::new_property(
+			class = S7::class_logical,
+			getter = function(self) inherits(self@plot, "ggsurvplot")
+		)
+	)
 )
 
 #' StudyResult Class
@@ -264,32 +264,32 @@ ClinicalPlot <- S7::new_class(
 #' )
 #' }
 StudyResult <- S7::new_class(
-  "StudyResult",
-  package = "FunctionReport",
-  properties = list(
-    study_id = S7::new_property(S7::class_any),
-    study_title = S7::new_property(S7::class_any),
-    tables = S7::new_property(S7::class_list, default = list()),
-    plots = S7::new_property(S7::class_list, default = list()),
-    metadata = S7::new_property(S7::class_list, default = list()),
-    # Computed properties
-    n_tables = S7::new_property(
-      class = S7::class_integer,
-      getter = function(self) length(self@tables)
-    ),
-    n_plots = S7::new_property(
-      class = S7::class_integer,
-      getter = function(self) length(self@plots)
-    ),
-    table_names = S7::new_property(
-      class = S7::class_character,
-      getter = function(self) names(self@tables)
-    ),
-    plot_names = S7::new_property(
-      class = S7::class_character,
-      getter = function(self) names(self@plots)
-    )
-  )
+	"StudyResult",
+	package = "FunctionReport",
+	properties = list(
+		study_id = S7::new_property(S7::class_any),
+		study_title = S7::new_property(S7::class_any),
+		tables = S7::new_property(S7::class_list, default = list()),
+		plots = S7::new_property(S7::class_list, default = list()),
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed properties
+		n_tables = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) length(self@tables)
+		),
+		n_plots = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) length(self@plots)
+		),
+		table_names = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) names(self@tables)
+		),
+		plot_names = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) names(self@plots)
+		)
+	)
 )
 
 #' ReportSection Class
@@ -314,19 +314,19 @@ StudyResult <- S7::new_class(
 #' )
 #' }
 ReportSection <- S7::new_class(
-  "ReportSection",
-  package = "FunctionReport",
-  properties = list(
-    title = S7::new_property(S7::class_any),
-    section_type = S7::new_property(S7::class_character),
-    content = S7::new_property(S7::class_list, default = list()),
-    metadata = S7::new_property(S7::class_list, default = list()),
-    # Computed properties
-    n_content = S7::new_property(
-      class = S7::class_integer,
-      getter = function(self) length(self@content)
-    )
-  )
+	"ReportSection",
+	package = "FunctionReport",
+	properties = list(
+		title = S7::new_property(S7::class_any),
+		section_type = S7::new_property(S7::class_character),
+		content = S7::new_property(S7::class_list, default = list()),
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed properties
+		n_content = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) length(self@content)
+		)
+	)
 )
 
 #' ClinicalReport Class
@@ -354,20 +354,20 @@ ReportSection <- S7::new_class(
 #' )
 #' }
 ClinicalReport <- S7::new_class(
-  "ClinicalReport",
-  package = "FunctionReport",
-  properties = list(
-    study_id = S7::new_property(S7::class_character),
-    study_title = S7::new_property(S7::class_character),
-    sections = S7::new_property(S7::class_list, default = list()),
-    config = S7::new_property(S7::class_any),
-    metadata = S7::new_property(S7::class_list, default = list()),
-    # Computed properties
-    n_sections = S7::new_property(
-      class = S7::class_integer,
-      getter = function(self) length(self@sections)
-    )
-  )
+	"ClinicalReport",
+	package = "FunctionReport",
+	properties = list(
+		study_id = S7::new_property(S7::class_character),
+		study_title = S7::new_property(S7::class_character),
+		sections = S7::new_property(S7::class_list, default = list()),
+		config = S7::new_property(S7::class_any),
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed properties
+		n_sections = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) length(self@sections)
+		)
+	)
 )
 
 #' OneArmStudy Class
@@ -385,34 +385,34 @@ ClinicalReport <- S7::new_class(
 #' @return A OneArmStudy object
 #' @export OneArmStudy
 OneArmStudy <- S7::new_class(
-  "OneArmStudy",
-  package = "FunctionReport",
-  properties = list(
-    data = S7::new_property(
-      S7::class_data.frame,
-      default = data.frame(),
-      validator = function(value) {
-        admiraldev::assert_data_frame(value)
-        NULL
-      }
-    ),
-    study_id = S7::new_property(
-      S7::class_any,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    study_title = S7::new_property(
-      S7::class_any,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    results = S7::new_property(S7::class_list, default = list()),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"OneArmStudy",
+	package = "FunctionReport",
+	properties = list(
+		data = S7::new_property(
+			S7::class_data.frame,
+			default = data.frame(),
+			validator = function(value) {
+				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		study_id = S7::new_property(
+			S7::class_any,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		study_title = S7::new_property(
+			S7::class_any,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		results = S7::new_property(S7::class_list, default = list()),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' TwoArmStudy Class
@@ -431,42 +431,42 @@ OneArmStudy <- S7::new_class(
 #' @return A TwoArmStudy object
 #' @export TwoArmStudy
 TwoArmStudy <- S7::new_class(
-  "TwoArmStudy",
-  package = "FunctionReport",
-  properties = list(
-    data = S7::new_property(
-      S7::class_data.frame,
-      default = data.frame(),
-      validator = function(value) {
-        admiraldev::assert_data_frame(value)
-        NULL
-      }
-    ),
-    group_var = S7::new_property(
-      S7::class_character,
-      default = "",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    study_id = S7::new_property(
-      S7::class_any,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    study_title = S7::new_property(
-      S7::class_any,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    results = S7::new_property(S7::class_list, default = list()),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"TwoArmStudy",
+	package = "FunctionReport",
+	properties = list(
+		data = S7::new_property(
+			S7::class_data.frame,
+			default = data.frame(),
+			validator = function(value) {
+				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		group_var = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		study_id = S7::new_property(
+			S7::class_any,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		study_title = S7::new_property(
+			S7::class_any,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		results = S7::new_property(S7::class_list, default = list()),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' PrimaryEndpoint Class
@@ -496,50 +496,50 @@ TwoArmStudy <- S7::new_class(
 #' )
 #' }
 PrimaryEndpoint <- S7::new_class(
-  "PrimaryEndpoint",
-  package = "FunctionReport",
-  properties = list(
-    name = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    variable = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    type = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    description = S7::new_property(S7::class_any),
-    hypothesis = S7::new_property(
-      S7::class_character,
-      default = "superiority",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    margin = S7::new_property(S7::class_any),
-    alpha = S7::new_property(
-      S7::class_numeric,
-      default = 0.05,
-      validator = function(value) {
-        admiraldev::assert_numeric_vector(value, len = 1)
-        NULL
-      }
-    ),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"PrimaryEndpoint",
+	package = "FunctionReport",
+	properties = list(
+		name = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		variable = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		type = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		description = S7::new_property(S7::class_any),
+		hypothesis = S7::new_property(
+			S7::class_character,
+			default = "superiority",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		margin = S7::new_property(S7::class_any),
+		alpha = S7::new_property(
+			S7::class_numeric,
+			default = 0.05,
+			validator = function(value) {
+				admiraldev::assert_numeric_vector(value, len = 1)
+				NULL
+			}
+		),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' SecondaryEndpoint Class
@@ -568,42 +568,42 @@ PrimaryEndpoint <- S7::new_class(
 #' )
 #' }
 SecondaryEndpoint <- S7::new_class(
-  "SecondaryEndpoint",
-  package = "FunctionReport",
-  properties = list(
-    name = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    variable = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    type = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    description = S7::new_property(S7::class_any),
-    priority = S7::new_property(
-      S7::class_numeric,
-      default = 1,
-      validator = function(value) {
-        admiraldev::assert_numeric_vector(value, len = 1)
-        NULL
-      }
-    ),
-    exploratory = S7::new_property(S7::class_logical, default = FALSE),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"SecondaryEndpoint",
+	package = "FunctionReport",
+	properties = list(
+		name = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		variable = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		type = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		description = S7::new_property(S7::class_any),
+		priority = S7::new_property(
+			S7::class_numeric,
+			default = 1,
+			validator = function(value) {
+				admiraldev::assert_numeric_vector(value, len = 1)
+				NULL
+			}
+		),
+		exploratory = S7::new_property(S7::class_logical, default = FALSE),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' SafetyEndpoint Class
@@ -632,35 +632,35 @@ SecondaryEndpoint <- S7::new_class(
 #' )
 #' }
 SafetyEndpoint <- S7::new_class(
-  "SafetyEndpoint",
-  package = "FunctionReport",
-  properties = list(
-    name = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    variable = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    type = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    description = S7::new_property(S7::class_any),
-    severity = S7::new_property(S7::class_any),
-    relatedness = S7::new_property(S7::class_any),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"SafetyEndpoint",
+	package = "FunctionReport",
+	properties = list(
+		name = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		variable = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		type = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		description = S7::new_property(S7::class_any),
+		severity = S7::new_property(S7::class_any),
+		relatedness = S7::new_property(S7::class_any),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' PerformanceReport Class
@@ -686,27 +686,27 @@ SafetyEndpoint <- S7::new_class(
 #' )
 #' }
 PerformanceReport <- S7::new_class(
-  "PerformanceReport",
-  package = "FunctionReport",
-  properties = list(
-    title = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    author = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    description = S7::new_property(S7::class_any),
-    benchmarks = S7::new_property(S7::class_list, default = list()),
-    metadata = S7::new_property(S7::class_list, default = list())
-  )
+	"PerformanceReport",
+	package = "FunctionReport",
+	properties = list(
+		title = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		author = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		description = S7::new_property(S7::class_any),
+		benchmarks = S7::new_property(S7::class_list, default = list()),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' SOCPTSection Class
@@ -736,32 +736,32 @@ PerformanceReport <- S7::new_class(
 #' )
 #' }
 SOCPTSection <- S7::new_class(
-  "SOCPTSection",
-  package = "FunctionReport",
-  parent = ReportSection,
-  properties = list(
-    soc_var = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    pt_var = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    group_var = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    )
-  )
+	"SOCPTSection",
+	package = "FunctionReport",
+	parent = ReportSection,
+	properties = list(
+		soc_var = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		pt_var = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		group_var = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		)
+	)
 )
 
 #' PopulationSection Class
@@ -789,25 +789,25 @@ SOCPTSection <- S7::new_class(
 #' )
 #' }
 PopulationSection <- S7::new_class(
-  "PopulationSection",
-  package = "FunctionReport",
-  parent = ReportSection,
-  properties = list(
-    pop_var = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    group_var = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    )
-  )
+	"PopulationSection",
+	package = "FunctionReport",
+	parent = ReportSection,
+	properties = list(
+		pop_var = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		group_var = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		)
+	)
 )
 
 #' SubgroupSection Class
@@ -835,25 +835,25 @@ PopulationSection <- S7::new_class(
 #' )
 #' }
 SubgroupSection <- S7::new_class(
-  "SubgroupSection",
-  package = "FunctionReport",
-  parent = ReportSection,
-  properties = list(
-    subgroup_var = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    group_var = S7::new_property(
-      S7::class_character,
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    )
-  )
+	"SubgroupSection",
+	package = "FunctionReport",
+	parent = ReportSection,
+	properties = list(
+		subgroup_var = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		group_var = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		)
+	)
 )
 
 #' HTAEndpoint Class
@@ -887,21 +887,21 @@ SubgroupSection <- S7::new_class(
 #' )
 #' }
 HTAEndpoint <- S7::new_class(
-  "HTAEndpoint",
-  package = "FunctionReport",
-  parent = PrimaryEndpoint,
-  properties = list(
-    chef_spec = S7::new_property(S7::class_list, default = list()),
-    strata = S7::new_property(
-      S7::class_character,
-      default = character(),
-      validator = function(value) {
-        admiraldev::assert_character_vector(value)
-        NULL
-      }
-    ),
-    criteria = S7::new_property(S7::class_list, default = list())
-  )
+	"HTAEndpoint",
+	package = "FunctionReport",
+	parent = PrimaryEndpoint,
+	properties = list(
+		chef_spec = S7::new_property(S7::class_list, default = list()),
+		strata = S7::new_property(
+			S7::class_character,
+			default = character(),
+			validator = function(value) {
+				admiraldev::assert_character_vector(value)
+				NULL
+			}
+		),
+		criteria = S7::new_property(S7::class_list, default = list())
+	)
 )
 
 #' AnalysisMeta Class
@@ -930,25 +930,25 @@ HTAEndpoint <- S7::new_class(
 #' )
 #' }
 AnalysisMeta <- S7::new_class(
-  "AnalysisMeta",
-  package = "FunctionReport",
-  properties = list(
-    source_vars = S7::new_property(S7::class_character, default = character()),
-    filters = S7::new_property(S7::class_list, default = list()),
-    row_id = S7::new_property(S7::class_character, default = ""),
-    derivation = S7::new_property(S7::class_character, default = ""),
-    timestamp = S7::new_property(
-      S7::class_any,
-      default = NULL,
-      validator = function(value) {
-        if (!is.null(value) && !inherits(value, "POSIXct")) {
-          "timestamp must be NULL or POSIXct"
-        }
-      }
-    ),
-    package_version = S7::new_property(S7::class_character, default = ""),
-    r_version = S7::new_property(S7::class_character, default = "")
-  )
+	"AnalysisMeta",
+	package = "FunctionReport",
+	properties = list(
+		source_vars = S7::new_property(S7::class_character, default = character()),
+		filters = S7::new_property(S7::class_list, default = list()),
+		row_id = S7::new_property(S7::class_character, default = ""),
+		derivation = S7::new_property(S7::class_character, default = ""),
+		timestamp = S7::new_property(
+			S7::class_any,
+			default = NULL,
+			validator = function(value) {
+				if (!is.null(value) && !inherits(value, "POSIXct")) {
+					"timestamp must be NULL or POSIXct"
+				}
+			}
+		),
+		package_version = S7::new_property(S7::class_character, default = ""),
+		r_version = S7::new_property(S7::class_character, default = "")
+	)
 )
 
 #' Create Analysis Metadata
@@ -963,20 +963,20 @@ AnalysisMeta <- S7::new_class(
 #' @return An AnalysisMeta object with timestamp and version info populated
 #' @export
 create_analysis_meta <- function(
-  source_vars = character(),
-  filters = list(),
-  row_id = "",
-  derivation = ""
+	source_vars = character(),
+	filters = list(),
+	row_id = "",
+	derivation = ""
 ) {
-  AnalysisMeta(
-    source_vars = source_vars,
-    filters = filters,
-    row_id = row_id,
-    derivation = derivation,
-    timestamp = Sys.time(),
-    package_version = as.character(utils::packageVersion("FunctionReport")),
-    r_version = paste0(R.version$major, ".", R.version$minor)
-  )
+	AnalysisMeta(
+		source_vars = source_vars,
+		filters = filters,
+		row_id = row_id,
+		derivation = derivation,
+		timestamp = Sys.time(),
+		package_version = as.character(utils::packageVersion("FunctionReport")),
+		r_version = paste0(R.version$major, ".", R.version$minor)
+	)
 }
 
 #' HTASection Class
@@ -1005,26 +1005,26 @@ create_analysis_meta <- function(
 #' )
 #' }
 HTASection <- S7::new_class(
-  "HTASection",
-  package = "FunctionReport",
-  parent = ReportSection,
-  properties = list(
-    endpoint = S7::new_property(S7::class_any, default = NULL),
-    comparator = S7::new_property(
-      S7::class_character,
-      default = "",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    ),
-    population = S7::new_property(
-      S7::class_character,
-      default = "",
-      validator = function(value) {
-        admiraldev::assert_character_scalar(value)
-        NULL
-      }
-    )
-  )
+	"HTASection",
+	package = "FunctionReport",
+	parent = ReportSection,
+	properties = list(
+		endpoint = S7::new_property(S7::class_any, default = NULL),
+		comparator = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		population = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		)
+	)
 )

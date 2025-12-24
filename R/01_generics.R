@@ -86,7 +86,7 @@ to_word <- S7::new_generic("to_word", "x")
 #' @describeIn to_word Method for ClinicalTable
 #' @noRd
 S7::method(to_word, ClinicalTable) <- function(x, ...) {
-  x@flextable
+	x@flextable
 }
 
 #' @describeIn to_word Method for ClinicalPlot
@@ -97,29 +97,29 @@ S7::method(to_word, ClinicalTable) <- function(x, ...) {
 #'   system cleanup).
 #' @noRd
 S7::method(to_word, ClinicalPlot) <- function(x, ...) {
-  # Create temporary file for plot.
-  # Note: Cannot delete immediately as officer::external_img stores a file path
-  # reference that is read when the document is actually rendered/saved.
-  tmp <- tempfile(fileext = ".png")
+	# Create temporary file for plot.
+	# Note: Cannot delete immediately as officer::external_img stores a file path
+	# reference that is read when the document is actually rendered/saved.
+	tmp <- tempfile(fileext = ".png")
 
-  # Extract plot object (handle ggsurvplot)
-  plot_obj <- if (x@is_survival) x@plot$plot else x@plot
+	# Extract plot object (handle ggsurvplot)
+	plot_obj <- if (x@is_survival) x@plot$plot else x@plot
 
-  ggplot2::ggsave(
-    filename = tmp,
-    plot = plot_obj,
-    width = x@width,
-    height = x@height,
-    dpi = x@dpi
-  )
+	ggplot2::ggsave(
+		filename = tmp,
+		plot = plot_obj,
+		width = x@width,
+		height = x@height,
+		dpi = x@dpi
+	)
 
-  officer::external_img(src = tmp)
+	officer::external_img(src = tmp)
 }
 
 #' @describeIn to_word Method for list of content
 #' @noRd
 S7::method(to_word, S7::class_list) <- function(x, ...) {
-  lapply(x, function(item) to_word(item, ...))
+	lapply(x, function(item) to_word(item, ...))
 }
 
 #' Add content to a Word document
@@ -148,75 +148,75 @@ add_to_docx <- S7::new_generic("add_to_docx", c("doc", "content"))
 #' @describeIn add_to_docx Method for rdocx + ClinicalTable
 #' @noRd
 S7::method(add_to_docx, list(class_rdocx, ClinicalTable)) <- function(
-  doc,
-  content,
-  ...
+	doc,
+	content,
+	...
 ) {
-  flextable::body_add_flextable(doc, content@flextable)
+	flextable::body_add_flextable(doc, content@flextable)
 }
 
 #' @describeIn add_to_docx Method for rdocx + ClinicalPlot
 #' @noRd
 S7::method(add_to_docx, list(class_rdocx, ClinicalPlot)) <- function(
-  doc,
-  content,
-  ...
+	doc,
+	content,
+	...
 ) {
-  # Create temporary file for plot
-  tmp <- tempfile(fileext = ".png")
-  plot_obj <- if (content@is_survival) content@plot$plot else content@plot
-  ggplot2::ggsave(
-    filename = tmp,
-    plot = plot_obj,
-    width = content@width,
-    height = content@height,
-    dpi = content@dpi
-  )
-  doc <- officer::body_add_img(
-    doc,
-    src = tmp,
-    width = content@width,
-    height = content@height
-  )
-  unlink(tmp)
-  doc
+	# Create temporary file for plot
+	tmp <- tempfile(fileext = ".png")
+	plot_obj <- if (content@is_survival) content@plot$plot else content@plot
+	ggplot2::ggsave(
+		filename = tmp,
+		plot = plot_obj,
+		width = content@width,
+		height = content@height,
+		dpi = content@dpi
+	)
+	doc <- officer::body_add_img(
+		doc,
+		src = tmp,
+		width = content@width,
+		height = content@height
+	)
+	unlink(tmp)
+	doc
 }
 
 #' @describeIn add_to_docx Method for rdocx + list of content
 #' @noRd
 S7::method(add_to_docx, list(class_rdocx, S7::class_list)) <- function(
-  doc,
-  content,
-  ...
+	doc,
+	content,
+	...
 ) {
-  batch_size <- getOption("FunctionReport.docx_batch_size", 50)
+	batch_size <- getOption("FunctionReport.docx_batch_size", 50)
 
-  for (i in seq(1, length(content), by = batch_size)) {
-    batch <- content[i:min(i + batch_size - 1, length(content))]
-    for (item in batch) {
-      doc <- add_to_docx(doc, item, ...)
-    }
-  }
-  doc
+	for (i in seq(1, length(content), by = batch_size)) {
+		batch <- content[i:min(i + batch_size - 1, length(content))]
+		for (item in batch) {
+			doc <- add_to_docx(doc, item, ...)
+		}
+	}
+	doc
 }
 
 #' @describeIn add_to_docx Method for rdocx + ReportSection
 #' @noRd
 S7::method(add_to_docx, list(class_rdocx, ReportSection)) <- function(
-  doc,
-  content,
-  ...
+	doc,
+	content,
+	...
 ) {
-  # Add section title if available
-  if (!is.null(content@title)) {
-    doc <- officer::body_add_par(doc, content@title, style = "heading 2")
-  }
+	# Add section title if available
+	if (!is.null(content@title)) {
+		doc <- officer::body_add_par(doc, content@title, style = "heading 2")
+	}
 
-  # Add all content in the section
-  for (item in content@content) {
-    doc <- add_to_docx(doc, item, ...)
-  }
-  doc
+	# Add all content in the section
+	for (item in content@content) {
+		doc <- add_to_docx(doc, item, ...)
+	}
+	doc
 }
 
 #' Save ClinicalTable as PNG
@@ -229,11 +229,11 @@ S7::method(add_to_docx, list(class_rdocx, ReportSection)) <- function(
 #' @return The file path where the PNG was saved
 #' @keywords internal
 save_as_png <- function(x, path = NULL) {
-  if (is.null(path)) {
-    path <- tempfile(fileext = ".png")
-  }
-  flextable::save_as_image(x@flextable, path = path)
-  path
+	if (is.null(path)) {
+		path <- tempfile(fileext = ".png")
+	}
+	flextable::save_as_image(x@flextable, path = path)
+	path
 }
 
 #' Save ClinicalTable as PDF
@@ -252,27 +252,29 @@ save_as_png <- function(x, path = NULL) {
 #'
 #' @keywords internal
 save_as_pdf <- function(x, path = NULL) {
-  if (is.null(path)) {
-    path <- tempfile(fileext = ".pdf")
-  }
+	if (is.null(path)) {
+		path <- tempfile(fileext = ".pdf")
+	}
 
-  # Try webshot2 for higher quality PDF export
-  if (requireNamespace("webshot2", quietly = TRUE)) {
-    # Create temporary HTML file
-    tmp_html <- tempfile(fileext = ".html")
-    on.exit(unlink(tmp_html), add = TRUE)
+	# Try webshot2 for higher quality PDF export
+	if (requireNamespace("webshot2", quietly = TRUE)) {
+		# Create temporary HTML file
+		tmp_html <- tempfile(fileext = ".html")
+		on.exit(unlink(tmp_html), add = TRUE)
 
-    flextable::save_as_html(x@flextable, path = tmp_html)
-    webshot2::webshot(tmp_html, file = path, selector = "body")
-  } else {
-    # Fallback to image-based export
-    cli::cli_inform(
-      c("i" = "Using image-based PDF export (install {.pkg webshot2} for better quality)")
-    )
-    flextable::save_as_image(x@flextable, path = path)
-  }
+		flextable::save_as_html(x@flextable, path = tmp_html)
+		webshot2::webshot(tmp_html, file = path, selector = "body")
+	} else {
+		# Fallback to image-based export
+		cli::cli_inform(
+			c(
+				"i" = "Using image-based PDF export (install {.pkg webshot2} for better quality)"
+			)
+		)
+		flextable::save_as_image(x@flextable, path = path)
+	}
 
-  path
+	path
 }
 
 #' Save ClinicalPlot to file
@@ -286,23 +288,23 @@ save_as_pdf <- function(x, path = NULL) {
 #' @return The file path where the plot was saved
 #' @keywords internal
 save_plot_as <- function(x, format = "png", path = NULL) {
-  if (is.null(path)) {
-    path <- tempfile(fileext = paste0(".", format))
-  }
+	if (is.null(path)) {
+		path <- tempfile(fileext = paste0(".", format))
+	}
 
-  # Extract plot object (handle ggsurvplot)
-  plot_obj <- if (x@is_survival) x@plot$plot else x@plot
+	# Extract plot object (handle ggsurvplot)
+	plot_obj <- if (x@is_survival) x@plot$plot else x@plot
 
-  ggplot2::ggsave(
-    filename = path,
-    plot = plot_obj,
-    width = x@width,
-    height = x@height,
-    dpi = x@dpi,
-    device = format
-  )
+	ggplot2::ggsave(
+		filename = path,
+		plot = plot_obj,
+		width = x@width,
+		height = x@height,
+		dpi = x@dpi,
+		device = format
+	)
 
-  path
+	path
 }
 
 #' Format clinical content to different output formats
@@ -329,32 +331,32 @@ format_content <- S7::new_generic("format_content", c("x", "format"))
 #' @describeIn format_content Method for ClinicalTable + character format
 #' @noRd
 S7::method(
-  format_content,
-  list(ClinicalTable, S7::class_character)
+	format_content,
+	list(ClinicalTable, S7::class_character)
 ) <- function(x, format, ...) {
-  switch(
-    format,
-    "docx" = to_word(x),
-    "png" = save_as_png(x),
-    "pdf" = save_as_pdf(x),
-    cli::cli_abort("Unsupported format: {format}")
-  )
+	switch(
+		format,
+		"docx" = to_word(x),
+		"png" = save_as_png(x),
+		"pdf" = save_as_pdf(x),
+		cli::cli_abort("Unsupported format: {format}")
+	)
 }
 
 #' @describeIn format_content Method for ClinicalPlot + character format
 #' @noRd
 S7::method(format_content, list(ClinicalPlot, S7::class_character)) <- function(
-  x,
-  format,
-  ...
+	x,
+	format,
+	...
 ) {
-  switch(
-    format,
-    "png" = save_plot_as(x, "png"),
-    "pdf" = save_plot_as(x, "pdf"),
-    "svg" = save_plot_as(x, "svg"),
-    cli::cli_abort("Unsupported format: {format}")
-  )
+	switch(
+		format,
+		"png" = save_plot_as(x, "png"),
+		"pdf" = save_plot_as(x, "pdf"),
+		"svg" = save_plot_as(x, "svg"),
+		cli::cli_abort("Unsupported format: {format}")
+	)
 }
 
 #' Generate a summary of clinical content
@@ -378,55 +380,55 @@ summarize_content <- S7::new_generic("summarize_content", "x")
 #' @describeIn summarize_content Method for ClinicalTable
 #' @noRd
 S7::method(summarize_content, ClinicalTable) <- function(x, ...) {
-  list(
-    type = x@type,
-    title = x@title,
-    n_rows = x@n_rows,
-    n_cols = x@n_cols,
-    columns = x@column_names,
-    metadata = x@metadata
-  )
+	list(
+		type = x@type,
+		title = x@title,
+		n_rows = x@n_rows,
+		n_cols = x@n_cols,
+		columns = x@column_names,
+		metadata = x@metadata
+	)
 }
 
 #' @describeIn summarize_content Method for ClinicalPlot
 #' @noRd
 S7::method(summarize_content, ClinicalPlot) <- function(x, ...) {
-  list(
-    type = x@type,
-    title = x@title,
-    width = x@width,
-    height = x@height,
-    dpi = x@dpi,
-    plot_class = class(x@plot),
-    is_survival = x@is_survival,
-    metadata = x@metadata
-  )
+	list(
+		type = x@type,
+		title = x@title,
+		width = x@width,
+		height = x@height,
+		dpi = x@dpi,
+		plot_class = class(x@plot),
+		is_survival = x@is_survival,
+		metadata = x@metadata
+	)
 }
 
 #' @describeIn summarize_content Method for StudyResult
 #' @noRd
 S7::method(summarize_content, StudyResult) <- function(x, ...) {
-  list(
-    study_id = x@study_id,
-    study_title = x@study_title,
-    n_tables = x@n_tables,
-    n_plots = x@n_plots,
-    table_names = x@table_names,
-    plot_names = x@plot_names,
-    metadata = x@metadata
-  )
+	list(
+		study_id = x@study_id,
+		study_title = x@study_title,
+		n_tables = x@n_tables,
+		n_plots = x@n_plots,
+		table_names = x@table_names,
+		plot_names = x@plot_names,
+		metadata = x@metadata
+	)
 }
 
 #' @describeIn summarize_content Method for ReportSection
 #' @noRd
 S7::method(summarize_content, ReportSection) <- function(x, ...) {
-  list(
-    title = x@title,
-    section_type = x@section_type,
-    n_content = x@n_content,
-    content_types = vapply(x@content, function(item) item@type, character(1)),
-    metadata = x@metadata
-  )
+	list(
+		title = x@title,
+		section_type = x@section_type,
+		n_content = x@n_content,
+		content_types = vapply(x@content, function(item) item@type, character(1)),
+		metadata = x@metadata
+	)
 }
 
 #' Add a table to a StudyResult
@@ -440,25 +442,25 @@ S7::method(summarize_content, ReportSection) <- function(x, ...) {
 #' @export
 #' @rdname add_content
 add_table <- S7::new_generic(
-  "add_table",
-  "obj",
-  function(obj, table, name = NULL) {
-    S7::S7_dispatch()
-  }
+	"add_table",
+	"obj",
+	function(obj, table, name = NULL) {
+		S7::S7_dispatch()
+	}
 )
 
 #' @describeIn add_table Method for StudyResult
 #' @noRd
 S7::method(add_table, StudyResult) <- function(obj, table, name = NULL) {
-  checkmate::assert_class(table, "ClinicalTable")
-  checkmate::assert_string(name, null.ok = TRUE)
+	checkmate::assert_class(table, "ClinicalTable")
+	checkmate::assert_string(name, null.ok = TRUE)
 
-  if (is.null(name)) {
-    name <- paste0("table_", obj@n_tables + 1)
-  }
+	if (is.null(name)) {
+		name <- paste0("table_", obj@n_tables + 1)
+	}
 
-  obj@tables[[name]] <- table
-  obj
+	obj@tables[[name]] <- table
+	obj
 }
 
 #' Add a plot to a StudyResult
@@ -472,25 +474,25 @@ S7::method(add_table, StudyResult) <- function(obj, table, name = NULL) {
 #' @export
 #' @rdname add_content
 add_plot <- S7::new_generic(
-  "add_plot",
-  "obj",
-  function(obj, plot, name = NULL) {
-    S7::S7_dispatch()
-  }
+	"add_plot",
+	"obj",
+	function(obj, plot, name = NULL) {
+		S7::S7_dispatch()
+	}
 )
 
 #' @describeIn add_plot Method for StudyResult
 #' @noRd
 S7::method(add_plot, StudyResult) <- function(obj, plot, name = NULL) {
-  checkmate::assert_class(plot, "ClinicalPlot")
-  checkmate::assert_string(name, null.ok = TRUE)
+	checkmate::assert_class(plot, "ClinicalPlot")
+	checkmate::assert_string(name, null.ok = TRUE)
 
-  if (is.null(name)) {
-    name <- paste0("plot_", obj@n_plots + 1)
-  }
+	if (is.null(name)) {
+		name <- paste0("plot_", obj@n_plots + 1)
+	}
 
-  obj@plots[[name]] <- plot
-  obj
+	obj@plots[[name]] <- plot
+	obj
 }
 
 #' Add a section to a ClinicalReport
@@ -504,25 +506,25 @@ S7::method(add_plot, StudyResult) <- function(obj, plot, name = NULL) {
 #' @export
 #' @rdname add_content
 add_section <- S7::new_generic(
-  "add_section",
-  "obj",
-  function(obj, section, name = NULL) {
-    S7::S7_dispatch()
-  }
+	"add_section",
+	"obj",
+	function(obj, section, name = NULL) {
+		S7::S7_dispatch()
+	}
 )
 
 #' @describeIn add_section Method for ClinicalReport
 #' @noRd
 S7::method(add_section, ClinicalReport) <- function(obj, section, name = NULL) {
-  checkmate::assert_class(section, "ReportSection")
-  checkmate::assert_string(name, null.ok = TRUE)
+	checkmate::assert_class(section, "ReportSection")
+	checkmate::assert_string(name, null.ok = TRUE)
 
-  if (is.null(name)) {
-    name <- paste0("section_", obj@n_sections + 1)
-  }
+	if (is.null(name)) {
+		name <- paste0("section_", obj@n_sections + 1)
+	}
 
-  obj@sections[[name]] <- section
-  obj
+	obj@sections[[name]] <- section
+	obj
 }
 
 #' Add content to a ReportSection
@@ -536,25 +538,25 @@ S7::method(add_section, ClinicalReport) <- function(obj, section, name = NULL) {
 #' @export
 #' @rdname add_content
 add_content <- S7::new_generic(
-  "add_content",
-  "obj",
-  function(obj, content, name = NULL) {
-    S7::S7_dispatch()
-  }
+	"add_content",
+	"obj",
+	function(obj, content, name = NULL) {
+		S7::S7_dispatch()
+	}
 )
 
 #' @describeIn add_content Method for ReportSection
 #' @noRd
 S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
-  checkmate::assert_class(content, "ClinicalContent")
-  checkmate::assert_string(name, null.ok = TRUE)
+	checkmate::assert_class(content, "ClinicalContent")
+	checkmate::assert_string(name, null.ok = TRUE)
 
-  if (is.null(name)) {
-    name <- paste0("content_", obj@n_content + 1)
-  }
+	if (is.null(name)) {
+		name <- paste0("content_", obj@n_content + 1)
+	}
 
-  obj@content[[name]] <- content
-  obj
+	obj@content[[name]] <- content
+	obj
 }
 
 #' Generate a Word document from a ClinicalReport
@@ -568,45 +570,45 @@ S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
 #'
 #' @export
 generate_word <- S7::new_generic(
-  "generate_word",
-  "obj",
-  function(obj, path, include_title = TRUE, include_toc = TRUE) {
-    S7::S7_dispatch()
-  }
+	"generate_word",
+	"obj",
+	function(obj, path, include_title = TRUE, include_toc = TRUE) {
+		S7::S7_dispatch()
+	}
 )
 
 #' @describeIn generate_word Method for ClinicalReport
 #' @noRd
 S7::method(generate_word, ClinicalReport) <- function(
-  obj,
-  path,
-  include_title = TRUE,
-  include_toc = TRUE
+	obj,
+	path,
+	include_title = TRUE,
+	include_toc = TRUE
 ) {
-  checkmate::assert_string(path)
-  checkmate::assert_flag(include_title)
-  checkmate::assert_flag(include_toc)
+	checkmate::assert_string(path)
+	checkmate::assert_flag(include_title)
+	checkmate::assert_flag(include_toc)
 
-  # Create new Word document
-  doc <- officer::read_docx()
+	# Create new Word document
+	doc <- officer::read_docx()
 
-  # Add title if requested
-  if (include_title && !is.null(obj@study_title)) {
-    doc <- officer::body_add_par(doc, obj@study_title, style = "heading 1")
-  }
+	# Add title if requested
+	if (include_title && !is.null(obj@study_title)) {
+		doc <- officer::body_add_par(doc, obj@study_title, style = "heading 1")
+	}
 
-  # Add table of contents if requested
-  if (include_toc) {
-    doc <- officer::body_add_toc(doc)
-  }
+	# Add table of contents if requested
+	if (include_toc) {
+		doc <- officer::body_add_toc(doc)
+	}
 
-  # Add each section
-  for (section in obj@sections) {
-    doc <- add_to_docx(doc, section)
-  }
+	# Add each section
+	for (section in obj@sections) {
+		doc <- add_to_docx(doc, section)
+	}
 
-  # Save document
-  print(doc, target = path)
+	# Save document
+	print(doc, target = path)
 
-  invisible(obj)
+	invisible(obj)
 }

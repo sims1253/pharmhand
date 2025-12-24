@@ -27,20 +27,20 @@ NULL
 #' registry <- load_config("path/to/config.yaml")
 #' }
 load_config <- function(path = NULL) {
-  if (is.null(path)) {
-    path <- system.file(
-      "config",
-      "config_defaults.yaml",
-      package = "FunctionReport"
-    )
-  }
+	if (is.null(path)) {
+		path <- system.file(
+			"config",
+			"config_defaults.yaml",
+			package = "FunctionReport"
+		)
+	}
 
-  if (!file.exists(path)) {
-    cli::cli_abort("Configuration file not found: {path}")
-  }
+	if (!file.exists(path)) {
+		cli::cli_abort("Configuration file not found: {path}")
+	}
 
-  config <- yaml::read_yaml(path)
-  parse_config_registry(config)
+	config <- yaml::read_yaml(path)
+	parse_config_registry(config)
 }
 
 #' Parse configuration from YAML list
@@ -54,80 +54,80 @@ load_config <- function(path = NULL) {
 #'
 #' @keywords internal
 parse_config_registry <- function(config) {
-  # Parse subgroups
-  subgroups <- list()
-  if (!is.null(config$subgroups)) {
-    for (name in names(config$subgroups)) {
-      sg_config <- config$subgroups[[name]]
-      subgroups[[name]] <- SubgroupConfig(
-        variable = sg_config$variable,
-        labels = sg_config$labels %||% list(),
-        order = sg_config$order,
-        filter_values = sg_config$filter_values,
-        source = "yaml",
-        priority = 0
-      )
-    }
-  }
+	# Parse subgroups
+	subgroups <- list()
+	if (!is.null(config$subgroups)) {
+		for (name in names(config$subgroups)) {
+			sg_config <- config$subgroups[[name]]
+			subgroups[[name]] <- SubgroupConfig(
+				variable = sg_config$variable,
+				labels = sg_config$labels %||% list(),
+				order = sg_config$order,
+				filter_values = sg_config$filter_values,
+				source = "yaml",
+				priority = 0
+			)
+		}
+	}
 
-  # Parse populations
-  populations <- list()
-  if (!is.null(config$populations)) {
-    for (name in names(config$populations)) {
-      pop_config <- config$populations[[name]]
-      populations[[name]] <- PopulationConfig(
-        variable = pop_config$variable,
-        label = pop_config$label,
-        description = pop_config$description,
-        flag_value = pop_config$flag_value %||% "Y",
-        source = "yaml",
-        priority = 0
-      )
-    }
-  }
+	# Parse populations
+	populations <- list()
+	if (!is.null(config$populations)) {
+		for (name in names(config$populations)) {
+			pop_config <- config$populations[[name]]
+			populations[[name]] <- PopulationConfig(
+				variable = pop_config$variable,
+				label = pop_config$label,
+				description = pop_config$description,
+				flag_value = pop_config$flag_value %||% "Y",
+				source = "yaml",
+				priority = 0
+			)
+		}
+	}
 
-  # Parse SOC config
-  soc_config <- NULL
-  if (!is.null(config$soc_config)) {
-    soc_config <- SOCConfig(
-      variable = config$soc_config$variable,
-      include_all = config$soc_config$include_all %||% TRUE,
-      custom_order = config$soc_config$custom_order,
-      sort_by = config$soc_config$sort_by %||% "frequency",
-      min_subjects = config$soc_config$min_subjects %||% 1,
-      top_n = config$soc_config$top_n,
-      source = "yaml",
-      priority = 0
-    )
-  }
+	# Parse SOC config
+	soc_config <- NULL
+	if (!is.null(config$soc_config)) {
+		soc_config <- SOCConfig(
+			variable = config$soc_config$variable,
+			include_all = config$soc_config$include_all %||% TRUE,
+			custom_order = config$soc_config$custom_order,
+			sort_by = config$soc_config$sort_by %||% "frequency",
+			min_subjects = config$soc_config$min_subjects %||% 1,
+			top_n = config$soc_config$top_n,
+			source = "yaml",
+			priority = 0
+		)
+	}
 
-  # Parse PT config
-  pt_config <- NULL
-  if (!is.null(config$pt_config)) {
-    pt_config <- PTConfig(
-      variable = config$pt_config$variable,
-      include_all = config$pt_config$include_all %||% TRUE,
-      sort_by = config$pt_config$sort_by %||% "frequency",
-      min_subjects = config$pt_config$min_subjects %||% 1,
-      top_n_per_soc = config$pt_config$top_n_per_soc,
-      show_pt_codes = config$pt_config$show_pt_codes %||% FALSE,
-      source = "yaml",
-      priority = 0
-    )
-  }
+	# Parse PT config
+	pt_config <- NULL
+	if (!is.null(config$pt_config)) {
+		pt_config <- PTConfig(
+			variable = config$pt_config$variable,
+			include_all = config$pt_config$include_all %||% TRUE,
+			sort_by = config$pt_config$sort_by %||% "frequency",
+			min_subjects = config$pt_config$min_subjects %||% 1,
+			top_n_per_soc = config$pt_config$top_n_per_soc,
+			show_pt_codes = config$pt_config$show_pt_codes %||% FALSE,
+			source = "yaml",
+			priority = 0
+		)
+	}
 
-  # Create registry
-  ConfigurationRegistry(
-    subgroups = subgroups,
-    populations = populations,
-    soc_config = soc_config,
-    pt_config = pt_config,
-    report_types = config$report_types %||% list(),
-    performance = config$performance %||% list(),
-    plots = config$plots %||% list(),
-    tables = config$tables %||% list(),
-    validation = config$validation %||% list()
-  )
+	# Create registry
+	ConfigurationRegistry(
+		subgroups = subgroups,
+		populations = populations,
+		soc_config = soc_config,
+		pt_config = pt_config,
+		report_types = config$report_types %||% list(),
+		performance = config$performance %||% list(),
+		plots = config$plots %||% list(),
+		tables = config$tables %||% list(),
+		validation = config$validation %||% list()
+	)
 }
 
 #' Define or override a subgroup configuration
@@ -158,29 +158,29 @@ parse_config_registry <- function(config) {
 #' )
 #' }
 define_subgroup_config <- function(
-  registry,
-  name,
-  variable,
-  labels = NULL,
-  order = NULL,
-  filter_values = NULL,
-  priority = 100
+	registry,
+	name,
+	variable,
+	labels = NULL,
+	order = NULL,
+	filter_values = NULL,
+	priority = 100
 ) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
-  checkmate::assert_string(name)
-  checkmate::assert_string(variable)
+	checkmate::assert_class(registry, "ConfigurationRegistry")
+	checkmate::assert_string(name)
+	checkmate::assert_string(variable)
 
-  new_subgroup <- SubgroupConfig(
-    variable = variable,
-    labels = labels %||% list(),
-    order = order,
-    filter_values = filter_values,
-    source = "r_api",
-    priority = priority
-  )
+	new_subgroup <- SubgroupConfig(
+		variable = variable,
+		labels = labels %||% list(),
+		order = order,
+		filter_values = filter_values,
+		source = "r_api",
+		priority = priority
+	)
 
-  registry@subgroups[[name]] <- new_subgroup
-  registry
+	registry@subgroups[[name]] <- new_subgroup
+	registry
 }
 
 #' Define or override a population configuration
@@ -208,29 +208,29 @@ define_subgroup_config <- function(
 #' )
 #' }
 define_population_config <- function(
-  registry,
-  name,
-  variable,
-  label = NULL,
-  description = NULL,
-  flag_value = "Y",
-  priority = 100
+	registry,
+	name,
+	variable,
+	label = NULL,
+	description = NULL,
+	flag_value = "Y",
+	priority = 100
 ) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
-  checkmate::assert_string(name)
-  checkmate::assert_string(variable)
+	checkmate::assert_class(registry, "ConfigurationRegistry")
+	checkmate::assert_string(name)
+	checkmate::assert_string(variable)
 
-  new_population <- PopulationConfig(
-    variable = variable,
-    label = label %||% name,
-    description = description,
-    flag_value = flag_value,
-    source = "r_api",
-    priority = priority
-  )
+	new_population <- PopulationConfig(
+		variable = variable,
+		label = label %||% name,
+		description = description,
+		flag_value = flag_value,
+		source = "r_api",
+		priority = priority
+	)
 
-  registry@populations[[name]] <- new_population
-  registry
+	registry@populations[[name]] <- new_population
+	registry
 }
 
 #' Get subgroup configuration
@@ -250,10 +250,10 @@ define_population_config <- function(
 #' config <- get_subgroup_config(registry, "age_groups")
 #' }
 get_subgroup_config <- function(registry, name) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
-  checkmate::assert_string(name)
+	checkmate::assert_class(registry, "ConfigurationRegistry")
+	checkmate::assert_string(name)
 
-  registry@subgroups[[name]]
+	registry@subgroups[[name]]
 }
 
 #' Get population configuration
@@ -273,10 +273,10 @@ get_subgroup_config <- function(registry, name) {
 #' config <- get_population_config(registry, "SAF")
 #' }
 get_population_config <- function(registry, name) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
-  checkmate::assert_string(name)
+	checkmate::assert_class(registry, "ConfigurationRegistry")
+	checkmate::assert_string(name)
 
-  registry@populations[[name]]
+	registry@populations[[name]]
 }
 
 #' List available subgroups
@@ -295,8 +295,8 @@ get_population_config <- function(registry, name) {
 #' list_subgroups(registry)
 #' }
 list_subgroups <- function(registry) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
-  names(registry@subgroups)
+	checkmate::assert_class(registry, "ConfigurationRegistry")
+	names(registry@subgroups)
 }
 
 #' List available populations
@@ -315,8 +315,8 @@ list_subgroups <- function(registry) {
 #' list_populations(registry)
 #' }
 list_populations <- function(registry) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
-  names(registry@populations)
+	checkmate::assert_class(registry, "ConfigurationRegistry")
+	names(registry@populations)
 }
 
 #' Update SOC configuration
@@ -343,36 +343,36 @@ list_populations <- function(registry) {
 #' )
 #' }
 update_soc_config <- function(
-  registry,
-  variable = NULL,
-  sort_by = NULL,
-  min_subjects = NULL,
-  top_n = NULL
+	registry,
+	variable = NULL,
+	sort_by = NULL,
+	min_subjects = NULL,
+	top_n = NULL
 ) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
+	checkmate::assert_class(registry, "ConfigurationRegistry")
 
-  current <- registry@soc_config
-  if (is.null(current)) {
-    current <- SOCConfig(variable = "AEBODSYS")
-  }
+	current <- registry@soc_config
+	if (is.null(current)) {
+		current <- SOCConfig(variable = "AEBODSYS")
+	}
 
-  if (!is.null(variable)) {
-    current@variable <- variable
-  }
-  if (!is.null(sort_by)) {
-    current@sort_by <- sort_by
-  }
-  if (!is.null(min_subjects)) {
-    current@min_subjects <- min_subjects
-  }
-  if (!is.null(top_n)) {
-    current@top_n <- top_n
-  }
-  current@source <- "r_api"
-  current@priority <- 100
+	if (!is.null(variable)) {
+		current@variable <- variable
+	}
+	if (!is.null(sort_by)) {
+		current@sort_by <- sort_by
+	}
+	if (!is.null(min_subjects)) {
+		current@min_subjects <- min_subjects
+	}
+	if (!is.null(top_n)) {
+		current@top_n <- top_n
+	}
+	current@source <- "r_api"
+	current@priority <- 100
 
-  registry@soc_config <- current
-  registry
+	registry@soc_config <- current
+	registry
 }
 
 #' Update PT configuration
@@ -398,36 +398,36 @@ update_soc_config <- function(
 #' )
 #' }
 update_pt_config <- function(
-  registry,
-  variable = NULL,
-  sort_by = NULL,
-  min_subjects = NULL,
-  top_n_per_soc = NULL
+	registry,
+	variable = NULL,
+	sort_by = NULL,
+	min_subjects = NULL,
+	top_n_per_soc = NULL
 ) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
+	checkmate::assert_class(registry, "ConfigurationRegistry")
 
-  current <- registry@pt_config
-  if (is.null(current)) {
-    current <- PTConfig(variable = "AEDECOD")
-  }
+	current <- registry@pt_config
+	if (is.null(current)) {
+		current <- PTConfig(variable = "AEDECOD")
+	}
 
-  if (!is.null(variable)) {
-    current@variable <- variable
-  }
-  if (!is.null(sort_by)) {
-    current@sort_by <- sort_by
-  }
-  if (!is.null(min_subjects)) {
-    current@min_subjects <- min_subjects
-  }
-  if (!is.null(top_n_per_soc)) {
-    current@top_n_per_soc <- top_n_per_soc
-  }
-  current@source <- "r_api"
-  current@priority <- 100
+	if (!is.null(variable)) {
+		current@variable <- variable
+	}
+	if (!is.null(sort_by)) {
+		current@sort_by <- sort_by
+	}
+	if (!is.null(min_subjects)) {
+		current@min_subjects <- min_subjects
+	}
+	if (!is.null(top_n_per_soc)) {
+		current@top_n_per_soc <- top_n_per_soc
+	}
+	current@source <- "r_api"
+	current@priority <- 100
 
-  registry@pt_config <- current
-  registry
+	registry@pt_config <- current
+	registry
 }
 
 #' Get performance setting
@@ -448,19 +448,19 @@ update_pt_config <- function(
 #' batch_size <- get_performance_setting(registry, "docx.batch_size", 50)
 #' }
 get_performance_setting <- function(registry, name, default = NULL) {
-  checkmate::assert_class(registry, "ConfigurationRegistry")
+	checkmate::assert_class(registry, "ConfigurationRegistry")
 
-  # Navigate nested structure (e.g., "docx.batch_size")
-  parts <- strsplit(name, "\\.")[[1]]
-  value <- registry@performance
+	# Navigate nested structure (e.g., "docx.batch_size")
+	parts <- strsplit(name, "\\.")[[1]]
+	value <- registry@performance
 
-  for (part in parts) {
-    if (is.list(value) && part %in% names(value)) {
-      value <- value[[part]]
-    } else {
-      return(default)
-    }
-  }
+	for (part in parts) {
+		if (is.list(value) && part %in% names(value)) {
+			value <- value[[part]]
+		} else {
+			return(default)
+		}
+	}
 
-  value
+	value
 }

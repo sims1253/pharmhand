@@ -25,27 +25,27 @@ analyze_study <- S7::new_generic("analyze_study", "x")
 #' @export
 #' @name analyze_study_OneArmStudy
 analyze_study_OneArmStudy <- S7::method(analyze_study, OneArmStudy) <- function(
-  x,
-  ...
+	x,
+	...
 ) {
-  # Implementation using ADaMData and core analysis
-  adam <- ADaMData(data = x@data, trt_var = "TRT01P")
+	# Implementation using ADaMData and core analysis
+	adam <- ADaMData(data = x@data, trt_var = "TRT01P")
 
-  # Baseline analysis - exclude ID and treatment columns explicitly
-  all_vars <- names(x@data)
-  baseline_vars <- all_vars[!all_vars %in% c("USUBJID", "TRT01P")]
-  baseline <- calculate_baseline(adam, vars = baseline_vars)
+	# Baseline analysis - exclude ID and treatment columns explicitly
+	all_vars <- names(x@data)
+	baseline_vars <- all_vars[!all_vars %in% c("USUBJID", "TRT01P")]
+	baseline <- calculate_baseline(adam, vars = baseline_vars)
 
-  results <- list(baseline = baseline)
+	results <- list(baseline = baseline)
 
-  # Only analyze safety if AE columns exist
-  if (all(c("AEBODSYS", "AEDECOD") %in% names(x@data))) {
-    results$safety <- analyze_soc_pt(adam)
-  }
+	# Only analyze safety if AE columns exist
+	if (all(c("AEBODSYS", "AEDECOD") %in% names(x@data))) {
+		results$safety <- analyze_soc_pt(adam)
+	}
 
-  # Store results
-  x@results <- results
-  return(x)
+	# Store results
+	x@results <- results
+	return(x)
 }
 
 #' Analyze TwoArmStudy
@@ -59,27 +59,27 @@ analyze_study_OneArmStudy <- S7::method(analyze_study, OneArmStudy) <- function(
 #' @export
 #' @name analyze_study_TwoArmStudy
 analyze_study_TwoArmStudy <- S7::method(analyze_study, TwoArmStudy) <- function(
-  x,
-  ...
+	x,
+	...
 ) {
-  # Analyze
-  adam <- ADaMData(data = x@data, trt_var = x@group_var)
+	# Analyze
+	adam <- ADaMData(data = x@data, trt_var = x@group_var)
 
-  results <- list()
+	results <- list()
 
-  # Only analyze columns that exist
-  all_vars <- names(x@data)
-  baseline_vars <- all_vars[!all_vars %in% c(x@group_var, "USUBJID")]
+	# Only analyze columns that exist
+	all_vars <- names(x@data)
+	baseline_vars <- all_vars[!all_vars %in% c(x@group_var, "USUBJID")]
 
-  results$baseline <- calculate_baseline(adam, vars = baseline_vars)
+	results$baseline <- calculate_baseline(adam, vars = baseline_vars)
 
-  # Only analyze safety if AE columns exist
-  if (all(c("AEBODSYS", "AEDECOD") %in% names(x@data))) {
-    results$safety <- analyze_soc_pt(adam)
-  }
+	# Only analyze safety if AE columns exist
+	if (all(c("AEBODSYS", "AEDECOD") %in% names(x@data))) {
+		results$safety <- analyze_soc_pt(adam)
+	}
 
-  x@results <- results
-  x
+	x@results <- results
+	x
 }
 
 #' Create Report from Study
@@ -90,35 +90,35 @@ analyze_study_TwoArmStudy <- S7::method(analyze_study, TwoArmStudy) <- function(
 #' @return ClinicalReport object
 #' @export
 create_study_report <- function(x, title = NULL) {
-  if (is.null(title)) {
-    title <- x@study_title
-  }
+	if (is.null(title)) {
+		title <- x@study_title
+	}
 
-  sections <- list()
+	sections <- list()
 
-  if ("baseline" %in% names(x@results)) {
-    sections[[length(sections) + 1]] <- ReportSection(
-      title = "Baseline Characteristics",
-      content = list(create_clinical_table(
-        x@results$baseline,
-        "Demographics Summary"
-      ))
-    )
-  }
+	if ("baseline" %in% names(x@results)) {
+		sections[[length(sections) + 1]] <- ReportSection(
+			title = "Baseline Characteristics",
+			content = list(create_clinical_table(
+				x@results$baseline,
+				"Demographics Summary"
+			))
+		)
+	}
 
-  if ("safety" %in% names(x@results)) {
-    sections[[length(sections) + 1]] <- ReportSection(
-      title = "Safety Analysis",
-      content = list(create_clinical_table(
-        x@results$safety,
-        "Adverse Events by SOC/PT"
-      ))
-    )
-  }
+	if ("safety" %in% names(x@results)) {
+		sections[[length(sections) + 1]] <- ReportSection(
+			title = "Safety Analysis",
+			content = list(create_clinical_table(
+				x@results$safety,
+				"Adverse Events by SOC/PT"
+			))
+		)
+	}
 
-  ClinicalReport(
-    study_id = x@study_id,
-    study_title = title,
-    sections = sections
-  )
+	ClinicalReport(
+		study_id = x@study_id,
+		study_title = title,
+		sections = sections
+	)
 }
