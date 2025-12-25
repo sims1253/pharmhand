@@ -10,6 +10,7 @@ create_ae_discontinuation_table(
   trt_n,
   title = "Adverse Events Leading to Study Drug Discontinuation",
   trt_var = "TRT01A",
+  discontinuation_action = "DRUG WITHDRAWN",
   autofit = TRUE
 )
 ```
@@ -31,6 +32,11 @@ create_ae_discontinuation_table(
 - trt_var:
 
   Treatment variable name
+
+- discontinuation_action:
+
+  Character value in AEACN indicating drug discontinuation. Default:
+  "DRUG WITHDRAWN".
 
 - autofit:
 

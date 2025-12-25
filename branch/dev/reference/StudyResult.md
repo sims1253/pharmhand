@@ -8,8 +8,8 @@ documents.
 
 ``` r
 StudyResult(
-  study_id = NULL,
-  study_title = NULL,
+  study_id = character(0),
+  study_title = character(0),
   tables = list(),
   plots = list(),
   metadata = list()
