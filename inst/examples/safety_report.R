@@ -29,7 +29,6 @@ library(tidyr)
 #' @param output_path Path for the output .docx file
 #'
 #' @return Invisibly returns the ClinicalReport object
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -109,6 +108,8 @@ generate_safety_report <- function(
 		death_section,
 		km_section
 	)
+	# Remove NULL sections
+	sections <- Filter(Negate(is.null), sections)
 
 	# Create report
 	cli::cli_progress_step("Assembling report")
@@ -133,12 +134,6 @@ generate_safety_report <- function(
 	invisible(report)
 }
 
-#' Build AE Overview Table (Table 2.1)
-#'
-#' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
-#' @return ReportSection object
-#' @keywords internal
 #' Build AE Overview Table (Table 2.1)
 #'
 #' @param adae ADAE data frame

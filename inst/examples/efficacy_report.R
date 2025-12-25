@@ -27,7 +27,6 @@ library(tidyr)
 #' @param output_path Path for the output .docx file
 #'
 #' @return Invisibly returns the ClinicalReport object
-#' @export
 #'
 #' @examples
 #' \dontrun{

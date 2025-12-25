@@ -170,6 +170,24 @@ create_ae_soc_table <- function(
 	trt_var = "TRT01A",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adae)) {
+		cli::cli_abort("{.arg adae} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+	if (!all(c(trt_var, "N") %in% names(trt_n))) {
+		cli::cli_abort("{.arg trt_n} must contain columns {trt_var} and 'N'")
+	}
+	required_cols <- c("TRTEMFL", "AEBODSYS", "USUBJID")
+	missing_cols <- setdiff(required_cols, names(adae))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			"{.arg adae} is missing required column{?s}: {.val {missing_cols}}"
+		)
+	}
+
 	soc_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(!!rlang::sym(trt_var), .data$AEBODSYS) |>
@@ -475,11 +493,19 @@ create_ae_severity_table <- function(
 	trt_var = "TRT01A",
 	autofit = TRUE
 ) {
+	# Convert severity to ordered factor for proper max() behavior
 	severity_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
+		dplyr::mutate(
+			AESEV_ord = factor(
+				.data$AESEV,
+				levels = c("MILD", "MODERATE", "SEVERE"),
+				ordered = TRUE
+			)
+		) |>
 		dplyr::group_by(!!rlang::sym(trt_var), .data$USUBJID) |>
 		dplyr::summarise(
-			max_sev = max(.data$AESEV, na.rm = TRUE),
+			max_sev = as.character(max(.data$AESEV_ord, na.rm = TRUE)),
 			.groups = "drop"
 		) |>
 		dplyr::group_by(!!rlang::sym(trt_var), .data$max_sev) |>
@@ -652,6 +678,8 @@ create_sae_table <- function(
 #' @param trt_n Treatment group counts
 #' @param title Table title
 #' @param trt_var Treatment variable name
+#' @param discontinuation_action Character value in AEACN indicating drug
+#'   discontinuation. Default: "DRUG WITHDRAWN".
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
 #' @export
@@ -660,10 +688,11 @@ create_ae_discontinuation_table <- function(
 	trt_n,
 	title = "Adverse Events Leading to Study Drug Discontinuation",
 	trt_var = "TRT01A",
+	discontinuation_action = "DRUG WITHDRAWN",
 	autofit = TRUE
 ) {
 	disc <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == "DRUG WITHDRAWN")
+		dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == discontinuation_action)
 
 	if (nrow(disc) == 0) {
 		summary_df <- data.frame(
@@ -736,6 +765,18 @@ create_deaths_table <- function(
 	trt_var = "TRT01A",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adsl)) {
+		cli::cli_abort("{.arg adsl} must be a data frame")
+	}
+	required_cols <- c("SAFFL", "DTHFL", trt_var)
+	missing_cols <- setdiff(required_cols, names(adsl))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			"{.arg adsl} is missing required column{?s}: {.val {missing_cols}}"
+		)
+	}
+
 	death_summary <- adsl |>
 		dplyr::filter(.data$SAFFL == "Y") |>
 		dplyr::group_by(!!rlang::sym(trt_var)) |>

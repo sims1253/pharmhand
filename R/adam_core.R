@@ -131,9 +131,16 @@ calculate_baseline <- function(data, vars) {
 			)
 	}
 
+	# Ensure at least one result exists
+	final_stats <- res_num %||% res_cat
+	if (is.null(final_stats)) {
+		cli::cli_warn("No valid variables found for baseline analysis")
+		final_stats <- data.frame()
+	}
+
 	# Return combined results (preferring numeric summary for the main stats slot)
 	AnalysisResults(
-		stats = res_num %||% res_cat,
+		stats = final_stats,
 		type = "baseline",
 		metadata = list(categorical = res_cat)
 	)
@@ -148,9 +155,8 @@ calculate_baseline <- function(data, vars) {
 #' @return AnalysisResults object
 #' @export
 analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
-	# Robust check for S7 ADaMData
-	is_adam <- inherits(data, "FunctionReport::ADaMData") ||
-		inherits(data, "ADaMData")
+	# Robust check for S7 ADaMData using S7::S7_inherits
+	is_adam <- S7::S7_inherits(data, ADaMData)
 
 	if (is_adam) {
 		df <- data@data
@@ -218,8 +224,8 @@ analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
 #' @return A list of AnalysisResults per subgroup
 #' @export
 apply_subgroups <- function(data, subgroup_var, analysis_fn, ...) {
-	is_adam <- inherits(data, "FunctionReport::ADaMData") ||
-		inherits(data, "ADaMData")
+	# Robust check for S7 ADaMData using S7::S7_inherits
+	is_adam <- S7::S7_inherits(data, ADaMData)
 	df <- if (is_adam) data@data else data
 
 	subgroups <- unique(df[[subgroup_var]])

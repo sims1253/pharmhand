@@ -9,7 +9,7 @@ test_that("ADaMData and Analysis Core works", {
 
 	# Basic analysis
 	results <- analyze(adam)
-	expect_s3_class(results, "FunctionReport::AnalysisResults")
+	expect_true(S7::S7_inherits(results, AnalysisResults))
 	expect_equal(results@type, "baseline")
 	expect_equal(nrow(results@stats), 2) # Placebo and Active
 })
@@ -69,6 +69,6 @@ test_that("Study Logic works", {
 
 	# Report Generation
 	report <- create_study_report(study)
-	expect_s3_class(report, "FunctionReport::ClinicalReport")
+	expect_true(S7::S7_inherits(report, ClinicalReport))
 	expect_length(report@sections, 2)
 })

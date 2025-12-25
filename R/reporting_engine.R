@@ -35,7 +35,13 @@ as_flextable_AnalysisResults <- S7::method(
 			)
 	} else if (x@type == "safety_ae") {
 		# Hierarchy styling for SOC-PT
-		ft <- flextable::flextable(df |> dplyr::select(-"label")) |>
+		# Defensive check for "label" column
+		df_display <- if ("label" %in% names(df)) {
+			dplyr::select(df, -"label")
+		} else {
+			df
+		}
+		ft <- flextable::flextable(df_display) |>
 			flextable::theme_booktabs() |>
 			flextable::padding(
 				i = ~ level == "PT",

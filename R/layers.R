@@ -396,33 +396,24 @@ build_descriptive_layer <- function(layer, data, trt_var) {
 		data <- dplyr::filter(data, !!layer@where)
 	}
 
-	# Build summary expressions
-	stat_funs <- list(
-		n = ~ dplyr::n(),
-		mean = ~ mean(.x, na.rm = TRUE),
-		sd = ~ stats::sd(.x, na.rm = TRUE),
-		median = ~ stats::median(.x, na.rm = TRUE),
-		min = ~ min(.x, na.rm = TRUE),
-		max = ~ max(.x, na.rm = TRUE),
-		q1 = ~ stats::quantile(.x, 0.25, na.rm = TRUE),
-		q3 = ~ stats::quantile(.x, 0.75, na.rm = TRUE)
+	# Only compute requested statistics for efficiency
+	stat_exprs <- list(
+		n = rlang::expr(dplyr::n()),
+		mean = rlang::expr(mean(.data[[!!target]], na.rm = TRUE)),
+		sd = rlang::expr(stats::sd(.data[[!!target]], na.rm = TRUE)),
+		median = rlang::expr(stats::median(.data[[!!target]], na.rm = TRUE)),
+		min = rlang::expr(min(.data[[!!target]], na.rm = TRUE)),
+		max = rlang::expr(max(.data[[!!target]], na.rm = TRUE)),
+		q1 = rlang::expr(stats::quantile(.data[[!!target]], 0.25, na.rm = TRUE)),
+		q3 = rlang::expr(stats::quantile(.data[[!!target]], 0.75, na.rm = TRUE))
 	)
+
+	# Build only the requested statistics
+	stat_calls <- stat_exprs[intersect(stats, names(stat_exprs))]
 
 	result <- data |>
 		dplyr::group_by(dplyr::across(dplyr::all_of(by_vars))) |>
-		dplyr::summarise(
-			n = dplyr::n(),
-			mean = mean(.data[[target]], na.rm = TRUE),
-			sd = stats::sd(.data[[target]], na.rm = TRUE),
-			median = stats::median(.data[[target]], na.rm = TRUE),
-			min = min(.data[[target]], na.rm = TRUE),
-			max = max(.data[[target]], na.rm = TRUE),
-			.groups = "drop"
-		)
-
-	# Filter to requested stats
-	keep_cols <- c(by_vars, intersect(stats, names(result)))
-	result <- result[, keep_cols, drop = FALSE]
+		dplyr::summarise(!!!stat_calls, .groups = "drop")
 
 	result$variable <- target
 	result$layer_type <- "descriptive"

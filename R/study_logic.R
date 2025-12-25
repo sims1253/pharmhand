@@ -99,6 +99,7 @@ create_study_report <- function(x, title = NULL) {
 	if ("baseline" %in% names(x@results)) {
 		sections[[length(sections) + 1]] <- ReportSection(
 			title = "Baseline Characteristics",
+			section_type = "baseline",
 			content = list(create_clinical_table(
 				x@results$baseline,
 				"Demographics Summary"
@@ -109,6 +110,7 @@ create_study_report <- function(x, title = NULL) {
 	if ("safety" %in% names(x@results)) {
 		sections[[length(sections) + 1]] <- ReportSection(
 			title = "Safety Analysis",
+			section_type = "safety",
 			content = list(create_clinical_table(
 				x@results$safety,
 				"Adverse Events by SOC/PT"

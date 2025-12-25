@@ -17,7 +17,7 @@ NULL
 #' @param title Plot title
 #' @param xlab X-axis label
 #' @param ylab Y-axis label
-#' @param risk_table Logical, whether to include risk table (not implemented yet)
+#' @param risk_table Logical, whether to include risk table below the plot. Requires the patchwork package.
 #'
 #' @return A ClinicalPlot object
 #' @export

@@ -16,10 +16,3 @@ test_that("create_km_plot works with valid data", {
 	expect_true(ggplot2::is_ggplot(p@plot))
 	expect_equal(p@title, "Kaplan-Meier Plot")
 })
-
-test_that("create_km_plot handles missing packages gracefully", {
-	# This is hard to test without unloading packages, which is risky in testthat.
-	# We rely on the fact that the function calls requireNamespace.
-	# We can test that it calls cli::cli_abort if we force logic, but skip for now.
-	succeed()
-})

@@ -267,8 +267,20 @@ StudyResult <- S7::new_class(
 	"StudyResult",
 	package = "FunctionReport",
 	properties = list(
-		study_id = S7::new_property(S7::class_any),
-		study_title = S7::new_property(S7::class_any),
+		study_id = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		study_title = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
 		tables = S7::new_property(S7::class_list, default = list()),
 		plots = S7::new_property(S7::class_list, default = list()),
 		metadata = S7::new_property(S7::class_list, default = list()),
@@ -397,14 +409,14 @@ OneArmStudy <- S7::new_class(
 			}
 		),
 		study_id = S7::new_property(
-			S7::class_any,
+			S7::class_character,
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
 				NULL
 			}
 		),
 		study_title = S7::new_property(
-			S7::class_any,
+			S7::class_character,
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
 				NULL
@@ -451,14 +463,14 @@ TwoArmStudy <- S7::new_class(
 			}
 		),
 		study_id = S7::new_property(
-			S7::class_any,
+			S7::class_character,
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
 				NULL
 			}
 		),
 		study_title = S7::new_property(
-			S7::class_any,
+			S7::class_character,
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
 				NULL
@@ -942,8 +954,9 @@ AnalysisMeta <- S7::new_class(
 			default = NULL,
 			validator = function(value) {
 				if (!is.null(value) && !inherits(value, "POSIXct")) {
-					"timestamp must be NULL or POSIXct"
+					return("timestamp must be NULL or POSIXct")
 				}
+				NULL
 			}
 		),
 		package_version = S7::new_property(S7::class_character, default = ""),

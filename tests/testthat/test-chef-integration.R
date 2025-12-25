@@ -158,17 +158,7 @@ test_that("AnalysisMeta tracks metadata correctly", {
 })
 
 test_that("create_analysis_meta populates environment info", {
-	skip_if_not(
-		tryCatch(
-			{
-				packageVersion("FunctionReport")
-				TRUE
-			},
-			error = function(e) FALSE
-		),
-		"FunctionReport not installed"
-	)
-
+	# FunctionReport package is always available since this is part of the package
 	meta <- create_analysis_meta(
 		source_vars = "AGE",
 		derivation = "mean"

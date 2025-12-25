@@ -7,8 +7,8 @@
 OneArmStudy(
   data = structure(list(), names = character(0), row.names = integer(0), class =
     "data.frame"),
-  study_id = NULL,
-  study_title = NULL,
+  study_id = character(0),
+  study_title = character(0),
   results = list(),
   metadata = list()
 )

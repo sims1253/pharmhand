@@ -72,9 +72,11 @@ test_that("apply_format handles integer-only format", {
 })
 
 test_that("apply_format right-aligns when requested", {
-	result <- apply_format("xx.x", c(1.5, 123.4), align = TRUE)
+	result <- apply_format("xx.x", c(1.5, 12.4), align = TRUE)
+	# Both values should have equal length when aligned (within spec width)
+	expect_equal(nchar(result[1]), nchar(result[2]))
 	# Shorter value should have leading spaces
-	expect_true(nchar(result[1]) <= nchar(result[2]))
+	expect_true(grepl("^\\s", result[1]))
 })
 
 test_that("CompositeFormat creates valid object", {
