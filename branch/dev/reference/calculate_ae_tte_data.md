@@ -1,6 +1,6 @@
 # Calculate AE TTE Data for a specific SOC
 
-Calculate AE TTE Data for a specific SOC
+Prepares time-to-event data for Kaplan-Meier analysis of adverse events.
 
 ## Usage
 

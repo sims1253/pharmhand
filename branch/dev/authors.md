@@ -6,12 +6,17 @@
 
 ## Citation
 
-Scholz M (2025). *FunctionReport: Wrapper for R to MS Office Packages
-for Clinical Study Reports*. R package version 0.0.0.9000.
+Source:
+[`DESCRIPTION`](https://github.com/sims1253/pharmhand/blob/dev/DESCRIPTION)
+
+Scholz M (2025). *pharmhand: Clinical Study Tables and Reports from ADaM
+Data*. R package version 0.0.0.9000,
+<https://github.com/sims1253/pharmhand>.
 
     @Manual{,
-      title = {FunctionReport: Wrapper for R to MS Office Packages for Clinical Study Reports},
+      title = {pharmhand: Clinical Study Tables and Reports from ADaM Data},
       author = {Maximilian Scholz},
       year = {2025},
       note = {R package version 0.0.0.9000},
+      url = {https://github.com/sims1253/pharmhand},
     }

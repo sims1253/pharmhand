@@ -107,22 +107,10 @@
   : Convert Chef Results to AnalysisResults
 - [`composite_format()`](https://sims1253.github.io/pharmhand/branch/dev/reference/composite_format.md)
   : Composite Format Specification
-- [`create_ae_discontinuation_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_discontinuation_table.md)
-  : Create AE Leading to Discontinuation Table
 - [`create_ae_km_plot_for_soc()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_km_plot_for_soc.md)
   : Create AE KM Plot for a specific SOC
-- [`create_ae_overview_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_overview_table.md)
-  : Create AE Overview Table
-- [`create_ae_pt_table_for_soc()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_pt_table_for_soc.md)
-  : Create AE PT Table for a specific SOC
-- [`create_ae_pt_tables_by_soc()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_pt_tables_by_soc.md)
-  : Create AE PT Tables for all SOCs
-- [`create_ae_relationship_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_relationship_table.md)
-  : Create AE by Relationship Table
-- [`create_ae_severity_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_severity_table.md)
-  : Create AE by Maximum Severity Table
-- [`create_ae_soc_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_soc_table.md)
-  : Create AE by System Organ Class Table
+- [`create_ae_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_table.md)
+  : Create Adverse Event Table
 - [`create_analysis_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_analysis_meta.md)
   : Create Analysis Metadata
 - [`create_cfb_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_cfb_summary_table.md)
@@ -131,16 +119,14 @@
   : Create Chef Endpoint Specification
 - [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
   : Helper to create a ClinicalTable from AnalysisResults
-- [`create_common_ae_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_common_ae_table.md)
-  : Create Most Common AE Table
 - [`create_conmeds_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_conmeds_table.md)
   : Create Concomitant Medications Table
-- [`create_deaths_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_deaths_table.md)
-  : Create Deaths Summary Table
 - [`create_demographics_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_demographics_table.md)
   : Create Demographics Table
 - [`create_disposition_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_disposition_table.md)
   : Create Subject Disposition Table
+- [`create_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_forest_plot.md)
+  : Create Subgroup Forest Plot
 - [`create_hta_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_table.md)
   : Create HTA-Style Table
 - [`create_km_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_km_plot.md)
@@ -157,12 +143,16 @@
   : Create Primary Endpoint Summary Table
 - [`create_region_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_region_table.md)
   : Create Enrollment by Region Table
-- [`create_sae_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_sae_table.md)
-  : Create SAE Table
+- [`create_responder_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_responder_table.md)
+  : Create Responder Summary Table
 - [`create_study_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_study_report.md)
   : Create Report from Study
 - [`create_subgroup_analysis_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_subgroup_analysis_table.md)
   : Create Subgroup Analysis Table
+- [`create_subgroup_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_subgroup_table.md)
+  : Create Subgroup Analysis Table
+- [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_tte_summary_table.md)
+  : Create Time-to-Event Summary Table
 - [`create_vs_by_visit_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_vs_by_visit_table.md)
   : Create Vital Signs by Visit Table
 - [`format_ci()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_ci.md)
@@ -189,6 +179,10 @@
   : Generate a Word document from a ClinicalReport
 - [`get_chef_stat()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_chef_stat.md)
   : Register Chef Statistical Functions
+- [`get_filtered_data()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_filtered_data.md)
+  : Get Filtered Data
+- [`get_trt_n()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_trt_n.md)
+  : Get Treatment Group Counts
 - [`layered_to_flextable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/layered_to_flextable.md)
   : Convert LayeredTable to flextable
 - [`layers`](https://sims1253.github.io/pharmhand/branch/dev/reference/layers.md)

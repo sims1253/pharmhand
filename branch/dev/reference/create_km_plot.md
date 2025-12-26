@@ -7,13 +7,20 @@ Generates a standard Kaplan-Meier plot using ggplot2 and survival.
 ``` r
 create_km_plot(
   data,
-  time_var,
-  event_var,
-  trt_var,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "TRT01P",
   title = "Kaplan-Meier Plot",
   xlab = "Time",
   ylab = "Survival Probability",
-  risk_table = FALSE
+  risk_table = FALSE,
+  show_median = FALSE,
+  show_ci = FALSE,
+  show_censor = TRUE,
+  landmarks = NULL,
+  xlim = NULL,
+  palette = NULL,
+  conf_level = 0.95
 )
 ```
 
@@ -21,19 +28,21 @@ create_km_plot(
 
 - data:
 
-  Data frame containing survival data
+  ADaMData object or data frame containing survival data
 
 - time_var:
 
-  Time variable name
+  Time variable name (default: "AVAL")
 
 - event_var:
 
-  Event variable name (1=event, 0=censor)
+  Event variable name. If "CNSR" (ADaM censoring flag), it will be
+  automatically inverted (0=event becomes 1=event). Otherwise expects
+  1=event, 0=censor. Default: "CNSR"
 
 - trt_var:
 
-  Treatment variable name
+  Treatment variable name (default: "TRT01P")
 
 - title:
 
@@ -51,6 +60,59 @@ create_km_plot(
 
   Logical, include risk table below. Requires patchwork.
 
+- show_median:
+
+  Logical, add horizontal/vertical lines at median survival time
+  (default: FALSE)
+
+- show_ci:
+
+  Logical, show confidence bands around survival curves (default: FALSE)
+
+- show_censor:
+
+  Logical, show censoring marks as crosses (default: TRUE)
+
+- landmarks:
+
+  Numeric vector of timepoints to highlight with vertical lines (e.g.,
+  c(12, 24) for 12 and 24 months). NULL for none.
+
+- xlim:
+
+  Optional x-axis limits as c(min, max)
+
+- palette:
+
+  Optional color palette for treatment groups. If NULL, uses default
+  ggplot2 colors.
+
+- conf_level:
+
+  Confidence level for CI bands (default: 0.95)
+
 ## Value
 
 A ClinicalPlot object
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Basic KM plot
+km <- create_km_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  title = "Overall Survival"
+)
+
+# With median lines and CI bands
+km <- create_km_plot(
+  data = adtte,
+  show_median = TRUE,
+  show_ci = TRUE,
+  risk_table = TRUE
+)
+} # }
+```

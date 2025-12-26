@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Wrapper for R to MS Office Packages for Clinical Study Reports • FunctionReport</title>
+<title>Clinical Study Tables and Reports from ADaM Data • pharmhand</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Wrapper for R to MS Office Packages for Clinical Study Reports">
-<meta name="description" content="Wrapper for officer, flextable and similar R to MS Office packages for creating clinical study reports. Supports ADaM formats.">
-<meta property="og:description" content="Wrapper for officer, flextable and similar R to MS Office packages for creating clinical study reports. Supports ADaM formats.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Clinical Study Tables and Reports from ADaM Data">
+<meta name="description" content="Create clinical study tables and reports from ADaM datasets. Provides S7 classes for structured output and uses officer/flextable for Word document generation. Integrates with the chef package for HTA analyses.">
+<meta property="og:description" content="Create clinical study tables and reports from ADaM datasets. Provides S7 classes for structured output and uses officer/flextable for Word document generation. Integrates with the chef package for HTA analyses.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,7 +20,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">FunctionReport</a>
+    <a class="navbar-brand me-2" href="index.html">pharmhand</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
 
@@ -32,11 +32,13 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/sims1253/pharmhand/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -45,620 +47,203 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="functionreport">FunctionReport<a class="anchor" aria-label="anchor" href="#functionreport"></a>
+<div class="page-header"><h1 id="pharmhand">pharmhand<a class="anchor" aria-label="anchor" href="#pharmhand"></a>
 </h1></div>
-<p><img src="https://img.shields.io/badge/R-4.4.0%2B-blue" alt="R"><img src="https://img.shields.io/badge/License-MIT-green" alt="License"><img src="https://img.shields.io/badge/Version-0.0.0.9000-orange" alt="Version"></p>
-<blockquote>
-<p>Wrapper for R to MS Office packages for creating clinical study reports with ADaM format support.</p>
-</blockquote>
-<div class="section level2">
-<h2 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
-</h2>
-<p><strong>FunctionReport</strong> is a comprehensive R package designed for creating clinical study reports. It provides a high-level wrapper around popular R-to-MS Office packages like <a href="https://davidgohel.github.io/officer/" class="external-link"><code>officer</code></a> and <a href="https://davidgohel.github.io/flextable/" class="external-link"><code>flextable</code></a>, specifically tailored for clinical trial reporting.</p>
-<p>The package supports ADaM (Analysis Data Model) formats and includes:</p>
-<ul>
-<li>
-<strong>Clinical Tables</strong>: Demographics, adverse events, efficacy tables, and more</li>
-<li>
-<strong>Clinical Plots</strong>: Kaplan-Meier, forest plots, waterfall plots, spider plots</li>
-<li>
-<strong>Statistical Analysis</strong>: Descriptive statistics, hypothesis testing, survival analysis</li>
-<li>
-<strong>Parallel Processing</strong>: Built-in parallelization for large datasets</li>
-<li>
-<strong>ADaM Helpers</strong>: Utilities for reading and processing ADaM datasets</li>
-<li>
-<strong>Result Classes</strong>: R6 classes for structured result management</li>
-</ul>
-</div>
+<!-- badges: start -->
+
+<p>pharmhand creates clinical study tables and reports from ADaM datasets. It wraps <a href="https://davidgohel.github.io/officer/" class="external-link">officer</a> and <a href="https://davidgohel.github.io/flextable/" class="external-link">flextable</a> with S7 classes designed for clinical reporting workflows, with a focus on HTA/AMNOG dossier requirements.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="section level3">
-<h3 id="install-from-cran-when-available">Install from CRAN (when available)<a class="anchor" aria-label="anchor" href="#install-from-cran-when-available"></a>
-</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"FunctionReport"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="install-from-github">Install from GitHub<a class="anchor" aria-label="anchor" href="#install-from-github"></a>
-</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Install devtools if not already installed</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Install FunctionReport</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"yourusername/FunctionReport"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="install-from-local-source">Install from Local Source<a class="anchor" aria-label="anchor" href="#install-from-local-source"></a>
-</h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Navigate to the package directory</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">"/path/to/Functioneer/FunctionReport"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Install the package</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="main-functions">Main Functions<a class="anchor" aria-label="anchor" href="#main-functions"></a>
-</h2>
-<table class="table">
-<colgroup>
-<col width="40%">
-<col width="60%">
-</colgroup>
-<thead><tr class="header">
-<th>Category</th>
-<th>Key Functions</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><strong>Document Creation</strong></td>
-<td>
-<a href="R/word_document.R:20"><code>create_word_document()</code></a>, <a href="R/word_document.R:48"><code>save_word_document()</code></a>
-</td>
-</tr>
-<tr class="even">
-<td><strong>Tables</strong></td>
-<td>
-<a href="R/clinical_tables.R:35"><code>create_summary_table()</code></a>, <a href="R/clinical_tables.R:122"><code>create_demographics_table()</code></a>, <a href="R/clinical_tables.R:273"><code>create_adverse_events_table()</code></a>
-</td>
-</tr>
-<tr class="odd">
-<td><strong>Plots</strong></td>
-<td>
-<a href="R/clinical_plots.R:41"><code>create_km_plot()</code></a>, <a href="R/clinical_plots.R:113"><code>create_forest_plot()</code></a>, <a href="R/clinical_plots.R:201"><code>create_waterfall_plot()</code></a>
-</td>
-</tr>
-<tr class="even">
-<td><strong>Statistics</strong></td>
-<td>
-<a href="R/statistical_helpers.R:73"><code>calculate_mean_sd()</code></a>, <a href="R/statistical_helpers.R:350"><code>perform_ttest()</code></a>, <a href="R/statistical_helpers.R:602"><code>perform_logrank()</code></a>
-</td>
-</tr>
-<tr class="odd">
-<td><strong>ADaM</strong></td>
-<td>
-<a href="R/adam_helpers.R:36"><code>read_adam()</code></a>, <a href="R/adam_helpers.R:108"><code>get_adsl()</code></a>, <a href="R/adam_helpers.R:248"><code>filter_by_population()</code></a>
-</td>
-</tr>
-<tr class="even">
-<td><strong>Parallel</strong></td>
-<td>
-<a href="R/parallel_helpers.R:48"><code>setup_parallel()</code></a>, <a href="R/parallel_helpers.R:123"><code>get_optimal_workers()</code></a>
-</td>
-</tr>
-<tr class="odd">
-<td><strong>Classes</strong></td>
-<td>
-<a href="R/result_classes.R:15"><code>ClinicalTable</code></a>, <a href="R/result_classes.R:137"><code>ClinicalPlot</code></a>, <a href="R/result_classes.R:333"><code>StudyResult</code></a>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"sims1253/pharmhand"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sims1253/pharmhand" class="external-link">pharmhand</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Wrap ADaM data with automatic population filtering</span></span>
+<span><span class="va">adam_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ADaMData.html">ADaMData</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">adsl</span>,</span>
+<span>  domain <span class="op">=</span> <span class="st">"ADSL"</span>,</span>
+<span></span>
+<span>  population <span class="op">=</span> <span class="st">"SAF"</span>,</span>
+<span>  trt_var <span class="op">=</span> <span class="st">"TRT01A"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Access filtered data and treatment counts directly</span></span>
+<span><span class="va">adam_data</span><span class="op">@</span><span class="va">filtered_data</span>  <span class="co"># Auto-filtered to SAFFL == "Y"</span></span>
+<span><span class="va">adam_data</span><span class="op">@</span><span class="va">trt_n</span>          <span class="co"># Treatment group N's computed automatically</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
+</h2>
 <div class="section level3">
-<h3 id="basic-example-create-a-clinical-report">Basic Example: Create a Clinical Report<a class="anchor" aria-label="anchor" href="#basic-example-create-a-clinical-report"></a>
+<h3 id="efficacy-tables">Efficacy Tables<a class="anchor" aria-label="anchor" href="#efficacy-tables"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">FunctionReport</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Time-to-event summary with median, HR, and landmarks</span></span>
+<span><span class="va">tte_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_tte_summary_table.html">create_tte_summary_table</a></span><span class="op">(</span></span>
+<span>  <span class="va">adtte</span>,</span>
+<span>  time_var <span class="op">=</span> <span class="st">"AVAL"</span>,</span>
+<span>  event_var <span class="op">=</span> <span class="st">"CNSR"</span>,</span>
+<span>  trt_var <span class="op">=</span> <span class="st">"TRT01A"</span>,</span>
+<span>  landmarks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">12</span><span class="op">)</span>  <span class="co"># Survival rates at 6 and 12 months</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Load ADaM data</span></span>
-<span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu">read_adam</span><span class="op">(</span><span class="st">"data/adsl.xpt"</span>, <span class="st">"ADSL"</span><span class="op">)</span></span>
-<span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="fu">read_adam</span><span class="op">(</span><span class="st">"data/adae.xpt"</span>, <span class="st">"ADAE"</span><span class="op">)</span></span>
+<span><span class="co"># Responder analysis with CI, OR, RR, RD</span></span>
+<span><span class="va">responder_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_responder_table.html">create_responder_table</a></span><span class="op">(</span></span>
+<span>  <span class="va">adrs</span>,</span>
+<span>  response_var <span class="op">=</span> <span class="st">"AVALC"</span>,</span>
+<span>  trt_var <span class="op">=</span> <span class="st">"TRT01A"</span>,</span>
+<span>  effect_measure <span class="op">=</span> <span class="st">"OR"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create a Word document</span></span>
-<span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">create_word_document</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add title</span></span>
-<span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">add_title</span><span class="op">(</span><span class="va">doc</span>, <span class="st">"Clinical Study Report"</span>, level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add demographics table</span></span>
-<span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adsl</span>, <span class="st">"TRT01P"</span><span class="op">)</span></span>
-<span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">officer</span><span class="fu">::</span><span class="fu">body_add_flextable</span><span class="op">(</span><span class="va">doc</span>, <span class="va">demo_table</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add page break</span></span>
-<span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">add_page_break</span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add adverse events table</span></span>
-<span><span class="va">ae_table</span> <span class="op">&lt;-</span> <span class="fu">create_adverse_events_table</span><span class="op">(</span><span class="va">adae</span>, <span class="st">"AEBODSYS"</span>, <span class="st">"AEDECOD"</span>, <span class="st">"TRT01P"</span><span class="op">)</span></span>
-<span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">officer</span><span class="fu">::</span><span class="fu">body_add_flextable</span><span class="op">(</span><span class="va">doc</span>, <span class="va">ae_table</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Save the document</span></span>
-<span><span class="fu">save_word_document</span><span class="op">(</span><span class="va">doc</span>, <span class="st">"clinical_report.docx"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Subgroup analysis table for Word export</span></span>
+<span><span class="va">subgroup_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_subgroup_table.html">create_subgroup_table</a></span><span class="op">(</span></span>
+<span>  <span class="va">adtte</span>,</span>
+<span>  subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Age"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"AGEGR1"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"Sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"SEX"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  effect_type <span class="op">=</span> <span class="st">"hr"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="using-result-classes">Using Result Classes<a class="anchor" aria-label="anchor" href="#using-result-classes"></a>
+<h3 id="safety-tables">Safety Tables<a class="anchor" aria-label="anchor" href="#safety-tables"></a>
+</h3>
+<p>All safety tables through a unified interface:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># AE Overview</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"overview"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># AEs by SOC</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"soc"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Most common AEs (top 15)</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"common"</span>, n_top <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># SAEs, discontinuations, deaths</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"sae"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"discontinuation"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"deaths"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># By severity or relationship</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"severity"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/create_ae_table.html">create_ae_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"relationship"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">FunctionReport</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Kaplan-Meier with risk table</span></span>
+<span><span class="va">km_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_km_plot.html">create_km_plot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">adtte</span>,</span>
+<span>  time_var <span class="op">=</span> <span class="st">"AVAL"</span>,</span>
+<span>  event_var <span class="op">=</span> <span class="st">"CNSR"</span>,</span>
+<span>  trt_var <span class="op">=</span> <span class="st">"TRT01A"</span>,</span>
+<span>  risk_table <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_median <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  landmarks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">24</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create a study result object</span></span>
-<span><span class="va">study</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/StudyResult.html">StudyResult</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span><span class="co"># Forest plot for subgroup analysis</span></span>
+<span><span class="va">forest_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_forest_plot.html">create_forest_plot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">adtte</span>,</span>
+<span>  subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Age &lt;65"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"AGEGR1"</span>, level <span class="op">=</span> <span class="st">"&lt;65"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"Age &gt;=65"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"AGEGR1"</span>, level <span class="op">=</span> <span class="st">"&gt;=65"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  effect_type <span class="op">=</span> <span class="st">"hr"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="report-generation">Report Generation<a class="anchor" aria-label="anchor" href="#report-generation"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Build a complete report</span></span>
+<span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ClinicalReport.html">ClinicalReport</a></span><span class="op">(</span></span>
 <span>  study_id <span class="op">=</span> <span class="st">"STUDY-001"</span>,</span>
 <span>  study_title <span class="op">=</span> <span class="st">"Phase III Clinical Trial"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add a table</span></span>
-<span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/ClinicalTable.html">ClinicalTable</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">adsl</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Demographics"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"demographics"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">study</span><span class="op">$</span><span class="fu">add_table</span><span class="op">(</span><span class="va">demo_table</span>, <span class="st">"demographics"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add a plot</span></span>
-<span><span class="va">km_plot</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/ClinicalPlot.html">ClinicalPlot</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>  plot <span class="op">=</span> <span class="fu"><a href="reference/create_km_plot.html">create_km_plot</a></span><span class="op">(</span><span class="va">fit</span>, data <span class="op">=</span> <span class="va">adtte</span><span class="op">)</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Kaplan-Meier Survival Curve"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"km"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">study</span><span class="op">$</span><span class="fu">add_plot</span><span class="op">(</span><span class="va">km_plot</span>, <span class="st">"survival"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Generate Word document</span></span>
-<span><span class="va">study</span><span class="op">$</span><span class="fu">to_word</span><span class="op">(</span><span class="st">"study_report.docx"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="parallel-processing-example">Parallel Processing Example<a class="anchor" aria-label="anchor" href="#parallel-processing-example"></a>
-</h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">FunctionReport</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Setup parallel processing</span></span>
-<span><span class="fu">setup_parallel</span><span class="op">(</span>workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create multiple tables in parallel</span></span>
-<span><span class="va">tables</span> <span class="op">&lt;-</span> <span class="fu">create_tables_parallel</span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">adsl</span>,</span>
-<span>  group_var <span class="op">=</span> <span class="st">"TRT01P"</span>,</span>
-<span>  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span><span class="op">)</span></span>
+<span><span class="va">section</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ReportSection.html">ReportSection</a></span><span class="op">(</span></span>
+<span>  title <span class="op">=</span> <span class="st">"Efficacy Results"</span>,</span>
+<span>  section_type <span class="op">=</span> <span class="st">"efficacy"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create multiple plots in parallel</span></span>
-<span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">create_plots_parallel</span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">adtte</span>,</span>
-<span>  plot_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"km"</span>, <span class="st">"forest"</span>, <span class="st">"waterfall"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">section</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/add_content.html">add_content</a></span><span class="op">(</span><span class="va">section</span>, <span class="va">tte_table</span><span class="op">)</span></span>
+<span><span class="va">section</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/add_content.html">add_content</a></span><span class="op">(</span><span class="va">section</span>, <span class="va">km_plot</span><span class="op">)</span></span>
+<span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/add_content.html">add_section</a></span><span class="op">(</span><span class="va">report</span>, <span class="va">section</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Stop parallel processing</span></span>
-<span><span class="fu">stop_parallel</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Export to Word</span></span>
+<span><span class="fu"><a href="reference/generate_word.html">generate_word</a></span><span class="op">(</span><span class="va">report</span>, <span class="st">"study_report.docx"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+<h2 id="s7-classes">S7 Classes<a class="anchor" aria-label="anchor" href="#s7-classes"></a>
 </h2>
-<div class="section level3">
-<h3 id="clinical-tables">Clinical Tables<a class="anchor" aria-label="anchor" href="#clinical-tables"></a>
-</h3>
+<p>pharmhand uses S7 classes to structure clinical content:</p>
 <ul>
 <li>
-<strong>Summary Tables</strong>: Comprehensive summary statistics with customizable grouping</li>
+<code>ADaMData</code> - ADaM dataset with population filters and computed properties (<code>filtered_data</code>, <code>trt_n</code>)</li>
 <li>
-<strong>Demographics Tables</strong>: Age, sex, race, ethnicity, and baseline characteristics</li>
+<code>ClinicalTable</code> - Table with flextable formatting</li>
 <li>
-<strong>Adverse Events Tables</strong>: SOC/PT hierarchy with subject counts and percentages</li>
+<code>ClinicalPlot</code> - Plot (ggplot2/ggsurvplot) with export settings</li>
 <li>
-<strong>Efficacy Tables</strong>: Treatment outcomes with statistical comparisons</li>
+<code>ClinicalReport</code> - Report containing sections with tables and plots</li>
 <li>
-<strong>Population Tables</strong>: Analysis set definitions and subject flow</li>
-<li>
-<strong>Subgroup Tables</strong>: Stratified analyses by demographic or clinical factors</li>
+<code>StudyResult</code> - Container for tables and plots from a study</li>
 </ul>
-</div>
-<div class="section level3">
-<h3 id="clinical-plots">Clinical Plots<a class="anchor" aria-label="anchor" href="#clinical-plots"></a>
-</h3>
-<ul>
-<li>
-<strong>Kaplan-Meier Plots</strong>: Survival curves with confidence intervals and risk tables</li>
-<li>
-<strong>Forest Plots</strong>: Effect sizes and confidence intervals across subgroups</li>
-<li>
-<strong>Waterfall Plots</strong>: Tumor size changes for oncology studies</li>
-<li>
-<strong>Spider Plots</strong>: Longitudinal tumor measurements</li>
-<li>
-<strong>Distribution Plots</strong>: Histograms, box plots, and density plots</li>
-<li>
-<strong>Correlation Plots</strong>: Scatter plots with regression lines</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="statistical-analysis">Statistical Analysis<a class="anchor" aria-label="anchor" href="#statistical-analysis"></a>
-</h3>
-<ul>
-<li>
-<strong>Descriptive Statistics</strong>: Mean, SD, median, IQR, N, percentages</li>
-<li>
-<strong>Confidence Intervals</strong>: t-distribution and normal approximation methods</li>
-<li>
-<strong>Hypothesis Tests</strong>: t-test, Wilcoxon, chi-square, Fisher’s exact</li>
-<li>
-<strong>Survival Analysis</strong>: Kaplan-Meier estimation, log-rank test</li>
-<li>
-<strong>Effect Sizes</strong>: Cohen’s d, odds ratios, hazard ratios</li>
-<li>
-<strong>Sample Size/Power</strong>: Power analysis for common study designs</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="adam-support">ADaM Support<a class="anchor" aria-label="anchor" href="#adam-support"></a>
-</h3>
-<ul>
-<li>
-<strong>Dataset Reading</strong>: Support for XPT, CSV, RDS, and SAS7BDAT formats</li>
-<li>
-<strong>Dataset Validation</strong>: Automatic validation of required ADaM variables</li>
-<li>
-<strong>Population Filtering</strong>: SAF, FAS, PPS, ITT population definitions</li>
-<li>
-<strong>Subgroup Analysis</strong>: Flexible subgroup definitions and filtering</li>
-<li>
-<strong>Dataset Merging</strong>: Subject-level merging of multiple ADaM datasets</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="parallel-processing">Parallel Processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a>
-</h3>
-<ul>
-<li>
-<strong>Multiple Backends</strong>: Multisession, multicore, cluster, sequential</li>
-<li>
-<strong>Automatic Worker Detection</strong>: Optimal worker count based on CPU and memory</li>
-<li>
-<strong>Memory Management</strong>: Automatic garbage collection and memory optimization</li>
-<li>
-<strong>Benchmarking Tools</strong>: Performance comparison and bottleneck identification</li>
-<li>
-<strong>Caching</strong>: Result caching for expensive computations</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="result-classes">Result Classes<a class="anchor" aria-label="anchor" href="#result-classes"></a>
-</h3>
-<ul>
-<li>
-<strong>ClinicalTable</strong>: Structured table representation with formatting methods</li>
-<li>
-<strong>ClinicalPlot</strong>: Structured plot representation with export capabilities</li>
-<li>
-<strong>StudyResult</strong>: Complete study result container with document generation</li>
-</ul>
-</div>
 </div>
 <div class="section level2">
-<h2 id="modules">Modules<a class="anchor" aria-label="anchor" href="#modules"></a>
+<h2 id="related-packages">Related Packages<a class="anchor" aria-label="anchor" href="#related-packages"></a>
 </h2>
-<div class="section level3">
-<h3 id="core-modules">Core Modules<a class="anchor" aria-label="anchor" href="#core-modules"></a>
-</h3>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="29%">
-<col width="48%">
-<col width="22%">
-</colgroup>
-<thead><tr class="header">
-<th>Module</th>
-<th>Description</th>
-<th>File</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><a href="R/word_document.R"><code>word_document</code></a></td>
-<td>Word document creation and manipulation</td>
-<td><code>R/word_document.R</code></td>
-</tr>
-<tr class="even">
-<td><a href="R/clinical_tables.R"><code>clinical_tables</code></a></td>
-<td>Clinical table creation functions</td>
-<td><code>R/clinical_tables.R</code></td>
-</tr>
-<tr class="odd">
-<td><a href="R/clinical_plots.R"><code>clinical_plots</code></a></td>
-<td>Clinical plot creation functions</td>
-<td><code>R/clinical_plots.R</code></td>
-</tr>
-<tr class="even">
-<td><a href="R/adam_helpers.R"><code>adam_helpers</code></a></td>
-<td>ADaM dataset utilities</td>
-<td><code>R/adam_helpers.R</code></td>
-</tr>
-<tr class="odd">
-<td><a href="R/statistical_helpers.R"><code>statistical_helpers</code></a></td>
-<td>Statistical analysis functions</td>
-<td><code>R/statistical_helpers.R</code></td>
-</tr>
-<tr class="even">
-<td><a href="R/result_classes.R"><code>result_classes</code></a></td>
-<td>R6 classes for results</td>
-<td><code>R/result_classes.R</code></td>
-</tr>
-<tr class="odd">
-<td><a href="R/parallel_helpers.R"><code>parallel_helpers</code></a></td>
-<td>Parallel processing utilities</td>
-<td><code>R/parallel_helpers.R</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level3">
-<h3 id="supporting-modules">Supporting Modules<a class="anchor" aria-label="anchor" href="#supporting-modules"></a>
-</h3>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="29%">
-<col width="48%">
-<col width="22%">
-</colgroup>
-<thead><tr class="header">
-<th>Module</th>
-<th>Description</th>
-<th>File</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><a href="R/flextable_wrapper.R"><code>flextable_wrapper</code></a></td>
-<td>Flextable formatting utilities</td>
-<td><code>R/flextable_wrapper.R</code></td>
-</tr>
-<tr class="even">
-<td><a href="R/plot_wrapper.R"><code>plot_wrapper</code></a></td>
-<td>Plot conversion utilities</td>
-<td><code>R/plot_wrapper.R</code></td>
-</tr>
-<tr class="odd">
-<td><a href="R/table_themes.R"><code>table_themes</code></a></td>
-<td>Table styling themes</td>
-<td><code>R/table_themes.R</code></td>
-</tr>
-<tr class="even">
-<td><a href="R/utils.R"><code>utils</code></a></td>
-<td>General utility functions</td>
-<td><code>R/utils.R</code></td>
-</tr>
-<tr class="odd">
-<td><a href="R/soc_pt_helpers.R"><code>soc_pt_helpers</code></a></td>
-<td>SOC/PT hierarchy helpers</td>
-<td><code>R/soc_pt_helpers.R</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section level2">
-<h2 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
-</h2>
-<div class="section level3">
-<h3 id="parallelization">Parallelization<a class="anchor" aria-label="anchor" href="#parallelization"></a>
-</h3>
-<p>The package leverages the <strong>futureverse</strong> ecosystem for parallel processing:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Setup parallel backend</span></span>
-<span><span class="fu">setup_parallel</span><span class="op">(</span>backend <span class="op">=</span> <span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Execute operations in parallel</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">future_lapply</span><span class="op">(</span><span class="va">data_list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">create_summary_table</span><span class="op">(</span><span class="va">x</span>, <span class="st">"TRT01P"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"SEX"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Automatic parallel table creation</span></span>
-<span><span class="va">tables</span> <span class="op">&lt;-</span> <span class="fu">create_tables_parallel</span><span class="op">(</span><span class="va">data</span>, <span class="va">group_var</span>, <span class="va">vars</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Automatic parallel plot creation</span></span>
-<span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">create_plots_parallel</span><span class="op">(</span><span class="va">data</span>, <span class="va">plot_types</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="optimization-features">Optimization Features<a class="anchor" aria-label="anchor" href="#optimization-features"></a>
-</h3>
+<p>pharmhand builds on:</p>
 <ul>
 <li>
-<strong>Memory-Efficient Operations</strong>: <a href="R/utils.R"><code>memory_efficient_join()</code></a>, <a href="R/utils.R"><code>reduce_memory_footprint()</code></a>
-</li>
+<a href="https://davidgohel.github.io/officer/" class="external-link">officer</a> - Word document manipulation</li>
 <li>
-<strong>Data Loading Optimization</strong>: <a href="R/utils.R"><code>optimize_data_loading()</code></a>, <a href="R/adam_helpers.R"><code>read_adam_parallel()</code></a>
-</li>
+<a href="https://davidgohel.github.io/flextable/" class="external-link">flextable</a> - Table formatting</li>
 <li>
-<strong>Factor Level Optimization</strong>: <a href="R/utils.R"><code>optimize_factor_levels()</code></a>
-</li>
+<a href="https://pharmaverse.github.io/admiral/" class="external-link">admiral</a> - ADaM dataset creation</li>
 <li>
-<strong>Caching</strong>: <a href="R/utils.R"><code>cache_set()</code></a>, <a href="R/utils.R"><code>cache_get()</code></a>, <a href="R/utils.R"><code>memoize()</code></a>
-</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="benchmarking">Benchmarking<a class="anchor" aria-label="anchor" href="#benchmarking"></a>
-</h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Benchmark parallel vs sequential</span></span>
-<span><span class="fu">benchmark_parallel_vs_sequential</span><span class="op">(</span></span>
-<span>  fn <span class="op">=</span> <span class="va">create_summary_table</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">large_dataset</span>,</span>
-<span>  workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Find performance bottlenecks</span></span>
-<span><span class="fu">find_bottlenecks</span><span class="op">(</span><span class="va">report_generation_function</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Generate performance report</span></span>
-<span><span class="fu">generate_performance_report</span><span class="op">(</span><span class="st">"performance_report.docx"</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="tests">Tests<a class="anchor" aria-label="anchor" href="#tests"></a>
-</h2>
-<p>The package includes comprehensive test coverage using <strong>testthat</strong>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Run all tests</span></span>
-<span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_dir.html" class="external-link">test_dir</a></span><span class="op">(</span><span class="st">"tests/testthat"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run specific test file</span></span>
-<span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_file.html" class="external-link">test_file</a></span><span class="op">(</span><span class="st">"tests/testthat/test-clinical-tables.R"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run tests with coverage</span></span>
-<span><span class="fu">covr</span><span class="fu">::</span><span class="fu"><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">package_coverage</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="test-categories">Test Categories<a class="anchor" aria-label="anchor" href="#test-categories"></a>
-</h3>
-<ul>
+<a href="https://cran.r-project.org/package=survival" class="external-link">survival</a> - Survival analysis</li>
 <li>
-<strong>Unit Tests</strong>: Individual function testing</li>
-<li>
-<strong>Integration Tests</strong>: Multi-function workflow testing</li>
-<li>
-<strong>Regression Tests</strong>: Output consistency verification</li>
-<li>
-<strong>Performance Tests</strong>: Benchmark and optimization validation</li>
+<a href="https://github.com/hta-pharma/chef" class="external-link">chef</a> - HTA/AMNOG analysis pipelines (optional integration)</li>
 </ul>
 </div>
 </div>
-<div class="section level2">
-<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
-</h2>
-<p>We welcome contributions to FunctionReport! Please follow these guidelines:</p>
-<div class="section level3">
-<h3 id="development-setup">Development Setup<a class="anchor" aria-label="anchor" href="#development-setup"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Clone the repository</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/yourusername/FunctionReport.git</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="bu">cd</span> FunctionReport</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co"># Install development dependencies</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">devtools::install_dev_deps()</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># Run linter</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="ex">lintr::lint_dir</span><span class="er">(</span><span class="st">"R"</span><span class="kw">)</span></span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co"># Run tests</span></span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="fu">devtools::test()</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="code-style">Code Style<a class="anchor" aria-label="anchor" href="#code-style"></a>
-</h3>
-<ul>
-<li><p>Follow the <a href="https://style.tidyverse.org/" class="external-link">tidyverse style guide</a></p></li>
-<li>
-<p>Use <code>styler</code> for automatic formatting:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">styler</span><span class="fu">::</span><span class="fu"><a href="https://styler.r-lib.org/reference/style_pkg.html" class="external-link">style_pkg</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</li>
-<li>
-<p>Run <code>lintr</code> before submitting:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">lintr</span><span class="fu">::</span><span class="fu"><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lint_package</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</li>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/sims1253/pharmhand/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/sims1253/pharmhand/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="submitting-changes">Submitting Changes<a class="anchor" aria-label="anchor" href="#submitting-changes"></a>
-</h3>
-<ol style="list-style-type: decimal">
-<li>Fork the repository</li>
-<li>Create a feature branch (<code>git checkout -b feature/amazing-feature</code>)</li>
-<li>Commit your changes (<code>git commit -m 'Add amazing feature'</code>)</li>
-<li>Push to the branch (<code>git push origin feature/amazing-feature</code>)</li>
-<li>Open a Pull Request</li>
-</ol>
-</div>
-<div class="section level3">
-<h3 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
-</h3>
-<ul>
-<li>Use roxygen2 for function documentation</li>
-<li>Include examples in <code>@examples</code> blocks</li>
-<li>Run <code>devtools::document()</code> to update documentation</li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
-</h2>
-<p>This package is licensed under the <strong>MIT License</strong>.</p>
-<pre><code>MIT License
 
-Copyright (c) 2024 FunctionReport Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</code></pre>
-</div>
-<div class="section level2">
-<h2 id="acknowledgments">Acknowledgments<a class="anchor" aria-label="anchor" href="#acknowledgments"></a>
-</h2>
-<ul>
-<li>Built on top of excellent packages: <a href="https://davidgohel.github.io/officer/" class="external-link"><code>officer</code></a>, <a href="https://davidgohel.github.io/flextable/" class="external-link"><code>flextable</code></a>, <a href="https://ggplot2.tidyverse.org/" class="external-link"><code>ggplot2</code></a>
-</li>
-<li>Parallel processing powered by the <a href="https://futureverse.org/" class="external-link">futureverse</a>
-</li>
-<li>Statistical functions based on standard R packages: <a href="https://cran.r-project.org/package=survival" class="external-link"><code>survival</code></a>, <a href="https://cran.r-project.org/package=survminer" class="external-link"><code>survminer</code></a>
-</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
-</h2>
-<p>For questions, issues, or suggestions, please:</p>
-<ul>
-<li>Open an issue on <a href="https://github.com/yourusername/FunctionReport/issues" class="external-link">GitHub</a>
-</li>
-<li>Contact: <a href="mailto:first.last@example.com" class="email">first.last@example.com</a>
-</li>
-</ul>
-<hr>
-<p><strong>FunctionReport</strong> - Streamlining clinical study report generation in R.</p>
-</div>
-</div>
-  </main><aside class="col-md-3"><div class="license">
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing FunctionReport</a></li>
+<li><a href="authors.html#citation">Citing pharmhand</a></li>
 </ul>
 </div>
 
@@ -669,7 +254,15 @@ SOFTWARE.</code></pre>
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://codecov.io/gh/sims1253/pharmhand" class="external-link"><img src="https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://www.gnu.org/licenses/gpl-3.0" class="external-link"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
