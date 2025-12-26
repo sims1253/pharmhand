@@ -21,7 +21,8 @@ ADaMData(
 
 \item{population}{Character string for population filter (default: "FAS")}
 
-\item{subject_var}{Character string for subject ID variable (default: "USUBJID")}
+\item{subject_var}{Character string for subject ID variable
+(default: "USUBJID")}
 
 \item{trt_var}{Character string for treatment variable (default: "TRT01P")}
 

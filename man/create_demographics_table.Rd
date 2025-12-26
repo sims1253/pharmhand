@@ -20,7 +20,7 @@ create_demographics_table(
 \arguments{
 \item{adsl_data}{ADaMData object containing ADSL}
 
-\item{title}{Table title (default: "Demographics and Baseline Characteristics")}
+\item{title}{Table title (default: "Demographics and Baseline")}
 
 \item{trt_var}{Treatment variable name (default: "TRT01P")}
 
@@ -36,7 +36,7 @@ create_demographics_table(
 
 \item{country_var}{Country variable name (default: "COUNTRY")}
 
-\item{autofit}{Logical, whether to perform expensive layout calculations (default: TRUE)}
+\item{autofit}{Logical, perform expensive layout calculations (default: TRUE)}
 }
 \value{
 A ClinicalTable object

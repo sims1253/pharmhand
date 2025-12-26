@@ -30,7 +30,7 @@ create_km_plot(
 
 \item{ylab}{Y-axis label}
 
-\item{risk_table}{Logical, whether to include risk table below the plot. Requires the patchwork package.}
+\item{risk_table}{Logical, include risk table below. Requires patchwork.}
 }
 \value{
 A ClinicalPlot object

@@ -15,7 +15,8 @@ NULL
 #' @param data A data frame containing the ADaM dataset
 #' @param domain Character string for the ADaM domain (e.g., "ADSL", "ADAE")
 #' @param population Character string for population filter (default: "FAS")
-#' @param subject_var Character string for subject ID variable (default: "USUBJID")
+#' @param subject_var Character string for subject ID variable
+#'   (default: "USUBJID")
 #' @param trt_var Character string for treatment variable (default: "TRT01P")
 #' @param metadata List of additional metadata
 #'
@@ -114,8 +115,9 @@ ClinicalContent <- S7::new_class(
 #' @export
 #'
 #' @param data A data frame containing the table data
-#' @param flextable A flextable object (optional, will be created if not provided)
-#' @param type Character string for table type (e.g., "demographics", "adverse_events")
+#' @param flextable A flextable object (optional, created if not provided)
+#' @param type Character string for table type
+#'   (e.g., "demographics", "adverse_events")
 #' @param title Character string for table title
 #' @param metadata List of additional metadata
 #'
@@ -172,7 +174,7 @@ ClinicalTable <- S7::new_class(
 #'
 #' @param plot A ggplot or ggsurvplot object
 #' @param data A data frame containing the plot data (optional)
-#' @param type Character string for plot type (e.g., "km", "forest", "waterfall")
+#' @param type Character string for plot type (e.g., "km", "forest")
 #' @param title Character string for plot title
 #' @param width Numeric value for plot width in inches
 #' @param height Numeric value for plot height in inches
@@ -966,7 +968,7 @@ AnalysisMeta <- S7::new_class(
 
 #' Create Analysis Metadata
 #'
-#' Helper function to create an AnalysisMeta object with current environment info.
+#' Helper to create an AnalysisMeta object with current environment info.
 #'
 #' @param source_vars Character vector of source variable names
 #' @param filters List of filter expressions

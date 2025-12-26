@@ -174,24 +174,26 @@ build_time_to_event <- function(adsl, adae) {
 
 	# Filter for first event
 	first_event <- adae |>
-		dplyr::filter(AEBODSYS == target_soc) |>
-		dplyr::group_by(USUBJID) |>
-		dplyr::arrange(ASTDY) |>
+		dplyr::filter(.data$AEBODSYS == target_soc) |>
+		dplyr::group_by(.data$USUBJID) |>
+		dplyr::arrange(.data$ASTDY) |>
 		dplyr::slice(1) |>
-		dplyr::select(USUBJID, ASTDY) |>
+		dplyr::select("USUBJID", "ASTDY") |>
 		dplyr::mutate(has_event = 1)
 
 	# Merge with ADSL
 	# Censor at TRTEDT (Treatment End Date) or last contact
 	# Calculating a proxy for study duration for demo purposes
-	# Assuming TRTEDT exists. Convert dates to numeric relative to TRTSDT if needed,
+	# Assuming TRTEDT exists. Convert dates to numeric relative to TRTSDT
+	# if needed,
 	# but here ASTDY is already relative days.
 	# We will use TRTDURD if available, else derive it.
 
 	tte_data <- adsl
 
 	if (!"TRTDURD" %in% names(adsl)) {
-		# Estimate duration if missing (e.g. from dates or using a fixed end day for pilot)
+		# Estimate duration if missing (e.g. from dates or using a fixed
+		# end day for pilot)
 		# Using a simpler approach for the example if columns missing
 		tte_data$TRTDURD <- 100 # Fallback
 		if ("TRTEDT" %in% names(adsl) && "TRTSDT" %in% names(adsl)) {

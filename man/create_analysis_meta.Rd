@@ -24,5 +24,5 @@ create_analysis_meta(
 An AnalysisMeta object with timestamp and version info populated
 }
 \description{
-Helper function to create an AnalysisMeta object with current environment info.
+Helper to create an AnalysisMeta object with current environment info.
 }

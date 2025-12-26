@@ -36,7 +36,7 @@ apply_clinical_style(
 
 \item{na_string}{String to display for NA values (default: "--")}
 
-\item{autofit}{Logical, whether to perform expensive layout calculations (default: TRUE)}
+\item{autofit}{Logical, perform expensive layout calculations (default: TRUE)}
 }
 \value{
 A styled flextable object

@@ -91,8 +91,8 @@ create_primary_endpoint_table <- function(
 #' Create Change from Baseline Summary Table
 #'
 #' Generates a summary table showing change from baseline statistics for vital
-#' signs or other continuous parameters. The table displays mean change, standard
-#' deviation, and other descriptive statistics by treatment group for a specified
+#' signs or other continuous parameters. The table displays mean change,
+#' standard deviation, and other descriptive statistics by treatment group for a
 #' analysis visit.
 #'
 #' @param advs An ADaM ADVS (Analysis Data Vital Signs) data frame. Required
@@ -112,7 +112,7 @@ create_primary_endpoint_table <- function(
 #' @param autofit Logical, whether to automatically adjust column widths to fit
 #'   content. Default is TRUE.
 #'
-#' @return A ClinicalTable S7 object containing the formatted change-from-baseline
+#' @return A ClinicalTable S7 object with the formatted change-from-baseline
 #'   summary statistics table. The object includes the underlying data frame,
 #'   a formatted flextable for rendering, and metadata about the analysis.
 #'

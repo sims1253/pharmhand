@@ -17,7 +17,7 @@ NULL
 #' @param title Plot title
 #' @param xlab X-axis label
 #' @param ylab Y-axis label
-#' @param risk_table Logical, whether to include risk table below the plot. Requires the patchwork package.
+#' @param risk_table Logical, include risk table below. Requires patchwork.
 #'
 #' @return A ClinicalPlot object
 #' @export
@@ -106,12 +106,12 @@ create_km_plot <- function(
 	if (risk_table) {
 		if (!requireNamespace("patchwork", quietly = TRUE)) {
 			cli::cli_warn(
-				"Package {.pkg patchwork} is required for risk tables. Returning plot without risk table."
+				"Package {.pkg patchwork} required for risk tables. Returning plot only."
 			)
 			return(ClinicalPlot(plot = p, title = title))
 		}
 
-		# Determine time points for risk table (e.g., at 0, 25%, 50%, 75%, 100% of max time)
+		# Determine time points for risk table (at 0, 25%, 50%, 75%, 100% of max)
 		max_time <- max(fit[["time"]])
 		break_points <- seq(0, max_time, length.out = 5)
 		# Round to integers if appropriate or meaningful steps

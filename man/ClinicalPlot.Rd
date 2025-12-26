@@ -16,7 +16,7 @@ ClinicalPlot(
 )
 }
 \arguments{
-\item{type}{Character string for plot type (e.g., "km", "forest", "waterfall")}
+\item{type}{Character string for plot type (e.g., "km", "forest")}
 
 \item{title}{Character string for plot title}
 

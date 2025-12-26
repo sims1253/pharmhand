@@ -142,6 +142,7 @@ write_docx_ClinicalReport <- S7::method(
 			} else if (S7::S7_inherits(item, ClinicalPlot)) {
 				# Extract plot to temp file
 				tmp <- tempfile(fileext = ".png")
+				on.exit(unlink(tmp), add = TRUE)
 				ggplot2::ggsave(
 					tmp,
 					item@plot,
@@ -155,8 +156,6 @@ write_docx_ClinicalReport <- S7::method(
 					width = item@width,
 					height = item@height
 				)
-				# Cleanup temp file immediately after adding to document
-				unlink(tmp)
 			}
 			doc <- officer::body_add_par(doc, "", style = "Normal") # Spacer
 		}
@@ -195,7 +194,7 @@ create_clinical_table <- function(res, title = "") {
 #' @param header_bg Header background color (default: "gray95")
 #' @param zebra Logical, apply zebra striping (default: FALSE)
 #' @param na_string String to display for NA values (default: "--")
-#' @param autofit Logical, whether to perform expensive layout calculations (default: TRUE)
+#' @param autofit Logical, perform expensive layout calculations (default: TRUE)
 #'
 #' @return A styled flextable object
 #' @export
@@ -269,7 +268,7 @@ apply_clinical_style <- function(
 		flextable::colformat_double(na_str = na_string) |>
 		flextable::colformat_int(na_str = na_string)
 
-	# Autofit and then ensure it fits to page width (assuming A4 portrait with margins)
+	# Autofit and ensure it fits to page width (A4 portrait with margins)
 	# Check global option for override
 	global_autofit <- getOption("FunctionReport.autofit", default = NULL)
 	use_autofit <- if (!is.null(global_autofit)) global_autofit else autofit

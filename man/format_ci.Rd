@@ -23,5 +23,5 @@ Formats lower and upper bounds of a confidence interval into a string.
 }
 \examples{
 format_ci(1.23, 4.56, digits = 2) # Returns "1.23, 4.56"
-format_ci(c(1.23, 5.67), c(4.56, 8.90), digits = 1) # Returns c("1.2, 4.6", "5.7, 8.9")
+format_ci(c(1.23, 5.67), c(4.56, 8.90), digits = 1) # c("1.2, 4.6")
 }

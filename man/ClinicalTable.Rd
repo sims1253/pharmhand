@@ -26,7 +26,8 @@ ClinicalTable(
 )
 }
 \arguments{
-\item{type}{Character string for table type (e.g., "demographics", "adverse_events")}
+\item{type}{Character string for table type
+(e.g., "demographics", "adverse_events")}
 
 \item{title}{Character string for table title}
 
@@ -34,7 +35,7 @@ ClinicalTable(
 
 \item{data}{A data frame containing the table data}
 
-\item{flextable}{A flextable object (optional, will be created if not provided)}
+\item{flextable}{A flextable object (optional, created if not provided)}
 }
 \value{
 A ClinicalTable object

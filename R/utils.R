@@ -11,7 +11,7 @@
 #'
 #' @examples
 #' format_number(45.2345, digits = 2) # Returns "45.23"
-#' format_number(c(1.5, 2.345, 3.6789), digits = 1) # Returns c("1.5", "2.3", "3.7")
+#' format_number(c(1.5, 2.345, 3.6789), digits = 1) # c("1.5", "2.3", "3.7")
 format_number <- function(x, digits = 2) {
 	formatted <- formatC(x, format = "f", digits = digits)
 	return(formatted)
@@ -21,7 +21,7 @@ format_number <- function(x, digits = 2) {
 #'
 #' Formats numeric values as percentages with specified decimal places.
 #'
-#' @param x Numeric vector to format (values should be in decimal form, e.g., 0.5 for 50%).
+#' @param x Numeric vector (decimal form, e.g., 0.5 for 50%).
 #' @param digits Integer specifying the number of decimal places. Default is 1.
 #'
 #' @return Character vector with formatted percentages.
@@ -30,7 +30,7 @@ format_number <- function(x, digits = 2) {
 #'
 #' @examples
 #' format_percentage(0.5, digits = 1) # Returns "50.0%"
-#' format_percentage(c(0.123, 0.456, 0.789), digits = 1) # Returns c("12.3%", "45.6%", "78.9%")
+#' format_percentage(c(0.123, 0.456, 0.789), digits = 1) # c("12.3%", "45.6%")
 format_percentage <- function(x, digits = 1) {
 	formatted <- paste0(formatC(x * 100, format = "f", digits = digits), "%")
 	return(formatted)
@@ -51,7 +51,7 @@ format_percentage <- function(x, digits = 1) {
 #'
 #' @examples
 #' format_ci(1.23, 4.56, digits = 2) # Returns "1.23, 4.56"
-#' format_ci(c(1.23, 5.67), c(4.56, 8.90), digits = 1) # Returns c("1.2, 4.6", "5.7, 8.9")
+#' format_ci(c(1.23, 5.67), c(4.56, 8.90), digits = 1) # c("1.2, 4.6")
 format_ci <- function(lower, upper, digits = 2, separator = ", ") {
 	formatted <- paste0(
 		formatC(lower, format = "f", digits = digits),
@@ -67,7 +67,7 @@ format_ci <- function(lower, upper, digits = 2, separator = ", ") {
 #' Values less than 0.001 are formatted as "<0.001".
 #'
 #' @param p Numeric vector of p-values.
-#' @param digits Integer specifying the number of decimal places for values >= 0.001. Default is 3.
+#' @param digits Decimal places for values >= 0.001. Default is 3.
 #' @param threshold Numeric value below which p-values are formatted as
 #' "<threshold". Default is 0.001.
 #'

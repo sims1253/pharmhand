@@ -268,7 +268,7 @@ save_as_pdf <- function(x, path = NULL) {
 		# Fallback to image-based export
 		cli::cli_inform(
 			c(
-				"i" = "Using image-based PDF export (install {.pkg webshot2} for better quality)"
+				"i" = "Using image-based PDF export (install {.pkg webshot2})"
 			)
 		)
 		flextable::save_as_image(x@flextable, path = path)

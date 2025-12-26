@@ -22,7 +22,8 @@ test_that("create_primary_endpoint_table works", {
 
 	# Check data structure
 	expect_true(all(c("Statistic", "A", "B") %in% names(tbl@data)))
-	expect_equal(nrow(tbl@data), 4) # n, Mean (SD), Median, Min, Max transposed = 4 rows
+	# n, Mean (SD), Median, Min, Max transposed = 4 rows
+	expect_equal(nrow(tbl@data), 4)
 })
 
 test_that("create_cfb_summary_table works", {
@@ -101,7 +102,8 @@ test_that("create_lab_shift_table works", {
 })
 
 test_that("create_subgroup_analysis_table works", {
-	adsl <- data.frame(USUBJID = c("01", "02")) # Not heavily used in function but passed
+	# Not heavily used in function but passed
+	adsl <- data.frame(USUBJID = c("01", "02"))
 	advs <- data.frame(
 		USUBJID = c("01", "02", "03", "04"),
 		TRT01P = c("A", "A", "B", "B"),

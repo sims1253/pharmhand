@@ -5,5 +5,5 @@
 \title{Chef Pipeline Integration}
 \description{
 Bridge between the ramnog/chef ecosystem and FunctionReport's S7 classes.
-Enables AMNOG-style HTA analyses with seamless conversion to clinical reports.
+Enables AMNOG-style HTA analyses with conversion to clinical reports.
 }

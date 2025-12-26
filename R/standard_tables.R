@@ -11,7 +11,7 @@ NULL
 #' Generates a standard demographics and baseline characteristics table.
 #'
 #' @param adsl_data ADaMData object containing ADSL
-#' @param title Table title (default: "Demographics and Baseline Characteristics")
+#' @param title Table title (default: "Demographics and Baseline")
 #' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param age_var Age variable name (default: "AGE")
 #' @param age_grp_var Age group variable name (default: "AGEGR1")
@@ -19,7 +19,7 @@ NULL
 #' @param race_var Race variable name (default: "RACE")
 #' @param ethnic_var Ethnicity variable name (default: "ETHNIC")
 #' @param country_var Country variable name (default: "COUNTRY")
-#' @param autofit Logical, whether to perform expensive layout calculations (default: TRUE)
+#' @param autofit Logical, perform expensive layout calculations (default: TRUE)
 #'
 #' @return A ClinicalTable object
 #' @export

@@ -95,7 +95,7 @@ PopulationConfig <- S7::new_class(
 #' @param variable Character string for SOC variable name (e.g., "AEBODSYS")
 #' @param include_all Logical, include all SOCs found in data
 #' @param custom_order Character vector for custom SOC ordering
-#' @param sort_by Character string for sorting method ("frequency" or "alphabetical")
+#' @param sort_by Character string for sorting ("frequency" or "alphabetical")
 #' @param min_subjects Numeric minimum subjects required to include SOC
 #' @param top_n Numeric maximum number of SOCs (NULL = no limit)
 #' @param source Character string for configuration source
@@ -132,7 +132,7 @@ SOCConfig <- S7::new_class(
 #'
 #' @param variable Character string for PT variable name (e.g., "AEDECOD")
 #' @param include_all Logical, include all PTs found in data
-#' @param sort_by Character string for sorting method ("frequency" or "alphabetical")
+#' @param sort_by Character string for sorting ("frequency" or "alphabetical")
 #' @param min_subjects Numeric minimum subjects required to include PT
 #' @param top_n_per_soc Numeric maximum PTs per SOC (NULL = no limit)
 #' @param show_pt_codes Logical, show PT codes alongside names

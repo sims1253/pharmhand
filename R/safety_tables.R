@@ -14,7 +14,7 @@ NULL
 #' related AEs, SAEs, and discontinuations.
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts data frame (must contain TRT01A and N columns)
+#' @param trt_n Treatment group counts (must contain TRT01A and N columns)
 #' @param title Table title (default: "Overview of Adverse Events")
 #' @param trt_var Treatment variable name (default: "TRT01A")
 #' @param subjid_var Subject ID variable name (default: "USUBJID")
@@ -22,7 +22,7 @@ NULL
 #'   "related" to treatment. Default: c("PROBABLE", "POSSIBLE", "RELATED").
 #' @param discontinuation_action Character value in AEACN indicating drug
 #'   discontinuation. Default: "DRUG WITHDRAWN".
-#' @param fatal_outcome Character value in AEOUT indicating death. Default: "FATAL".
+#' @param fatal_outcome Character value in AEOUT indicating death. "FATAL".
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #'
 #' @return A ClinicalTable object

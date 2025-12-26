@@ -269,8 +269,9 @@ build_table <- function(table, ...) {
 	}
 
 	# Pre-calculate denominators (Big N) if not already present
-	if (is.null(table@big_n)) {
-		table@big_n <- data |>
+	big_n <- table@big_n
+	if (is.null(big_n)) {
+		big_n <- data |>
 			dplyr::group_by(!!rlang::sym(trt_var)) |>
 			dplyr::summarise(
 				N_tot = dplyr::n_distinct(.data$USUBJID),
@@ -280,7 +281,7 @@ build_table <- function(table, ...) {
 
 	# Process each layer
 	results <- lapply(table@layers, function(layer) {
-		build_layer_impl(layer, data, trt_var, big_n = table@big_n)
+		build_layer_impl(layer, data, trt_var, big_n = big_n)
 	})
 
 	# Stack results

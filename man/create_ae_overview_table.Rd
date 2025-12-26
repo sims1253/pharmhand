@@ -19,7 +19,7 @@ create_ae_overview_table(
 \arguments{
 \item{adae}{ADAE data frame}
 
-\item{trt_n}{Treatment group counts data frame (must contain TRT01A and N columns)}
+\item{trt_n}{Treatment group counts (must contain TRT01A and N columns)}
 
 \item{title}{Table title (default: "Overview of Adverse Events")}
 
@@ -33,7 +33,7 @@ create_ae_overview_table(
 \item{discontinuation_action}{Character value in AEACN indicating drug
 discontinuation. Default: "DRUG WITHDRAWN".}
 
-\item{fatal_outcome}{Character value in AEOUT indicating death. Default: "FATAL".}
+\item{fatal_outcome}{Character value in AEOUT indicating death. "FATAL".}
 
 \item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }

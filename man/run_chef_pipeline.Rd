@@ -12,7 +12,8 @@ run_chef_pipeline(
 )
 }
 \arguments{
-\item{adam_data}{Named list of ADaM datasets (e.g., list(adsl = adsl, adae = adae))}
+\item{adam_data}{Named list of ADaM datasets
+(e.g., list(adsl = adsl, adae = adae))}
 
 \item{endpoints}{List of endpoint specifications from create_chef_endpoint()}
 
@@ -29,7 +30,7 @@ Depending on output_type:
 }
 }
 \description{
-Execute a chef analysis pipeline and return results as FunctionReport objects.
+Execute a chef analysis pipeline and return results as FunctionReport.
 }
 \examples{
 \dontrun{

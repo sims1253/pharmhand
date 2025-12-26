@@ -14,3 +14,6 @@
 ^appveyor\.yml$
 ^codecov\.yml$
 ^\.github$
+^\.lintr$
+^\.claude$
+^air\.toml$

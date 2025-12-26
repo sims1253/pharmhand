@@ -9,7 +9,7 @@ format_pvalue(p, digits = 3, threshold = 0.001)
 \arguments{
 \item{p}{Numeric vector of p-values.}
 
-\item{digits}{Integer specifying the number of decimal places for values >= 0.001. Default is 3.}
+\item{digits}{Decimal places for values >= 0.001. Default is 3.}
 
 \item{threshold}{Numeric value below which p-values are formatted as
 "<threshold". Default is 0.001.}

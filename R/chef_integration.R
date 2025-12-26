@@ -1,7 +1,7 @@
 #' Chef Pipeline Integration
 #'
 #' Bridge between the ramnog/chef ecosystem and FunctionReport's S7 classes.
-#' Enables AMNOG-style HTA analyses with seamless conversion to clinical reports.
+#' Enables AMNOG-style HTA analyses with conversion to clinical reports.
 #'
 #' @name chef_integration
 NULL
@@ -206,9 +206,10 @@ create_chef_endpoint <- function(
 
 #' Run Chef Pipeline with FunctionReport Integration
 #'
-#' Execute a chef analysis pipeline and return results as FunctionReport objects.
+#' Execute a chef analysis pipeline and return results as FunctionReport.
 #'
-#' @param adam_data Named list of ADaM datasets (e.g., list(adsl = adsl, adae = adae))
+#' @param adam_data Named list of ADaM datasets
+#'   (e.g., list(adsl = adsl, adae = adae))
 #' @param endpoints List of endpoint specifications from create_chef_endpoint()
 #' @param output_type Type of output: "results", "table", or "report"
 #' @param ... Additional arguments passed to chef functions
@@ -272,7 +273,7 @@ run_chef_pipeline <- function(
 
 	# proper targets pipeline setup which is context-dependent
 	cli::cli_alert_info(
-		"Chef pipeline integration is configured. Full execution requires targets setup."
+		"Chef pipeline configured. Full execution requires targets setup."
 	)
 
 	# Create mock results for development

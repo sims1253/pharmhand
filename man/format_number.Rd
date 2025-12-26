@@ -19,5 +19,5 @@ Formats numeric values with a specified number of decimal places.
 }
 \examples{
 format_number(45.2345, digits = 2) # Returns "45.23"
-format_number(c(1.5, 2.345, 3.6789), digits = 1) # Returns c("1.5", "2.3", "3.7")
+format_number(c(1.5, 2.345, 3.6789), digits = 1) # c("1.5", "2.3", "3.7")
 }
