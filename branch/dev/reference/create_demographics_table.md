@@ -27,7 +27,7 @@ create_demographics_table(
 
 - title:
 
-  Table title (default: "Demographics and Baseline Characteristics")
+  Table title (default: "Demographics and Baseline")
 
 - trt_var:
 
@@ -59,8 +59,7 @@ create_demographics_table(
 
 - autofit:
 
-  Logical, whether to perform expensive layout calculations (default:
-  TRUE)
+  Logical, perform expensive layout calculations (default: TRUE)
 
 ## Value
 

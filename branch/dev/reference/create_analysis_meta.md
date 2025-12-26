@@ -1,7 +1,6 @@
 # Create Analysis Metadata
 
-Helper function to create an AnalysisMeta object with current
-environment info.
+Helper to create an AnalysisMeta object with current environment info.
 
 ## Usage
 

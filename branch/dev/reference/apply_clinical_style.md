@@ -60,8 +60,7 @@ apply_clinical_style(
 
 - autofit:
 
-  Logical, whether to perform expensive layout calculations (default:
-  TRUE)
+  Logical, perform expensive layout calculations (default: TRUE)
 
 ## Value
 

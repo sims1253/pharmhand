@@ -45,7 +45,7 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>Numeric vector to format (values should be in decimal form, e.g., 0.5 for 50%).</p></dd>
+<dd><p>Numeric vector (decimal form, e.g., 0.5 for 50%).</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -61,7 +61,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">format_percentage</span><span class="op">(</span><span class="fl">0.5</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># Returns "50.0%"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "50.0%"</span>
-<span class="r-in"><span><span class="fu">format_percentage</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.123</span>, <span class="fl">0.456</span>, <span class="fl">0.789</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># Returns c("12.3%", "45.6%", "78.9%")</span></span></span>
+<span class="r-in"><span><span class="fu">format_percentage</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.123</span>, <span class="fl">0.456</span>, <span class="fl">0.789</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># c("12.3%", "45.6%")</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "12.3%" "45.6%" "78.9%"</span>
 </code></pre></div>
     </div>

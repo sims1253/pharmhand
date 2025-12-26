@@ -3,7 +3,7 @@
 Generates a summary table showing change from baseline statistics for
 vital signs or other continuous parameters. The table displays mean
 change, standard deviation, and other descriptive statistics by
-treatment group for a specified analysis visit.
+treatment group for a analysis visit.
 
 ## Usage
 
@@ -56,6 +56,6 @@ create_cfb_summary_table(
 
 ## Value
 
-A ClinicalTable S7 object containing the formatted change-from-baseline
+A ClinicalTable S7 object with the formatted change-from-baseline
 summary statistics table. The object includes the underlying data frame,
 a formatted flextable for rendering, and metadata about the analysis.

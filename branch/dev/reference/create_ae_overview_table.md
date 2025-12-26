@@ -27,7 +27,7 @@ create_ae_overview_table(
 
 - trt_n:
 
-  Treatment group counts data frame (must contain TRT01A and N columns)
+  Treatment group counts (must contain TRT01A and N columns)
 
 - title:
 
@@ -53,7 +53,7 @@ create_ae_overview_table(
 
 - fatal_outcome:
 
-  Character value in AEOUT indicating death. Default: "FATAL".
+  Character value in AEOUT indicating death. "FATAL".
 
 - autofit:
 

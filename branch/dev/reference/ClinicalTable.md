@@ -49,7 +49,7 @@ attr(out, "row.names") <- row.names
 
 - flextable:
 
-  A flextable object (optional, will be created if not provided)
+  A flextable object (optional, created if not provided)
 
 ## Value
 

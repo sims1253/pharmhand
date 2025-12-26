@@ -23,7 +23,7 @@ ClinicalPlot(
 
 - type:
 
-  Character string for plot type (e.g., "km", "forest", "waterfall")
+  Character string for plot type (e.g., "km", "forest")
 
 - title:
 

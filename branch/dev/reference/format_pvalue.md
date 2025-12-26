@@ -17,8 +17,7 @@ format_pvalue(p, digits = 3, threshold = 0.001)
 
 - digits:
 
-  Integer specifying the number of decimal places for values \>= 0.001.
-  Default is 3.
+  Decimal places for values \>= 0.001. Default is 3.
 
 - threshold:
 

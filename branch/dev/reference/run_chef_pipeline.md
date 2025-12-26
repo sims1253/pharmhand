@@ -1,7 +1,6 @@
 # Run Chef Pipeline with FunctionReport Integration
 
-Execute a chef analysis pipeline and return results as FunctionReport
-objects.
+Execute a chef analysis pipeline and return results as FunctionReport.
 
 ## Usage
 
