@@ -125,6 +125,14 @@ create_cfb_summary_table <- function(
 	title = "Change from Baseline Summary",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(advs)) {
+		cli::cli_abort("{.arg advs} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+
 	cfb_data <- advs |>
 		dplyr::filter(
 			.data$PARAMCD %in% params,
@@ -319,6 +327,14 @@ create_lab_shift_table <- function(
 	title = "Laboratory Shift Table",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adlb)) {
+		cli::cli_abort("{.arg adlb} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+
 	shift_data <- adlb |>
 		dplyr::filter(
 			.data$PARAMCD == paramcd,

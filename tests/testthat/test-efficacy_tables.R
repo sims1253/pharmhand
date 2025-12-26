@@ -127,3 +127,52 @@ test_that("create_subgroup_analysis_table works", {
 	expect_true(any(tbl@data$Subgroup == "Age Group"))
 	expect_true(any(tbl@data$Subgroup == "Sex"))
 })
+
+test_that("create_primary_endpoint_table validates inputs", {
+	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(2, 2))
+
+	# Non-data-frame input
+	expect_error(
+		create_primary_endpoint_table(NULL, trt_n),
+		"must be a data frame"
+	)
+	expect_error(
+		create_primary_endpoint_table(list(a = 1), trt_n),
+		"must be a data frame"
+	)
+
+	# trt_n must be a data frame
+	advs <- data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("End of Treatment", "End of Treatment"),
+		AVAL = c(120, 130)
+	)
+	expect_error(
+		create_primary_endpoint_table(advs, NULL),
+		"must be a data frame"
+	)
+})
+
+test_that("create_cfb_summary_table validates inputs", {
+	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
+
+	expect_error(
+		create_cfb_summary_table(NULL, trt_n, params = "SYSBP"),
+		"must be a data frame"
+	)
+	expect_error(
+		create_cfb_summary_table(data.frame(), NULL, params = "SYSBP"),
+		"must be a data frame"
+	)
+})
+
+test_that("create_lab_shift_table validates inputs", {
+	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(2, 1))
+
+	expect_error(
+		create_lab_shift_table(NULL, trt_n),
+		"must be a data frame"
+	)
+})

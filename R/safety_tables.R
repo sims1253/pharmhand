@@ -415,6 +415,24 @@ create_common_ae_table <- function(
 	trt_var = "TRT01A",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adae)) {
+		cli::cli_abort("{.arg adae} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+	if (!all(c(trt_var, "N") %in% names(trt_n))) {
+		cli::cli_abort("{.arg trt_n} must contain columns {trt_var} and 'N'")
+	}
+	required_cols <- c("TRTEMFL", "AEDECOD", "AEBODSYS", "USUBJID")
+	missing_cols <- setdiff(required_cols, names(adae))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			"{.arg adae} is missing required column{?s}: {.val {missing_cols}}"
+		)
+	}
+
 	top_pts <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(.data$AEDECOD) |>
@@ -558,6 +576,24 @@ create_ae_relationship_table <- function(
 	trt_var = "TRT01A",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adae)) {
+		cli::cli_abort("{.arg adae} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+	if (!all(c(trt_var, "N") %in% names(trt_n))) {
+		cli::cli_abort("{.arg trt_n} must contain columns {trt_var} and 'N'")
+	}
+	required_cols <- c("TRTEMFL", "AEREL", "USUBJID")
+	missing_cols <- setdiff(required_cols, names(adae))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			"{.arg adae} is missing required column{?s}: {.val {missing_cols}}"
+		)
+	}
+
 	rel_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(!!rlang::sym(trt_var), .data$AEREL) |>
@@ -613,6 +649,24 @@ create_sae_table <- function(
 	trt_var = "TRT01A",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adae)) {
+		cli::cli_abort("{.arg adae} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+	if (!all(c(trt_var, "N") %in% names(trt_n))) {
+		cli::cli_abort("{.arg trt_n} must contain columns {trt_var} and 'N'")
+	}
+	required_cols <- c("TRTEMFL", "AESER", "AEBODSYS", "AEDECOD", "USUBJID")
+	missing_cols <- setdiff(required_cols, names(adae))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			"{.arg adae} is missing required column{?s}: {.val {missing_cols}}"
+		)
+	}
+
 	sae <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y", .data$AESER == "Y")
 

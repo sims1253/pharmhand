@@ -192,12 +192,16 @@ build_time_to_event <- function(adsl, adae) {
 	tte_data <- adsl
 
 	if (!"TRTDURD" %in% names(adsl)) {
-		# Estimate duration if missing (e.g. from dates or using a fixed
-		# end day for pilot)
-		# Using a simpler approach for the example if columns missing
-		tte_data$TRTDURD <- 100 # Fallback
 		if ("TRTEDT" %in% names(adsl) && "TRTSDT" %in% names(adsl)) {
 			tte_data$TRTDURD <- as.numeric(adsl$TRTEDT - adsl$TRTSDT) + 1
+		} else {
+			# Default to 100 days when treatment duration cannot be calculated
+			# This is a conservative estimate for clinical trials
+			cli::cli_warn(c(
+				"Treatment duration (TRTDURD) not found and cannot be derived",
+				"i" = "Using default duration of 100 days for time-to-event analysis"
+			))
+			tte_data$TRTDURD <- 100
 		}
 	}
 
