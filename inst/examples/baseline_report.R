@@ -17,7 +17,7 @@
 #' The output is saved to inst/examples/Baseline_Characteristics_Report.docx
 
 # Load required packages
-library(FunctionReport)
+library(pharmhand)
 library(dplyr)
 library(tidyr)
 
@@ -157,7 +157,7 @@ generate_baseline_report <- function(
 		sections = sections,
 		metadata = list(
 			generated_at = Sys.time(),
-			package_version = as.character(packageVersion("FunctionReport")),
+			package_version = as.character(packageVersion("pharmhand")),
 			data_source = "pharmaverseadam",
 			report_type = "baseline"
 		)

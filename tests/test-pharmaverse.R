@@ -1,6 +1,6 @@
 # Example Report Generation using Pharmaverse ADaM Data
 
-library(FunctionReport)
+library(pharmhand)
 library(pharmaverseadam)
 library(dplyr)
 

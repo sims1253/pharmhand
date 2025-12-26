@@ -18,7 +18,7 @@
 #' The output is saved to inst/examples/Safety_Report.docx
 
 # Load required packages
-library(FunctionReport)
+library(pharmhand)
 library(dplyr)
 library(tidyr)
 
@@ -52,41 +52,35 @@ generate_safety_report <- function(
 
 	cli::cli_h1("Generating Safety Report")
 
-	# Get treatment counts for denominators
-	trt_n <- adsl |>
-		dplyr::filter(.data$SAFFL == "Y") |>
-		dplyr::group_by(.data$TRT01A) |>
-		dplyr::summarise(N = dplyr::n(), .groups = "drop")
-
 	# Section 2.1: AE Overview
 	cli::cli_progress_step("Building AE Overview (Table 2.1)")
-	overview_section <- build_ae_overview(adae, trt_n)
+	overview_section <- build_ae_overview(adae, adsl)
 
 	# Section 2.2: AEs by SOC
 	cli::cli_progress_step("Building AEs by SOC (Table 2.2)")
-	soc_section <- build_ae_by_soc(adae, trt_n, adsl)
+	soc_section <- build_ae_by_soc(adae, adsl)
 
 	# Section 2.3: Most Common AEs
 	cli::cli_progress_step("Building Most Common AEs (Table 2.3)")
-	common_section <- build_common_aes(adae, trt_n)
+	common_section <- build_common_aes(adae, adsl)
 
 	# Section 2.4: AEs by Severity
 	cli::cli_progress_step("Building AEs by Severity (Table 2.4)")
-	severity_section <- build_ae_by_severity(adae, trt_n)
+	severity_section <- build_ae_by_severity(adae, adsl)
 
 	# Section 2.5: AEs by Relationship
 	cli::cli_progress_step("Building AEs by Relationship (Table 2.5)")
-	rel_section <- build_ae_by_relationship(adae, trt_n)
+	rel_section <- build_ae_by_relationship(adae, adsl)
 
 	# Section 2.6: SAEs
 	cli::cli_progress_step("Building SAE Summary (Table 2.6)")
-	sae_section <- build_sae_summary(adae, trt_n)
+	sae_section <- build_sae_summary(adae, adsl)
 
 	# Section 2.7: AEs Leading to Discontinuation
 	cli::cli_progress_step(
 		"Building AEs Leading to Discontinuation (Table 2.7)"
 	)
-	disc_section <- build_ae_disc(adae, trt_n)
+	disc_section <- build_ae_disc(adae, adsl)
 
 	# Section 2.8: Deaths
 	cli::cli_progress_step("Building Deaths Summary (Table 2.8)")
@@ -119,7 +113,7 @@ generate_safety_report <- function(
 		sections = sections,
 		metadata = list(
 			generated_at = Sys.time(),
-			package_version = as.character(packageVersion("FunctionReport")),
+			package_version = as.character(packageVersion("pharmhand")),
 			data_source = "pharmaverseadam",
 			report_type = "safety"
 		)
@@ -137,14 +131,15 @@ generate_safety_report <- function(
 #' Build AE Overview Table (Table 2.1)
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
+#' @param adsl ADSL data frame
 #' @return ReportSection object
 #' @keywords internal
-build_ae_overview <- function(adae, trt_n) {
-	# Use package function
-	overview_content <- FunctionReport::create_ae_overview_table(
+build_ae_overview <- function(adae, adsl) {
+	# Use unified create_ae_table function
+	overview_content <- pharmhand::create_ae_table(
 		adae = adae,
-		trt_n = trt_n,
+		adsl = adsl,
+		type = "overview",
 		title = "Table 2.1: Treatment-Emergent Adverse Events Overview"
 	)
 
@@ -218,7 +213,7 @@ build_time_to_event <- function(adsl, adae) {
 		return(NULL)
 	}
 
-	km_plot <- FunctionReport::create_km_plot(
+	km_plot <- pharmhand::create_km_plot(
 		data = tte_data,
 		time_var = "time",
 		event_var = "event",
@@ -239,20 +234,22 @@ build_time_to_event <- function(adsl, adae) {
 #' Build AEs by SOC Table (Table 2.2)
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
+#' @param adsl ADSL data frame
 #' @return SOCPTSection object
 #' @keywords internal
-build_ae_by_soc <- function(adae, trt_n, adsl) {
+build_ae_by_soc <- function(adae, adsl) {
 	socs <- sort(unique(adae$AEBODSYS[adae$TRTEMFL == "Y"]))
 
 	all_content <- list()
 
 	for (soc in socs) {
-		# Table for SOC
-		tbl <- create_ae_pt_table_for_soc(
+		# Table for SOC using unified function with PT type and SOC filter
+		tbl <- pharmhand::create_ae_table(
 			adae = adae,
-			trt_n = trt_n,
-			soc = soc
+			adsl = adsl,
+			type = "pt",
+			soc = soc,
+			title = soc
 		)
 		all_content[[length(all_content) + 1]] <- tbl
 
@@ -280,13 +277,14 @@ build_ae_by_soc <- function(adae, trt_n, adsl) {
 #' Build Most Common AEs Table (Table 2.3)
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
+#' @param adsl ADSL data frame
 #' @return ReportSection object
 #' @keywords internal
-build_common_aes <- function(adae, trt_n) {
-	common_content <- create_common_ae_table(
+build_common_aes <- function(adae, adsl) {
+	common_content <- pharmhand::create_ae_table(
 		adae = adae,
-		trt_n = trt_n,
+		adsl = adsl,
+		type = "common",
 		title = "Table 2.3: Most Common Adverse Events (>=2% in any treatment group)"
 	)
 
@@ -300,13 +298,14 @@ build_common_aes <- function(adae, trt_n) {
 #' Build AEs by Severity Table (Table 2.4)
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
+#' @param adsl ADSL data frame
 #' @return ReportSection object
 #' @keywords internal
-build_ae_by_severity <- function(adae, trt_n) {
-	severity_content <- create_ae_severity_table(
+build_ae_by_severity <- function(adae, adsl) {
+	severity_content <- pharmhand::create_ae_table(
 		adae = adae,
-		trt_n = trt_n,
+		adsl = adsl,
+		type = "severity",
 		title = "Table 2.4: Subjects by Maximum Adverse Event Severity"
 	)
 
@@ -320,13 +319,14 @@ build_ae_by_severity <- function(adae, trt_n) {
 #' Build AEs by Relationship Table (Table 2.5)
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
+#' @param adsl ADSL data frame
 #' @return ReportSection object
 #' @keywords internal
-build_ae_by_relationship <- function(adae, trt_n) {
-	rel_content <- create_ae_relationship_table(
+build_ae_by_relationship <- function(adae, adsl) {
+	rel_content <- pharmhand::create_ae_table(
 		adae = adae,
-		trt_n = trt_n,
+		adsl = adsl,
+		type = "relationship",
 		title = "Table 2.5: Adverse Events by Relationship to Study Drug"
 	)
 
@@ -340,13 +340,14 @@ build_ae_by_relationship <- function(adae, trt_n) {
 #' Build SAE Summary Table (Table 2.6)
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
+#' @param adsl ADSL data frame
 #' @return ReportSection object
 #' @keywords internal
-build_sae_summary <- function(adae, trt_n) {
-	sae_content <- create_sae_table(
+build_sae_summary <- function(adae, adsl) {
+	sae_content <- pharmhand::create_ae_table(
 		adae = adae,
-		trt_n = trt_n,
+		adsl = adsl,
+		type = "sae",
 		title = "Table 2.6: Serious Adverse Events"
 	)
 
@@ -360,13 +361,14 @@ build_sae_summary <- function(adae, trt_n) {
 #' Build AEs Leading to Discontinuation Table (Table 2.7)
 #'
 #' @param adae ADAE data frame
-#' @param trt_n Treatment group counts
+#' @param adsl ADSL data frame
 #' @return ReportSection object
 #' @keywords internal
-build_ae_disc <- function(adae, trt_n) {
-	disc_content <- create_ae_discontinuation_table(
+build_ae_disc <- function(adae, adsl) {
+	disc_content <- pharmhand::create_ae_table(
 		adae = adae,
-		trt_n = trt_n,
+		adsl = adsl,
+		type = "discontinuation",
 		title = "Table 2.7: Adverse Events Leading to Study Drug Discontinuation"
 	)
 
@@ -383,8 +385,10 @@ build_ae_disc <- function(adae, trt_n) {
 #' @return ReportSection object
 #' @keywords internal
 build_deaths_summary <- function(adsl) {
-	death_content <- create_deaths_table(
+	death_content <- pharmhand::create_ae_table(
+		adae = NULL,
 		adsl = adsl,
+		type = "deaths",
 		title = "Table 2.8: Deaths Summary"
 	)
 

@@ -7,6 +7,146 @@
 #' @name adam_core
 NULL
 
+# ============================================================================
+# Helper Functions for Data Access
+# ============================================================================
+
+#' Get Treatment Group Counts
+#'
+#' Extract or compute treatment group counts from ADaMData or a data frame.
+#' For ADaMData objects, uses the pre-computed `trt_n` property which respects
+#' population filters. For data frames, computes counts directly.
+#'
+#' @param data ADaMData object or data frame
+#' @param trt_var Treatment variable name (used only for data frames,
+#'   ignored for ADaMData which uses its own trt_var)
+#' @param population Population to filter by (used only for data frames,
+#'   filters by `{population}FL == "Y"`)
+#' @param subject_var Subject ID variable (used only for data frames)
+#'
+#' @return Data frame with treatment variable and N column
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # From ADaMData - uses stored trt_var and population
+#' adam <- ADaMData(data = adsl, domain = "ADSL", population = "FAS")
+#' trt_n <- get_trt_n(adam)
+#'
+#' # From data frame - must specify parameters
+#' trt_n <- get_trt_n(adsl, trt_var = "TRT01P", population = "SAF")
+#' }
+get_trt_n <- function(
+	data,
+	trt_var = "TRT01P",
+	population = NULL,
+	subject_var = "USUBJID"
+) {
+	# If ADaMData, use computed property
+	if (S7::S7_inherits(data, ADaMData)) {
+		return(data@trt_n)
+	}
+
+	# For data frames, compute directly
+	df <- data
+
+	# Apply population filter if specified
+	if (!is.null(population) && population != "ALL") {
+		pop_fl <- paste0(population, "FL")
+		if (pop_fl %in% names(df)) {
+			df <- df[df[[pop_fl]] == "Y", , drop = FALSE]
+		}
+	}
+
+	if (nrow(df) == 0) {
+		return(data.frame())
+	}
+
+	df |>
+		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
+		dplyr::summarise(
+			N = dplyr::n_distinct(.data[[subject_var]]),
+			.groups = "drop"
+		)
+}
+
+#' Get Filtered Data
+#'
+#' Extract filtered data from ADaMData or apply population filter to a
+#' data frame. For ADaMData objects, returns the `filtered_data` property.
+#' For data frames, applies the specified population filter.
+#'
+#' @param data ADaMData object or data frame
+#' @param population Population to filter by (used only for data frames,
+#'   filters by `{population}FL == "Y"`)
+#'
+#' @return Filtered data frame
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # From ADaMData - uses stored population
+#' adam <- ADaMData(data = adsl, domain = "ADSL", population = "FAS")
+#' df <- get_filtered_data(adam)
+#'
+#' # From data frame - must specify population
+#' df <- get_filtered_data(adsl, population = "SAF")
+#' }
+get_filtered_data <- function(data, population = NULL) {
+	# If ADaMData, use computed property
+	if (S7::S7_inherits(data, ADaMData)) {
+		return(data@filtered_data)
+	}
+
+	# For data frames, apply filter if specified
+	df <- data
+
+	if (!is.null(population) && population != "ALL") {
+		pop_fl <- paste0(population, "FL")
+		if (pop_fl %in% names(df)) {
+			df <- df[df[[pop_fl]] == "Y", , drop = FALSE]
+		}
+	}
+
+	df
+}
+
+#' Get Treatment Variable Name
+#'
+#' Extract treatment variable name from ADaMData or return default.
+#'
+#' @param data ADaMData object or data frame
+#' @param default Default treatment variable name for data frames
+#'
+#' @return Character string with treatment variable name
+#' @keywords internal
+get_trt_var <- function(data, default = "TRT01P") {
+	if (S7::S7_inherits(data, ADaMData)) {
+		return(data@trt_var)
+	}
+	default
+}
+
+#' Get Subject Variable Name
+#'
+#' Extract subject ID variable name from ADaMData or return default.
+#'
+#' @param data ADaMData object or data frame
+#' @param default Default subject variable name for data frames
+#'
+#' @return Character string with subject variable name
+#' @keywords internal
+get_subject_var <- function(data, default = "USUBJID") {
+	if (S7::S7_inherits(data, ADaMData)) {
+		return(data@subject_var)
+	}
+	default
+}
+
+# ============================================================================
+# Analysis Functions
+# ============================================================================
+
 #' Analyze ADaMData
 #'
 #' S7 method for analyzing ADaMData objects.

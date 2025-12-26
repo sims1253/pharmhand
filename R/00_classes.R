@@ -66,7 +66,39 @@ ADaMData <- S7::new_class(
 				NULL
 			}
 		),
-		metadata = S7::new_property(S7::class_list, default = list())
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed property: filtered data respecting population
+		filtered_data = S7::new_property(
+			class = S7::class_data.frame,
+			getter = function(self) {
+				df <- self@data
+				if (self@population != "ALL" && nrow(df) > 0) {
+					pop_fl <- paste0(self@population, "FL")
+					if (pop_fl %in% names(df)) {
+						df <- df[df[[pop_fl]] == "Y", , drop = FALSE]
+					}
+				}
+				df
+			}
+		),
+		# Computed property: treatment counts from filtered data
+		trt_n = S7::new_property(
+			class = S7::class_data.frame,
+			getter = function(self) {
+				df <- self@filtered_data
+				if (nrow(df) == 0) {
+					return(data.frame())
+				}
+				trt_var <- self@trt_var
+				subject_var <- self@subject_var
+				df |>
+					dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
+					dplyr::summarise(
+						N = dplyr::n_distinct(.data[[subject_var]]),
+						.groups = "drop"
+					)
+			}
+		)
 	)
 )
 
@@ -989,7 +1021,7 @@ create_analysis_meta <- function(
 		row_id = row_id,
 		derivation = derivation,
 		timestamp = Sys.time(),
-		package_version = as.character(utils::packageVersion("FunctionReport")),
+		package_version = as.character(utils::packageVersion("pharmhand")),
 		r_version = paste0(R.version$major, ".", R.version$minor)
 	)
 }

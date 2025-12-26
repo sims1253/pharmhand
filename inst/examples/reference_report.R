@@ -15,7 +15,7 @@
 #' The output is saved to inst/examples/Reference_Report.docx
 
 # Load required packages
-library(FunctionReport)
+library(pharmhand)
 library(dplyr)
 
 #' Generate Reference Report
@@ -101,7 +101,7 @@ generate_reference_report <- function(
 		sections = sections,
 		metadata = list(
 			generated_at = Sys.time(),
-			package_version = as.character(packageVersion("FunctionReport")),
+			package_version = as.character(packageVersion("pharmhand")),
 			data_source = "pharmaverseadam"
 		)
 	)

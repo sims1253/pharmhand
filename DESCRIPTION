@@ -1,12 +1,14 @@
-Package: FunctionReport
-Title: Wrapper for R to MS Office Packages for Clinical Study Reports
+Package: pharmhand
+Title: Clinical Study Tables and Reports from ADaM Data
 Version: 0.0.0.9000
-Author: First Last [aut, cre]
-Maintainer: First Last <first.last@example.com>
 Authors@R:
     person("Maximilian", "Scholz", , "dev.scholz@mailbox.org", role = c("aut", "cre"))
-Description: Wrapper for officer, flextable and similar R to MS Office packages for creating clinical study reports. Supports ADaM formats.
+Description: Create clinical study tables and reports from ADaM datasets.
+    Provides S7 classes for structured output and uses officer/flextable for
+    Word document generation. Integrates with the chef package for HTA analyses.
 License: GPL-3
+URL: https://github.com/sims1253/pharmhand
+BugReports: https://github.com/sims1253/pharmhand/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

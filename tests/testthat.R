@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(FunctionReport)
+library(pharmhand)
 
-test_check("FunctionReport")
+test_check("pharmhand")

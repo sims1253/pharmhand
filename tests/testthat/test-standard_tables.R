@@ -11,7 +11,7 @@ test_that("create_demographics_table works", {
 
 	tbl <- create_demographics_table(adsl_data)
 
-	expect_s7_class(tbl, FunctionReport::ClinicalTable)
+	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "demographics")
 })
 
@@ -24,7 +24,7 @@ test_that("create_region_table works", {
 
 	tbl <- create_region_table(adsl)
 
-	expect_s7_class(tbl, FunctionReport::ClinicalTable)
+	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "enrollment")
 })
 
@@ -34,7 +34,7 @@ test_that("create_medical_history_table works", {
 
 	tbl <- create_medical_history_table(adsl, admh)
 
-	expect_s7_class(tbl, FunctionReport::ClinicalTable)
+	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "medical_history")
 })
 
@@ -44,7 +44,7 @@ test_that("create_conmeds_table works", {
 
 	tbl <- create_conmeds_table(adsl, adcm)
 
-	expect_s7_class(tbl, FunctionReport::ClinicalTable)
+	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "conmeds")
 })
 
@@ -57,7 +57,7 @@ test_that("create_disposition_table works", {
 
 	tbl <- create_disposition_table(adsl)
 
-	expect_s7_class(tbl, FunctionReport::ClinicalTable)
+	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "disposition")
 })
 
@@ -70,7 +70,7 @@ test_that("create_population_summary_table works", {
 
 	tbl <- create_population_summary_table(adsl)
 
-	expect_s7_class(tbl, FunctionReport::ClinicalTable)
+	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "populations")
 	expect_true("Population" %in% names(tbl@data))
 })

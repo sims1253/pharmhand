@@ -19,5 +19,5 @@ calculate_ae_tte_data(adsl, adae, soc, trt_var = "TRT01A")
 Data frame formatted for KM plotting
 }
 \description{
-Calculate AE TTE Data for a specific SOC
+Prepares time-to-event data for Kaplan-Meier analysis of adverse events.
 }
