@@ -1,6 +1,6 @@
 #' Chef Pipeline Integration
 #'
-#' Bridge between the ramnog/chef ecosystem and FunctionReport's S7 classes.
+#' Bridge between the ramnog/chef ecosystem and pharmhand's S7 classes.
 #' Enables AMNOG-style HTA analyses with conversion to clinical reports.
 #'
 #' @name chef_integration
@@ -8,7 +8,7 @@ NULL
 
 #' Convert Chef Results to AnalysisResults
 #'
-#' Transform chef's hierarchical data.table output into FunctionReport's
+#' Transform chef's hierarchical data.table output into pharmhand's
 #' AnalysisResults S7 object for downstream processing.
 #'
 #' @param chef_output A data.table from chef pipeline execution
@@ -204,9 +204,9 @@ create_chef_endpoint <- function(
 	)
 }
 
-#' Run Chef Pipeline with FunctionReport Integration
+#' Run Chef Pipeline with pharmhand Integration
 #'
-#' Execute a chef analysis pipeline and return results as FunctionReport.
+#' Execute a chef analysis pipeline and return results as pharmhand.
 #'
 #' @param adam_data Named list of ADaM datasets
 #'   (e.g., list(adsl = adsl, adae = adae))
@@ -322,7 +322,7 @@ run_chef_pipeline <- function(
 
 #' Register Chef Statistical Functions
 #'
-#' Wrapper to access chefStats functions with FunctionReport metadata.
+#' Wrapper to access chefStats functions with pharmhand metadata.
 #'
 #' @param stat_name Name of the chefStats function
 #'

@@ -47,20 +47,20 @@ NULL
 	# This is critical for proper generic dispatch
 	S7::methods_register()
 
-	# Set default options for FunctionReport
+	# Set default options for pharmhand
 	options(
 		# Performance settings
-		FunctionReport.docx_batch_size = 50,
-		FunctionReport.parallel_threshold = 5,
-		FunctionReport.workers = NULL,
+		pharmhand.docx_batch_size = 50,
+		pharmhand.parallel_threshold = 5,
+		pharmhand.workers = NULL,
 
 		# Cache settings
-		FunctionReport.cache_enabled = TRUE,
-		FunctionReport.cache_max_size_mb = 500,
+		pharmhand.cache_enabled = TRUE,
+		pharmhand.cache_max_size_mb = 500,
 
 		# Image settings
-		FunctionReport.default_plot_dpi = 300,
-		FunctionReport.default_plot_width = 6,
-		FunctionReport.default_plot_height = 4
+		pharmhand.default_plot_dpi = 300,
+		pharmhand.default_plot_width = 6,
+		pharmhand.default_plot_height = 4
 	)
 }

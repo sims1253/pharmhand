@@ -17,7 +17,7 @@ NULL
 #' @noRd
 AnalysisLayer <- S7::new_class(
 	"AnalysisLayer",
-	package = "FunctionReport",
+	package = "pharmhand",
 	abstract = TRUE,
 	properties = list(
 		target_var = S7::new_property(
@@ -63,7 +63,7 @@ AnalysisLayer <- S7::new_class(
 #'
 CountLayer <- S7::new_class(
 	"CountLayer",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = AnalysisLayer,
 	properties = list(
 		distinct_by = S7::new_property(S7::class_character, default = "USUBJID"),
@@ -100,7 +100,7 @@ CountLayer <- S7::new_class(
 #' }
 DescriptiveLayer <- S7::new_class(
 	"DescriptiveLayer",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = AnalysisLayer,
 	properties = list(
 		stats = S7::new_property(
@@ -142,7 +142,7 @@ DescriptiveLayer <- S7::new_class(
 #' }
 ShiftLayer <- S7::new_class(
 	"ShiftLayer",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = AnalysisLayer,
 	properties = list(
 		baseline_var = S7::new_property(S7::class_character),
@@ -194,7 +194,7 @@ ShiftLayer <- S7::new_class(
 #' }
 LayeredTable <- S7::new_class(
 	"LayeredTable",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		data = S7::new_property(S7::class_data.frame),
 		trt_var = S7::new_property(S7::class_character, default = "TRT01P"),

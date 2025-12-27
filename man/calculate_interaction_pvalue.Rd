@@ -14,22 +14,29 @@ calculate_interaction_pvalue(
 )
 }
 \arguments{
-\item{df}{Data frame}
+\item{df}{Data frame containing analysis data with treatment, subgroup,
+and endpoint variables.}
 
-\item{subgroup_var}{Subgroup variable}
+\item{subgroup_var}{Character. Name of the subgroup variable column.}
 
-\item{endpoint_type}{"tte" or "binary"}
+\item{endpoint_type}{Character. Either "tte" for time-to-event (uses Cox
+regression) or "binary" for binary endpoints (uses logistic regression).}
 
-\item{time_var}{Time variable for TTE}
+\item{time_var}{Character. Name of time variable column (only used when
+endpoint_type = "tte").}
 
-\item{event_var_use}{Event variable for TTE}
+\item{event_var_use}{Character. Name of event indicator column (only used
+when endpoint_type = "tte").}
 
-\item{trt_var}{Treatment variable}
+\item{trt_var}{Character. Name of treatment variable column.}
 }
 \value{
-Interaction p-value
+Numeric. P-value from likelihood ratio test comparing model with
+and without treatment-by-subgroup interaction term. Returns NA if model
+fitting fails.
 }
 \description{
-Calculate Interaction P-value
+Calculates the p-value for treatment-by-subgroup interaction using
+likelihood ratio test. Used internally by forest plot functions.
 }
 \keyword{internal}

@@ -11,7 +11,7 @@ NULL
 #' @keywords internal
 Configuration <- S7::new_class(
 	"Configuration",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		source = S7::new_property(S7::class_character, default = "yaml"),
 		priority = S7::new_property(S7::class_integer, default = 0L)
@@ -43,7 +43,7 @@ Configuration <- S7::new_class(
 #' }
 SubgroupConfig <- S7::new_class(
 	"SubgroupConfig",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = Configuration,
 	properties = list(
 		variable = S7::new_property(S7::class_character),
@@ -78,7 +78,7 @@ SubgroupConfig <- S7::new_class(
 #' }
 PopulationConfig <- S7::new_class(
 	"PopulationConfig",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = Configuration,
 	properties = list(
 		variable = S7::new_property(S7::class_character),
@@ -114,7 +114,7 @@ PopulationConfig <- S7::new_class(
 #' }
 SOCConfig <- S7::new_class(
 	"SOCConfig",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = Configuration,
 	properties = list(
 		variable = S7::new_property(S7::class_character),
@@ -152,7 +152,7 @@ SOCConfig <- S7::new_class(
 #' }
 PTConfig <- S7::new_class(
 	"PTConfig",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = Configuration,
 	properties = list(
 		variable = S7::new_property(S7::class_character),
@@ -191,7 +191,7 @@ PTConfig <- S7::new_class(
 #' }
 ConfigurationRegistry <- S7::new_class(
 	"ConfigurationRegistry",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		subgroups = S7::new_property(S7::class_list, default = list()),
 		populations = S7::new_property(S7::class_list, default = list()),

@@ -2,7 +2,7 @@
 #'
 #' Generates a comprehensive reference report using pharmaverseadam datasets.
 #' This script serves as both documentation and a test fixture for the
-#' FunctionReport package.
+#' pharmhand package.
 #'
 #' @description
 #' Creates a clinical study report with the following sections:

@@ -200,6 +200,25 @@ create_vs_by_visit_table <- function(
 	title = "Vital Signs by Visit",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(advs)) {
+		cli::cli_abort("{.arg advs} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+
+	required_cols <- c("PARAMCD", "AVISIT", "TRT01P", "AVAL")
+	missing_cols <- setdiff(required_cols, names(advs))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			c(
+				"{.arg advs} is missing required columns: {.field {missing_cols}}",
+				"i" = "Required columns: {.field {required_cols}}"
+			)
+		)
+	}
+
 	vs_by_visit <- advs |>
 		dplyr::filter(
 			.data$PARAMCD == paramcd,
@@ -267,6 +286,25 @@ create_lab_summary_table <- function(
 	title = "Laboratory Parameters Summary",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adlb)) {
+		cli::cli_abort("{.arg adlb} must be a data frame")
+	}
+	if (!is.data.frame(trt_n)) {
+		cli::cli_abort("{.arg trt_n} must be a data frame")
+	}
+
+	required_cols <- c("PARAMCD", "AVISIT", "TRT01P", "PARAM", "AVAL")
+	missing_cols <- setdiff(required_cols, names(adlb))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			c(
+				"{.arg adlb} is missing required columns: {.field {missing_cols}}",
+				"i" = "Required columns: {.field {required_cols}}"
+			)
+		)
+	}
+
 	lab_data <- adlb |>
 		dplyr::filter(
 			.data$PARAMCD %in% params,
@@ -398,6 +436,25 @@ create_subgroup_analysis_table <- function(
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
+	# Input validation
+	if (!is.data.frame(adsl)) {
+		cli::cli_abort("{.arg adsl} must be a data frame")
+	}
+	if (!is.data.frame(advs)) {
+		cli::cli_abort("{.arg advs} must be a data frame")
+	}
+
+	required_cols <- c("PARAMCD", "AVISIT", "TRT01P", "AVAL")
+	missing_cols <- setdiff(required_cols, names(advs))
+	if (length(missing_cols) > 0) {
+		cli::cli_abort(
+			c(
+				"{.arg advs} is missing required columns: {.field {missing_cols}}",
+				"i" = "Required columns: {.field {required_cols}}"
+			)
+		)
+	}
+
 	subgroup_data_raw <- advs |>
 		dplyr::filter(
 			.data$PARAMCD == paramcd,
@@ -1485,7 +1542,7 @@ calculate_response_comparison <- function(
 			)
 
 			glm_fit <- stats::glm(
-				responder ~ df_subset[[trt_var]],
+				stats::reformulate(trt_var, response = "responder"),
 				data = df_subset,
 				family = stats::binomial()
 			)

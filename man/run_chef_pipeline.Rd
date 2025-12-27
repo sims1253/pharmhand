@@ -2,7 +2,7 @@
 % Please edit documentation in R/chef_integration.R
 \name{run_chef_pipeline}
 \alias{run_chef_pipeline}
-\title{Run Chef Pipeline with FunctionReport Integration}
+\title{Run Chef Pipeline with pharmhand Integration}
 \usage{
 run_chef_pipeline(
   adam_data,
@@ -30,7 +30,7 @@ Depending on output_type:
 }
 }
 \description{
-Execute a chef analysis pipeline and return results as FunctionReport.
+Execute a chef analysis pipeline and return results as pharmhand.
 }
 \examples{
 \dontrun{

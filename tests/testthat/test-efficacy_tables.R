@@ -177,6 +177,45 @@ test_that("create_lab_shift_table validates inputs", {
 	)
 })
 
+test_that("create_vs_by_visit_table validates inputs", {
+	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
+
+	expect_error(
+		create_vs_by_visit_table(NULL, trt_n),
+		"must be a data frame"
+	)
+	expect_error(
+		create_vs_by_visit_table(data.frame(), NULL),
+		"must be a data frame"
+	)
+})
+
+test_that("create_lab_summary_table validates inputs", {
+	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
+
+	expect_error(
+		create_lab_summary_table(NULL, trt_n),
+		"must be a data frame"
+	)
+	expect_error(
+		create_lab_summary_table(data.frame(), NULL),
+		"must be a data frame"
+	)
+})
+
+test_that("create_subgroup_analysis_table validates inputs", {
+	adsl <- data.frame(USUBJID = c("01", "02"))
+
+	expect_error(
+		create_subgroup_analysis_table(NULL, data.frame()),
+		"must be a data frame"
+	)
+	expect_error(
+		create_subgroup_analysis_table(adsl, NULL),
+		"must be a data frame"
+	)
+})
+
 # ===========================================================================
 # Tests for TTE Summary Table
 # ===========================================================================

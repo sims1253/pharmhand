@@ -746,6 +746,12 @@ calculate_subgroup_effect <- function(
 		df[[trt_var]] <- stats::relevel(factor(df[[trt_var]]), ref = ref_group)
 		surv_obj <- survival::Surv(df[[time_var]], df[[event_var_use]])
 
+		# Initialize with NA defaults
+		estimate <- NA_real_
+		lcl <- NA_real_
+		ucl <- NA_real_
+		pvalue <- NA_real_
+
 		tryCatch(
 			{
 				cox_fit <- survival::coxph(
@@ -759,16 +765,17 @@ calculate_subgroup_effect <- function(
 				ucl <- cox_summary$conf.int[1, "upper .95"]
 				pvalue <- cox_summary$coefficients[1, "Pr(>|z|)"]
 			},
-			error = function(e) {
-				estimate <<- NA_real_
-				lcl <<- NA_real_
-				ucl <<- NA_real_
-				pvalue <<- NA_real_
-			}
+			error = function(e) NULL
 		)
 	} else {
 		# Logistic regression for OR
 		df[[trt_var]] <- stats::relevel(factor(df[[trt_var]]), ref = ref_group)
+
+		# Initialize with NA defaults
+		estimate <- NA_real_
+		lcl <- NA_real_
+		ucl <- NA_real_
+		pvalue <- NA_real_
 
 		tryCatch(
 			{
@@ -785,12 +792,7 @@ calculate_subgroup_effect <- function(
 				ucl <- ci[2]
 				pvalue <- glm_summary$coefficients[2, "Pr(>|z|)"]
 			},
-			error = function(e) {
-				estimate <<- NA_real_
-				lcl <<- NA_real_
-				ucl <<- NA_real_
-				pvalue <<- NA_real_
-			}
+			error = function(e) NULL
 		)
 	}
 
@@ -810,14 +812,23 @@ calculate_subgroup_effect <- function(
 
 #' Calculate Interaction P-value
 #'
-#' @param df Data frame
-#' @param subgroup_var Subgroup variable
-#' @param endpoint_type "tte" or "binary"
-#' @param time_var Time variable for TTE
-#' @param event_var_use Event variable for TTE
-#' @param trt_var Treatment variable
+#' Calculates the p-value for treatment-by-subgroup interaction using
+#' likelihood ratio test. Used internally by forest plot functions.
 #'
-#' @return Interaction p-value
+#' @param df Data frame containing analysis data with treatment, subgroup,
+#'   and endpoint variables.
+#' @param subgroup_var Character. Name of the subgroup variable column.
+#' @param endpoint_type Character. Either "tte" for time-to-event (uses Cox
+#'   regression) or "binary" for binary endpoints (uses logistic regression).
+#' @param time_var Character. Name of time variable column (only used when
+#'   endpoint_type = "tte").
+#' @param event_var_use Character. Name of event indicator column (only used
+#'   when endpoint_type = "tte").
+#' @param trt_var Character. Name of treatment variable column.
+#'
+#' @return Numeric. P-value from likelihood ratio test comparing model with
+#'   and without treatment-by-subgroup interaction term. Returns NA if model
+#'   fitting fails.
 #' @keywords internal
 calculate_interaction_pvalue <- function(
 	df,

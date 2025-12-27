@@ -13,5 +13,5 @@ get_chef_stat(stat_name)
 A function wrapped with metadata for traceability
 }
 \description{
-Wrapper to access chefStats functions with FunctionReport metadata.
+Wrapper to access chefStats functions with pharmhand metadata.
 }

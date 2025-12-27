@@ -4,6 +4,6 @@
 \alias{chef_integration}
 \title{Chef Pipeline Integration}
 \description{
-Bridge between the ramnog/chef ecosystem and FunctionReport's S7 classes.
+Bridge between the ramnog/chef ecosystem and pharmhand's S7 classes.
 Enables AMNOG-style HTA analyses with conversion to clinical reports.
 }

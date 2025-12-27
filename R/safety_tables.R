@@ -481,6 +481,9 @@ create_ae_table_severity <- function(adae, trt_n, trt_var, title, autofit) {
 
 #' @keywords internal
 create_ae_table_relationship <- function(adae, trt_n, trt_var, title, autofit) {
+	# Note: Intentionally shows ALL AEREL categories from data (including NA/unknown)
+	# to provide complete relationship breakdown. This differs from overview table
+	# which only counts specific relationship values.
 	rel_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AEREL) |>
@@ -702,6 +705,30 @@ calculate_ae_tte_data <- function(
 	soc,
 	trt_var = "TRT01A"
 ) {
+	# Input validation
+	if (!is.data.frame(adsl)) {
+		cli::cli_abort("{.arg adsl} must be a data frame")
+	}
+	if (!is.data.frame(adae)) {
+		cli::cli_abort("{.arg adae} must be a data frame")
+	}
+
+	adae_cols <- c("AEBODSYS", "TRTEMFL", "USUBJID", "ASTDY")
+	missing_adae <- setdiff(adae_cols, names(adae))
+	if (length(missing_adae) > 0) {
+		cli::cli_abort(
+			"{.arg adae} is missing required column{?s}: {.val {missing_adae}}"
+		)
+	}
+
+	adsl_cols <- c("SAFFL", "USUBJID", trt_var)
+	missing_adsl <- setdiff(adsl_cols, names(adsl))
+	if (length(missing_adsl) > 0) {
+		cli::cli_abort(
+			"{.arg adsl} is missing required column{?s}: {.val {missing_adsl}}"
+		)
+	}
+
 	# Define event of interest: Time to first event in target SOC
 	first_event <- adae |>
 		dplyr::filter(.data$AEBODSYS == soc, .data$TRTEMFL == "Y") |>

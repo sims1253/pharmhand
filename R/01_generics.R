@@ -189,7 +189,7 @@ S7::method(add_to_docx, list(class_rdocx, S7::class_list)) <- function(
 	content,
 	...
 ) {
-	batch_size <- getOption("FunctionReport.docx_batch_size", 50)
+	batch_size <- getOption("pharmhand.docx_batch_size", 50)
 
 	for (i in seq(1, length(content), by = batch_size)) {
 		batch <- content[i:min(i + batch_size - 1, length(content))]

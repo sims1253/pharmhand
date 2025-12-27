@@ -294,9 +294,9 @@ test_that("create_ae_table handles empty SAE data gracefully", {
 	expect_s7_class(tbl, ClinicalTable)
 	# Should have a "no SAE" message
 	expect_true(
-		"Message" %in%
-			names(tbl@data) ||
-			nrow(tbl@data) == 0 ||
-			any(grepl("No serious", tbl@data$Message, ignore.case = TRUE))
+		nrow(tbl@data) == 0 ||
+			("Message" %in%
+				names(tbl@data) &&
+				any(grepl("No serious", tbl@data$Message, ignore.case = TRUE)))
 	)
 })

@@ -57,7 +57,7 @@ format_spec <- function(
 #' @export
 FormatSpec <- S7::new_class(
 	"FormatSpec",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		pattern = S7::new_property(
 			S7::class_character,
@@ -270,7 +270,7 @@ composite_format <- function(template, ...) {
 #' @export
 CompositeFormat <- S7::new_class(
 	"CompositeFormat",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		template = S7::new_property(S7::class_character),
 		specs = S7::new_property(S7::class_list, default = list())

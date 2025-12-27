@@ -24,7 +24,7 @@ NULL
 #' @export ADaMData
 ADaMData <- S7::new_class(
 	"ADaMData",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
@@ -115,7 +115,7 @@ ADaMData <- S7::new_class(
 #' @export AnalysisResults
 AnalysisResults <- S7::new_class(
 	"AnalysisResults",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		stats = S7::new_property(S7::class_data.frame, default = data.frame()),
 		type = S7::new_property(S7::class_character, default = ""),
@@ -130,7 +130,7 @@ AnalysisResults <- S7::new_class(
 #' @noRd
 ClinicalContent <- S7::new_class(
 	"ClinicalContent",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		type = S7::new_property(S7::class_character),
 		title = S7::new_property(S7::class_any),
@@ -166,7 +166,7 @@ ClinicalContent <- S7::new_class(
 #' }
 ClinicalTable <- S7::new_class(
 	"ClinicalTable",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = ClinicalContent,
 	properties = list(
 		data = S7::new_property(
@@ -225,7 +225,7 @@ ClinicalTable <- S7::new_class(
 #' }
 ClinicalPlot <- S7::new_class(
 	"ClinicalPlot",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = ClinicalContent,
 	properties = list(
 		plot = S7::new_property(
@@ -299,7 +299,7 @@ ClinicalPlot <- S7::new_class(
 #' }
 StudyResult <- S7::new_class(
 	"StudyResult",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		study_id = S7::new_property(
 			S7::class_character,
@@ -361,7 +361,7 @@ StudyResult <- S7::new_class(
 #' }
 ReportSection <- S7::new_class(
 	"ReportSection",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		title = S7::new_property(S7::class_any),
 		section_type = S7::new_property(S7::class_character),
@@ -401,7 +401,7 @@ ReportSection <- S7::new_class(
 #' }
 ClinicalReport <- S7::new_class(
 	"ClinicalReport",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		study_id = S7::new_property(S7::class_character),
 		study_title = S7::new_property(S7::class_character),
@@ -432,7 +432,7 @@ ClinicalReport <- S7::new_class(
 #' @export OneArmStudy
 OneArmStudy <- S7::new_class(
 	"OneArmStudy",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
@@ -478,7 +478,7 @@ OneArmStudy <- S7::new_class(
 #' @export TwoArmStudy
 TwoArmStudy <- S7::new_class(
 	"TwoArmStudy",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
@@ -543,7 +543,7 @@ TwoArmStudy <- S7::new_class(
 #' }
 PrimaryEndpoint <- S7::new_class(
 	"PrimaryEndpoint",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		name = S7::new_property(
 			S7::class_character,
@@ -615,7 +615,7 @@ PrimaryEndpoint <- S7::new_class(
 #' }
 SecondaryEndpoint <- S7::new_class(
 	"SecondaryEndpoint",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		name = S7::new_property(
 			S7::class_character,
@@ -679,7 +679,7 @@ SecondaryEndpoint <- S7::new_class(
 #' }
 SafetyEndpoint <- S7::new_class(
 	"SafetyEndpoint",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		name = S7::new_property(
 			S7::class_character,
@@ -733,7 +733,7 @@ SafetyEndpoint <- S7::new_class(
 #' }
 PerformanceReport <- S7::new_class(
 	"PerformanceReport",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		title = S7::new_property(
 			S7::class_character,
@@ -783,7 +783,7 @@ PerformanceReport <- S7::new_class(
 #' }
 SOCPTSection <- S7::new_class(
 	"SOCPTSection",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = ReportSection,
 	properties = list(
 		soc_var = S7::new_property(
@@ -836,7 +836,7 @@ SOCPTSection <- S7::new_class(
 #' }
 PopulationSection <- S7::new_class(
 	"PopulationSection",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = ReportSection,
 	properties = list(
 		pop_var = S7::new_property(
@@ -882,7 +882,7 @@ PopulationSection <- S7::new_class(
 #' }
 SubgroupSection <- S7::new_class(
 	"SubgroupSection",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = ReportSection,
 	properties = list(
 		subgroup_var = S7::new_property(
@@ -934,7 +934,7 @@ SubgroupSection <- S7::new_class(
 #' }
 HTAEndpoint <- S7::new_class(
 	"HTAEndpoint",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = PrimaryEndpoint,
 	properties = list(
 		chef_spec = S7::new_property(S7::class_list, default = list()),
@@ -977,7 +977,7 @@ HTAEndpoint <- S7::new_class(
 #' }
 AnalysisMeta <- S7::new_class(
 	"AnalysisMeta",
-	package = "FunctionReport",
+	package = "pharmhand",
 	properties = list(
 		source_vars = S7::new_property(S7::class_character, default = character()),
 		filters = S7::new_property(S7::class_list, default = list()),
@@ -1053,7 +1053,7 @@ create_analysis_meta <- function(
 #' }
 HTASection <- S7::new_class(
 	"HTASection",
-	package = "FunctionReport",
+	package = "pharmhand",
 	parent = ReportSection,
 	properties = list(
 		endpoint = S7::new_property(S7::class_any, default = NULL),

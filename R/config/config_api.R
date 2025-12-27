@@ -31,7 +31,7 @@ load_config <- function(path = NULL) {
 		path <- system.file(
 			"config",
 			"config_defaults.yaml",
-			package = "FunctionReport"
+			package = "pharmhand"
 		)
 	}
 

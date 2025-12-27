@@ -270,7 +270,7 @@ apply_clinical_style <- function(
 
 	# Autofit and ensure it fits to page width (A4 portrait with margins)
 	# Check global option for override
-	global_autofit <- getOption("FunctionReport.autofit", default = NULL)
+	global_autofit <- getOption("pharmhand.autofit", default = NULL)
 	use_autofit <- if (!is.null(global_autofit)) global_autofit else autofit
 
 	if (use_autofit) {

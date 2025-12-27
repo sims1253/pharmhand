@@ -1,4 +1,4 @@
-# FunctionReport Default Configuration
+# pharmhand Default Configuration
 #
 # This file contains default configuration for clinical study report generation.
 # It can be overridden at runtime using the configuration API.

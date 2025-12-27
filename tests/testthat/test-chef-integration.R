@@ -158,7 +158,7 @@ test_that("AnalysisMeta tracks metadata correctly", {
 })
 
 test_that("create_analysis_meta populates environment info", {
-	# FunctionReport package is always available since this is part of the package
+	# pharmhand package is always available since this is part of the package
 	meta <- create_analysis_meta(
 		source_vars = "AGE",
 		derivation = "mean"

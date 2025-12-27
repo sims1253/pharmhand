@@ -1,4 +1,4 @@
-#' Test Data Fixtures for FunctionReport
+#' Test Data Fixtures for pharmhand
 #'
 #' Helper functions to create mock data for testing clinical study functions.
 

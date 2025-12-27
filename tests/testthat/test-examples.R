@@ -17,7 +17,7 @@ test_that("Reference reports can be generated", {
 		examples_dir <- file.path(pkg_root, "inst", "examples")
 	} else {
 		# Fallback for R CMD check: use installed package location
-		examples_dir <- system.file("examples", package = "FunctionReport")
+		examples_dir <- system.file("examples", package = "pharmhand")
 	}
 
 	if (!dir.exists(examples_dir)) {
