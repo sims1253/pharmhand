@@ -1,6 +1,6 @@
 # Register Chef Statistical Functions
 
-Wrapper to access chefStats functions with FunctionReport metadata.
+Wrapper to access chefStats functions with pharmhand metadata.
 
 ## Usage
 

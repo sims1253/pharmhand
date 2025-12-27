@@ -1,6 +1,6 @@
-# Run Chef Pipeline with FunctionReport Integration
+# Run Chef Pipeline with pharmhand Integration
 
-Execute a chef analysis pipeline and return results as FunctionReport.
+Execute a chef analysis pipeline and return results as pharmhand.
 
 ## Usage
 

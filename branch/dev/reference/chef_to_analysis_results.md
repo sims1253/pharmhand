@@ -1,6 +1,6 @@
 # Convert Chef Results to AnalysisResults
 
-Transform chef's hierarchical data.table output into FunctionReport's
+Transform chef's hierarchical data.table output into pharmhand's
 AnalysisResults S7 object for downstream processing.
 
 ## Usage

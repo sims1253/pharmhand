@@ -192,7 +192,7 @@
 - [`reporting_engine`](https://sims1253.github.io/pharmhand/branch/dev/reference/reporting_engine.md)
   : Optimized Reporting Engine
 - [`run_chef_pipeline()`](https://sims1253.github.io/pharmhand/branch/dev/reference/run_chef_pipeline.md)
-  : Run Chef Pipeline with FunctionReport Integration
+  : Run Chef Pipeline with pharmhand Integration
 - [`study_logic`](https://sims1253.github.io/pharmhand/branch/dev/reference/study_logic.md)
   : Consolidated Study Logic
 - [`summarize_content()`](https://sims1253.github.io/pharmhand/branch/dev/reference/summarize_content.md)
