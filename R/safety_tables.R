@@ -90,6 +90,18 @@ create_ae_table <- function(
 		cli::cli_abort("{.arg adsl} is required for type = 'deaths'")
 	}
 
+	# Validate required columns when deriving trt_n from adae
+	if (is.null(adsl) || !is.data.frame(adsl)) {
+		required_cols <- c("TRTEMFL", "USUBJID", trt_var)
+		missing_cols <- setdiff(required_cols, names(adae))
+		if (length(missing_cols) > 0) {
+			cli::cli_abort(
+				"Column{?s} {.val {missing_cols}} required in {.arg adae} when
+				{.arg adsl} is not provided"
+			)
+		}
+	}
+
 	# Get treatment counts - prefer from adsl if available
 	trt_n <- if (!is.null(adsl) && is.data.frame(adsl)) {
 		get_trt_n(adsl, trt_var = trt_var, population = "SAF")
@@ -484,9 +496,9 @@ create_ae_table_severity <- function(adae, trt_n, trt_var, title, autofit) {
 
 #' @keywords internal
 create_ae_table_relationship <- function(adae, trt_n, trt_var, title, autofit) {
-	# Note: Intentionally shows ALL AEREL categories from data (including NA/unknown)
-	# to provide complete relationship breakdown. This differs from overview table
-	# which only counts specific relationship values.
+	# Note: Intentionally shows ALL AEREL categories from data
+	# (including NA/unknown) to provide complete relationship breakdown.
+	# This differs from overview table which only counts specific values.
 	rel_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AEREL) |>

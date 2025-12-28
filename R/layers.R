@@ -118,12 +118,13 @@ DescriptiveLayer <- S7::new_class(
 #'
 #' @export
 #'
-#' @param target_var Character vector of variable names (baseline and post)
+#' @param target_var Character vector of exactly 2 variable names:
+#'   c(baseline_var, post_var). First element is the baseline variable,
+#'   second is the post-baseline variable.
 #' @param by_vars Character vector of grouping variables
 #' @param where Filter expression (quosure or NULL)
 #' @param format_spec Format specification for output
-#' @param baseline_var Variable name for baseline value
-#' @param post_var Variable name for post-baseline value
+#' @param distinct_by Variable for distinct counting (default: USUBJID)
 #' @param include_n Logical, include subject counts
 #' @param include_pct Logical, include percentages
 #' @param label Optional label for the layer
@@ -135,8 +136,6 @@ DescriptiveLayer <- S7::new_class(
 #' \dontrun{
 #' layer <- ShiftLayer(
 #'   target_var = c("BTOXGR", "ATOXGR"),
-#'   baseline_var = "BTOXGR",
-#'   post_var = "ATOXGR",
 #'   by_vars = "TRT01P"
 #' )
 #' }
@@ -145,11 +144,15 @@ ShiftLayer <- S7::new_class(
 	package = "pharmhand",
 	parent = AnalysisLayer,
 	properties = list(
-		baseline_var = S7::new_property(S7::class_character),
-		post_var = S7::new_property(S7::class_character),
+		distinct_by = S7::new_property(S7::class_character, default = "USUBJID"),
 		include_n = S7::new_property(S7::class_logical, default = TRUE),
 		include_pct = S7::new_property(S7::class_logical, default = TRUE)
-	)
+	),
+	validator = function(self) {
+		if (length(self@target_var) != 2) {
+			"@target_var must have exactly 2 variables: c(baseline_var, post_var)"
+		}
+	}
 )
 
 #' Layered Table Class
@@ -430,15 +433,16 @@ build_descriptive_layer <- function(layer, data, trt_var) {
 #' @noRd
 build_shift_layer <- function(layer, data, trt_var) {
 	by_vars <- c(trt_var, layer@by_vars)
-	baseline <- layer@baseline_var
-	post <- layer@post_var
+	baseline <- layer@target_var[1]
+	post <- layer@target_var[2]
+	distinct_by <- layer@distinct_by
 
 	# Apply filter if specified
 	if (!is.null(layer@where)) {
 		data <- dplyr::filter(data, !!layer@where)
 	}
 
-	# Calculate shift counts
+	# Calculate shift counts (distinct subjects, not rows)
 	result <- data |>
 		dplyr::filter(!is.na(.data[[baseline]]) & !is.na(.data[[post]])) |>
 		dplyr::group_by(
@@ -446,7 +450,10 @@ build_shift_layer <- function(layer, data, trt_var) {
 			baseline = .data[[baseline]],
 			post = .data[[post]]
 		) |>
-		dplyr::summarise(n = dplyr::n(), .groups = "drop")
+		dplyr::summarise(
+			n = dplyr::n_distinct(.data[[distinct_by]]),
+			.groups = "drop"
+		)
 
 	if (layer@include_pct) {
 		totals <- result |>

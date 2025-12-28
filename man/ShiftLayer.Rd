@@ -11,14 +11,15 @@ ShiftLayer(
   format_spec = NULL,
   label = NULL,
   metadata = list(),
-  baseline_var = character(0),
-  post_var = character(0),
+  distinct_by = "USUBJID",
   include_n = TRUE,
   include_pct = TRUE
 )
 }
 \arguments{
-\item{target_var}{Character vector of variable names (baseline and post)}
+\item{target_var}{Character vector of exactly 2 variable names:
+c(baseline_var, post_var). First element is the baseline variable,
+second is the post-baseline variable.}
 
 \item{by_vars}{Character vector of grouping variables}
 
@@ -30,9 +31,7 @@ ShiftLayer(
 
 \item{metadata}{Additional metadata}
 
-\item{baseline_var}{Variable name for baseline value}
-
-\item{post_var}{Variable name for post-baseline value}
+\item{distinct_by}{Variable for distinct counting (default: USUBJID)}
 
 \item{include_n}{Logical, include subject counts}
 
@@ -49,8 +48,6 @@ to post-baseline states (e.g., lab grade shifts).
 \dontrun{
 layer <- ShiftLayer(
   target_var = c("BTOXGR", "ATOXGR"),
-  baseline_var = "BTOXGR",
-  post_var = "ATOXGR",
   by_vars = "TRT01P"
 )
 }

@@ -29,15 +29,24 @@ test_that("DescriptiveLayer creates valid object", {
 
 test_that("ShiftLayer creates valid object", {
 	layer <- ShiftLayer(
-		target_var = c("BTOXGR", "ATOXGR"),
-		baseline_var = "BTOXGR",
-		post_var = "ATOXGR"
+		target_var = c("BTOXGR", "ATOXGR")
 	)
 
 	expect_true(S7::S7_inherits(layer, ShiftLayer))
 	expect_true(S7::S7_inherits(layer, AnalysisLayer))
-	expect_equal(layer@baseline_var, "BTOXGR")
-	expect_equal(layer@post_var, "ATOXGR")
+	expect_equal(layer@target_var, c("BTOXGR", "ATOXGR"))
+	expect_equal(layer@distinct_by, "USUBJID")
+})
+
+test_that("ShiftLayer validates target_var has exactly 2 elements", {
+	expect_error(
+		ShiftLayer(target_var = "BTOXGR"),
+		"exactly 2 variables"
+	)
+	expect_error(
+		ShiftLayer(target_var = c("A", "B", "C")),
+		"exactly 2 variables"
+	)
 })
 
 test_that("LayeredTable creates valid object", {
