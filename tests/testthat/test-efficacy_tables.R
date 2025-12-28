@@ -216,9 +216,7 @@ test_that("create_subgroup_analysis_table validates inputs", {
 	)
 })
 
-# ===========================================================================
-# Tests for TTE Summary Table
-# ===========================================================================
+# Tests for TTE Summary Table ----
 
 test_that("create_tte_summary_table works with basic data", {
 	skip_if_not_installed("survival")
@@ -302,9 +300,7 @@ test_that("create_tte_summary_table includes HR for two-arm studies", {
 	expect_true(any(grepl("p-value", tbl@data$Statistic, fixed = TRUE)))
 })
 
-# ===========================================================================
-# Tests for Responder Table
-# ===========================================================================
+# Tests for Responder Table ----
 
 test_that("create_responder_table works with basic data", {
 	set.seed(42)
@@ -428,9 +424,7 @@ test_that("create_responder_table works with ADaMData", {
 	expect_equal(tbl@type, "responder")
 })
 
-# ===========================================================================
-# Tests for Subgroup Table
-# ===========================================================================
+# Tests for Subgroup Table ----
 
 test_that("create_subgroup_table works with TTE endpoint", {
 	skip_if_not_installed("survival")
@@ -552,9 +546,7 @@ test_that("create_subgroup_table warns for missing subgroup variables", {
 	)
 })
 
-# ===========================================================================
-# Tests for Proportion CI Calculation
-# ===========================================================================
+# Tests for Proportion CI Calculation ----
 
 test_that("calculate_proportion_ci wilson method works", {
 	ci <- calculate_proportion_ci(42, 100, method = "wilson", conf_level = 0.95)

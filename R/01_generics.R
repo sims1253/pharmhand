@@ -145,8 +145,6 @@ add_to_docx <- S7::new_generic("add_to_docx", c("doc", "content"))
 
 #' @describeIn add_to_docx Method for rdocx + ClinicalTable
 #' @noRd
-#' @describeIn add_to_docx Method for rdocx + ClinicalTable
-#' @noRd
 S7::method(add_to_docx, list(class_rdocx, ClinicalTable)) <- function(
 	doc,
 	content,

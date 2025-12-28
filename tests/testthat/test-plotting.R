@@ -134,9 +134,7 @@ test_that("create_km_plot applies custom palette", {
 	expect_s7_class(p, ClinicalPlot)
 })
 
-# ===========================================================================
-# Tests for Forest Plot
-# ===========================================================================
+# Tests for Forest Plot ----
 
 test_that("create_forest_plot works with TTE data", {
 	skip_if_not_installed("survival")

@@ -73,9 +73,7 @@ test_that("Study Logic works", {
 	expect_length(report@sections, 2)
 })
 
-# ===========================================================================
-# Tests for ADaMData Computed Properties
-# ===========================================================================
+# Tests for ADaMData Computed Properties ----
 
 test_that("ADaMData filtered_data computed property works", {
 	adsl <- create_mock_adsl(n = 20)
@@ -124,9 +122,7 @@ test_that("ADaMData trt_n respects population filter", {
 	expect_equal(sum(trt_n$N), 16) # 20 - 4 filtered out
 })
 
-# ===========================================================================
-# Tests for Helper Functions
-# ===========================================================================
+# Tests for Helper Functions ----
 
 test_that("get_trt_n works with ADaMData", {
 	adsl <- create_mock_adsl(n = 20)

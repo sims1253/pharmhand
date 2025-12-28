@@ -257,21 +257,7 @@ run_chef_pipeline <- function(
 		)
 	}
 
-	# Build chef endpoint definitions
-	# Note: logic commented out as chef::mk_endpoint_str requires specific inputs
-	# and the result is currently unused in this placeholder implementation
-	# ep_defs <- lapply(endpoints, function(ep) {
-	#   chef::mk_endpoint_str(
-	#     endpoint_label = ep$name,
-	#     data_prepare = if (is.null(ep$population)) identity else ep$population,
-	#     stat_by_strata_by_trt = ep$stats,
-	#     crit_endpoint = ep$criteria
-	#   )
-	# })
-
-	# For now, return a placeholder - full chef integration requires
-
-	# proper targets pipeline setup which is context-dependent
+	# TODO: Implement full chef pipeline integration (requires targets setup)
 	cli::cli_alert_info(
 		"Chef pipeline configured. Full execution requires targets setup."
 	)
