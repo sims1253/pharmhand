@@ -56,7 +56,7 @@ test_that("create_km_plot shows median lines", {
 	expect_s7_class(p, ClinicalPlot)
 	# Check that geom_segment layers exist (for median lines)
 	layer_classes <- sapply(p@plot$layers, function(l) class(l$geom)[1])
-	expect_true(any(grepl("Segment", layer_classes)))
+	expect_true(any(grepl("Segment", layer_classes, fixed = TRUE)))
 })
 
 test_that("create_km_plot shows confidence bands", {
@@ -75,7 +75,7 @@ test_that("create_km_plot shows confidence bands", {
 	expect_s7_class(p, ClinicalPlot)
 	# Check that ribbon layer exists
 	layer_classes <- sapply(p@plot$layers, function(l) class(l$geom)[1])
-	expect_true(any(grepl("Ribbon", layer_classes)))
+	expect_true(any(grepl("Ribbon", layer_classes, fixed = TRUE)))
 })
 
 test_that("create_km_plot shows landmarks", {
@@ -94,7 +94,7 @@ test_that("create_km_plot shows landmarks", {
 	expect_s7_class(p, ClinicalPlot)
 	# Check that vline layers exist (for landmark lines)
 	layer_classes <- sapply(p@plot$layers, function(l) class(l$geom)[1])
-	expect_true(any(grepl("Vline", layer_classes)))
+	expect_true(any(grepl("Vline", layer_classes, fixed = TRUE)))
 })
 
 test_that("create_km_plot works with ADaMData", {

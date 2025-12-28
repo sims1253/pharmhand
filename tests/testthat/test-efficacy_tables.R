@@ -237,8 +237,8 @@ test_that("create_tte_summary_table works with basic data", {
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "tte_summary")
 	expect_true("Statistic" %in% names(tbl@data))
-	expect_true(any(grepl("Median", tbl@data$Statistic)))
-	expect_true(any(grepl("Events", tbl@data$Statistic)))
+	expect_true(any(grepl("Median", tbl@data$Statistic, fixed = TRUE)))
+	expect_true(any(grepl("Events", tbl@data$Statistic, fixed = TRUE)))
 })
 
 test_that("create_tte_summary_table with landmarks", {
@@ -260,8 +260,8 @@ test_that("create_tte_summary_table with landmarks", {
 	)
 
 	expect_s7_class(tbl, ClinicalTable)
-	expect_true(any(grepl("12-months Rate", tbl@data$Statistic)))
-	expect_true(any(grepl("24-months Rate", tbl@data$Statistic)))
+	expect_true(any(grepl("12-months Rate", tbl@data$Statistic, fixed = TRUE)))
+	expect_true(any(grepl("24-months Rate", tbl@data$Statistic, fixed = TRUE)))
 })
 
 test_that("create_tte_summary_table works with ADaMData", {
@@ -298,8 +298,8 @@ test_that("create_tte_summary_table includes HR for two-arm studies", {
 
 	tbl <- create_tte_summary_table(adtte)
 
-	expect_true(any(grepl("HR", tbl@data$Statistic)))
-	expect_true(any(grepl("p-value", tbl@data$Statistic)))
+	expect_true(any(grepl("HR", tbl@data$Statistic, fixed = TRUE)))
+	expect_true(any(grepl("p-value", tbl@data$Statistic, fixed = TRUE)))
 })
 
 # ===========================================================================
@@ -456,7 +456,7 @@ test_that("create_subgroup_table works with TTE endpoint", {
 	expect_equal(tbl@type, "subgroup")
 	expect_true("Subgroup" %in% names(tbl@data))
 	expect_true("Category" %in% names(tbl@data))
-	expect_true(any(grepl("HR", names(tbl@data))))
+	expect_true(any(grepl("HR", names(tbl@data), fixed = TRUE)))
 	expect_true(any(tbl@data$Subgroup == "Overall"))
 	expect_true(any(tbl@data$Subgroup == "Sex"))
 	expect_true(any(tbl@data$Subgroup == "Age Group"))
@@ -481,7 +481,7 @@ test_that("create_subgroup_table works with binary endpoint", {
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "subgroup")
-	expect_true(any(grepl("OR", names(tbl@data))))
+	expect_true(any(grepl("OR", names(tbl@data), fixed = TRUE)))
 })
 
 test_that("create_subgroup_table includes interaction p-values", {
