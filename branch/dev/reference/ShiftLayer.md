@@ -13,8 +13,7 @@ ShiftLayer(
   format_spec = NULL,
   label = NULL,
   metadata = list(),
-  baseline_var = character(0),
-  post_var = character(0),
+  distinct_by = "USUBJID",
   include_n = TRUE,
   include_pct = TRUE
 )
@@ -24,7 +23,9 @@ ShiftLayer(
 
 - target_var:
 
-  Character vector of variable names (baseline and post)
+  Character vector of exactly 2 variable names: c(baseline_var,
+  post_var). First element is the baseline variable, second is the
+  post-baseline variable.
 
 - by_vars:
 
@@ -46,13 +47,9 @@ ShiftLayer(
 
   Additional metadata
 
-- baseline_var:
+- distinct_by:
 
-  Variable name for baseline value
-
-- post_var:
-
-  Variable name for post-baseline value
+  Variable for distinct counting (default: USUBJID)
 
 - include_n:
 
@@ -72,8 +69,6 @@ A ShiftLayer object
 if (FALSE) { # \dontrun{
 layer <- ShiftLayer(
   target_var = c("BTOXGR", "ATOXGR"),
-  baseline_var = "BTOXGR",
-  post_var = "ATOXGR",
   by_vars = "TRT01P"
 )
 } # }

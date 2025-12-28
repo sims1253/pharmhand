@@ -49,8 +49,7 @@ to post-baseline states (e.g., lab grade shifts).</p>
 <span>  format_spec <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  label <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  baseline_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
-<span>  post_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  distinct_by <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
 <span>  include_n <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  include_pct <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -61,7 +60,9 @@ to post-baseline states (e.g., lab grade shifts).</p>
 
 
 <dl><dt id="arg-target-var">target_var<a class="anchor" aria-label="anchor" href="#arg-target-var"></a></dt>
-<dd><p>Character vector of variable names (baseline and post)</p></dd>
+<dd><p>Character vector of exactly 2 variable names:
+c(baseline_var, post_var). First element is the baseline variable,
+second is the post-baseline variable.</p></dd>
 
 
 <dt id="arg-by-vars">by_vars<a class="anchor" aria-label="anchor" href="#arg-by-vars"></a></dt>
@@ -84,12 +85,8 @@ to post-baseline states (e.g., lab grade shifts).</p>
 <dd><p>Additional metadata</p></dd>
 
 
-<dt id="arg-baseline-var">baseline_var<a class="anchor" aria-label="anchor" href="#arg-baseline-var"></a></dt>
-<dd><p>Variable name for baseline value</p></dd>
-
-
-<dt id="arg-post-var">post_var<a class="anchor" aria-label="anchor" href="#arg-post-var"></a></dt>
-<dd><p>Variable name for post-baseline value</p></dd>
+<dt id="arg-distinct-by">distinct_by<a class="anchor" aria-label="anchor" href="#arg-distinct-by"></a></dt>
+<dd><p>Variable for distinct counting (default: USUBJID)</p></dd>
 
 
 <dt id="arg-include-n">include_n<a class="anchor" aria-label="anchor" href="#arg-include-n"></a></dt>
@@ -110,8 +107,6 @@ to post-baseline states (e.g., lab grade shifts).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu">ShiftLayer</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  target_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BTOXGR"</span>, <span class="st">"ATOXGR"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  baseline_var <span class="op">=</span> <span class="st">"BTOXGR"</span>,</span></span>
-<span class="r-in"><span>  post_var <span class="op">=</span> <span class="st">"ATOXGR"</span>,</span></span>
 <span class="r-in"><span>  by_vars <span class="op">=</span> <span class="st">"TRT01P"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
