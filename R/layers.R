@@ -289,7 +289,7 @@ build_table <- function(table, ...) {
 
 	# Process each layer
 	results <- lapply(table@layers, function(layer) {
-		build_layer_impl(layer, data, trt_var, big_n = big_n)
+		build_layer(layer, data, trt_var, big_n = big_n)
 	})
 
 	# Stack results
@@ -334,13 +334,6 @@ S7::method(build_layer, ShiftLayer) <- function(
 	big_n = NULL
 ) {
 	build_shift_layer(layer, data, trt_var)
-}
-
-#' Internal layer building dispatch (deprecated)
-#' @keywords internal
-#' @noRd
-build_layer_impl <- function(layer, data, trt_var, big_n = NULL) {
-	build_layer(layer, data, trt_var, big_n = big_n)
 }
 
 #' @keywords internal

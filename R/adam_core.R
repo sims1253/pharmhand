@@ -7,9 +7,7 @@
 #' @name adam_core
 NULL
 
-# ============================================================================
-# Helper Functions for Data Access
-# ============================================================================
+# Helper Functions for Data Access ----
 
 #' Get Treatment Group Counts
 #'
@@ -143,9 +141,7 @@ get_subject_var <- function(data, default = "USUBJID") {
 	default
 }
 
-# ============================================================================
-# Analysis Functions
-# ============================================================================
+# Analysis Functions ----
 
 #' Analyze ADaMData
 #'
@@ -165,8 +161,7 @@ analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
 	if (x@population != "ALL") {
 		pop_fl <- paste0(x@population, "FL")
 		if (pop_fl %in% names(df)) {
-			# admiral::assert_filter_cond is great for validating condition strings,
-			# but here we use standard filter for population flags.
+			# Use standard filter for population flags
 			df <- df |> dplyr::filter(!!dplyr::sym(pop_fl) == "Y")
 		} else {
 			cli::cli_warn(
@@ -174,9 +169,6 @@ analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
 			)
 		}
 	}
-
-	# Example of using admiral for data derivation if needed
-	# df <- df |> admiral::derive_vars_dtm(...)
 
 	# Basic summary stats (Baseline)
 	stats <- df |>
@@ -295,7 +287,6 @@ calculate_baseline <- function(data, vars) {
 #' @return AnalysisResults object
 #' @export
 analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
-	# Robust check for S7 ADaMData using S7::S7_inherits
 	is_adam <- S7::S7_inherits(data, ADaMData)
 
 	if (is_adam) {
@@ -364,7 +355,6 @@ analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
 #' @return A list of AnalysisResults per subgroup
 #' @export
 apply_subgroups <- function(data, subgroup_var, analysis_fn, ...) {
-	# Robust check for S7 ADaMData using S7::S7_inherits
 	is_adam <- S7::S7_inherits(data, ADaMData)
 	df <- if (is_adam) data@data else data
 

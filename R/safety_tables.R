@@ -166,9 +166,7 @@ create_ae_table <- function(
 	result
 }
 
-# ===========================================================================
-# Internal handler functions for create_ae_table
-# ===========================================================================
+# Internal handler functions for create_ae_table ----
 
 #' @keywords internal
 create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
@@ -496,9 +494,7 @@ create_ae_table_severity <- function(adae, trt_n, trt_var, title, autofit) {
 
 #' @keywords internal
 create_ae_table_relationship <- function(adae, trt_n, trt_var, title, autofit) {
-	# Note: Intentionally shows ALL AEREL categories from data
-	# (including NA/unknown) to provide complete relationship breakdown.
-	# This differs from overview table which only counts specific values.
+	# Shows all AEREL categories including NA/unknown
 	rel_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AEREL) |>
@@ -700,9 +696,7 @@ create_ae_table_deaths <- function(adsl, trt_var, title, autofit) {
 	)
 }
 
-# ===========================================================================
-# Utility Functions for AE Analysis
-# ===========================================================================
+# Utility Functions for AE Analysis ----
 
 #' Calculate AE TTE Data for a specific SOC
 #'
