@@ -47,20 +47,24 @@ NULL
 	# This is critical for proper generic dispatch
 	S7::methods_register()
 
-	# Set default options for pharmhand
-	options(
-		# Performance settings
-		pharmhand.docx_batch_size = 50,
-		pharmhand.parallel_threshold = 5,
-		pharmhand.workers = NULL,
+	# Set default options for pharmhand (only if not already set by user)
+	set_option_if_null <- function(name, value) {
+		if (is.null(getOption(name))) {
+			do.call(options, stats::setNames(list(value), name))
+		}
+	}
 
-		# Cache settings
-		pharmhand.cache_enabled = TRUE,
-		pharmhand.cache_max_size_mb = 500,
+	# Performance settings
+	set_option_if_null("pharmhand.docx_batch_size", 50)
+	set_option_if_null("pharmhand.parallel_threshold", 5)
+	set_option_if_null("pharmhand.workers", NULL)
 
-		# Image settings
-		pharmhand.default_plot_dpi = 300,
-		pharmhand.default_plot_width = 6,
-		pharmhand.default_plot_height = 4
-	)
+	# Cache settings
+	set_option_if_null("pharmhand.cache_enabled", TRUE)
+	set_option_if_null("pharmhand.cache_max_size_mb", 500)
+
+	# Image settings
+	set_option_if_null("pharmhand.default_plot_dpi", 300)
+	set_option_if_null("pharmhand.default_plot_width", 6)
+	set_option_if_null("pharmhand.default_plot_height", 4)
 }

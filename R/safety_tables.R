@@ -8,6 +8,9 @@
 #' @keywords internal
 NULL
 
+# Standard AEACN value for drug discontinuation (CDISC controlled terminology)
+AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
+
 #' Create Adverse Event Table
 #'
 #' Unified function for generating standard adverse event tables for
@@ -203,7 +206,7 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 
 	if ("TRTEMFL" %in% names(adae) && "AEACN" %in% names(adae)) {
 		disc <- adae |>
-			dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == "DRUG WITHDRAWN")
+			dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == AEACN_DRUG_WITHDRAWN)
 		categories[[4]] <- summarize_category(
 			disc,
 			"Subjects with AE leading to discontinuation"
@@ -586,7 +589,7 @@ create_ae_table_discontinuation <- function(
 	autofit
 ) {
 	disc <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == "DRUG WITHDRAWN")
+		dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == AEACN_DRUG_WITHDRAWN)
 
 	if (nrow(disc) == 0) {
 		summary_df <- data.frame(

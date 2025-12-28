@@ -142,7 +142,6 @@ write_docx_ClinicalReport <- S7::method(
 			} else if (S7::S7_inherits(item, ClinicalPlot)) {
 				# Extract plot to temp file
 				tmp <- tempfile(fileext = ".png")
-				on.exit(unlink(tmp), add = TRUE)
 				ggplot2::ggsave(
 					tmp,
 					item@plot,
@@ -156,6 +155,7 @@ write_docx_ClinicalReport <- S7::method(
 					width = item@width,
 					height = item@height
 				)
+				unlink(tmp) # Clean up immediately after embedding
 			}
 			doc <- officer::body_add_par(doc, "", style = "Normal") # Spacer
 		}

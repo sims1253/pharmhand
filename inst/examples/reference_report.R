@@ -26,7 +26,6 @@ library(dplyr)
 #' @param include_hta Logical, include HTA-specific sections
 #'
 #' @return Invisibly returns the ClinicalReport object
-#' @export
 #'
 #' @examples
 #' \dontrun{

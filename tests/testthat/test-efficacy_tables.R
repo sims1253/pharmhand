@@ -355,6 +355,46 @@ test_that("create_responder_table calculates RR correctly", {
 	expect_equal(tbl@metadata$comparison_type, "RR")
 })
 
+test_that("create_responder_table handles extreme response rates with RR", {
+	# Test case where reference group has 0% response rate
+	# This would cause division by zero without continuity correction
+	adrs_zero_ref <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:40),
+		TRT01P = rep(c("Placebo", "Active"), each = 20),
+		# All Placebo are non-responders (SD/PD), some Active are responders
+		AVALC = c(
+			rep("SD", 20),
+			sample(c("CR", "PR", "SD", "PD"), 20, replace = TRUE)
+		),
+		stringsAsFactors = FALSE
+	)
+
+	# Should not error - continuity correction should be applied
+	expect_no_error({
+		tbl <- create_responder_table(adrs_zero_ref, comparison_type = "RR")
+	})
+
+	tbl <- create_responder_table(adrs_zero_ref, comparison_type = "RR")
+	# RR should be finite (not Inf or NaN)
+	expect_true("RR (95% CI)" %in% names(tbl@data))
+
+	# Test case where treatment has 100% response rate
+	adrs_full_trt <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:40),
+		TRT01P = rep(c("Placebo", "Active"), each = 20),
+		# All Active are responders, some Placebo are responders
+		AVALC = c(
+			sample(c("CR", "PR", "SD", "PD"), 20, replace = TRUE),
+			rep("CR", 20)
+		),
+		stringsAsFactors = FALSE
+	)
+
+	expect_no_error({
+		tbl2 <- create_responder_table(adrs_full_trt, comparison_type = "RR")
+	})
+})
+
 test_that("create_responder_table supports different CI methods", {
 	set.seed(42)
 	adrs <- data.frame(

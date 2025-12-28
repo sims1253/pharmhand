@@ -219,7 +219,7 @@ performance:
 plots:
   # Kaplan-Meier plot settings
   km:
-    palette: "jco"          # Color palette: "jco", "jco", "npg", "aaas", "grey"
+    palette: "jco"          # Color palette: "jco", "npg", "aaas", "grey"
     conf_int: true          # Show confidence intervals
     pval: true              # Show log-rank p-value
     risk_table: false       # Show risk table below plot

@@ -79,6 +79,18 @@ test_that("apply_format right-aligns when requested", {
 	expect_true(grepl("^\\s", result[1]))
 })
 
+test_that("apply_format aligns correctly with parens negative format", {
+	spec <- format_spec("xx.x", neg_format = "parens")
+	result <- apply_format(spec, c(1.5, -12.3), align = TRUE)
+	# Both values should have equal length when aligned
+	# The parens format adds 1 extra character vs minus sign
+	expect_equal(nchar(result[1]), nchar(result[2]))
+	# Positive value should have leading space(s) to match negative with parens
+	expect_true(grepl("^\\s", result[1]))
+	# Negative value should have parens
+	expect_true(grepl("^\\(", result[2]))
+})
+
 test_that("CompositeFormat creates valid object", {
 	fmt <- composite_format("{n} ({pct}%)", n = "a", pct = "xx.x")
 

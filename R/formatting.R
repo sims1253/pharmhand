@@ -202,7 +202,12 @@ apply_format <- function(spec, x, align = TRUE) {
 	}
 
 	# Format values
+	# Account for extra characters when using parens format for negatives
+	# Parens format: "(12.3)" = 2 extra chars vs positive "12.3"
 	total_width <- int_width + ifelse(dec_width > 0, dec_width + 1, 0)
+	if (spec@neg_format == "parens") {
+		total_width <- total_width + 2
+	}
 
 	formatted <- vapply(
 		x_valid,

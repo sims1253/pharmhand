@@ -271,6 +271,11 @@ build_table <- function(table, ...) {
 	# Pre-calculate denominators (Big N) if not already present
 	big_n <- table@big_n
 	if (is.null(big_n)) {
+		if (!"USUBJID" %in% names(data)) {
+			cli::cli_abort(
+				"Column {.val USUBJID} not found in data. Required for subject counting."
+			)
+		}
 		big_n <- data |>
 			dplyr::group_by(!!rlang::sym(trt_var)) |>
 			dplyr::summarise(

@@ -1561,25 +1561,50 @@ calculate_response_comparison <- function(
 			)
 		} else if (comparison_type == "RR") {
 			# Risk Ratio (approximate)
-			rr <- p_trt / p_ref
+			# Check for extreme rates that require continuity correction
+			extreme_rates <- p_ref == 0 || p_ref == 1 || p_trt == 0 || p_trt == 1
+			continuity_applied <- FALSE
+
+			if (extreme_rates) {
+				# Apply Haldane continuity correction: add 0.5 to counts
+				x_trt_adj <- x_trt + 0.5
+				x_ref_adj <- x_ref + 0.5
+				n_trt_adj <- n_trt + 1
+				n_ref_adj <- n_ref + 1
+				p_trt_calc <- x_trt_adj / n_trt_adj
+				p_ref_calc <- x_ref_adj / n_ref_adj
+				continuity_applied <- TRUE
+			} else {
+				p_trt_calc <- p_trt
+				p_ref_calc <- p_ref
+			}
+
+			rr <- p_trt_calc / p_ref_calc
 			log_rr <- log(rr)
 			se_log_rr <- sqrt(
-				(1 - p_trt) / (n_trt * p_trt) + (1 - p_ref) / (n_ref * p_ref)
+				(1 - p_trt_calc) /
+					(n_trt * p_trt_calc) +
+					(1 - p_ref_calc) / (n_ref * p_ref_calc)
 			)
 			rr_ci <- exp(log_rr + c(-1, 1) * z * se_log_rr)
 
-			# Chi-square test for p-value
+			# Chi-square test for p-value (use Fisher's exact for extreme cases)
 			cont_table <- matrix(
 				c(x_trt, n_trt - x_trt, x_ref, n_ref - x_ref),
 				nrow = 2
 			)
-			pval <- stats::chisq.test(cont_table)$p.value
+			if (extreme_rates || any(cont_table < 5)) {
+				pval <- stats::fisher.test(cont_table)$p.value
+			} else {
+				pval <- stats::chisq.test(cont_table)$p.value
+			}
 
 			results[[trt]] <- list(
 				estimate = rr,
 				lcl = rr_ci[1],
 				ucl = rr_ci[2],
-				pvalue = pval
+				pvalue = pval,
+				continuity_correction = continuity_applied
 			)
 		} else {
 			# Risk Difference
