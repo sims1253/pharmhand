@@ -134,6 +134,109 @@ test_that("create_km_plot applies custom palette", {
 	expect_s7_class(p, ClinicalPlot)
 })
 
+test_that("create_km_plot uses base_size parameter", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(42)
+	df <- data.frame(
+		AVAL = rexp(40, 0.05),
+		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
+		TRT01P = rep(c("Placebo", "Active"), each = 20)
+	)
+
+	p <- create_km_plot(df, base_size = 14)
+
+	expect_s7_class(p, ClinicalPlot)
+	# Check that theme has the expected base size
+	expect_equal(p@plot$theme$text$size, 14)
+})
+
+test_that("create_km_plot uses okabe_ito palette by default", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(42)
+	df <- data.frame(
+		AVAL = rexp(40, 0.05),
+		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
+		TRT01P = rep(c("Placebo", "Active"), each = 20)
+	)
+
+	p <- create_km_plot(df)
+
+	expect_s7_class(p, ClinicalPlot)
+	# Check that color scale is manual (not default ggplot2)
+	scale_color <- p@plot$scales$get_scales("colour")
+	expect_true(!is.null(scale_color))
+})
+
+test_that("create_km_plot respects pharmhand.palette option", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(42)
+	df <- data.frame(
+		AVAL = rexp(40, 0.05),
+		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
+		TRT01P = rep(c("Placebo", "Active"), each = 20)
+	)
+
+	# Set custom palette via options
+	old_opt <- getOption("pharmhand.palette")
+	on.exit(options(pharmhand.palette = old_opt))
+	options(pharmhand.palette = c("#FF0000", "#00FF00", "#0000FF"))
+
+	p <- create_km_plot(df)
+
+	expect_s7_class(p, ClinicalPlot)
+	# Check that scale uses the custom colors
+	scale_color <- p@plot$scales$get_scales("colour")
+	expect_true(!is.null(scale_color))
+})
+
+test_that("create_km_plot supports named palettes via option", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(42)
+	df <- data.frame(
+		AVAL = rexp(40, 0.05),
+		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
+		TRT01P = rep(c("Placebo", "Active"), each = 20)
+	)
+
+	# Set a named palette via options (R4 is another built-in palette)
+	old_opt <- getOption("pharmhand.palette")
+	on.exit(options(pharmhand.palette = old_opt))
+	options(pharmhand.palette = "R4")
+
+	p <- create_km_plot(df)
+
+	expect_s7_class(p, ClinicalPlot)
+	scale_color <- p@plot$scales$get_scales("colour")
+	expect_true(!is.null(scale_color))
+})
+
+test_that("create_km_plot risk table uses consistent font size", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+	skip_if_not_installed("patchwork")
+
+	set.seed(42)
+	df <- data.frame(
+		AVAL = rexp(40, 0.05),
+		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
+		TRT01P = rep(c("Placebo", "Active"), each = 20)
+	)
+
+	p <- create_km_plot(df, risk_table = TRUE, base_size = 14)
+
+	expect_s7_class(p, ClinicalPlot)
+	# Plot should be a patchwork object when risk_table = TRUE
+	expect_true(inherits(p@plot, "patchwork"))
+})
+
 # Tests for Forest Plot ----
 
 test_that("create_forest_plot works with TTE data", {

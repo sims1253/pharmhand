@@ -1,6 +1,6 @@
-#' Standard Clinical Plots
+#' Clinical Plots
 #'
-#' Reusable functions for creating standard clinical trial plots.
+#' Functions for standard clinical trial plots.
 #'
 #' @name plotting
 #' @keywords internal
@@ -8,7 +8,7 @@ NULL
 
 #' Create Kaplan-Meier Plot
 #'
-#' Generates a standard Kaplan-Meier plot using ggplot2 and survival.
+#' Kaplan-Meier plot using ggplot2 and survival.
 #'
 #' @param data ADaMData object or data frame containing survival data
 #' @param time_var Time variable name (default: "AVAL")
@@ -28,9 +28,13 @@ NULL
 #' @param landmarks Numeric vector of timepoints to highlight with vertical
 #'   lines (e.g., c(12, 24) for 12 and 24 months). NULL for none.
 #' @param xlim Optional x-axis limits as c(min, max)
-#' @param palette Optional color palette for treatment groups. If NULL,
-#'   uses default ggplot2 colors.
+#' @param palette Optional color palette for treatment groups. Can be a character
+#'   vector of colors, or NULL to use `getOption("pharmhand.palette")`. Defaults
+#'   to the CVD-friendly "Okabe-Ito" palette. Other built-in options include
+#'   "R4", "Tableau 10", "Alphabet", etc. (see `grDevices::palette.pals()`).
 #' @param conf_level Confidence level for CI bands (default: 0.95)
+#' @param base_size Base font size for plot text elements (default: 11).
+#'   Also used for risk table text.
 #'
 #' @return A ClinicalPlot object
 #' @export
@@ -68,7 +72,8 @@ create_km_plot <- function(
 	landmarks = NULL,
 	xlim = NULL,
 	palette = NULL,
-	conf_level = 0.95
+	conf_level = 0.95,
+	base_size = 11
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
 		cli::cli_abort("Package {.pkg survival} is required for KM plots")
@@ -226,12 +231,36 @@ create_km_plot <- function(
 		}
 	}
 
-	# Apply color palette if provided
-	if (!is.null(palette)) {
-		p <- p + ggplot2::scale_color_manual(values = palette)
-		if (show_ci) {
-			p <- p + ggplot2::scale_fill_manual(values = palette)
+	# Resolve color palette
+	# Use grDevices::palette.colors() for named palettes (requires R >= 4.0)
+	resolved_palette <- if (!is.null(palette)) {
+		palette
+	} else {
+		opt_palette <- getOption("pharmhand.palette", default = "Okabe-Ito")
+		if (is.character(opt_palette) && length(opt_palette) == 1) {
+			# Named palette - use palette.colors() from grDevices
+			# Available palettes: palette.pals()
+			tryCatch(
+				grDevices::palette.colors(n = NULL, palette = opt_palette),
+				error = function(e) {
+					cli::cli_warn(
+						"Palette {.val {opt_palette}} not found, using {.val Okabe-Ito}"
+					)
+					grDevices::palette.colors(n = NULL, palette = "Okabe-Ito")
+				}
+			)
+		} else if (is.character(opt_palette) && length(opt_palette) > 1) {
+			# User provided a vector of colors via options
+			opt_palette
+		} else {
+			# Fallback to Okabe-Ito
+			grDevices::palette.colors(n = NULL, palette = "Okabe-Ito")
 		}
+	}
+
+	p <- p + ggplot2::scale_color_manual(values = resolved_palette)
+	if (show_ci) {
+		p <- p + ggplot2::scale_fill_manual(values = resolved_palette)
 	}
 
 	# Apply x-axis limits if provided
@@ -254,7 +283,7 @@ create_km_plot <- function(
 			color = "Treatment",
 			fill = "Treatment"
 		) +
-		ggplot2::theme_minimal() +
+		ggplot2::theme_minimal(base_size = base_size) +
 		ggplot2::theme(
 			legend.position = "bottom",
 			plot.title = ggplot2::element_text(hjust = 0.5),
@@ -367,19 +396,21 @@ create_km_plot <- function(
 				color = .data$strata
 			)
 		) +
-			ggplot2::geom_text(size = 3) +
+			ggplot2::geom_text(size = base_size / ggplot2::.pt) +
 			ggplot2::scale_x_continuous(
 				limits = c(0, max_time),
 				breaks = break_points
 			) +
 			ggplot2::labs(x = NULL, y = NULL) +
-			ggplot2::theme_minimal() +
+			ggplot2::theme_minimal(base_size = base_size) +
 			ggplot2::theme(
 				panel.grid = ggplot2::element_blank(),
 				axis.text.x = ggplot2::element_blank(),
 				legend.position = "none",
 				plot.margin = ggplot2::margin(0, 0, 0, 0)
 			)
+
+		rt <- rt + ggplot2::scale_color_manual(values = resolved_palette)
 
 		# Combine using patchwork
 		combined_plot <- p +

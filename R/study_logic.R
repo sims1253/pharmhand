@@ -1,7 +1,6 @@
-#' Consolidated Study Logic
+#' Study Logic
 #'
-#' This module provides a unified interface for analyzing one-arm and two-arm
-#' clinical studies using S7 classes and methods.
+#' Analyze one-arm and two-arm studies with S7 classes.
 #'
 #' @name study_logic
 NULL
@@ -16,7 +15,7 @@ analyze_study <- S7::new_generic("analyze_study", "x")
 
 #' Analyze OneArmStudy
 #'
-#' S7 method for analyzing OneArmStudy objects.
+#' Analyze OneArmStudy objects.
 #'
 #' @param x A OneArmStudy object
 #' @param ... Additional arguments

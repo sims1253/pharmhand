@@ -4,8 +4,6 @@
 \alias{safety_tables}
 \title{Safety Analysis Tables}
 \description{
-Reusable functions for creating standard safety analysis tables
-including AE overviews, SOC/PT summaries, severity, relationship,
-SAEs, and deaths.
+Functions for safety tables: AE overviews, SOC/PT summaries, SAEs.
 }
 \keyword{internal}

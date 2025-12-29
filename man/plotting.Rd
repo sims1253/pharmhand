@@ -2,8 +2,8 @@
 % Please edit documentation in R/plotting.R
 \name{plotting}
 \alias{plotting}
-\title{Standard Clinical Plots}
+\title{Clinical Plots}
 \description{
-Reusable functions for creating standard clinical trial plots.
+Functions for standard clinical trial plots.
 }
 \keyword{internal}

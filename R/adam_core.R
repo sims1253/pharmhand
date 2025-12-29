@@ -1,8 +1,6 @@
-#' High-Performance ADaM Analysis Core
+#' ADaM Analysis Core
 #'
-#' This module provides vectorized functions for clinical data analysis
-#' using the dplyr and tidyr ecosystems. It replaces legacy row-wise loops
-#' with efficient group-by operations.
+#' Vectorized functions for clinical data analysis.
 #'
 #' @name adam_core
 NULL
@@ -11,9 +9,7 @@ NULL
 
 #' Get Treatment Group Counts
 #'
-#' Extract or compute treatment group counts from ADaMData or a data frame.
-#' For ADaMData objects, uses the pre-computed `trt_n` property which respects
-#' population filters. For data frames, computes counts directly.
+#' Extract or compute treatment group counts from ADaMData or data frame.
 #'
 #' @param data ADaMData object or data frame
 #' @param trt_var Treatment variable name (used only for data frames,

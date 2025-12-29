@@ -1,6 +1,6 @@
 #' Standard Clinical Tables
 #'
-#' Reusable functions for creating standard clinical trial tables.
+#' Functions for standard clinical trial tables.
 #'
 #' @name standard_tables
 #' @keywords internal
@@ -8,7 +8,7 @@ NULL
 
 #' Create Demographics Table
 #'
-#' Generates a standard demographics and baseline characteristics table.
+#' Standard demographics and baseline characteristics table.
 #'
 #' @param adsl_data ADaMData object containing ADSL
 #' @param title Table title (default: "Demographics and Baseline")

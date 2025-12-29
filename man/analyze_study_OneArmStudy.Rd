@@ -15,5 +15,5 @@ analyze_study_OneArmStudy(x, ...)
 The modified OneArmStudy object with results
 }
 \description{
-S7 method for analyzing OneArmStudy objects.
+Analyze OneArmStudy objects.
 }

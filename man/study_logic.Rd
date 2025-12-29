@@ -2,8 +2,7 @@
 % Please edit documentation in R/study_logic.R
 \name{study_logic}
 \alias{study_logic}
-\title{Consolidated Study Logic}
+\title{Study Logic}
 \description{
-This module provides a unified interface for analyzing one-arm and two-arm
-clinical studies using S7 classes and methods.
+Analyze one-arm and two-arm studies with S7 classes.
 }

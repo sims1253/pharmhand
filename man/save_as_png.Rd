@@ -17,4 +17,3 @@ The file path where the PNG was saved
 \description{
 Saves a ClinicalTable's flextable to a PNG file.
 }
-\keyword{internal}

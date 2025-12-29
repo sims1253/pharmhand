@@ -2,8 +2,7 @@
 % Please edit documentation in R/chef_integration.R
 \name{chef_integration}
 \alias{chef_integration}
-\title{Chef Pipeline Integration}
+\title{Chef Integration}
 \description{
-Bridge between the ramnog/chef ecosystem and pharmhand's S7 classes.
-Enables AMNOG-style HTA analyses with conversion to clinical reports.
+Bridge between chef and pharmhand S7 classes.
 }

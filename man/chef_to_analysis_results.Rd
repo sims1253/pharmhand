@@ -17,8 +17,7 @@ chef_to_analysis_results(chef_output, type = "hta", metadata = list())
 An AnalysisResults S7 object
 }
 \description{
-Transform chef's hierarchical data.table output into pharmhand's
-AnalysisResults S7 object for downstream processing.
+Transform chef output to AnalysisResults.
 }
 \examples{
 \dontrun{

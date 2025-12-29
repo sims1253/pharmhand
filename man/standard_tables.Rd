@@ -4,6 +4,6 @@
 \alias{standard_tables}
 \title{Standard Clinical Tables}
 \description{
-Reusable functions for creating standard clinical trial tables.
+Functions for standard clinical trial tables.
 }
 \keyword{internal}

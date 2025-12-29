@@ -1,15 +1,13 @@
-#' Chef Pipeline Integration
+#' Chef Integration
 #'
-#' Bridge between the ramnog/chef ecosystem and pharmhand's S7 classes.
-#' Enables AMNOG-style HTA analyses with conversion to clinical reports.
+#' Bridge between chef and pharmhand S7 classes.
 #'
 #' @name chef_integration
 NULL
 
 #' Convert Chef Results to AnalysisResults
 #'
-#' Transform chef's hierarchical data.table output into pharmhand's
-#' AnalysisResults S7 object for downstream processing.
+#' Transform chef output to AnalysisResults.
 #'
 #' @param chef_output A data.table from chef pipeline execution
 #' @param type Character string for result type (default: "hta")

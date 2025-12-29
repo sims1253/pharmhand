@@ -1,57 +1,106 @@
 # Contributing to pharmhand
 
-Contributions are welcome and appreciated.
-
 ## Getting started
 
-1. Fork the repository and clone your fork
-2. Install dependencies: `devtools::install_dev_deps()`
-3. Create a branch for your changes: `git checkout -b feature/your-feature`
+1. Fork and clone:
+```bash
+git clone https://github.com/YOUR_USERNAME/pharmhand.git
+```
 
-## Development workflow
-
-### Code style
-
-This package follows the [tidyverse style guide](https://style.tidyverse.org/). Before submitting:
-
+2. Install dependencies:
 ```r
-# Format code
-styler::style_pkg()
+devtools::install_dev_deps()
+```
 
-# Check linting
+3. Create branch:
+```bash
+git checkout -b feature/your-feature
+```
+
+## System dependencies
+
+Install air:
+```bash
+# macOS
+brew install posit-dev/tap/air
+
+# Other platforms
+# See https://posit-dev.github.io/air/
+```
+
+For R CMD check:
+- **qpdf**: `brew install qpdf` (macOS) or `sudo apt-get install qpdf` (Ubuntu)
+- **Pandoc**: Included with RStudio
+
+Skip vignettes:
+```r
+devtools::check(build_args = "--no-build-vignettes")
+```
+
+## Code style
+
+Use **air** for formatting (not styler):
+- Line width: 80 characters
+- Indent: tabs (width 2)
+
+Format:
+```bash
+air format .
+```
+
+Check:
+```bash
+air format . --check
+```
+
+Lint:
+```r
 lintr::lint_package()
 ```
 
-### Testing
+## Testing
 
-Add tests for new functionality in `tests/testthat/`. Run tests with:
+Run tests:
 ```r
 devtools::test()
 ```
 
-### Documentation
+Add tests in `tests/testthat/`.
 
-- Use roxygen2 for function documentation
-- Include `@examples` where practical
-- Run `devtools::document()` to update docs
+## Documentation
 
-### Checking
-
-Before submitting a PR, run:
+Document with roxygen2:
 ```r
+devtools::document()
+```
+
+Include `@examples` where practical.
+
+## Before submitting
+
+Run checks:
+```r
+air format .
+lintr::lint_package()
+devtools::test()
 devtools::check()
 ```
 
+Update `NEWS.md`.
+
 ## Pull requests
 
-1. Update `NEWS.md` with a summary of changes
-2. Ensure CI checks pass
-3. Keep PRs focused on a single feature or fix
+1. Push branch to fork
+2. Open pull request
+3. Ensure CI passes
+4. Keep PRs focused
 
-## Reporting issues
+## Issues
 
-Use [GitHub Issues](https://github.com/sims1253/pharmhand/issues) to report bugs or request features. Include a minimal reproducible example when reporting bugs.
+Report bugs at [https://github.com/sims1253/pharmhand/issues](https://github.com/sims1253/pharmhand/issues).
+
+Include minimal reproducible example.
 
 ## Code of Conduct
 
-Please note that this project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to abide by its terms.
+Follows [Contributor Covenant](CODE_OF_CONDUCT.md).

@@ -225,7 +225,7 @@ S7::method(add_to_docx, list(class_rdocx, ReportSection)) <- function(
 #' @param path Optional file path. If NULL, creates a temp file.
 #'
 #' @return The file path where the PNG was saved
-#' @keywords internal
+#' @export
 save_as_png <- function(x, path = NULL) {
 	if (is.null(path)) {
 		path <- tempfile(fileext = ".png")
@@ -248,7 +248,7 @@ save_as_png <- function(x, path = NULL) {
 #' @note The image-based fallback may result in lower quality output compared
 #'   to native PDF rendering. For best results, install the webshot2 package.
 #'
-#' @keywords internal
+#' @export
 save_as_pdf <- function(x, path = NULL) {
 	if (is.null(path)) {
 		path <- tempfile(fileext = ".pdf")
@@ -284,7 +284,7 @@ save_as_pdf <- function(x, path = NULL) {
 #' @param path Optional file path. If NULL, creates a temp file.
 #'
 #' @return The file path where the plot was saved
-#' @keywords internal
+#' @export
 save_plot_as <- function(x, format = "png", path = NULL) {
 	if (is.null(path)) {
 		path <- tempfile(fileext = paste0(".", format))
@@ -450,7 +450,7 @@ add_table <- S7::new_generic(
 #' @describeIn add_table Method for StudyResult
 #' @noRd
 S7::method(add_table, StudyResult) <- function(obj, table, name = NULL) {
-	checkmate::assert_class(table, "ClinicalTable")
+	checkmate::assertTRUE(inherits(table, "pharmhand::ClinicalTable"))
 	checkmate::assert_string(name, null.ok = TRUE)
 
 	if (is.null(name)) {
@@ -482,7 +482,7 @@ add_plot <- S7::new_generic(
 #' @describeIn add_plot Method for StudyResult
 #' @noRd
 S7::method(add_plot, StudyResult) <- function(obj, plot, name = NULL) {
-	checkmate::assert_class(plot, "ClinicalPlot")
+	checkmate::assertTRUE(inherits(plot, "pharmhand::ClinicalPlot"))
 	checkmate::assert_string(name, null.ok = TRUE)
 
 	if (is.null(name)) {
@@ -546,7 +546,10 @@ add_content <- S7::new_generic(
 #' @describeIn add_content Method for ReportSection
 #' @noRd
 S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
-	checkmate::assert_class(content, "ClinicalContent")
+	checkmate::assertTRUE(
+		any(grepl("ClinicalContent", class(content))),
+		add = "Must be a ClinicalContent object"
+	)
 	checkmate::assert_string(name, null.ok = TRUE)
 
 	if (is.null(name)) {

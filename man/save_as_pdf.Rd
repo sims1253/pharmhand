@@ -23,4 +23,3 @@ to image-based export via flextable::save_as_image().
 The image-based fallback may result in lower quality output compared
 to native PDF rendering. For best results, install the webshot2 package.
 }
-\keyword{internal}

@@ -50,9 +50,7 @@ like "deaths" or for denominator calculation)}
 A ClinicalTable object
 }
 \description{
-Unified function for generating standard adverse event tables for
-HTA dossiers and clinical study reports. Supports multiple table
-types through a single interface.
+Generate AE tables for clinical study reports.
 }
 \examples{
 \dontrun{
