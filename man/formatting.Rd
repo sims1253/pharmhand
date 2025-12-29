@@ -2,8 +2,7 @@
 % Please edit documentation in R/formatting.R
 \name{formatting}
 \alias{formatting}
-\title{Format String Grammar for Clinical Tables}
+\title{Format String Grammar}
 \description{
-A declarative formatting system inspired by Tplyr's f_str() function.
-Allows specification of numeric formats using intuitive pattern strings.
+Declarative formatting system for clinical tables.
 }

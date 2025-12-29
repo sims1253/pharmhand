@@ -19,7 +19,8 @@ create_km_plot(
   landmarks = NULL,
   xlim = NULL,
   palette = NULL,
-  conf_level = 0.95
+  conf_level = 0.95,
+  base_size = 11
 )
 }
 \arguments{
@@ -54,16 +55,21 @@ lines (e.g., c(12, 24) for 12 and 24 months). NULL for none.}
 
 \item{xlim}{Optional x-axis limits as c(min, max)}
 
-\item{palette}{Optional color palette for treatment groups. If NULL,
-uses default ggplot2 colors.}
+\item{palette}{Optional color palette for treatment groups. Can be a character
+vector of colors, or NULL to use \code{getOption("pharmhand.palette")}. Defaults
+to the CVD-friendly "Okabe-Ito" palette. Other built-in options include
+"R4", "Tableau 10", "Alphabet", etc. (see \code{grDevices::palette.pals()}).}
 
 \item{conf_level}{Confidence level for CI bands (default: 0.95)}
+
+\item{base_size}{Base font size for plot text elements (default: 11).
+Also used for risk table text.}
 }
 \value{
 A ClinicalPlot object
 }
 \description{
-Generates a standard Kaplan-Meier plot using ggplot2 and survival.
+Kaplan-Meier plot using ggplot2 and survival.
 }
 \examples{
 \dontrun{

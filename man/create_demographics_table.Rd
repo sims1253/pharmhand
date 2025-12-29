@@ -42,5 +42,5 @@ create_demographics_table(
 A ClinicalTable object
 }
 \description{
-Generates a standard demographics and baseline characteristics table.
+Standard demographics and baseline characteristics table.
 }

@@ -1,13 +1,14 @@
-# pharmhand
+# pharmhand <img src="man/figures/logo.png" align="right" height="139" alt="pharmhand logo" />
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg)](https://codecov.io/gh/sims1253/pharmhand)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pckdown.yaml/badge.svg)](https://sims1253.github.io/pharmhand/)
 <!-- badges: end -->
 
-pharmhand creates clinical study tables and reports from ADaM datasets. It wraps [officer](https://davidgohel.github.io/officer/) and [flextable](https://davidgohel.github.io/flextable/) with S7 classes designed for clinical reporting workflows, with a focus on HTA/AMNOG dossier requirements.
+pharmhand creates clinical study tables and reports from ADaM datasets. It uses S7 classes to structure clinical data and outputs formatted tables and plots for Word documents.
 
 ## Installation
 
@@ -35,7 +36,7 @@ adam_data@filtered_data  # Auto-filtered to SAFFL == "Y"
 adam_data@trt_n          # Treatment group N's computed automatically
 ```
 
-## Key Features
+## Functions
 
 ### Efficacy Tables
 
@@ -69,8 +70,6 @@ subgroup_table <- create_subgroup_table(
 ```
 
 ### Safety Tables
-
-All safety tables through a unified interface:
 
 ```r
 # AE Overview
@@ -139,22 +138,29 @@ report <- add_section(report, section)
 generate_word(report, "study_report.docx")
 ```
 
-## S7 Classes
+## Classes
 
-pharmhand uses S7 classes to structure clinical content:
-
-- `ADaMData` - ADaM dataset with population filters and computed properties (`filtered_data`, `trt_n`)
-- `ClinicalTable` - Table with flextable formatting
-- `ClinicalPlot` - Plot (ggplot2/ggsurvplot) with export settings
-- `ClinicalReport` - Report containing sections with tables and plots
-- `StudyResult` - Container for tables and plots from a study
+- `ADaMData` - ADaM dataset wrapper with population filtering
+- `ClinicalTable` - Table with formatting
+- `ClinicalPlot` - Plot with export settings  
+- `ClinicalReport` - Report with sections
+- `StudyResult` - Container for results
 
 ## Related Packages
 
-pharmhand builds on:
+## Related Packages
 
-- [officer](https://davidgohel.github.io/officer/) - Word document manipulation
+- [officer](https://davidgohel.github.io/officer/) - Word documents
 - [flextable](https://davidgohel.github.io/flextable/) - Table formatting
-- [admiral](https://pharmaverse.github.io/admiral/) - ADaM dataset creation
+- [admiral](https://pharmaverse.github.io/admiral/) - ADaM datasets
 - [survival](https://cran.r-project.org/package=survival) - Survival analysis
-- [chef](https://github.com/hta-pharma/chef) - HTA/AMNOG analysis pipelines (optional integration)
+- [chef](https://github.com/hta-pharma/chef) - HTA analyses (optional)
+
+## Learn More
+
+- [Get Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html) - Quick introduction to pharmhand
+- [Safety Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html) - Creating adverse event tables
+- [Efficacy Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html) - Time-to-event and responder analyses
+- [S7 Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html) - Understanding the class system
+
+Browse the [full documentation](https://sims1253.github.io/pharmhand/).

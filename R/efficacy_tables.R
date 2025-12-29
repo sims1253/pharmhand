@@ -1,8 +1,6 @@
 #' Efficacy Analysis Tables
 #'
-#' Reusable functions for creating standard efficacy analysis tables
-#' including endpoints, change from baseline, lab summaries, and shifts.
-#'
+#' Functions for efficacy tables: endpoints, change from baseline, lab summaries.
 #' @name efficacy_tables
 #' @keywords internal
 NULL

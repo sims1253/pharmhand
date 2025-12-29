@@ -1,17 +1,13 @@
-#' Layer Composition System for Clinical Tables
+#' Layer System
 #'
-#' S7 classes implementing a layer-based approach to clinical table generation,
-#' inspired by Tplyr's grammar of data summary. Layers can be composed to build
-#' complex clinical tables with consistent formatting and metadata tracking.
+#' Layer-based approach to clinical table generation.
 #'
 #' @name layers
 NULL
 
-#' Abstract Base Class for Analysis Layers
+#' AnalysisLayer Base Class
 #'
-#' Base class defining the common interface for all analysis layer types.
-#' Layers encapsulate the specification for a single analysis component
-#' (counts, descriptive statistics, or shift tables).
+#' Base class for analysis layers.
 #'
 #' @keywords internal
 #' @noRd

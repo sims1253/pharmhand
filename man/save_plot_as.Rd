@@ -19,4 +19,3 @@ The file path where the plot was saved
 \description{
 Saves a ClinicalPlot to a file in the specified format.
 }
-\keyword{internal}

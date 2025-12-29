@@ -2,9 +2,7 @@
 % Please edit documentation in R/adam_core.R
 \name{adam_core}
 \alias{adam_core}
-\title{High-Performance ADaM Analysis Core}
+\title{ADaM Analysis Core}
 \description{
-This module provides vectorized functions for clinical data analysis
-using the dplyr and tidyr ecosystems. It replaces legacy row-wise loops
-with efficient group-by operations.
+Vectorized functions for clinical data analysis.
 }

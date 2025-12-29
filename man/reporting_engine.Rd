@@ -2,8 +2,7 @@
 % Please edit documentation in R/reporting_engine.R
 \name{reporting_engine}
 \alias{reporting_engine}
-\title{Optimized Reporting Engine}
+\title{Reporting Engine}
 \description{
-This module provides efficient conversion of analysis results to flextable
-and optimized assembly of Word documents using the officer package.
+Convert analysis results to flextable and assemble Word documents.
 }

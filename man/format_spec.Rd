@@ -2,7 +2,7 @@
 % Please edit documentation in R/formatting.R
 \name{format_spec}
 \alias{format_spec}
-\title{Create a Format Specification}
+\title{Create Format Specification}
 \usage{
 format_spec(
   pattern = "a.a",
@@ -11,38 +11,12 @@ format_spec(
   neg_format = "sign"
 )
 }
-\arguments{
-\item{pattern}{Character string defining the format pattern:
-\itemize{
-\item "xx" = 2 integer digits, no decimals
-\item "xx.x" = 2 integer digits, 1 decimal
-\item "xx.xxx" = 2 integer digits, 3 decimals
-\item "a" = auto-width integers
-\item "a.a" = auto-width with auto decimals
-\item "a.a+1" = auto decimals plus 1
-}}
-
-\item{null_format}{Format for NULL/NA values (default: "--")}
-
-\item{empty_format}{Format for empty strings (default: "")}
-
-\item{neg_format}{How to handle negatives: "sign", "parens", or "abs"}
-}
-\value{
-A FormatSpec S7 object
-}
 \description{
-Define how numeric values should be formatted using pattern strings.
-Patterns use 'x' for integer digits and decimal points for precision.
-}
-\examples{
-\dontrun{
-# Fixed format: 2 integers, 1 decimal
+Define numeric formats using pattern strings.
 fmt <- format_spec("xx.x")
 apply_format(fmt, 12.345) # "12.3"
+}
+\section{Auto-width with 2 decimals}{
 
-# Auto-width with 2 decimals
-fmt <- format_spec("a.xx")
-apply_format(fmt, c(1.5, 123.456)) # "  1.50", "123.46"
 }
-}
+

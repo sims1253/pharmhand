@@ -21,9 +21,7 @@ filters by \verb{\{population\}FL == "Y"})}
 Data frame with treatment variable and N column
 }
 \description{
-Extract or compute treatment group counts from ADaMData or a data frame.
-For ADaMData objects, uses the pre-computed \code{trt_n} property which respects
-population filters. For data frames, computes counts directly.
+Extract or compute treatment group counts from ADaMData or data frame.
 }
 \examples{
 \dontrun{

@@ -1,33 +1,13 @@
-#' Format String Grammar for Clinical Tables
+#' Format String Grammar
 #'
-#' A declarative formatting system inspired by Tplyr's f_str() function.
-#' Allows specification of numeric formats using intuitive pattern strings.
+#' Declarative formatting system for clinical tables.
 #'
 #' @name formatting
 NULL
 
-#' Create a Format Specification
+#' Create Format Specification
 #'
-#' Define how numeric values should be formatted using pattern strings.
-#' Patterns use 'x' for integer digits and decimal points for precision.
-#'
-#' @param pattern Character string defining the format pattern:
-#'   - "xx" = 2 integer digits, no decimals
-#'   - "xx.x" = 2 integer digits, 1 decimal
-#'   - "xx.xxx" = 2 integer digits, 3 decimals
-#'   - "a" = auto-width integers
-#'   - "a.a" = auto-width with auto decimals
-#'   - "a.a+1" = auto decimals plus 1
-#' @param null_format Format for NULL/NA values (default: "--")
-#' @param empty_format Format for empty strings (default: "")
-#' @param neg_format How to handle negatives: "sign", "parens", or "abs"
-#'
-#' @return A FormatSpec S7 object
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Fixed format: 2 integers, 1 decimal
+#' Define numeric formats using pattern strings.
 #' fmt <- format_spec("xx.x")
 #' apply_format(fmt, 12.345) # "12.3"
 #'

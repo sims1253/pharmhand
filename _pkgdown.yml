@@ -1,0 +1,286 @@
+# pkgdown configuration for pharmhand
+# https://pkgdown.r-lib.org/articles/customise.html
+
+url: https://sims1253.github.io/pharmhand
+
+development:
+  mode: auto
+
+template:
+  bootstrap: 5
+  light-switch: true
+  bslib:
+    primary: "#0077B6"
+    danger: "#A6081A"
+    base_font: {google: "Source Sans Pro"}
+    heading_font: {google: "Source Sans Pro"}
+    code_font: {google: "Source Code Pro"}
+  includes:
+    in_header: |
+  theme: gruvbox-light
+  theme-dark: gruvbox-dark
+  math-rendering: katex
+  opengraph:
+    image:
+      src: man/figures/logo.png
+      alt: "pharmhand hex logo"
+    twitter:
+      card: summary
+      site: "@scholzmx"
+
+# Navbar structure
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github, lightswitch]
+
+# Reference section - organized by functionality
+reference:
+- title: "S7 Classes"
+  desc: >
+    Core S7 classes for clinical data structures and reporting objects.
+  contents:
+  - ADaMData
+  - AnalysisMeta
+  - AnalysisResults
+  - ClinicalPlot
+  - ClinicalReport
+  - ClinicalTable
+  - CompositeFormat
+  - FormatSpec
+  - LayeredTable
+  - PerformanceReport
+  - ReportSection
+  - StudyResult
+
+- title: "Study Design Classes"
+  desc: >
+    Classes and methods for defining and analyzing clinical study designs.
+    Supports one-arm and two-arm study configurations.
+  contents:
+  - OneArmStudy
+  - TwoArmStudy
+  - analyze_study
+  - analyze_study_OneArmStudy
+  - analyze_study_TwoArmStudy
+  - analyze
+  - analyze_ADaMData
+
+- title: "HTA & Endpoint Classes"
+  desc: >
+    Health Technology Assessment (HTA) endpoint definitions and
+    section classes for structured reporting.
+  contents:
+  - HTAEndpoint
+  - HTASection
+  - PrimaryEndpoint
+  - SecondaryEndpoint
+  - SafetyEndpoint
+  - PopulationSection
+  - SOCPTSection
+  - SubgroupSection
+
+- title: "Efficacy Tables"
+  desc: >
+    Functions for creating efficacy analysis tables including
+    time-to-event, responder, and subgroup analyses.
+  contents:
+  - create_tte_summary_table
+  - create_responder_table
+  - create_subgroup_table
+  - create_subgroup_analysis_table
+  - create_primary_endpoint_table
+  - create_cfb_summary_table
+
+- title: "Safety Tables"
+  desc: >
+    Functions for adverse event and safety analysis tables
+    including laboratory shifts and AE summaries.
+  contents:
+  - create_ae_table
+  - create_lab_shift_table
+  - create_lab_summary_table
+  - create_conmeds_table
+  - create_medical_history_table
+  - create_vs_by_visit_table
+  - analyze_soc_pt
+  - calculate_ae_tte_data
+
+- title: "Standard Tables"
+  desc: >
+    Demographics, disposition, baseline, and other standard
+    clinical study tables.
+  contents:
+  - create_demographics_table
+  - create_disposition_table
+  - create_population_summary_table
+  - create_region_table
+  - create_clinical_table
+  - create_hta_table
+  - calculate_baseline
+
+- title: "Plotting"
+  desc: >
+    Clinical visualization functions for Kaplan-Meier curves,
+    forest plots, and other graphics.
+  contents:
+  - create_km_plot
+  - create_forest_plot
+  - create_ae_km_plot_for_soc
+  - add_plot
+  - save_plot_as
+  - save_as_png
+  - save_as_pdf
+
+- title: "Formatting"
+  desc: >
+    Number and content formatting utilities for data presentation.
+    Includes format specifications and composite formatters.
+  contents:
+  - format_number
+  - format_percentage
+  - format_pvalue
+  - format_ci
+  - format_content
+  - format_spec
+  - composite_format
+  - apply_format
+  - apply_composite
+  - fmt_n_pct
+  - fmt_mean_sd
+  - fmt_median_range
+  - fmt_ci
+  - fmt_pvalue
+
+- title: "Reporting Engine"
+  desc: >
+    Word document generation and report output using officer/flextable.
+  contents:
+  - generate_word
+  - write_docx
+  - write_docx_ClinicalReport
+  - to_word
+  - add_content
+  - add_to_docx
+  - add_section
+  - add_table
+  - create_study_report
+  - create_analysis_meta
+  - apply_clinical_style
+  - summarize_content
+
+- title: "Table Conversion"
+  desc: >
+    Convert clinical results to flextable or gt table formats
+    for flexible output rendering.
+  contents:
+  - as_flextable
+  - as_flextable_AnalysisResults
+  - as_gt
+  - as_gt_AnalysisResults
+  - layered_to_flextable
+
+- title: "Layers System"
+  desc: >
+    Layered table construction system for building complex
+    tables with multiple summary statistics.
+  contents:
+  - CountLayer
+  - DescriptiveLayer
+  - ShiftLayer
+  - add_layer
+  - build_layer
+  - build_table
+
+- title: "Chef Integration"
+  desc: >
+    Integration with the chef package for Health Technology Assessment
+    (HTA) analyses and statistical pipelines.
+  contents:
+  - run_chef_pipeline
+  - create_chef_endpoint
+  - chef_to_analysis_results
+  - get_chef_stat
+  - list_chef_stats
+
+- title: "Subgroup Analysis"
+  desc: >
+    Functions for subgroup and interaction analyses
+    in clinical trials.
+  contents:
+  - apply_subgroups
+
+- title: "Utilities"
+  desc: >
+    Helper functions for data filtering, treatment information,
+    and other common operations.
+  contents:
+  - get_filtered_data
+  - get_trt_n
+
+- title: "Internal"
+  desc: >
+    Internal package documentation for architecture and modules.
+  contents:
+  - S7_classes
+  - S7_generics
+  - S7_registration
+  - adam_core
+  - chef_integration
+  - formatting
+  - layers
+  - reporting_engine
+  - study_logic
+
+# Articles/vignettes structure
+articles:
+- title: Get started
+  navbar: ~
+  contents:
+  - pharmhand
+
+- title: Tutorials
+  navbar: true
+  contents:
+  - baseline-tables
+  - safety-tables
+  - efficacy-tables
+  - s7-architecture
+
+# Footer configuration
+footer:
+  structure:
+    left: developed_by
+    right: built_with
+
+# Home page configuration
+home:
+  title: "pharmhand: Clinical Study Tables and Reports"
+  description: >
+    Create publication-ready clinical study tables and reports from ADaM datasets.
+    Provides S7 classes for structured output with Word document
+    generation via officer/flextable. Integrates with the chef package for
+    Health Technology Assessment (HTA) analyses.
+  links:
+  - text: Report a bug
+    href: https://github.com/sims1253/pharmhand/issues
+  - text: Browse source code
+    href: https://github.com/sims1253/pharmhand
+
+# Figure settings for vignettes and examples
+figures:
+  dev: ragg::agg_png
+  dpi: 96
+  dev.args: []
+  fig.ext: png
+  fig.width: 7
+  fig.height: ~
+  fig.retina: 2
+  fig.asp: 1.618
+  bg: NA
+  other.parameters: []
+
+# Authors configuration
+authors:
+  Maximilian Scholz:
+    href: https://github.com/sims1253

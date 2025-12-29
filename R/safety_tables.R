@@ -1,8 +1,6 @@
 #' Safety Analysis Tables
 #'
-#' Reusable functions for creating standard safety analysis tables
-#' including AE overviews, SOC/PT summaries, severity, relationship,
-#' SAEs, and deaths.
+#' Functions for safety tables: AE overviews, SOC/PT summaries, SAEs.
 #'
 #' @name safety_tables
 #' @keywords internal
@@ -13,9 +11,7 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 
 #' Create Adverse Event Table
 #'
-#' Unified function for generating standard adverse event tables for
-#' HTA dossiers and clinical study reports. Supports multiple table
-#' types through a single interface.
+#' Generate AE tables for clinical study reports.
 #'
 #' @param adae ADAE data frame (ADaM Adverse Events dataset)
 #' @param adsl ADSL data frame (optional, required for some table types
