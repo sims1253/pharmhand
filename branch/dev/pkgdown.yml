@@ -1,0 +1,13 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  baseline-tables: baseline-tables.html
+  efficacy-tables: efficacy-tables.html
+  pharmhand: pharmhand.html
+  s7-architecture: s7-architecture.html
+  safety-tables: safety-tables.html
+last_built: 2025-12-30T16:16Z
+urls:
+  reference: https://sims1253.github.io/pharmhand/branch/dev//reference
+  article: https://sims1253.github.io/pharmhand/branch/dev//articles
