@@ -9,6 +9,7 @@ create_lab_summary_table(
   trt_n,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
   visit = "Week 24",
+  trt_var = "TRT01P",
   title = "Laboratory Parameters Summary",
   autofit = TRUE
 )

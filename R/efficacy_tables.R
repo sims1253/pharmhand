@@ -20,6 +20,7 @@ create_primary_endpoint_table <- function(
 	trt_n,
 	paramcd = "SYSBP",
 	visit = "End of Treatment",
+	trt_var = "TRT01P",
 	title = "Primary Endpoint Summary",
 	autofit = TRUE
 ) {
@@ -37,7 +38,7 @@ create_primary_endpoint_table <- function(
 			.data$PARAMCD == paramcd,
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(.data$TRT01P) |>
+		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			n = dplyr::n(),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
@@ -53,7 +54,13 @@ create_primary_endpoint_table <- function(
 			n = as.character(.data$n),
 			Median = as.character(.data$Median)
 		) |>
-		dplyr::select("TRT01P", "n", "Mean (SD)", "Median", "Min, Max")
+		dplyr::select(
+			dplyr::all_of(trt_var),
+			"n",
+			"Mean (SD)",
+			"Median",
+			"Min, Max"
+		)
 
 	# Transpose
 	primary_wide <- primary_data |>
@@ -62,7 +69,7 @@ create_primary_endpoint_table <- function(
 			names_to = "Statistic"
 		) |>
 		tidyr::pivot_wider(
-			names_from = "TRT01P",
+			names_from = dplyr::all_of(trt_var),
 			values_from = "value"
 		)
 
@@ -120,6 +127,7 @@ create_cfb_summary_table <- function(
 	trt_n,
 	params = c("SYSBP", "DIABP", "PULSE"),
 	visit = "End of Treatment",
+	trt_var = "TRT01P",
 	title = "Change from Baseline Summary",
 	autofit = TRUE
 ) {
@@ -137,7 +145,7 @@ create_cfb_summary_table <- function(
 			!is.na(.data$CHG),
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(.data$TRT01P, .data$PARAM) |>
+		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$PARAM) |>
 		dplyr::summarise(
 			n = dplyr::n(),
 			Mean_CFB = round(mean(.data$CHG, na.rm = TRUE), 2),
@@ -148,13 +156,13 @@ create_cfb_summary_table <- function(
 			display = paste0(.data$Mean_CFB, " (", .data$SD_CFB, ")"),
 			n = as.character(.data$n)
 		) |>
-		dplyr::select("PARAM", "TRT01P", "n", "display")
+		dplyr::select("PARAM", dplyr::all_of(trt_var), "n", "display")
 
 	cfb_wide <- cfb_data |>
 		tidyr::pivot_wider(
-			names_from = "TRT01P",
+			names_from = dplyr::all_of(trt_var),
 			values_from = c("n", "display"),
-			names_glue = "{TRT01P}_{.value}"
+			names_glue = paste0("{", trt_var, "}_{.value}")
 		)
 
 	# Rename columns for display
@@ -195,6 +203,7 @@ create_vs_by_visit_table <- function(
 	trt_n,
 	paramcd = "SYSBP",
 	visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
+	trt_var = "TRT01P",
 	title = "Vital Signs by Visit",
 	autofit = TRUE
 ) {
@@ -206,7 +215,7 @@ create_vs_by_visit_table <- function(
 		cli::cli_abort("{.arg trt_n} must be a data frame")
 	}
 
-	required_cols <- c("PARAMCD", "AVISIT", "TRT01P", "AVAL")
+	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
 	missing_cols <- setdiff(required_cols, names(advs))
 	if (length(missing_cols) > 0) {
 		cli::cli_abort(
@@ -222,7 +231,7 @@ create_vs_by_visit_table <- function(
 			.data$PARAMCD == paramcd,
 			.data$AVISIT %in% visits
 		) |>
-		dplyr::group_by(.data$TRT01P, .data$AVISIT) |>
+		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AVISIT) |>
 		dplyr::summarise(
 			n = dplyr::n(),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
@@ -232,9 +241,9 @@ create_vs_by_visit_table <- function(
 		dplyr::mutate(
 			display = paste0(.data$n, " / ", .data$Mean, " (", .data$SD, ")")
 		) |>
-		dplyr::select("AVISIT", "TRT01P", "display") |>
+		dplyr::select("AVISIT", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
-			names_from = "TRT01P",
+			names_from = dplyr::all_of(trt_var),
 			values_from = "display",
 			values_fill = "--"
 		) |>
@@ -281,6 +290,7 @@ create_lab_summary_table <- function(
 	trt_n,
 	params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
 	visit = "Week 24",
+	trt_var = "TRT01P",
 	title = "Laboratory Parameters Summary",
 	autofit = TRUE
 ) {
@@ -292,7 +302,7 @@ create_lab_summary_table <- function(
 		cli::cli_abort("{.arg trt_n} must be a data frame")
 	}
 
-	required_cols <- c("PARAMCD", "AVISIT", "TRT01P", "PARAM", "AVAL")
+	required_cols <- c("PARAMCD", "AVISIT", trt_var, "PARAM", "AVAL")
 	missing_cols <- setdiff(required_cols, names(adlb))
 	if (length(missing_cols) > 0) {
 		cli::cli_abort(
@@ -308,7 +318,7 @@ create_lab_summary_table <- function(
 			.data$PARAMCD %in% params,
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(.data$TRT01P, .data$PARAM) |>
+		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$PARAM) |>
 		dplyr::summarise(
 			n = dplyr::n(),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 2),
@@ -319,11 +329,11 @@ create_lab_summary_table <- function(
 			display = paste0(.data$Mean, " (", .data$SD, ")"),
 			n = as.character(.data$n)
 		) |>
-		dplyr::select("PARAM", "TRT01P", "n", "display") |>
+		dplyr::select("PARAM", dplyr::all_of(trt_var), "n", "display") |>
 		tidyr::pivot_wider(
-			names_from = "TRT01P",
+			names_from = dplyr::all_of(trt_var),
 			values_from = c("n", "display"),
-			names_glue = "{TRT01P}_{.value}"
+			names_glue = paste0("{", trt_var, "}_{.value}")
 		)
 
 	names(lab_data) <- gsub("_display$", " Mean (SD)", names(lab_data))
@@ -360,6 +370,7 @@ create_lab_shift_table <- function(
 	trt_n,
 	paramcd = "ALT",
 	visit = "Week 24",
+	trt_var = "TRT01P",
 	title = "Laboratory Shift Table",
 	autofit = TRUE
 ) {
@@ -378,7 +389,11 @@ create_lab_shift_table <- function(
 			!is.na(.data$ANRIND),
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(.data$TRT01P, .data$BNRIND, .data$ANRIND) |>
+		dplyr::group_by(
+			dplyr::across(dplyr::all_of(trt_var)),
+			.data$BNRIND,
+			.data$ANRIND
+		) |>
 		dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
 		tidyr::pivot_wider(
 			names_from = "ANRIND",
@@ -388,12 +403,12 @@ create_lab_shift_table <- function(
 		dplyr::rename(`Baseline Status` = "BNRIND")
 
 	shift_wide <- shift_data |>
-		dplyr::mutate(Treatment = .data$TRT01P) |>
+		dplyr::mutate(Treatment = !!rlang::sym(trt_var)) |>
 		dplyr::select(
 			"Treatment",
 			"Baseline Status",
 			dplyr::everything(),
-			-"TRT01P"
+			-dplyr::all_of(trt_var)
 		)
 
 	shift_ft <- create_hta_table(
@@ -431,6 +446,7 @@ create_subgroup_analysis_table <- function(
 	paramcd = "SYSBP",
 	visit = "End of Treatment",
 	subgroups = list(AGEGR1 = "Age Group", SEX = "Sex"),
+	trt_var = "TRT01P",
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
@@ -442,7 +458,7 @@ create_subgroup_analysis_table <- function(
 		cli::cli_abort("{.arg advs} must be a data frame")
 	}
 
-	required_cols <- c("PARAMCD", "AVISIT", "TRT01P", "AVAL")
+	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
 	missing_cols <- setdiff(required_cols, names(advs))
 	if (length(missing_cols) > 0) {
 		cli::cli_abort(
@@ -479,7 +495,10 @@ create_subgroup_analysis_table <- function(
 		}
 
 		res <- subgroup_data_raw |>
-			dplyr::group_by(.data$TRT01P, .data[[var_name]]) |>
+			dplyr::group_by(
+				dplyr::across(dplyr::all_of(trt_var)),
+				.data[[var_name]]
+			) |>
 			dplyr::summarise(
 				n = dplyr::n(),
 				Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
@@ -502,9 +521,9 @@ create_subgroup_analysis_table <- function(
 	}
 
 	all_subgroups <- dplyr::bind_rows(results_list) |>
-		dplyr::select("Subgroup", "Category", "TRT01P", "display") |>
+		dplyr::select("Subgroup", "Category", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
-			names_from = "TRT01P",
+			names_from = dplyr::all_of(trt_var),
 			values_from = "display",
 			values_fill = "--"
 		)

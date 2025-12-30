@@ -9,6 +9,7 @@ create_vs_by_visit_table(
   trt_n,
   paramcd = "SYSBP",
   visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
+  trt_var = "TRT01P",
   title = "Vital Signs by Visit",
   autofit = TRUE
 )

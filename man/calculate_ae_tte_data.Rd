@@ -4,7 +4,7 @@
 \alias{calculate_ae_tte_data}
 \title{Calculate AE TTE Data for a specific SOC}
 \usage{
-calculate_ae_tte_data(adsl, adae, soc, trt_var = "TRT01A")
+calculate_ae_tte_data(adsl, adae, soc, trt_var = "TRT01P")
 }
 \arguments{
 \item{adsl}{ADSL data frame}

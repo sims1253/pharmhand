@@ -37,6 +37,7 @@ knitr::opts_chunk$set(
 | `sae` | Serious Adverse Events | `AESER` |
 | `discontinuation` | AEs leading to discontinuation | `AEACN` |
 | `deaths` | Deaths summary | `DTHFL` |
+| `comparison` | AE comparison with RD/RR | `TRTEMFL`, `AEBODSYS`, `AEDECOD` |
 
 ## Setup
 
@@ -357,6 +358,75 @@ km_plot <- create_ae_km_plot_for_soc(
 print(km_plot@plot)
 
 ```
+
+## AE Statistical Comparisons (Risk Difference)
+
+For GBA/AMNOG dossiers, comparing adverse event rates between treatment groups with risk differences and risk ratios is essential. The `create_ae_comparison_table()` function provides these statistics.
+
+### Basic Comparison Table
+
+```{r comparison-basic}
+# Create AE comparison table with risk differences
+comparison_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "comparison",
+  ref_group = "Placebo",
+  by = "soc",
+  title = "Table: AE Comparison by System Organ Class"
+)
+
+# Display the table
+comparison_table@flextable
+```
+
+The comparison table includes:
+- **n/N (%)** for each treatment group
+- **Risk Difference (RD)** with 95% CI
+- **Risk Ratio (RR)** with 95% CI
+- **P-value** (Chi-square or Fisher's exact test)
+
+### Preferred Term Level Comparison
+
+```{r comparison-pt}
+# Compare at preferred term level with threshold
+pt_comparison <- create_ae_comparison_table(
+  adae = adae,
+  adsl = adsl,
+  ref_group = "Placebo",
+  by = "pt",
+  threshold = 5,  # Only events with ≥5% incidence
+  sort_by = "rd",  # Sort by risk difference
+  title = "AEs with ≥5% Incidence - Sorted by Risk Difference"
+)
+
+# Display the table
+pt_comparison@flextable
+```
+
+### Overall AE Summary Comparison
+
+```{r comparison-overall}
+# Overall comparison (any TEAE)
+overall_comparison <- create_ae_comparison_table(
+  adae = adae,
+  adsl = adsl,
+  ref_group = "Placebo",
+  by = "overall",
+  title = "Overall TEAE Comparison"
+)
+
+# Display the table
+overall_comparison@flextable
+```
+
+### Interpreting Results
+
+- **Risk Difference > 0**: Higher incidence in treatment vs reference
+- **Risk Ratio > 1**: Higher relative risk in treatment vs reference
+- **P-value < 0.05**: Statistically significant difference (unadjusted)
+
+For GBA submissions, the risk difference is often the primary measure as it reflects the absolute impact on patients.
 
 ## Related Functions
 

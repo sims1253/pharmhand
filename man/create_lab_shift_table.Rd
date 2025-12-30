@@ -9,6 +9,7 @@ create_lab_shift_table(
   trt_n,
   paramcd = "ALT",
   visit = "Week 24",
+  trt_var = "TRT01P",
   title = "Laboratory Shift Table",
   autofit = TRUE
 )

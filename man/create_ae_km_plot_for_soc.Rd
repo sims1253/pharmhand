@@ -4,7 +4,7 @@
 \alias{create_ae_km_plot_for_soc}
 \title{Create AE KM Plot for a specific SOC}
 \usage{
-create_ae_km_plot_for_soc(adsl, adae, soc, trt_var = "TRT01A")
+create_ae_km_plot_for_soc(adsl, adae, soc, trt_var = "TRT01P")
 }
 \arguments{
 \item{adsl}{ADSL data frame}
