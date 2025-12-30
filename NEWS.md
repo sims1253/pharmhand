@@ -1,3 +1,13 @@
+# pharmhand 0.0.6.9000
+
+## New features
+
+* Added multiplicity adjustment for p-values:
+  - `adjust_pvalues()`: Apply Bonferroni, Holm, BH, or Hochberg corrections
+  - `create_subgroup_table()` now supports `adjust_method` parameter
+
+* Added `calculate_nnt()` for Number Needed to Treat calculation with confidence intervals
+
 # pharmhand 0.0.5.9000
 
 ## New features

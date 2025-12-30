@@ -1265,3 +1265,281 @@ create_love_plot <- function(
 		)
 	)
 }
+
+# =============================================================================
+# Multiplicity Adjustment Functions
+# =============================================================================
+
+#' Adjust P-values for Multiple Comparisons
+#'
+#' Adjusts p-values for multiple testing using common methods. Essential for
+#' subgroup analyses in GBA/AMNOG dossiers where multiple comparisons require
+#' appropriate correction.
+#'
+#' @param p Numeric vector of p-values
+#' @param method Character. Adjustment method:
+#'   - "holm" (default): Holm-Bonferroni step-down (controls FWER)
+#'   - "hochberg": Hochberg step-up (controls FWER)
+#'   - "hommel": Hommel method (controls FWER)
+#'   - "bonferroni": Bonferroni correction (controls FWER, conservative)
+#'   - "BH" or "fdr": Benjamini-Hochberg (controls FDR)
+#'   - "BY": Benjamini-Yekutieli (controls FDR under dependency)
+#'   - "none": No adjustment
+#' @param alpha Numeric. Significance level (default: 0.05)
+#'
+#' @return A data frame with columns:
+#'   - original_p: Original p-values
+#'   - adjusted_p: Adjusted p-values
+#'   - significant_original: Logical for original significance
+#'   - significant_adjusted: Logical for adjusted significance
+#'   - method: Adjustment method used
+#'
+#' @details
+#' FWER methods control the probability of making any false rejection.
+#' FDR methods control the expected proportion of false rejections.
+#'
+#' For GBA submissions, Holm or Hochberg methods are commonly recommended
+#' as they control FWER while being less conservative than Bonferroni.
+#'
+#' @export
+#'
+#' @examples
+#' # Adjust p-values from multiple subgroup comparisons
+#' p_values <- c(0.01, 0.04, 0.03, 0.15, 0.008)
+#' adjust_pvalues(p_values, method = "holm")
+#'
+#' # Compare different adjustment methods
+#' adjust_pvalues(p_values, method = "bonferroni")
+#' adjust_pvalues(p_values, method = "BH")
+#'
+#' # With custom significance level
+#' adjust_pvalues(p_values, method = "holm", alpha = 0.10)
+adjust_pvalues <- function(
+	p,
+	method = c(
+		"holm",
+		"hochberg",
+		"hommel",
+		"bonferroni",
+		"BH",
+		"fdr",
+		"BY",
+		"none"
+	),
+	alpha = 0.05
+) {
+	method <- match.arg(method)
+
+	# Input validation
+	if (!is.numeric(p)) {
+		cli::cli_abort("{.arg p} must be a numeric vector")
+	}
+	if (any(p < 0 | p > 1, na.rm = TRUE)) {
+		cli::cli_abort("All p-values must be between 0 and 1")
+	}
+	if (!is.numeric(alpha) || length(alpha) != 1 || alpha <= 0 || alpha >= 1) {
+		cli::cli_abort("{.arg alpha} must be a single number between 0 and 1")
+	}
+
+	# Handle "fdr" as alias for "BH"
+	if (method == "fdr") {
+		method <- "BH"
+	}
+
+	# Calculate adjusted p-values
+	if (method == "none") {
+		adjusted_p <- p
+	} else {
+		adjusted_p <- stats::p.adjust(p, method = method)
+	}
+
+	# Build result data frame
+	result <- data.frame(
+		original_p = p,
+		adjusted_p = adjusted_p,
+		significant_original = p < alpha,
+		significant_adjusted = adjusted_p < alpha,
+		method = method,
+		stringsAsFactors = FALSE
+	)
+
+	# Handle NA values in significance columns
+	result$significant_original[is.na(result$original_p)] <- NA
+	result$significant_adjusted[is.na(result$adjusted_p)] <- NA
+
+	result
+}
+
+#' Calculate Number Needed to Treat (NNT) / Number Needed to Harm (NNH)
+#'
+#' Calculates NNT or NNH from risk difference with confidence intervals.
+#' Positive values indicate NNT (benefit), negative values indicate NNH (harm).
+#'
+#' @param rd Numeric. Risk difference (treatment - control)
+#' @param rd_lower Numeric. Lower CI bound for risk difference
+#' @param rd_upper Numeric. Upper CI bound for risk difference
+#' @param event_type Character. "benefit" for favorable outcomes (default),
+#'   "harm" for adverse events
+#'
+#' @return A list with:
+#'   - nnt: Number needed to treat (positive) or harm (negative)
+#'   - nnt_lower: Lower CI bound
+#'   - nnt_upper: Upper CI bound
+#'   - interpretation: Text interpretation
+#'
+#' @details
+#' NNT = 1 / absolute_risk_difference
+#'
+#' When the CI for RD crosses zero, the NNT CI will include infinity,
+#' indicating the treatment effect is not statistically significant.
+#'
+#' For GBA benefit assessment, NNT provides a clinically interpretable
+#' measure of absolute treatment effect.
+#'
+#' @export
+#'
+#' @examples
+#' # Treatment reduces event rate (beneficial)
+#' calculate_nnt(rd = -0.10, rd_lower = -0.15, rd_upper = -0.05)
+#'
+#' # Treatment increases event rate (harmful)
+#' calculate_nnt(rd = 0.08, rd_lower = 0.02, rd_upper = 0.14, event_type = "harm")
+#'
+#' # Non-significant effect (CI crosses zero)
+#' calculate_nnt(rd = -0.05, rd_lower = -0.12, rd_upper = 0.02)
+calculate_nnt <- function(
+	rd,
+	rd_lower = NULL,
+	rd_upper = NULL,
+	event_type = c("benefit", "harm")
+) {
+	event_type <- match.arg(event_type)
+
+	# Input validation
+	if (!is.numeric(rd) || length(rd) != 1) {
+		cli::cli_abort("{.arg rd} must be a single numeric value")
+	}
+	if (abs(rd) > 1) {
+		cli::cli_abort("{.arg rd} must be between -1 and 1")
+	}
+	if (!is.null(rd_lower)) {
+		if (!is.numeric(rd_lower) || length(rd_lower) != 1) {
+			cli::cli_abort("{.arg rd_lower} must be a single numeric value")
+		}
+		if (rd_lower > rd) {
+			cli::cli_abort("{.arg rd_lower} must be less than or equal to {.arg rd}")
+		}
+	}
+	if (!is.null(rd_upper)) {
+		if (!is.numeric(rd_upper) || length(rd_upper) != 1) {
+			cli::cli_abort("{.arg rd_upper} must be a single numeric value")
+		}
+		if (rd_upper < rd) {
+			cli::cli_abort(
+				"{.arg rd_upper} must be greater than or equal to {.arg rd}"
+			)
+		}
+	}
+
+	# For benefit outcomes, negative RD means treatment is better (fewer events)
+	# For harm outcomes, positive RD means treatment is worse (more events)
+
+	# Calculate NNT (using absolute value of RD)
+	if (abs(rd) < .Machine$double.eps) {
+		nnt <- Inf
+	} else {
+		nnt <- 1 / abs(rd)
+	}
+
+	# Determine if this is NNT (benefit) or NNH (harm)
+	is_beneficial <- (event_type == "benefit" && rd < 0) ||
+		(event_type == "harm" && rd < 0)
+	is_harmful <- (event_type == "benefit" && rd > 0) ||
+		(event_type == "harm" && rd > 0)
+
+	# Calculate CI for NNT
+	# Note: CI bounds are inverted because NNT = 1/RD
+	nnt_lower <- NA_real_
+	nnt_upper <- NA_real_
+	ci_crosses_zero <- FALSE
+
+	if (!is.null(rd_lower) && !is.null(rd_upper)) {
+		ci_crosses_zero <- rd_lower <= 0 && rd_upper >= 0
+
+		if (ci_crosses_zero) {
+			# CI crosses zero - NNT CI includes infinity
+			# Need to handle NNTB and NNTH separately
+			if (rd_lower < 0) {
+				# Lower bound gives NNTB
+				nnt_lower <- 1 / abs(rd_lower)
+			}
+			if (rd_upper > 0) {
+				# Upper bound gives NNTH
+				nnt_upper <- -1 / rd_upper
+			}
+		} else if (rd > 0) {
+			# Both bounds positive (harmful)
+			nnt_lower <- 1 / rd_upper
+			nnt_upper <- 1 / rd_lower
+		} else {
+			# Both bounds negative (beneficial)
+			nnt_lower <- 1 / abs(rd_lower)
+			nnt_upper <- 1 / abs(rd_upper)
+		}
+	}
+
+	# Build interpretation
+	if (abs(rd) < .Machine$double.eps) {
+		interpretation <- "No difference between groups"
+	} else if (ci_crosses_zero) {
+		interpretation <- paste0(
+			"Effect not statistically significant (CI crosses zero). ",
+			"Point estimate NNT = ",
+			round(nnt, 1),
+			if (is_beneficial) " to benefit" else " to harm"
+		)
+	} else if (is_beneficial) {
+		interpretation <- paste0(
+			"NNT = ",
+			round(nnt, 1),
+			" (95% CI: ",
+			round(nnt_lower, 1),
+			" to ",
+			round(nnt_upper, 1),
+			"). ",
+			"Treat ",
+			round(nnt, 0),
+			" patients for one additional patient to benefit."
+		)
+	} else if (is_harmful) {
+		interpretation <- paste0(
+			"NNH = ",
+			round(nnt, 1),
+			" (95% CI: ",
+			round(nnt_lower, 1),
+			" to ",
+			round(nnt_upper, 1),
+			"). ",
+			"Treat ",
+			round(nnt, 0),
+			" patients for one additional patient to be harmed."
+		)
+	} else {
+		interpretation <- "No treatment effect"
+	}
+
+	# Return signed NNT (positive = benefit, negative = harm)
+	signed_nnt <- if (is_harmful) -nnt else nnt
+
+	list(
+		nnt = signed_nnt,
+		nnt_lower = nnt_lower,
+		nnt_upper = nnt_upper,
+		rd = rd,
+		rd_lower = rd_lower,
+		rd_upper = rd_upper,
+		ci_crosses_zero = ci_crosses_zero,
+		event_type = event_type,
+		interpretation = interpretation
+	)
+}
