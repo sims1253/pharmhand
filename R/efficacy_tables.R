@@ -11,6 +11,7 @@ NULL
 #' @param trt_n Treatment group counts
 #' @param paramcd Parameter code to analyze (default: "SYSBP")
 #' @param visit Visit to analyze (default: "End of Treatment")
+#' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
@@ -113,6 +114,7 @@ create_primary_endpoint_table <- function(
 #' @param visit Character string specifying the analysis visit to summarize.
 #'   Must match a value in the AVISIT column of advs (e.g., "End of Treatment",
 #'   "Week 12").
+#' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Character string for the table title.
 #' @param autofit Logical, whether to automatically adjust column widths to fit
 #'   content. Default is TRUE.
@@ -194,6 +196,7 @@ create_cfb_summary_table <- function(
 #' @param trt_n Treatment group counts
 #' @param paramcd Parameter code to analyze
 #' @param visits Vector of visits to include
+#' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
@@ -281,6 +284,7 @@ create_vs_by_visit_table <- function(
 #' @param trt_n Treatment group counts
 #' @param params Vector of parameter codes to analyze
 #' @param visit Visit to analyze
+#' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
@@ -361,6 +365,7 @@ create_lab_summary_table <- function(
 #' @param trt_n Treatment group counts
 #' @param paramcd Parameter code to analyze
 #' @param visit Visit to analyze
+#' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
@@ -436,6 +441,7 @@ create_lab_shift_table <- function(
 #' @param paramcd Parameter code to analyze
 #' @param visit Visit to analyze
 #' @param subgroups List of subgroup variables (e.g. list(AGEGR1="Age Group"))
+#' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
