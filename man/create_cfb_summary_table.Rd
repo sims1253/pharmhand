@@ -9,6 +9,7 @@ create_cfb_summary_table(
   trt_n,
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
+  trt_var = "TRT01P",
   title = "Change from Baseline Summary",
   autofit = TRUE
 )

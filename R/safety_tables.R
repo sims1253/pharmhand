@@ -15,7 +15,7 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #'
 #' @param adae ADAE data frame (ADaM Adverse Events dataset)
 #' @param adsl ADSL data frame (optional, required for some table types
-#'   like "deaths" or for denominator calculation)
+#'   like "deaths", "comparison", or for denominator calculation)
 #' @param type Character string specifying the table type:
 #'   \itemize{
 #'     \item "overview" - Summary of TEAEs, related AEs, SAEs, discontinuations
@@ -28,12 +28,18 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #'     \item "sae" - Serious Adverse Events
 #'     \item "discontinuation" - AEs leading to discontinuation
 #'     \item "deaths" - Deaths summary (requires adsl)
+#'     \item "comparison" - AE comparison with risk difference/ratio (requires adsl)
 #'   }
-#' @param trt_var Treatment variable name (default: "TRT01A")
+#' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param n_top For type="common", number of top PTs to show (default: 15)
 #' @param soc For type="pt", filter to specific SOC (optional)
 #' @param title Table title (auto-generated if NULL)
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
+#' @param ref_group For type="comparison", the reference group for comparisons
+#' @param by For type="comparison", grouping level: "soc", "pt", or "overall"
+#' @param threshold For type="comparison", minimum incidence % to include (default: 0)
+#' @param sort_by For type="comparison", sort by "rd", "rr", or "incidence"
+#' @param conf_level For type="comparison", confidence level (default: 0.95)
 #'
 #' @return A ClinicalTable object
 #' @export
@@ -54,6 +60,15 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #'
 #' # SAE table
 #' sae <- create_ae_table(adae, adsl, type = "sae")
+#'
+#' # AE comparison with risk differences
+#' comparison <- create_ae_table(
+#'   adae, adsl,
+#'   type = "comparison",
+#'   ref_group = "Placebo",
+#'   by = "pt",
+#'   threshold = 5
+#' )
 #' }
 create_ae_table <- function(
 	adae,
@@ -68,22 +83,34 @@ create_ae_table <- function(
 		"relationship",
 		"sae",
 		"discontinuation",
-		"deaths"
+		"deaths",
+		"comparison"
 	),
-	trt_var = "TRT01A",
+	trt_var = "TRT01P",
 	n_top = 15,
 	soc = NULL,
 	title = NULL,
-	autofit = TRUE
+	autofit = TRUE,
+	ref_group = NULL,
+	by = "pt",
+	threshold = 0,
+	sort_by = "incidence",
+	conf_level = 0.95
 ) {
 	type <- match.arg(type)
 
 	# Input validation
-	if (type != "deaths" && !is.data.frame(adae)) {
+	if (!type %in% c("deaths") && !is.data.frame(adae)) {
 		cli::cli_abort("{.arg adae} must be a data frame")
 	}
 	if (type == "deaths" && !is.data.frame(adsl)) {
 		cli::cli_abort("{.arg adsl} is required for type = 'deaths'")
+	}
+	if (type == "comparison" && !is.data.frame(adsl)) {
+		cli::cli_abort("{.arg adsl} is required for type = 'comparison'")
+	}
+	if (type == "comparison" && is.null(ref_group)) {
+		cli::cli_abort("{.arg ref_group} is required for type = 'comparison'")
 	}
 
 	# Validate required columns when deriving trt_n from adae
@@ -108,8 +135,9 @@ create_ae_table <- function(
 			dplyr::summarise(N = dplyr::n_distinct(.data$USUBJID), .groups = "drop")
 	}
 
-	# Auto-generate title if not provided
-	if (is.null(title)) {
+	# Auto-generate title if not provided (for non-comparison types)
+	# comparison type handles its own title generation
+	if (is.null(title) && type != "comparison") {
 		title <- switch(
 			type,
 			overview = "Overview of Adverse Events",
@@ -156,7 +184,19 @@ create_ae_table <- function(
 			title,
 			autofit
 		),
-		deaths = create_ae_table_deaths(adsl, trt_var, title, autofit)
+		deaths = create_ae_table_deaths(adsl, trt_var, title, autofit),
+		comparison = create_ae_comparison_table(
+			adae = adae,
+			adsl = adsl,
+			ref_group = ref_group,
+			trt_var = trt_var,
+			by = by,
+			threshold = threshold,
+			sort_by = sort_by,
+			conf_level = conf_level,
+			title = title,
+			autofit = autofit
+		)
 	)
 
 	result
@@ -708,7 +748,7 @@ calculate_ae_tte_data <- function(
 	adsl,
 	adae,
 	soc,
-	trt_var = "TRT01A"
+	trt_var = "TRT01P"
 ) {
 	# Input validation
 	if (!is.data.frame(adsl)) {
@@ -787,7 +827,7 @@ create_ae_km_plot_for_soc <- function(
 	adsl,
 	adae,
 	soc,
-	trt_var = "TRT01A"
+	trt_var = "TRT01P"
 ) {
 	tte_data <- calculate_ae_tte_data(adsl, adae, soc, trt_var)
 
@@ -804,5 +844,443 @@ create_ae_km_plot_for_soc <- function(
 		xlab = "Days",
 		ylab = "Probability of No Event",
 		risk_table = TRUE
+	)
+}
+
+# Risk Difference/Risk Ratio Functions ----
+
+#' Calculate Risk Difference and Confidence Interval for AE
+#'
+#' Calculates risk difference, risk ratio, and associated confidence intervals
+#' and p-values for comparing adverse event incidence between two groups.
+#' Uses Wald method for risk difference CI and log-transformation for risk ratio CI.
+#'
+#' @param n1 Number of subjects with event in treatment group
+#' @param N1 Total subjects in treatment group
+#' @param n2 Number of subjects with event in reference group
+#' @param N2 Total subjects in reference group
+#' @param conf_level Confidence level (default: 0.95)
+#'
+#' @return List with rd (risk difference), rd_lower, rd_upper, rr (risk ratio),
+#'   rr_lower, rr_upper, p_value
+#'
+#' @importFrom stats qnorm fisher.test chisq.test
+#' @keywords internal
+calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
+	p1 <- n1 / N1
+	p2 <- n2 / N2
+
+	# Risk Difference
+	rd <- p1 - p2
+
+	# Standard error for RD (Wald method)
+	se_rd <- sqrt(p1 * (1 - p1) / N1 + p2 * (1 - p2) / N2)
+
+	z <- qnorm((1 + conf_level) / 2)
+	rd_lower <- rd - z * se_rd
+	rd_upper <- rd + z * se_rd
+
+	# Risk Ratio (with continuity correction for zeros)
+	if (p2 == 0) {
+		p2_adj <- 0.5 / N2
+		p1_adj <- (n1 + 0.5) / (N1 + 1)
+	} else if (p1 == 0) {
+		p1_adj <- 0.5 / N1
+		p2_adj <- (n2 + 0.5) / (N2 + 1)
+	} else {
+		p1_adj <- p1
+		p2_adj <- p2
+	}
+
+	rr <- p1_adj / p2_adj
+	log_rr <- log(rr)
+	se_log_rr <- sqrt((1 - p1_adj) / (N1 * p1_adj) + (1 - p2_adj) / (N2 * p2_adj))
+	rr_lower <- exp(log_rr - z * se_log_rr)
+	rr_upper <- exp(log_rr + z * se_log_rr)
+
+	# P-value from chi-square or Fisher's exact (for small counts)
+	cont_table <- matrix(c(n1, N1 - n1, n2, N2 - n2), nrow = 2, byrow = TRUE)
+	if (any(cont_table < 5)) {
+		p_value <- tryCatch(
+			fisher.test(cont_table)$p.value,
+			error = function(e) NA_real_
+		)
+	} else {
+		p_value <- tryCatch(
+			chisq.test(cont_table, correct = FALSE)$p.value,
+			error = function(e) NA_real_
+		)
+	}
+
+	list(
+		rd = rd,
+		rd_lower = rd_lower,
+		rd_upper = rd_upper,
+		rr = rr,
+		rr_lower = rr_lower,
+		rr_upper = rr_upper,
+		p_value = p_value
+	)
+}
+
+#' Create AE Comparison Table with Risk Differences
+#'
+#' Generate AE table with statistical comparisons (risk difference, risk ratio)
+#' between treatment groups. Essential for GBA/AMNOG safety assessments.
+#'
+#' @param adae ADAE data frame
+#' @param adsl ADSL data frame for denominators
+#' @param ref_group Character. Reference (control) group for comparison
+#' @param trt_var Treatment variable name (default: "TRT01P")
+#' @param by Character. Grouping level: "soc", "pt", or "overall" (default: "pt")
+#' @param threshold Numeric. Minimum incidence % in any group to include (default: 0)
+#' @param sort_by Character. Sort by "rd" (risk difference), "rr" (risk ratio),
+#'   or "incidence" (default: "incidence")
+#' @param conf_level Confidence level for intervals (default: 0.95)
+#' @param title Table title (auto-generated if NULL)
+#' @param autofit Logical (default: TRUE)
+#'
+#' @return ClinicalTable with columns for each group's n(%), RD, 95% CI, RR, p-value
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # AE comparison by PT
+#' ae_comp <- create_ae_comparison_table(
+#'   adae, adsl,
+#'   ref_group = "Placebo",
+#'   by = "pt"
+#' )
+#'
+#' # AE comparison by SOC with 5% threshold
+#' ae_comp_soc <- create_ae_comparison_table(
+#'   adae, adsl,
+#'   ref_group = "Placebo",
+#'   by = "soc",
+#'   threshold = 5
+#' )
+#' }
+create_ae_comparison_table <- function(
+	adae,
+	adsl,
+	ref_group,
+	trt_var = "TRT01P",
+	by = c("pt", "soc", "overall"),
+	threshold = 0,
+	sort_by = c("incidence", "rd", "rr"),
+	conf_level = 0.95,
+	title = NULL,
+	autofit = TRUE
+) {
+	by <- match.arg(by)
+	sort_by <- match.arg(sort_by)
+
+	# Input validation
+	if (!is.data.frame(adae)) {
+		cli::cli_abort("{.arg adae} must be a data frame")
+	}
+	if (!is.data.frame(adsl)) {
+		cli::cli_abort("{.arg adsl} must be a data frame")
+	}
+
+	required_adae_cols <- c("TRTEMFL", "USUBJID", trt_var)
+	if (by == "soc") {
+		required_adae_cols <- c(required_adae_cols, "AEBODSYS")
+	} else if (by == "pt") {
+		required_adae_cols <- c(required_adae_cols, "AEDECOD")
+	}
+	missing_adae <- setdiff(required_adae_cols, names(adae))
+	if (length(missing_adae) > 0) {
+		cli::cli_abort(
+			"{.arg adae} is missing required column{?s}: {.val {missing_adae}}"
+		)
+	}
+
+	required_adsl_cols <- c("SAFFL", "USUBJID", trt_var)
+	missing_adsl <- setdiff(required_adsl_cols, names(adsl))
+	if (length(missing_adsl) > 0) {
+		cli::cli_abort(
+			"{.arg adsl} is missing required column{?s}: {.val {missing_adsl}}"
+		)
+	}
+
+	# Get treatment counts from ADSL
+	trt_n <- adsl |>
+		dplyr::filter(.data$SAFFL == "Y") |>
+		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
+		dplyr::summarise(N = dplyr::n_distinct(.data$USUBJID), .groups = "drop")
+
+	# Validate ref_group
+	trt_levels <- unique(trt_n[[trt_var]])
+	if (!ref_group %in% trt_levels) {
+		cli::cli_abort(
+			c(
+				"{.arg ref_group} must be one of the treatment groups",
+				"i" = "Available groups: {.val {trt_levels}}",
+				"x" = "Provided: {.val {ref_group}}"
+			)
+		)
+	}
+
+	# Filter to TEAEs
+	teae <- adae |> dplyr::filter(.data$TRTEMFL == "Y")
+
+	# Calculate incidence by grouping variable
+	if (by == "overall") {
+		ae_counts <- teae |>
+			dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
+			dplyr::summarise(
+				n = dplyr::n_distinct(.data$USUBJID),
+				.groups = "drop"
+			) |>
+			dplyr::mutate(term = "Any TEAE")
+		group_var <- "term"
+	} else if (by == "soc") {
+		ae_counts <- teae |>
+			dplyr::group_by(
+				dplyr::across(dplyr::all_of(trt_var)),
+				.data$AEBODSYS
+			) |>
+			dplyr::summarise(
+				n = dplyr::n_distinct(.data$USUBJID),
+				.groups = "drop"
+			) |>
+			dplyr::rename(term = "AEBODSYS")
+		group_var <- "term"
+	} else {
+		ae_counts <- teae |>
+			dplyr::group_by(
+				dplyr::across(dplyr::all_of(trt_var)),
+				.data$AEDECOD
+			) |>
+			dplyr::summarise(
+				n = dplyr::n_distinct(.data$USUBJID),
+				.groups = "drop"
+			) |>
+			dplyr::rename(term = "AEDECOD")
+		group_var <- "term"
+	}
+
+	# Join with trt_n to get denominators and calculate percentages
+	ae_counts <- ae_counts |>
+		dplyr::left_join(trt_n, by = trt_var) |>
+		dplyr::mutate(pct = .data$n / .data$N * 100)
+
+	# Apply threshold filter
+	if (threshold > 0) {
+		terms_above_threshold <- ae_counts |>
+			dplyr::group_by(.data$term) |>
+			dplyr::summarise(
+				max_pct = max(.data$pct, na.rm = TRUE),
+				.groups = "drop"
+			) |>
+			dplyr::filter(.data$max_pct >= threshold) |>
+			dplyr::pull(.data$term)
+
+		ae_counts <- ae_counts |>
+			dplyr::filter(.data$term %in% terms_above_threshold)
+	}
+
+	if (nrow(ae_counts) == 0) {
+		cli::cli_warn("No adverse events meet the specified threshold criteria")
+		return(NULL)
+	}
+
+	# Pivot to wide format for comparison
+	ae_wide <- ae_counts |>
+		dplyr::select("term", dplyr::all_of(trt_var), "n", "N", "pct") |>
+		tidyr::pivot_wider(
+			names_from = dplyr::all_of(trt_var),
+			values_from = c("n", "N", "pct"),
+			values_fill = list(n = 0, pct = 0)
+		)
+
+	# Get treatment groups (excluding reference)
+	trt_groups <- setdiff(trt_levels, ref_group)
+
+	# Calculate risk differences and ratios for each treatment vs reference
+	comparison_results <- list()
+
+	for (trt in trt_groups) {
+		n_trt_col <- paste0("n_", trt)
+		N_trt_col <- paste0("N_", trt)
+		n_ref_col <- paste0("n_", ref_group)
+		N_ref_col <- paste0("N_", ref_group)
+		pct_trt_col <- paste0("pct_", trt)
+		pct_ref_col <- paste0("pct_", ref_group)
+
+		# Ensure columns exist (fill with 0 if missing)
+		if (!n_trt_col %in% names(ae_wide)) {
+			ae_wide[[n_trt_col]] <- 0
+		}
+		if (!n_ref_col %in% names(ae_wide)) {
+			ae_wide[[n_ref_col]] <- 0
+		}
+
+		# Get N values from trt_n
+		N_trt <- trt_n |>
+			dplyr::filter(.data[[trt_var]] == trt) |>
+			dplyr::pull(.data$N)
+		N_ref <- trt_n |>
+			dplyr::filter(.data[[trt_var]] == ref_group) |>
+			dplyr::pull(.data$N)
+
+		# Calculate statistics for each term
+		stats_list <- lapply(seq_len(nrow(ae_wide)), function(i) {
+			n1 <- ae_wide[[n_trt_col]][i]
+			n2 <- ae_wide[[n_ref_col]][i]
+
+			# Handle missing values
+			if (is.na(n1)) {
+				n1 <- 0
+			}
+			if (is.na(n2)) {
+				n2 <- 0
+			}
+
+			calculate_ae_risk_difference(n1, N_trt, n2, N_ref, conf_level)
+		})
+
+		# Extract statistics
+		ae_wide[[paste0("rd_", trt)]] <- sapply(stats_list, `[[`, "rd")
+		ae_wide[[paste0("rd_lower_", trt)]] <- sapply(stats_list, `[[`, "rd_lower")
+		ae_wide[[paste0("rd_upper_", trt)]] <- sapply(stats_list, `[[`, "rd_upper")
+		ae_wide[[paste0("rr_", trt)]] <- sapply(stats_list, `[[`, "rr")
+		ae_wide[[paste0("rr_lower_", trt)]] <- sapply(stats_list, `[[`, "rr_lower")
+		ae_wide[[paste0("rr_upper_", trt)]] <- sapply(stats_list, `[[`, "rr_upper")
+		ae_wide[[paste0("pvalue_", trt)]] <- sapply(stats_list, `[[`, "p_value")
+	}
+
+	# Sort by specified criterion
+	if (sort_by == "rd" && length(trt_groups) > 0) {
+		sort_col <- paste0("rd_", trt_groups[1])
+		ae_wide <- ae_wide |>
+			dplyr::arrange(dplyr::desc(abs(.data[[sort_col]])))
+	} else if (sort_by == "rr" && length(trt_groups) > 0) {
+		sort_col <- paste0("rr_", trt_groups[1])
+		ae_wide <- ae_wide |>
+			dplyr::arrange(dplyr::desc(.data[[sort_col]]))
+	} else {
+		# Sort by maximum incidence across groups
+		pct_cols <- names(ae_wide)[grepl("^pct_", names(ae_wide))]
+		ae_wide <- ae_wide |>
+			dplyr::rowwise() |>
+			dplyr::mutate(
+				max_incidence = max(
+					dplyr::c_across(dplyr::all_of(pct_cols)),
+					na.rm = TRUE
+				)
+			) |>
+			dplyr::ungroup() |>
+			dplyr::arrange(dplyr::desc(.data$max_incidence)) |>
+			dplyr::select(-"max_incidence")
+	}
+
+	# Format output table
+	ci_level_pct <- round(conf_level * 100)
+	output_df <- data.frame(Term = ae_wide$term, stringsAsFactors = FALSE)
+
+	# Add reference group column
+	n_ref_col <- paste0("n_", ref_group)
+	pct_ref_col <- paste0("pct_", ref_group)
+	N_ref <- trt_n |>
+		dplyr::filter(.data[[trt_var]] == ref_group) |>
+		dplyr::pull(.data$N)
+
+	output_df[[paste0(ref_group, "\nn/N (%)")]] <- sprintf(
+		"%d/%d (%.1f%%)",
+		ae_wide[[n_ref_col]],
+		N_ref,
+		ae_wide[[pct_ref_col]]
+	)
+
+	# Add treatment group columns with comparisons
+	for (trt in trt_groups) {
+		n_trt_col <- paste0("n_", trt)
+		pct_trt_col <- paste0("pct_", trt)
+		N_trt <- trt_n |>
+			dplyr::filter(.data[[trt_var]] == trt) |>
+			dplyr::pull(.data$N)
+
+		output_df[[paste0(trt, "\nn/N (%)")]] <- sprintf(
+			"%d/%d (%.1f%%)",
+			ae_wide[[n_trt_col]],
+			N_trt,
+			ae_wide[[pct_trt_col]]
+		)
+
+		# Risk Difference
+		rd_col <- paste0("rd_", trt)
+		rd_lower_col <- paste0("rd_lower_", trt)
+		rd_upper_col <- paste0("rd_upper_", trt)
+		output_df[[paste0("RD\n(", ci_level_pct, "% CI)")]] <- sprintf(
+			"%.1f%% (%.1f%%, %.1f%%)",
+			ae_wide[[rd_col]] * 100,
+			ae_wide[[rd_lower_col]] * 100,
+			ae_wide[[rd_upper_col]] * 100
+		)
+
+		# Risk Ratio
+		rr_col <- paste0("rr_", trt)
+		rr_lower_col <- paste0("rr_lower_", trt)
+		rr_upper_col <- paste0("rr_upper_", trt)
+		output_df[[paste0("RR\n(", ci_level_pct, "% CI)")]] <- sprintf(
+			"%.2f (%.2f, %.2f)",
+			ae_wide[[rr_col]],
+			ae_wide[[rr_lower_col]],
+			ae_wide[[rr_upper_col]]
+		)
+
+		# P-value
+		pvalue_col <- paste0("pvalue_", trt)
+		output_df[["P-value"]] <- format_pvalue(ae_wide[[pvalue_col]])
+	}
+
+	# Auto-generate title if not provided
+	if (is.null(title)) {
+		title <- switch(
+			by,
+			overall = "Adverse Event Comparison",
+			soc = "Adverse Events by System Organ Class with Risk Comparisons",
+			pt = "Adverse Events by Preferred Term with Risk Comparisons"
+		)
+	}
+
+	# Create footnotes
+	footnotes <- c(
+		"Safety Population",
+		sprintf(
+			"RD = Risk Difference, RR = Risk Ratio, CI = %d%% Confidence Interval",
+			ci_level_pct
+		),
+		paste0("Reference group: ", ref_group),
+		"P-values from Chi-square test (or Fisher's exact test when expected count < 5)"
+	)
+
+	if (threshold > 0) {
+		footnotes <- c(
+			footnotes,
+			sprintf("Events with incidence >= %.1f%% in any group", threshold)
+		)
+	}
+
+	ft <- create_hta_table(
+		output_df,
+		title = title,
+		footnotes = footnotes,
+		autofit = autofit
+	)
+
+	ClinicalTable(
+		data = output_df,
+		flextable = ft,
+		type = "ae_comparison",
+		title = title,
+		metadata = list(
+			ref_group = ref_group,
+			by = by,
+			threshold = threshold,
+			conf_level = conf_level
+		)
 	)
 }

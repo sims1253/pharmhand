@@ -1,3 +1,19 @@
+# pharmhand 0.0.4.9000
+
+## New features
+
+* Unified treatment variable API across safety and efficacy tables:
+  - All table functions now consistently use `trt_var = "TRT01P"` as default
+  - `create_primary_endpoint_table()`, `create_cfb_summary_table()`, `create_vs_by_visit_table()` now accept `trt_var` parameter
+  - Safety tables (`create_ae_table()`) default changed from "TRT01A" to "TRT01P" for consistency
+
+* Added `create_ae_comparison_table()` for adverse event comparisons with risk metrics:
+  - Accessible via `create_ae_table(type = "comparison")`
+  - Calculates risk difference (RD) and risk ratio (RR) with confidence intervals
+  - Supports grouping by SOC, PT, or overall
+  - Configurable reference group and incidence threshold filtering
+  - Chi-square or Fisher's exact test for p-values
+
 # pharmhand 0.0.3.9000
 
 ## New features
