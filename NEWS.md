@@ -1,3 +1,18 @@
+# pharmhand 0.0.3.9000
+
+## New features
+
+* Added standardized mean difference (SMD) functions for GBA baseline balance assessment:
+  - `calculate_smd()`: Cohen's d and Hedges' g for continuous variables
+  - `calculate_smd_binary()`: Arcsine/logit methods for binary variables
+  - `calculate_smd_from_data()`: Auto-detect variable type from data
+  - `add_smd_to_table()`: Add SMD column to demographics tables
+  - `assess_baseline_balance()`: Comprehensive multi-variable assessment
+  - `create_love_plot()`: Covariate balance visualization (Love plot)
+  - `BalanceAssessment` S7 class for storing assessment results
+
+* Updated baseline-tables vignette with SMD examples
+
 # pharmhand 0.0.2.9000
 
 ## Documentation
