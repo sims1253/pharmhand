@@ -23,6 +23,8 @@ create_vs_by_visit_table(
 
 \item{visits}{Vector of visits to include}
 
+\item{trt_var}{Treatment variable name (default: "TRT01P")}
+
 \item{title}{Table title}
 
 \item{autofit}{Logical, whether to autofit column widths (default: TRUE)}

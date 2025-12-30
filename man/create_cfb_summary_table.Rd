@@ -32,6 +32,8 @@ Must match values in the PARAMCD column of advs.}
 Must match a value in the AVISIT column of advs (e.g., "End of Treatment",
 "Week 12").}
 
+\item{trt_var}{Treatment variable name (default: "TRT01P")}
+
 \item{title}{Character string for the table title.}
 
 \item{autofit}{Logical, whether to automatically adjust column widths to fit

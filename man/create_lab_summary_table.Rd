@@ -23,6 +23,8 @@ create_lab_summary_table(
 
 \item{visit}{Visit to analyze}
 
+\item{trt_var}{Treatment variable name (default: "TRT01P")}
+
 \item{title}{Table title}
 
 \item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
