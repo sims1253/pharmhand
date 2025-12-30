@@ -1,0 +1,101 @@
+---
+title: "Get started with pharmhand"
+description: >
+  Create clinical study tables and reports from ADaM datasets using S7 classes.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get started with pharmhand}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+pharmhand creates clinical tables and reports from ADaM datasets using S7 classes.
+
+## Installation
+
+```{r eval=FALSE}
+# install.packages("pak")
+pak::pak("sims1253/pharmhand")
+```
+
+## Core workflow
+
+Wrap ADaM datasets in `ADaMData` objects, create tables and plots, then assemble reports.
+
+### Wrap ADaM data
+
+```{r eval=FALSE}
+library(pharmhand)
+
+adam_data <- ADaMData(
+  data = adsl,
+  domain = "ADSL",
+  population = "SAF",
+  trt_var = "TRT01A"
+)
+
+adam_data@filtered_data  # Filtered to SAFFL == "Y"
+adam_data@trt_n          # Treatment group N's
+```
+
+### Create tables
+
+```{r eval=FALSE}
+demo_table <- create_demographics_table(
+  adsl_data = adam_data,
+  title = "Table 1.1: Demographics and Baseline Characteristics"
+)
+
+demo_table@flextable    # Formatted flextable
+demo_table@metadata     # Analysis details
+```
+
+### Create plots
+
+```{r eval=FALSE}
+km_plot <- create_km_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "TRT01P",
+  title = "Figure 1: Kaplan-Meier Plot of Overall Survival",
+  risk_table = TRUE,
+  show_median = TRUE
+)
+
+km_plot@plot            # ggplot2/ggsurvplot object
+```
+
+### Build reports
+
+```{r eval=FALSE}
+report <- ClinicalReport(
+  study_id = "STUDY-001",
+  study_title = "Phase III Clinical Trial"
+)
+
+efficacy_section <- ReportSection(
+  title = "Efficacy Results",
+  section_type = "efficacy"
+)
+
+efficacy_section <- add_content(efficacy_section, demo_table)
+efficacy_section <- add_content(efficacy_section, km_plot)
+report <- add_section(report, efficacy_section)
+
+generate_word(report, "clinical_study_report.docx")
+```
+
+## More examples
+
+- `vignette("baseline-tables")` - Demographics, disposition, and baseline characteristics
+- `vignette("safety-tables")` - Safety tables and adverse event analysis
+- `vignette("efficacy-tables")` - Efficacy endpoints and time-to-event analysis
+- `vignette("s7-architecture")` - S7 class system and extension points

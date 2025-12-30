@@ -1,0 +1,549 @@
+---
+title: "Creating Efficacy Tables"
+description: >
+  Learn how to create time-to-event summaries, responder analyses,
+  subgroup analyses, and other efficacy tables with pharmhand.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating Efficacy Tables}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 6,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Introduction
+
+Create efficacy tables for clinical study reports: time-to-event analysis, response rates, subgroup analyses, and change from baseline endpoints.
+
+## Setup and Data Preparation
+
+```{r setup}
+library(pharmhand)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(survival)
+```
+
+Use `pharmaverseadam` for example data:
+
+```{r data-setup}
+library(pharmaverseadam)
+
+# Load example datasets
+adsl <- pharmaverseadam::adsl         # Subject-level data
+advs <- pharmaverseadam::advs         # Vital signs data  
+adlb <- pharmaverseadam::adlb         # Laboratory data
+adtte <- pharmaverseadam::adtte_onco  # Time-to-event data (oncology)
+adrs <- pharmaverseadam::adrs_onco    # Response data (oncology)
+
+# Note: adtte_onco and adrs_onco use ARM as the treatment variable instead of TRT01P
+```
+
+## Time-to-Event Analysis
+
+`create_tte_summary_table()` provides survival analysis with Kaplan-Meier estimates, hazard ratios, and landmark analyses.
+
+### Basic TTE
+
+```{r tte-basic}
+# Create TTE summary table
+# Note: adtte_onco uses ARM for treatment groups
+tte_table <- create_tte_summary_table(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",  # Use ARM instead of TRT01P for oncology data
+  title = "Overall Survival Summary"
+)
+
+# Display the table
+tte_table@flextable
+```
+
+### TTE with Landmarks
+
+```{r tte-landmarks}
+# TTE table with landmark survival estimates
+tte_landmark <- create_tte_summary_table(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",
+  landmarks = c(12, 24),  # 12 and 24 month survival rates
+  time_unit = "months",
+  title = "Progression-Free Survival with Landmark Analysis"
+)
+
+# Display the table
+tte_landmark@flextable
+```
+
+### Kaplan-Meier Plots
+
+```{r km-plot}
+# Basic KM plot
+km_plot <- create_km_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",
+  title = "Overall Survival Kaplan-Meier Plot",
+  show_median = TRUE,
+  show_ci = TRUE,
+  xlab = "Days"
+)
+km_plot@plot
+```
+
+```{r km-plot-advanced}
+# Advanced KM plot with risk table
+km_plot_advanced <- create_km_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",
+  title = "Survival Analysis with Risk Table",
+  show_median = TRUE,
+  show_ci = TRUE,
+  xlab = "Days",
+  risk_table = TRUE,
+  landmarks = c(12, 24)
+)
+km_plot_advanced@plot
+```
+
+## Responder Analysis
+
+create_responder_table() provides response summaries with multiple comparison options.
+
+### Basic Response
+
+```{r responder-basic}
+# Create response rate table for tumor response
+# Note: adrs_onco uses ARM for treatment groups
+response_table <- create_responder_table(
+  data = adrs,
+  response_var = "AVALC",
+  response_values = c("CR", "PR"),  # CR + PR = Overall Response Rate
+  trt_var = "ARM",
+  title = "Best Overall Response Rate"
+)
+
+# Display the table
+response_table@flextable
+```
+
+### Response with Risk Ratio
+
+```{r responder-risk-ratio}
+# Response table using risk ratio instead of odds ratio
+response_rr <- create_responder_table(
+  data = adrs,
+  response_var = "AVALC",
+  response_values = c("CR", "PR"),
+  trt_var = "ARM",
+  comparison_type = "RR",  # Risk Ratio
+  ci_method = "wilson",    # Wilson confidence interval
+  title = "Response Rate Summary (Risk Ratio)"
+)
+
+# Display the table
+response_rr@flextable
+```
+
+### Response with Risk Difference
+
+```{r responder-risk-diff}
+# Response table with risk difference
+response_rd <- create_responder_table(
+  data = adrs,
+  response_var = "AVALC",
+  response_values = c("CR", "PR"),
+  trt_var = "ARM",
+  comparison_type = "RD",  # Risk Difference
+  title = "Response Rate Difference"
+)
+
+# Display the table
+response_rd@flextable
+```
+
+## Subgroup Analysis
+
+Subgroup analyses show treatment effects across patient populations.
+
+### Subgroup Table
+
+```{r subgroup-table}
+# Create subgroup analysis table
+subgroup_table <- create_subgroup_table(
+  data = adtte,
+  subgroups = list(
+    SEX = "Sex"
+  ),
+  endpoint_type = "tte",  # Time-to-event endpoint
+  trt_var = "ARM",
+  title = "Subgroup Analysis - Overall Survival"
+)
+
+# Display the table
+subgroup_table@flextable
+```
+
+### Forest Plot
+
+```{r forest-plot}
+# Create forest plot for subgroup analysis
+forest_plot <- create_forest_plot(
+  data = adtte,
+  subgroups = list(
+    SEX = "Sex"
+  ),
+  endpoint_type = "tte",
+  trt_var = "ARM",
+  title = "Treatment Effect by Subgroup",
+  show_interaction = TRUE
+)
+forest_plot@plot
+```
+
+### Binary Endpoint
+
+```{r subgroup-binary}
+# Subgroup analysis for binary endpoint
+subgroup_binary <- create_subgroup_table(
+  data = adrs,
+  subgroups = list(
+    SEX = "Sex"
+  ),
+  endpoint_type = "binary",  # Binary endpoint
+  response_var = "AVALC",
+  response_values = c("CR", "PR"),
+  trt_var = "ARM",
+  title = "Response Rate by Subgroup"
+)
+
+# Display the table
+subgroup_binary@flextable
+```
+
+## Change from Baseline Analysis
+
+`create_cfb_summary_table()` analyzes change from baseline values for continuous endpoints.
+
+### Vital Signs
+
+```{r cfb-vitals}
+# Create change from baseline table for vital signs
+cfb_table <- create_cfb_summary_table(
+  advs = advs,
+  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  params = c("SYSBP", "DIABP", "PULSE"),
+  visit = "End of Treatment",
+  title = "Change from Baseline in Vital Signs"
+)
+
+# Display the table
+cfb_table@flextable
+```
+
+### Custom Parameters
+
+```{r cfb-custom}
+# Change from baseline for specific parameters
+cfb_custom <- create_cfb_summary_table(
+  advs = advs,
+  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  params = c("SYSBP"),  # Only systolic blood pressure
+  visit = "Week 8",
+  title = "Systolic Blood Pressure Change from Baseline at Week 8"
+)
+
+# Display the table
+cfb_custom@flextable
+```
+
+## Primary Endpoint Tables
+
+create_primary_endpoint_table() creates summary tables for primary and secondary endpoints.
+
+### Primary Endpoint
+
+```{r primary-endpoint}
+# Create primary endpoint summary table
+primary_table <- create_primary_endpoint_table(
+  advs = advs,
+  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  paramcd = "SYSBP",
+  visit = "End of Treatment",
+  title = "Primary Endpoint Summary: Systolic Blood Pressure"
+)
+
+# Display the table
+primary_table@flextable
+```
+
+### Secondary Endpoint
+
+```{r secondary-endpoint}
+# Secondary endpoint analysis
+secondary_table <- create_primary_endpoint_table(
+  advs = advs,
+  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  paramcd = "DIABP",
+  visit = "Week 8",
+  title = "Secondary Endpoint: Diastolic Blood Pressure at Week 8"
+)
+
+# Display the table
+secondary_table@flextable
+```
+
+## Laboratory Analysis
+
+Analyze laboratory parameters with shift tables and summary statistics.
+
+### Lab Summary
+
+<details>
+<summary>Click to expand: Laboratory Parameters Summary</summary>
+
+```{r lab-summary}
+# Create laboratory parameters summary
+lab_summary <- create_lab_summary_table(
+  adlb = adlb,
+  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  params = c("HGB", "WBC", "PLAT", "ALT", "AST"),
+  visit = "Week 24",
+  title = "Laboratory Parameters Summary at Week 24"
+)
+
+# Display the table
+lab_summary@flextable
+```
+
+</details>
+
+### Lab Shift
+
+<details>
+<summary>Click to expand: Lab Shift Table</summary>
+
+```{r lab-shift}
+# Create laboratory shift table for liver function test
+shift_table <- create_lab_shift_table(
+  adlb = adlb,
+  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  paramcd = "ALT",
+  visit = "Week 24",
+  title = "ALT Shift from Baseline to Week 24"
+)
+
+# Display the table
+shift_table@flextable
+```
+
+</details>
+
+## Vital Signs by Visit
+
+create_vs_by_visit_table() tracks vital signs across study visits.
+
+<details>
+<summary>Click to expand: Vital Signs by Visit Table</summary>
+
+```{r vs-by-visit}
+# Vital signs by visit table
+vs_visit_table <- create_vs_by_visit_table(
+  advs = advs,
+  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  paramcd = "SYSBP",
+  visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
+  title = "Systolic Blood Pressure by Study Visit"
+)
+
+# Display the table
+vs_visit_table@flextable
+```
+
+</details>
+
+## Customization
+
+Functions include options for confidence intervals, formatting, and custom parameters.
+
+### Formatting
+
+```{r formatting}
+# Custom formatting options
+custom_table <- create_tte_summary_table(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",
+  conf_level = 0.95,
+  time_unit = "months",
+  title = "Custom Formatted TTE Table",
+  autofit = TRUE  # Auto-adjust column widths
+)
+
+# Display the table
+custom_table@flextable
+```
+
+### CI Methods
+
+```{r ci-methods}
+# Different CI methods for response rates
+wilson_table <- create_responder_table(
+  data = adrs,
+  response_var = "AVALC",
+  response_values = c("CR", "PR"),
+  trt_var = "ARM",
+  ci_method = "wilson",      # Wilson score interval (recommended)
+  title = "Response Rate - Wilson CI"
+)
+
+exact_table <- create_responder_table(
+  data = adrs,
+  response_var = "AVALC",
+  response_values = c("CR", "PR"),
+  trt_var = "ARM",
+  ci_method = "exact",       # Clopper-Pearson exact
+  title = "Response Rate - Exact CI"
+)
+
+# Display the tables
+wilson_table@flextable
+exact_table@flextable
+```
+
+## Complete Report
+
+Combine multiple analyses into a report:
+
+```{r complete-report, eval=FALSE}
+generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
+  
+  # Get treatment counts for denominators
+  trt_n <- adsl |>
+    filter(SAFFL == "Y") |>
+    group_by(TRT01P) |>
+    summarise(N = n(), .groups = "drop")
+  
+  # Section 1: Primary Endpoint Summary
+  primary_content <- create_primary_endpoint_table(
+    advs = advs,
+    trt_n = trt_n,
+    paramcd = "SYSBP",
+    visit = "End of Treatment",
+    title = "Table 3.1: Primary Endpoint Summary (Systolic BP)"
+  )
+  
+  # Section 2: Change from Baseline  
+  cfb_content <- create_cfb_summary_table(
+    advs = advs,
+    trt_n = trt_n,
+    params = c("SYSBP", "DIABP", "PULSE"),
+    visit = "End of Treatment",
+    title = "Table 3.2: Change from Baseline Summary"
+  )
+  
+  # Section 3: Vital Signs by Visit
+  vs_content <- create_vs_by_visit_table(
+    advs = advs,
+    trt_n = trt_n,
+    paramcd = "SYSBP",
+    title = "Table 3.3: Vital Signs by Visit"
+  )
+  
+  # Section 4: Laboratory Parameters
+  lab_content <- create_lab_summary_table(
+    adlb = adlb,
+    trt_n = trt_n,
+    title = "Table 3.4: Laboratory Parameters Summary"
+  )
+  
+  # Section 5: Laboratory Shift Table
+  shift_content <- create_lab_shift_table(
+    adlb = adlb,
+    trt_n = trt_n,
+    paramcd = "ALT",
+    title = "Table 3.5: ALT Shift from Baseline"
+  )
+  
+  # Section 6: Subgroup Analysis
+  subgroup_content <- create_subgroup_analysis_table(
+    adsl = adsl,
+    advs = advs,
+    title = "Table 3.6: Subgroup Analysis by Age Group"
+  )
+  
+  # Create report sections
+  sections <- list(
+    ReportSection(
+      title = "Primary Endpoint Analysis",
+      section_type = "efficacy", 
+      content = list(primary_content)
+    ),
+    ReportSection(
+      title = "Change from Baseline Analysis",
+      section_type = "efficacy",
+      content = list(cfb_content)
+    ),
+    ReportSection(
+      title = "Vital Signs by Study Visit", 
+      section_type = "efficacy",
+      content = list(vs_content)
+    ),
+    ReportSection(
+      title = "Laboratory Parameters",
+      section_type = "efficacy",
+      content = list(lab_content)
+    ),
+    ReportSection(
+      title = "Laboratory Shift Analysis",
+      section_type = "efficacy", 
+      content = list(shift_content)
+    ),
+    ReportSection(
+      title = "Subgroup Analyses",
+      section_type = "efficacy",
+      content = list(subgroup_content)
+    )
+  )
+  
+  # Create and save report
+  report <- ClinicalReport(
+    study_id = "CDISCPILOT01",
+    study_title = "CDISC Pilot Study - Efficacy Report",
+    sections = sections,
+    metadata = list(
+      generated_at = Sys.time(),
+      package_version = as.character(packageVersion("pharmhand")),
+      data_source = "pharmaverseadam",
+      report_type = "efficacy"
+    )
+  )
+  
+  # Generate Word document
+  generate_word(report, path = output_path)
+  
+  cat("Efficacy report generated:", output_path, "\n")
+  invisible(report)
+}
+
+# Generate the report
+generate_efficacy_report()
+```

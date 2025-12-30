@@ -154,7 +154,7 @@ generate_word(report, "study_report.docx")
 - [flextable](https://davidgohel.github.io/flextable/) - Table formatting
 - [admiral](https://pharmaverse.github.io/admiral/) - ADaM datasets
 - [survival](https://cran.r-project.org/package=survival) - Survival analysis
-- [chef](https://github.com/hta-pharma/chef) - HTA analyses (optional)
+- [chef](https://hta-pharma.github.io/chef/) - HTA analyses (optional)
 
 ## Learn More
 

@@ -11,12 +11,28 @@ format_spec(
   neg_format = "sign"
 )
 }
+\arguments{
+\item{pattern}{Format pattern string (default "a.a")}
+
+\item{null_format}{String to display for NULL/NA values (default "--")}
+
+\item{empty_format}{String to display for empty values (default "")}
+
+\item{neg_format}{How to format negative numbers: "sign", "parens", or "abs"}
+}
+\value{
+A FormatSpec object
+}
 \description{
 Define numeric formats using pattern strings.
+}
+\examples{
+\dontrun{
 fmt <- format_spec("xx.x")
 apply_format(fmt, 12.345) # "12.3"
-}
-\section{Auto-width with 2 decimals}{
 
+# Auto-width with 2 decimals
+fmt <- format_spec("a.xx")
+apply_format(fmt, c(1.5, 123.456)) # "  1.50", "123.46"
 }
-
+}

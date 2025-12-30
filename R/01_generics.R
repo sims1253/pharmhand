@@ -547,7 +547,7 @@ add_content <- S7::new_generic(
 #' @noRd
 S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
 	checkmate::assertTRUE(
-		any(grepl("ClinicalContent", class(content))),
+		any(grepl("ClinicalContent", class(content), fixed = TRUE)),
 		add = "Must be a ClinicalContent object"
 	)
 	checkmate::assert_string(name, null.ok = TRUE)
