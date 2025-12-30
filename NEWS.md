@@ -1,3 +1,17 @@
+# pharmhand 0.0.5.9000
+
+## New features
+
+* Added comprehensive localization support for German HTA (G-BA/AMNOG) dossiers:
+  - `set_locale()` / `get_locale()`: Set and retrieve current locale ("en" or "de")
+  - `tr()`: Translate keys to current locale
+  - `tr_col()`: Translate data frame column names
+  - `get_translations()`: Get all translations for a locale
+  - `add_translation()`: Add custom translations
+  - `reset_custom_translations()`: Clear custom translations
+  - `list_translation_keys()`: List all available translation keys
+  - Built-in German translations for common clinical trial terms (demographics, AEs, efficacy endpoints, populations)
+
 # pharmhand 0.0.4.9000
 
 ## New features
