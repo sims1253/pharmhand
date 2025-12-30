@@ -1,3 +1,21 @@
+# pharmhand 0.0.2.9000
+
+## Documentation
+
+* Vignettes now display all generated tables using flextable rendering
+
+* Large tables (SOC/PT, lab shift, medical history, conmeds) are collapsible with `<details>` tags
+
+* Added dark mode support for tables in pkgdown site via CSS styling
+
+* Fixed `format_spec()` roxygen documentation
+
+## Bug fixes
+
+* Fixed vignette data loading to use correct `pharmaverseadam` dataset names (`adtte_onco`, `adrs_onco`)
+
+* Fixed treatment variable usage (`ARM` vs `TRT01P`) for oncology datasets
+
 # pharmhand 0.0.1.9000
 
 ## New features

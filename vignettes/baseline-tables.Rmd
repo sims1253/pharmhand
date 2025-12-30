@@ -1,0 +1,200 @@
+---
+title: "Baseline Characteristics Tables"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Baseline Characteristics Tables}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+## Introduction
+
+Baseline tables show participant demographics, medical history, and enrollment data at randomization.
+
+## Setup
+
+```{r setup}
+library(pharmhand)
+library(dplyr)
+library(pharmaverseadam)
+
+# Load example data
+adsl <- pharmaverseadam::adsl
+admh <- pharmaverseadam::admh
+adcm <- pharmaverseadam::adcm
+```
+
+## ADaMData wrapper
+
+Wrap ADaM datasets in `ADaMData` before creating tables.
+
+```{r adam-data}
+# Wrap ADSL with population filtering
+adam_data <- ADaMData(
+  data = adsl,
+  domain = "ADSL",
+  population = "SAF"
+)
+```
+
+## Demographics table
+
+The demographics table presents basic participant characteristics including age, sex, and ethnicity.
+
+```{r demographics-basic}
+# Basic demographics table
+demo_table <- create_demographics_table(
+  adsl_data = adam_data,
+  trt_var = "TRT01P"
+)
+
+# Display the table
+demo_table@flextable
+```
+
+Customize variable names to match your data structure:
+
+```{r demographics-custom}
+# Custom variable names
+demo_table_custom <- create_demographics_table(
+  adsl_data = adam_data,
+  trt_var = "TRT01P",
+  age_var = "AGE",
+  sex_var = "SEX",
+  ethnic_var = "ETHNIC"
+)
+
+# Display the table
+demo_table_custom@flextable
+```
+
+## Enrollment by region
+
+```{r region-table}
+region_table <- create_region_table(
+  adsl = adsl,
+  trt_var = "TRT01P",
+  region_var = "REGION1"
+)
+
+# Display the table
+region_table@flextable
+```
+
+## Medical history
+
+<details>
+<summary>Click to expand: Medical History Table</summary>
+
+```{r medical-history}
+mh_table <- create_medical_history_table(
+  adsl = adsl,
+  admh = admh,
+  trt_var = "TRT01P",
+  soc_var = "MHBODSYS"
+)
+
+# Display the table
+mh_table@flextable
+```
+
+</details>
+
+## Concomitant medications
+
+<details>
+<summary>Click to expand: Concomitant Medications Table</summary>
+
+```{r conmeds}
+cm_table <- create_conmeds_table(
+  adsl = adsl,
+  adcm = adcm,
+  trt_var = "TRT01P"
+)
+
+# Display the table
+cm_table@flextable
+```
+
+</details>
+
+## Disposition
+
+Disposition tables summarize participant flow through study phases and reasons for discontinuation.
+
+```{r disposition}
+disp_table <- create_disposition_table(
+  adsl = adsl,
+  trt_var = "TRT01P"
+)
+
+# Display the table
+disp_table@flextable
+```
+
+## Population summary
+
+Population summary tables provide counts and percentages for different analysis populations.
+
+```{r population-summary}
+pop_table <- create_population_summary_table(
+  adsl = adsl,
+  trt_var = "TRT01P",
+  pop_flags = c("SAFFL"),
+  pop_labels = c("Safety")
+)
+
+# Display the table
+pop_table@flextable
+```
+
+## Combining into a report
+
+Combine baseline tables into a report.
+
+```{r combine-report, eval = FALSE}
+# Create report sections
+demo_section <- ReportSection(
+  title = "Demographics",
+  content = demo_table
+)
+
+region_section <- ReportSection(
+  title = "Enrollment by Region",
+  content = region_table
+)
+
+mh_section <- ReportSection(
+  title = "Medical History",
+  content = mh_table
+)
+
+# cm_section <- ReportSection(
+#   title = "Concomitant Medications",
+#   content = cm_table
+# )
+
+# Create clinical report
+report <- ClinicalReport(
+  title = "Baseline Characteristics",
+  sections = list(
+    demo_section,
+    region_section,
+    mh_section
+  )
+)
+
+# Generate Word document
+write_docx(report, tempfile(fileext = ".docx"))
+```
+
+The Word document contains formatted baseline tables.

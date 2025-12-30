@@ -8,6 +8,17 @@ NULL
 #' Create Format Specification
 #'
 #' Define numeric formats using pattern strings.
+#'
+#' @param pattern Format pattern string (default "a.a")
+#' @param null_format String to display for NULL/NA values (default "--")
+#' @param empty_format String to display for empty values (default "")
+#' @param neg_format How to format negative numbers: "sign", "parens", or "abs"
+#'
+#' @return A FormatSpec object
+#' @export
+#'
+#' @examples
+#' \dontrun{
 #' fmt <- format_spec("xx.x")
 #' apply_format(fmt, 12.345) # "12.3"
 #'

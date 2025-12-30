@@ -1,0 +1,366 @@
+---
+title: "Creating Safety Tables"
+description: >
+  Learn how to create adverse event tables, SOC/PT summaries,
+  and other safety analyses with pharmhand.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating Safety Tables}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+## Introduction
+
+`create_ae_table()` makes safety tables for treatment-emergent adverse events (TEAEs).
+
+## Table Types
+
+| Type | Description | Key Variables |
+|------|-------------|---------------|
+| `overview` | Summary of TEAEs, related AEs, SAEs, discontinuations | `TRTEMFL`, `AEREL`, `AESER`, `AEACN` |
+| `soc` | AEs by System Organ Class | `AEBODSYS` |
+| `soc_pt` | AEs by SOC and Preferred Term (hierarchical) | `AEBODSYS`, `AEDECOD` |
+| `pt` | AEs by Preferred Term only | `AEDECOD` |
+| `common` | Most frequently reported AEs | `AEDECOD` |
+| `severity` | AEs by maximum severity | `AESEV` |
+| `relationship` | AEs by relationship to study drug | `AEREL` |
+| `sae` | Serious Adverse Events | `AESER` |
+| `discontinuation` | AEs leading to discontinuation | `AEACN` |
+| `deaths` | Deaths summary | `DTHFL` |
+
+## Setup
+
+```{r setup}
+library(pharmhand)
+library(dplyr)
+library(tidyr)
+
+# Load example data from pharmaverseadam
+adsl <- pharmaverseadam::adsl
+adae <- pharmaverseadam::adae
+adlb <- pharmaverseadam::adlb
+```
+
+## AE Overview Tables
+
+```{r overview}
+# Create AE overview table
+overview_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "overview",
+  title = "Table 1: Overview of Treatment-Emergent Adverse Events"
+)
+
+# Display the table
+overview_table@flextable
+```
+
+The overview table calculates:
+- Subjects with ≥1 TEAE (`TRTEMFL == "Y"`)
+- Related TEAEs (`AEREL` in ["RELATED", "PROBABLE", "POSSIBLE"])
+- Serious AEs (`AESER == "Y"`)
+- AEs leading to discontinuation (`AEACN == "DRUG WITHDRAWN"`)
+- Deaths (`AEOUT == "FATAL"`)
+
+## AE by SOC Tables
+
+```{r soc}
+# Create SOC table
+soc_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "soc",
+  title = "Table 2: Treatment-Emergent Adverse Events by System Organ Class"
+)
+
+# Display the table
+soc_table@flextable
+```
+
+### SOC/PT Analysis
+
+<details>
+<summary>Click to expand: SOC/PT Hierarchical Table</summary>
+
+```{r soc-pt}
+# Create hierarchical SOC/PT table
+soc_pt_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "soc_pt",
+  title = "Table 3: Treatment-Emergent AEs by System Organ Class and Preferred Term"
+)
+
+# Display the table
+soc_pt_table@flextable
+```
+
+</details>
+
+## Most Common AEs
+
+```{r common}
+# Create table of most common AEs (top 10)
+common_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "common",
+  n_top = 10,
+  title = "Table 4: Most Common Treatment-Emergent Adverse Events (Top 10)"
+)
+
+# Display the table
+common_table@flextable
+```
+
+## Severity Analysis
+
+```{r severity}
+# Create severity table
+severity_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "severity",
+  title = "Table 5: Subjects by Maximum Adverse Event Severity"
+)
+
+# Display the table
+severity_table@flextable
+```
+
+Severity categories order as: MILD → MODERATE → SEVERE.
+
+## Relationship Analysis
+
+```{r relationship}
+# Create relationship table
+relationship_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "relationship",
+  title = "Table 6: Treatment-Emergent AEs by Relationship to Study Drug"
+)
+
+# Display the table
+relationship_table@flextable
+```
+
+## SAE Tables
+
+```{r sae}
+# Create SAE table
+sae_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "sae",
+  title = "Table 7: Serious Adverse Events"
+)
+
+# Display the table
+sae_table@flextable
+```
+
+Shows message if no SAEs reported.
+
+## Deaths and Discontinuations
+
+### Discontinuation
+
+```{r discontinuation}
+# Create discontinuation table
+disc_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "discontinuation",
+  title = "Table 8: AEs Leading to Study Drug Discontinuation"
+)
+
+# Display the table
+disc_table@flextable
+```
+
+### Deaths Summary
+
+```{r deaths}
+# Create deaths summary table
+deaths_table <- create_ae_table(
+  adae = NULL,  # Not needed for deaths
+  adsl = adsl,
+  type = "deaths",
+  title = "Table 9: Deaths Summary"
+)
+
+# Display the table
+deaths_table@flextable
+```
+
+## Lab Shift Tables
+
+<details>
+<summary>Click to expand: Lab Shift Table</summary>
+
+```{r lab-shift}
+# Example of lab shift analysis
+trt_n <- adsl |> dplyr::group_by(TRT01P) |> dplyr::summarise(N = dplyr::n(), .groups = "drop")
+lab_shift_table <- create_lab_shift_table(
+  adlb = adlb,
+  trt_n = trt_n,
+  title = "Table 10: Laboratory Shift from Baseline to Maximum Post-Baseline Value"
+)
+
+# Display the table
+lab_shift_table@flextable
+```
+
+</details>
+
+## Customization
+
+### Treatment Variable
+
+```{r custom-trt}
+# Use different treatment variable
+overview_trtp <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "overview",
+  trt_var = "TRT01P",  # Planned treatment
+  title = "Overview by Planned Treatment"
+)
+
+# Display the table
+overview_trtp@flextable
+```
+
+### Top AEs
+
+```{r custom-top}
+# Show top 5 instead of default 15
+common_top5 <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "common",
+  n_top = 5,
+  title = "Top 5 Most Common AEs"
+)
+
+# Display the table
+common_top5@flextable
+```
+
+### SOC Analysis
+
+```{r custom-soc}
+# Analyze only skin and subcutaneous tissue disorders
+rash_table <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "pt",
+  soc = "SKIN AND SUBCUTANEOUS TISSUE DISORDERS",
+  title = "Table: Gastrointestinal Adverse Events by Preferred Term"
+)
+
+# Display the table
+rash_table@flextable
+```
+
+### Table Formatting
+
+```{r formatting}
+# Create table without autofit (for custom formatting)
+soc_manual <- create_ae_table(
+  adae = adae,
+  adsl = adsl,
+  type = "soc",
+  autofit = FALSE,
+  title = "Manual Format Example"
+)
+
+# Access the underlying flextable for custom formatting
+soc_ft <- soc_manual@flextable
+
+# Display the table
+soc_ft
+```
+
+## Export to Word
+
+```{r word-export}
+# Create multiple safety tables
+safety_tables <- list(
+  overview = create_ae_table(adae, adsl, type = "overview"),
+  soc = create_ae_table(adae, adsl, type = "soc"),
+  common = create_ae_table(adae, adsl, type = "common", n_top = 10),
+  sae = create_ae_table(adae, adsl, type = "sae")
+)
+
+# Create report sections
+safety_sections <- lapply(names(safety_tables), function(table_name) {
+  ReportSection(
+    title = paste("Safety Analysis:", table_name),
+    section_type = "safety",
+    content = list(safety_tables[[table_name]])
+  )
+})
+
+# Create clinical report
+safety_report <- ClinicalReport(
+  study_id = "CDISCPILOT01",
+  study_title = "Safety Analysis Report",
+  sections = safety_sections
+)
+
+# Export to Word
+# generate_word(safety_report, path = "safety_report.docx")
+
+cat("Safety report structure created with", length(safety_tables), "tables.")
+cat("\nUse generate_word() to export to Word.")
+```
+
+## Time-to-Event Analysis
+
+```{r tte, fig.height=3}
+# Calculate time-to-event data for a specific SOC
+tte_data <- calculate_ae_tte_data(
+  adsl = adsl,
+  adae = adae,
+  soc = "Skin and subcutaneous tissue disorders"
+)
+
+# Preview TTE data structure
+head(tte_data, 3)
+
+# Create KM plot
+km_plot <- create_ae_km_plot_for_soc(
+  adsl = adsl,
+  adae = adae,
+  soc = "Skin and subcutaneous tissue disorders"
+)
+
+print(km_plot@plot)
+
+```
+
+## Related Functions
+
+- [`create_hta_table()`](https://sims1253.github.io/pharmhand/reference/create_hta_table.html) - Underlying function for table formatting
+- [`create_km_plot()`](https://sims1253.github.io/pharmhand/reference/create_km_plot.html) - Kaplan-Meier plot creation
+- [`ClinicalReport()`](https://sims1253.github.io/pharmhand/reference/ClinicalReport.html) - Report assembly
+- [`generate_word()`](https://sims1253.github.io/pharmhand/reference/generate_word.html) - Word document generation
+
+## See Also
+
+- [Get Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html) - Introduction to pharmhand
+- [Creating Efficacy Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html) - Efficacy analysis
+- [S7 Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html) - Class system documentation
