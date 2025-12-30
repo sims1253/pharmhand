@@ -1096,6 +1096,15 @@ calculate_proportion_ci <- function(
 #' @param conf_level Confidence level (default: 0.95)
 #' @param show_interaction Logical, calculate and show interaction p-values
 #'   (default: TRUE)
+#' @param adjust_method Character. Method for adjusting interaction p-values
+#'   for multiple comparisons. One of:
+#'   - "none" (default): No adjustment
+#'   - "holm": Holm-Bonferroni step-down (recommended for FWER control)
+#'   - "hochberg": Hochberg step-up (controls FWER)
+#'   - "bonferroni": Bonferroni correction (conservative)
+#'   - "BH" or "fdr": Benjamini-Hochberg (controls FDR)
+#'   - "BY": Benjamini-Yekutieli (controls FDR under dependency)
+#'   See \code{\link{adjust_pvalues}} for details.
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #'
@@ -1123,6 +1132,19 @@ calculate_proportion_ci <- function(
 #'   response_values = c("CR", "PR"),
 #'   title = "Response Rate by Subgroup"
 #' )
+#'
+#' # With multiplicity adjustment for GBA dossiers
+#' sg_table <- create_subgroup_table(
+#'   data = adtte,
+#'   subgroups = list(
+#'     AGEGR1 = "Age Group",
+#'     SEX = "Sex",
+#'     RACE = "Race"
+#'   ),
+#'   endpoint_type = "tte",
+#'   adjust_method = "holm",
+#'   title = "Subgroup Analysis with Multiplicity Adjustment"
+#' )
 #' }
 create_subgroup_table <- function(
 	data,
@@ -1136,9 +1158,20 @@ create_subgroup_table <- function(
 	ref_group = NULL,
 	conf_level = 0.95,
 	show_interaction = TRUE,
+	adjust_method = c(
+		"none",
+		"holm",
+		"hochberg",
+		"hommel",
+		"bonferroni",
+		"BH",
+		"fdr",
+		"BY"
+	),
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
+	adjust_method <- match.arg(adjust_method)
 	endpoint_type <- match.arg(endpoint_type)
 
 	# Get filtered data
@@ -1270,6 +1303,27 @@ create_subgroup_table <- function(
 	# Combine results
 	results_df <- do.call(rbind, results_list)
 
+	# Apply multiplicity adjustment to interaction p-values if requested
+	if (show_interaction && adjust_method != "none") {
+		# Extract unique interaction p-values (one per subgroup variable)
+		# These are in rows where interaction_p is not NA
+		pval_rows <- which(!is.na(results_df$interaction_p))
+
+		if (length(pval_rows) > 1) {
+			# Get the original p-values
+			original_pvals <- results_df$interaction_p[pval_rows]
+
+			# Adjust p-values
+			adjusted <- adjust_pvalues(original_pvals, method = adjust_method)
+
+			# Store both original and adjusted values
+			results_df$interaction_p_original <- results_df$interaction_p
+			results_df$interaction_p[pval_rows] <- adjusted$adjusted_p
+			results_df$interaction_p_adjusted <- NA_real_
+			results_df$interaction_p_adjusted[pval_rows] <- adjusted$adjusted_p
+		}
+	}
+
 	# Format for display
 	results_df$`n (Reference)` <- as.character(results_df$n_ref)
 	results_df$`n (Treatment)` <- as.character(results_df$n_trt)
@@ -1312,28 +1366,56 @@ create_subgroup_table <- function(
 	names(display_df)[names(display_df) == "n (Treatment)"] <-
 		paste0("n (", other_trt, ")")
 
+	# Build footnotes
+	footnotes <- c(
+		paste(
+			estimate_label,
+			"=",
+			if (endpoint_type == "tte") {
+				"Hazard Ratio"
+			} else {
+				"Odds Ratio"
+			}
+		),
+		paste("Reference group:", ref_group)
+	)
+
+	if (show_interaction) {
+		if (adjust_method != "none" && length(names(subgroups)) > 1) {
+			method_name <- switch(
+				adjust_method,
+				"holm" = "Holm-Bonferroni",
+				"hochberg" = "Hochberg",
+				"hommel" = "Hommel",
+				"bonferroni" = "Bonferroni",
+				"BH" = "Benjamini-Hochberg (FDR)",
+				"fdr" = "Benjamini-Hochberg (FDR)",
+				"BY" = "Benjamini-Yekutieli",
+				adjust_method
+			)
+			footnotes <- c(
+				footnotes,
+				paste0(
+					"Interaction p-values adjusted for multiple comparisons (",
+					method_name,
+					" method)"
+				)
+			)
+		} else {
+			footnotes <- c(
+				footnotes,
+				"Interaction p-value from likelihood ratio test"
+			)
+		}
+	}
+
+	footnotes <- c(footnotes, "NE = Not Estimable")
+
 	# Create flextable
 	ft <- create_hta_table(
 		display_df,
 		title = title,
-		footnotes = c(
-			paste(
-				estimate_label,
-				"=",
-				if (endpoint_type == "tte") {
-					"Hazard Ratio"
-				} else {
-					"Odds Ratio"
-				}
-			),
-			paste("Reference group:", ref_group),
-			if (show_interaction) {
-				"Interaction p-value from likelihood ratio test"
-			} else {
-				NULL
-			},
-			"NE = Not Estimable"
-		),
+		footnotes = footnotes,
 		autofit = autofit
 	)
 
@@ -1346,6 +1428,7 @@ create_subgroup_table <- function(
 			subgroups = subgroups,
 			endpoint_type = endpoint_type,
 			ref_group = ref_group,
+			adjust_method = adjust_method,
 			full_results = results_df
 		)
 	)

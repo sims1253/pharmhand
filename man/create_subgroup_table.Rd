@@ -16,6 +16,8 @@ create_subgroup_table(
   ref_group = NULL,
   conf_level = 0.95,
   show_interaction = TRUE,
+  adjust_method = c("none", "holm", "hochberg", "hommel", "bonferroni", "BH", "fdr",
+    "BY"),
   title = "Subgroup Analysis",
   autofit = TRUE
 )
@@ -47,6 +49,18 @@ inverted automatically. Default: "CNSR"}
 
 \item{show_interaction}{Logical, calculate and show interaction p-values
 (default: TRUE)}
+
+\item{adjust_method}{Character. Method for adjusting interaction p-values
+for multiple comparisons. One of:
+\itemize{
+\item "none" (default): No adjustment
+\item "holm": Holm-Bonferroni step-down (recommended for FWER control)
+\item "hochberg": Hochberg step-up (controls FWER)
+\item "bonferroni": Bonferroni correction (conservative)
+\item "BH" or "fdr": Benjamini-Hochberg (controls FDR)
+\item "BY": Benjamini-Yekutieli (controls FDR under dependency)
+See \code{\link{adjust_pvalues}} for details.
+}}
 
 \item{title}{Table title}
 
@@ -81,6 +95,19 @@ sg_table <- create_subgroup_table(
   endpoint_type = "binary",
   response_values = c("CR", "PR"),
   title = "Response Rate by Subgroup"
+)
+
+# With multiplicity adjustment for GBA dossiers
+sg_table <- create_subgroup_table(
+  data = adtte,
+  subgroups = list(
+    AGEGR1 = "Age Group",
+    SEX = "Sex",
+    RACE = "Race"
+  ),
+  endpoint_type = "tte",
+  adjust_method = "holm",
+  title = "Subgroup Analysis with Multiplicity Adjustment"
 )
 }
 }
