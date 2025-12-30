@@ -6,7 +6,7 @@
 
 * Large tables (SOC/PT, lab shift, medical history, conmeds) are collapsible with `<details>` tags
 
-* Added dark mode support for tables in pkgdown site via CSS styling
+* Added dark mode support for pkgdown site tables via CSS overrides for flextable compatibility
 
 * Fixed `format_spec()` roxygen documentation
 

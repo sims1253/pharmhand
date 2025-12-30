@@ -191,6 +191,8 @@ create_clinical_table <- function(res, title = "") {
 #' @param font_size_header Header font size in points (default: 10)
 #' @param border_color Border color (default: "gray70")
 #' @param header_bg Header background color (default: "gray95")
+#' @param body_bg Body background color (default: "white")
+#' @param font_color Font color for all text (default: "black")
 #' @param zebra Logical, apply zebra striping (default: FALSE)
 #' @param na_string String to display for NA values (default: "--")
 #' @param autofit Logical, perform expensive layout calculations (default: TRUE)
@@ -211,6 +213,8 @@ apply_clinical_style <- function(
 	font_size_header = 10,
 	border_color = "gray70",
 	header_bg = "gray95",
+	body_bg = "white",
+	font_color = "black",
 	zebra = FALSE,
 	na_string = "--",
 	autofit = TRUE
@@ -223,7 +227,8 @@ apply_clinical_style <- function(
 		flextable::fontsize(size = font_size_body, part = "body") |>
 		flextable::fontsize(size = font_size_header, part = "header") |>
 		flextable::align(align = "left", part = "body") |>
-		flextable::align(align = "center", part = "header")
+		flextable::align(align = "center", part = "header") |>
+		flextable::color(color = font_color, part = "all")
 
 	# Border styling
 	border_style <- officer::fp_border(color = border_color, width = 1)
@@ -260,6 +265,10 @@ apply_clinical_style <- function(
 				part = "body"
 			)
 	}
+
+	# Set explicit body background for dark mode compatibility
+	ft <- ft |>
+		flextable::bg(bg = body_bg, part = "body")
 
 	# Handle NA values
 	ft <- ft |>

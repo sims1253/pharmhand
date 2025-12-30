@@ -100,7 +100,3 @@ Update `NEWS.md`.
 Report bugs at [https://github.com/sims1253/pharmhand/issues](https://github.com/sims1253/pharmhand/issues).
 
 Include minimal reproducible example.
-
-## Code of Conduct
-
-Follows [Contributor Covenant](CODE_OF_CONDUCT.md).

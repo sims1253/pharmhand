@@ -27,6 +27,12 @@ library(pharmhand)
 library(dplyr)
 library(pharmaverseadam)
 
+# Set flextable defaults for readable tables in light/dark mode
+flextable::set_flextable_defaults(
+  font.color = "#000000",
+  background.color = "#FFFFFF"
+)
+
 # Load example data
 adsl <- pharmaverseadam::adsl
 admh <- pharmaverseadam::admh
@@ -194,7 +200,7 @@ report <- ClinicalReport(
 )
 
 # Generate Word document
-write_docx(report, tempfile(fileext = ".docx"))
+generate_word(report, path = tempfile(fileext = ".docx"))
 ```
 
 The Word document contains formatted baseline tables.

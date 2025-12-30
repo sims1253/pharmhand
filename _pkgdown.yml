@@ -15,8 +15,6 @@ template:
     base_font: {google: "Source Sans Pro"}
     heading_font: {google: "Source Sans Pro"}
     code_font: {google: "Source Code Pro"}
-  includes:
-    in_header: |
   theme: gruvbox-light
   theme-dark: gruvbox-dark
   math-rendering: katex

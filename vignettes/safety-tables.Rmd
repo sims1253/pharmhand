@@ -45,6 +45,12 @@ library(pharmhand)
 library(dplyr)
 library(tidyr)
 
+# Set flextable defaults for readable tables in light/dark mode
+flextable::set_flextable_defaults(
+  font.color = "#000000",
+  background.color = "#FFFFFF"
+)
+
 # Load example data from pharmaverseadam
 adsl <- pharmaverseadam::adsl
 adae <- pharmaverseadam::adae
@@ -268,7 +274,7 @@ rash_table <- create_ae_table(
   adsl = adsl,
   type = "pt",
   soc = "SKIN AND SUBCUTANEOUS TISSUE DISORDERS",
-  title = "Table: Gastrointestinal Adverse Events by Preferred Term"
+  title = "Table: Skin and Subcutaneous Tissue Disorders by Preferred Term"
 )
 
 # Display the table
