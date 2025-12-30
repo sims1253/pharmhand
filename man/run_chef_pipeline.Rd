@@ -32,6 +32,11 @@ Depending on output_type:
 \description{
 Execute a chef analysis pipeline and return results as pharmhand.
 }
+\note{
+This function currently returns mock/placeholder data. Full chef
+pipeline integration requires targets infrastructure setup. The mock
+data contains NA values and should not be used for production analysis.
+}
 \examples{
 \dontrun{
 # Define endpoints

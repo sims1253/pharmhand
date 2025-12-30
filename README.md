@@ -148,8 +148,6 @@ generate_word(report, "study_report.docx")
 
 ## Related Packages
 
-## Related Packages
-
 - [officer](https://davidgohel.github.io/officer/) - Word documents
 - [flextable](https://davidgohel.github.io/flextable/) - Table formatting
 - [admiral](https://pharmaverse.github.io/admiral/) - ADaM datasets

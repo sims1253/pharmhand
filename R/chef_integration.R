@@ -216,6 +216,9 @@ create_chef_endpoint <- function(
 #'   - "results": AnalysisResults object
 #'   - "table": ClinicalTable object
 #'   - "report": ClinicalReport object
+#' @note This function currently returns mock/placeholder data. Full chef
+#'   pipeline integration requires targets infrastructure setup. The mock
+#'   data contains NA values and should not be used for production analysis.
 #' @export
 #'
 #' @examples
@@ -259,6 +262,12 @@ run_chef_pipeline <- function(
 	cli::cli_alert_info(
 		"Chef pipeline configured. Full execution requires targets setup."
 	)
+
+	# Warn users about mock data
+	cli::cli_warn(c(
+		"!" = "Returning mock data - full chef integration not yet implemented",
+		"i" = "Results contain placeholder values only"
+	))
 
 	# Create mock results for development
 	# Safely extract endpoint names with fallback for malformed endpoints

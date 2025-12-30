@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "pharmhand",
+  "short_name": "pharmhand",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

@@ -78,7 +78,7 @@ analyze_study_TwoArmStudy <- S7::method(analyze_study, TwoArmStudy) <- function(
 	}
 
 	x@results <- results
-	x
+	return(x)
 }
 
 #' Create Report from Study

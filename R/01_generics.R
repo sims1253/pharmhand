@@ -450,7 +450,7 @@ add_table <- S7::new_generic(
 #' @describeIn add_table Method for StudyResult
 #' @noRd
 S7::method(add_table, StudyResult) <- function(obj, table, name = NULL) {
-	checkmate::assertTRUE(inherits(table, "pharmhand::ClinicalTable"))
+	checkmate::assertTRUE(S7::S7_inherits(table, ClinicalTable))
 	checkmate::assert_string(name, null.ok = TRUE)
 
 	if (is.null(name)) {
@@ -482,7 +482,7 @@ add_plot <- S7::new_generic(
 #' @describeIn add_plot Method for StudyResult
 #' @noRd
 S7::method(add_plot, StudyResult) <- function(obj, plot, name = NULL) {
-	checkmate::assertTRUE(inherits(plot, "pharmhand::ClinicalPlot"))
+	checkmate::assertTRUE(S7::S7_inherits(plot, ClinicalPlot))
 	checkmate::assert_string(name, null.ok = TRUE)
 
 	if (is.null(name)) {
@@ -547,7 +547,7 @@ add_content <- S7::new_generic(
 #' @noRd
 S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
 	checkmate::assertTRUE(
-		any(grepl("ClinicalContent", class(content), fixed = TRUE)),
+		S7::S7_inherits(content, ClinicalContent),
 		add = "Must be a ClinicalContent object"
 	)
 	checkmate::assert_string(name, null.ok = TRUE)

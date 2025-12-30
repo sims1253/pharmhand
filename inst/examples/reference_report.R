@@ -107,7 +107,7 @@ generate_reference_report <- function(
 
 	# Write to file
 	cli::cli_progress_step("Writing to {output_path}")
-	write_docx(report, output_path)
+	generate_word(report, path = output_path)
 
 	cli::cli_alert_success("Reference report generated: {output_path}")
 

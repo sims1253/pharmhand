@@ -33,6 +33,12 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(survival)
+
+# Set flextable defaults for readable tables in light/dark mode
+flextable::set_flextable_defaults(
+  font.color = "#000000",
+  background.color = "#FFFFFF"
+)
 ```
 
 Use `pharmaverseadam` for example data:

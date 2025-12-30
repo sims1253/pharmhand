@@ -1,14 +1,14 @@
 # Favicon directory
 
-To generate favicons for the pkgdown website, run the script in the package root:
+This directory contains favicon files for the pkgdown website.
+
+To regenerate favicons from the package logo, run:
 
 ```r
-source("create_favicons.R")
+pkgdown::build_favicons(overwrite = TRUE)
 ```
 
-This will use the package logo to create multiple favicon files in different sizes and formats.
-
-The script requires the `pkgdown` package, which can be installed with:
+This requires the `pkgdown` package:
 
 ```r
 install.packages("pkgdown")

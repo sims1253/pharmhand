@@ -12,6 +12,8 @@ apply_clinical_style(
   font_size_header = 10,
   border_color = "gray70",
   header_bg = "gray95",
+  body_bg = "white",
+  font_color = "black",
   zebra = FALSE,
   na_string = "--",
   autofit = TRUE
@@ -31,6 +33,10 @@ apply_clinical_style(
 \item{border_color}{Border color (default: "gray70")}
 
 \item{header_bg}{Header background color (default: "gray95")}
+
+\item{body_bg}{Body background color (default: "white")}
+
+\item{font_color}{Font color for all text (default: "black")}
 
 \item{zebra}{Logical, apply zebra striping (default: FALSE)}
 

@@ -1,79 +1,112 @@
 // pharmhand custom styles
+$clinical-accent-bg: rgba(0, 119, 182, 0.05);
 
-// Enhance code blocks
+/* Enhance code blocks */
 pre {
   border-radius: 0.5rem;
 }
 
-// Clinical table styling hints
+/* Clinical table styling hints */
 .table {
-  --bs-table-striped-bg: rgba(0, 119, 182, 0.05);
+  --bs-table-striped-bg: $clinical-accent-bg;
 }
 
-// Better reference page layout
+/* Better reference page layout */
 .contents .section {
   margin-bottom: 2rem;
 }
 
-// Function reference cards
+/* Function reference cards */
 .ref-index .section {
   margin-bottom: 1.5rem;
 }
 
-// Enhance article headers
+/* Enhance article headers */
 article h2 {
   border-bottom: 2px solid var(--bs-primary);
   padding-bottom: 0.5rem;
   margin-top: 2rem;
 }
 
-// Clinical-themed callouts
+/* Clinical-themed callouts */
 .callout {
   border-left: 4px solid var(--bs-primary);
   padding: 1rem;
-  background: rgba(0, 119, 182, 0.05);
+  background: $clinical-accent-bg;
   margin: 1rem 0;
   border-radius: 0 0.5rem 0.5rem 0;
 }
 
-// Better spacing for vignette content
+/* Better spacing for vignette content */
 .contents {
   max-width: 900px;
 }
 
-// Flextable dark mode compatibility
-// Style tables to look native in dark mode instead of forcing light mode
-[data-bs-theme="dark"] {
-  // Table container
-  .tabwid,
-  table.tabwid,
-  .flextable-shadow-host {
-    border-radius: 0.5rem;
-  }
+/* 
+ * Flextable dark mode compatibility
+ * 
+ * Flextable embeds <style> blocks with classes like .cl-xxxxx that set
+ * color: rgba(0, 0, 0, 1.00). These embedded styles load after our CSS.
+ * 
+ * Solution: Use html[data-bs-theme="dark"] for highest specificity
+ * and target elements with attribute selectors that match ANY class starting with "cl-"
+ */
 
-  // Table cells - dark background with light text
-  .tabwid td,
-  .tabwid th {
-    background-color: var(--bs-body-bg, #212529) !important;
-    color: var(--bs-body-color, #dee2e6) !important;
-    border-color: var(--bs-border-color, #495057) !important;
-  }
+/* Container - light card in dark mode */
+html[data-bs-theme="dark"] .tabwid {
+  background-color: #f8f9fa !important;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
 
-  // Header cells - slightly different shade for distinction
-  .tabwid th,
-  .tabwid thead td {
-    background-color: var(--bs-tertiary-bg, #2b3035) !important;
-    color: var(--bs-heading-color, #fff) !important;
-    font-weight: 600;
-  }
+/* Force white background on table */
+html[data-bs-theme="dark"] .tabwid table {
+  background-color: #ffffff !important;
+}
 
-  // Subtle zebra striping for readability
-  .tabwid tbody tr:nth-child(even) td {
-    background-color: rgba(255, 255, 255, 0.03) !important;
-  }
+html[data-bs-theme="dark"] .tabwid table th,
+html[data-bs-theme="dark"] .tabwid table td {
+  background-color: #ffffff !important;
+}
 
-  // Hover state for interactivity
-  .tabwid tbody tr:hover td {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-  }
+/* Header cells - light gray */
+html[data-bs-theme="dark"] .tabwid table thead th,
+html[data-bs-theme="dark"] .tabwid table thead td {
+  background-color: #e9ecef !important;
+}
+
+/* Footer cells */
+html[data-bs-theme="dark"] .tabwid table tfoot td {
+  background-color: #f8f9fa !important;
+}
+
+/* 
+ * Force dark text on ALL elements with classes starting with "cl-"
+ * This targets flextable's generated class names
+ */
+html[data-bs-theme="dark"] .tabwid [class^="cl-"],
+html[data-bs-theme="dark"] .tabwid [class*=" cl-"] {
+  color: #212529 !important;
+}
+
+/* Also force on span, p, td, th directly */
+html[data-bs-theme="dark"] .tabwid span,
+html[data-bs-theme="dark"] .tabwid p,
+html[data-bs-theme="dark"] .tabwid td,
+html[data-bs-theme="dark"] .tabwid th {
+  color: #212529 !important;
+}
+
+/* Double-specificity for stubborn cases */
+html[data-bs-theme="dark"] .tabwid table span,
+html[data-bs-theme="dark"] .tabwid table p {
+  color: #212529 !important;
+}
+
+html[data-bs-theme="dark"] .tabwid table tbody span,
+html[data-bs-theme="dark"] .tabwid table thead span,
+html[data-bs-theme="dark"] .tabwid table tfoot span {
+  color: #212529 !important;
 }
