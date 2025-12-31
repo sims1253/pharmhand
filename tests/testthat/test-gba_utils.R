@@ -720,6 +720,43 @@ describe("calculate_smd_from_data()", {
 
 		expect_true(is.na(result$smd))
 	})
+
+	it("reclassifies low-cardinality numeric as continuous with threshold", {
+		# SCORE has only 5 unique values, normally categorical
+		# But with continuous_threshold = 4, it should be treated as continuous
+		result <- calculate_smd_from_data(
+			data = test_data,
+			var = "SCORE",
+			trt_var = "TRT01P",
+			ref_group = "Control",
+			continuous_threshold = 4
+		)
+
+		expect_equal(result$var_type, "continuous")
+		expect_equal(result$method, "cohens_d")
+	})
+
+	it("warns when more than two treatment groups are present", {
+		# Create data with three treatment groups
+		multi_trt_data <- test_data
+		multi_trt_data$TRT01P <- rep(
+			c("Treatment A", "Treatment B", "Control"),
+			length.out = nrow(multi_trt_data)
+		)
+
+		expect_warning(
+			result <- calculate_smd_from_data(
+				data = multi_trt_data,
+				var = "AGE",
+				trt_var = "TRT01P",
+				ref_group = "Control"
+			),
+			"first non-reference group"
+		)
+
+		# Should still compute SMD
+		expect_true(!is.na(result$smd))
+	})
 })
 
 # =============================================================================

@@ -12,6 +12,7 @@ assess_baseline_balance(
   ref_group = NULL,
   threshold = 0.1,
   conf_level = 0.95,
+  continuous_threshold = 10,
   continuous_method = c("cohens_d", "hedges_g"),
   categorical_method = c("arcsine", "logit", "raw")
 )
@@ -30,6 +31,9 @@ assess_baseline_balance(
 \item{threshold}{Numeric. SMD threshold for imbalance (default: 0.1).}
 
 \item{conf_level}{Numeric. Confidence level for CIs (default: 0.95).}
+
+\item{continuous_threshold}{Integer. Minimum number of unique values to treat
+numeric variables as continuous (default: 10).}
 
 \item{continuous_method}{Character. SMD method for continuous variables.
 One of "cohens_d" (default) or "hedges_g".}

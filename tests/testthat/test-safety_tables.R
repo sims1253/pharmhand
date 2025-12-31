@@ -669,15 +669,14 @@ describe("create_ae_comparison_table()", {
 	})
 
 	it("errors when ref_group is NULL", {
-		# Note: The function errors because NULL %in% vector returns logical(0)
-		# which causes if() to fail. This is a known limitation.
 		expect_error(
 			create_ae_comparison_table(
 				adae = test_data$adae,
 				adsl = test_data$adsl,
 				ref_group = NULL,
 				by = "pt"
-			)
+			),
+			"ref_group.*provided"
 		)
 	})
 
@@ -796,10 +795,36 @@ describe("create_ae_comparison_table() with multiple treatment groups", {
 
 		expect_s7_class(tbl, ClinicalTable)
 		# Should have columns for each treatment group comparison
-		col_names <- names(tbl@data)
-		expect_true(any(grepl("Placebo", col_names, fixed = TRUE)))
-		expect_true(any(grepl("Low Dose", col_names, fixed = TRUE)))
-		expect_true(any(grepl("High Dose", col_names, fixed = TRUE)))
+		expect_true(any(grepl(
+			"RD Low Dose vs Placebo",
+			names(tbl@data),
+			fixed = TRUE
+		)))
+		expect_true(any(grepl(
+			"RR Low Dose vs Placebo",
+			names(tbl@data),
+			fixed = TRUE
+		)))
+		expect_true(any(grepl(
+			"P-value (Low Dose vs Placebo)",
+			names(tbl@data),
+			fixed = TRUE
+		)))
+		expect_true(any(grepl(
+			"RD High Dose vs Placebo",
+			names(tbl@data),
+			fixed = TRUE
+		)))
+		expect_true(any(grepl(
+			"RR High Dose vs Placebo",
+			names(tbl@data),
+			fixed = TRUE
+		)))
+		expect_true(any(grepl(
+			"P-value (High Dose vs Placebo)",
+			names(tbl@data),
+			fixed = TRUE
+		)))
 	})
 })
 

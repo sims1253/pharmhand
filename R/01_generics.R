@@ -218,7 +218,6 @@ S7::method(add_to_docx, list(class_rdocx, ReportSection)) <- function(
 }
 
 #' Save ClinicalTable as PNG
-#'
 #' Saves a ClinicalTable's flextable to a PNG file.
 #'
 #' @param x A ClinicalTable object
@@ -230,25 +229,6 @@ save_as_png <- function(x, path = NULL) {
 	if (is.null(path)) {
 		path <- tempfile(fileext = ".png")
 	}
-	flextable::save_as_image(x@flextable, path = path)
-	path
-}
-
-#' Save ClinicalTable as PDF
-#'
-#' Saves a ClinicalTable's flextable to a PDF file via image-based export.
-#'
-#' @param x A ClinicalTable object
-#' @param path Optional file path. If NULL, creates a temp file.
-#'
-#' @return The file path where the PDF was saved
-#'
-#' @export
-save_as_pdf <- function(x, path = NULL) {
-	if (is.null(path)) {
-		path <- tempfile(fileext = ".pdf")
-	}
-
 	flextable::save_as_image(x@flextable, path = path)
 	path
 }
@@ -300,7 +280,6 @@ save_plot_as <- function(x, format = "png", path = NULL) {
 #' \dontrun{
 #' # Convert table to different formats
 #' png_data <- format_content(clinical_table, "png")
-#' pdf_data <- format_content(clinical_table, "pdf")
 #' }
 format_content <- S7::new_generic("format_content", c("x", "format"))
 
@@ -314,8 +293,7 @@ S7::method(
 		format,
 		"docx" = to_word(x),
 		"png" = save_as_png(x),
-		"pdf" = save_as_pdf(x),
-		stop(paste0("Unsupported format: ", format), call. = FALSE)
+		ph_abort(paste0("Unsupported format: ", format))
 	)
 }
 
@@ -331,7 +309,7 @@ S7::method(format_content, list(ClinicalPlot, S7::class_character)) <- function(
 		"png" = save_plot_as(x, "png"),
 		"pdf" = save_plot_as(x, "pdf"),
 		"svg" = save_plot_as(x, "svg"),
-		stop(paste0("Unsupported format: ", format), call. = FALSE)
+		ph_abort(paste0("Unsupported format: ", format))
 	)
 }
 

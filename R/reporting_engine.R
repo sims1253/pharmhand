@@ -256,6 +256,10 @@ apply_clinical_style <- function(
 			flextable::fontsize(size = 8, part = "all")
 	}
 
+	# Set explicit body background for dark mode compatibility
+	ft <- ft |>
+		flextable::bg(bg = body_bg, part = "body")
+
 	# Zebra striping
 	if (zebra) {
 		ft <- ft |>
@@ -265,10 +269,6 @@ apply_clinical_style <- function(
 				part = "body"
 			)
 	}
-
-	# Set explicit body background for dark mode compatibility
-	ft <- ft |>
-		flextable::bg(bg = body_bg, part = "body")
 
 	# Handle NA values
 	ft <- ft |>

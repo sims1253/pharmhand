@@ -152,3 +152,41 @@ test_that("apply_format handles vector input", {
 	expect_length(result, 4)
 	expect_equal(result[3], "--")
 })
+
+test_that("ClinicalPlot validates plot type", {
+	expect_error(
+		ClinicalPlot(plot = 1, data = NULL, type = "bad", title = "Bad"),
+		"ggplot"
+	)
+})
+
+test_that("format_content errors on unsupported formats", {
+	tbl_data <- head(mtcars)
+	ft <- flextable::flextable(tbl_data)
+	tbl <- ClinicalTable(
+		data = tbl_data,
+		flextable = ft,
+		type = "test",
+		title = "Test"
+	)
+
+	expect_error(
+		format_content(tbl, "csv"),
+		"Unsupported format"
+	)
+
+	# Create a ClinicalPlot with a simple ggplot2 plot
+	plot_obj <- ggplot2::ggplot(mtcars, ggplot2::aes(x = mpg, y = wt)) +
+		ggplot2::geom_point()
+	cplot <- ClinicalPlot(
+		plot = plot_obj,
+		data = mtcars,
+		type = "scatter",
+		title = "Test"
+	)
+
+	expect_error(
+		format_content(cplot, "jpg"),
+		"Unsupported format"
+	)
+})

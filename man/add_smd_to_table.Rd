@@ -11,6 +11,7 @@ add_smd_to_table(
   ref_group = NULL,
   threshold = 0.1,
   conf_level = 0.95,
+  continuous_threshold = 10,
   flag_symbol = "*"
 )
 }
@@ -28,6 +29,9 @@ If NULL, uses the first level.}
 (default: 0.1). Common thresholds are 0.1 (strict) and 0.25 (lenient).}
 
 \item{conf_level}{Numeric. Confidence level for CI (default: 0.95)}
+
+\item{continuous_threshold}{Integer. Minimum number of unique values to treat
+numeric variables as continuous (default: 10).}
 
 \item{flag_symbol}{Character. Symbol to use for flagging imbalanced
 variables (default: "*")}

@@ -2,7 +2,8 @@
 % Please edit documentation in R/01_generics.R
 \name{save_as_png}
 \alias{save_as_png}
-\title{Save ClinicalTable as PNG}
+\title{Save ClinicalTable as PNG
+Saves a ClinicalTable's flextable to a PNG file.}
 \usage{
 save_as_png(x, path = NULL)
 }
@@ -15,5 +16,6 @@ save_as_png(x, path = NULL)
 The file path where the PNG was saved
 }
 \description{
+Save ClinicalTable as PNG
 Saves a ClinicalTable's flextable to a PNG file.
 }

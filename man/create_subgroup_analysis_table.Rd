@@ -16,7 +16,8 @@ create_subgroup_analysis_table(
 )
 }
 \arguments{
-\item{adsl}{ADSL data frame}
+\item{adsl}{ADSL data frame. Subgroup variables can be sourced from adsl if
+not present in advs. Must contain USUBJID column for joining.}
 
 \item{advs}{ADVS data frame}
 
@@ -24,7 +25,9 @@ create_subgroup_analysis_table(
 
 \item{visit}{Visit to analyze}
 
-\item{subgroups}{List of subgroup variables (e.g. list(AGEGR1="Age Group"))}
+\item{subgroups}{Named list of subgroup variables with display labels
+(e.g. list(AGEGR1="Age Group", SEX="Sex")). Variables can come from
+advs or adsl (joined by USUBJID).}
 
 \item{trt_var}{Treatment variable name (default: "TRT01P")}
 

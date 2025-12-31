@@ -278,6 +278,7 @@ run_chef_pipeline <- function(
 		character(1)
 	)
 
+	# Columns align with chef_to_analysis_results expected schema
 	mock_results <- data.table::data.table(
 		endpoint_id = endpoint_names,
 		strat_id = "Overall",
