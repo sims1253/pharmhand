@@ -5,7 +5,7 @@ Create AE KM Plot for a specific SOC
 ## Usage
 
 ``` r
-create_ae_km_plot_for_soc(adsl, adae, soc, trt_var = "TRT01A")
+create_ae_km_plot_for_soc(adsl, adae, soc, trt_var = "TRT01P")
 ```
 
 ## Arguments

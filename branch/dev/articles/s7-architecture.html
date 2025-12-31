@@ -37,7 +37,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.6.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -204,7 +204,7 @@ properties.</p>
 <code class="sourceCode R"><span><span class="co"># Switch to Per Protocol Set</span></span>
 <span><span class="va">adam_pps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ADaMData.html">ADaMData</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">demo_data</span>,</span>
-<span>  domain <span class="op">=</span> <span class="st">"ADSL"</span>, </span>
+<span>  domain <span class="op">=</span> <span class="st">"ADSL"</span>,</span>
 <span>  population <span class="op">=</span> <span class="st">"PPS"</span>  <span class="co"># Uses PPSFL column</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -258,23 +258,26 @@ properties.</p>
 <code class="sourceCode R"><span><span class="co"># Perform baseline analysis</span></span>
 <span><span class="va">baseline_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculate_baseline.html">calculate_baseline</a></span><span class="op">(</span><span class="va">adam_data</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"SEX"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Convert to ClinicalTable</span></span>
+<span><span class="co"># Convert to ClinicalTable with flextable</span></span>
 <span><span class="va">clinical_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ClinicalTable.html">ClinicalTable</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">baseline_results</span><span class="op">@</span><span class="va">stats</span>,</span>
+<span>  flextable <span class="op">=</span> <span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/flextable.html" class="external-link">flextable</a></span><span class="op">(</span><span class="va">baseline_results</span><span class="op">@</span><span class="va">stats</span><span class="op">)</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"baseline"</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Baseline Characteristics"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># The table automatically creates a flextable</span></span>
+<span><span class="co"># Access the flextable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">clinical_table</span><span class="op">@</span><span class="va">flextable</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "NULL"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "flextable"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="formatting">Formatting<a class="anchor" aria-label="anchor" href="#formatting"></a>
 </h3>
 <p>Access the flextable for styling:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ft</span> <span class="op">&lt;-</span> <span class="va">clinical_table</span><span class="op">@</span><span class="va">flextable</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ft</span> <span class="op">&lt;-</span> <span class="va">clinical_table</span><span class="op">@</span><span class="va">flextable</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">ft</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "flextable"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -542,9 +545,10 @@ designs.</p>
 <span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">officer</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/officer/reference/read_docx.html" class="external-link">read_docx</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create simple objects for demonstration</span></span>
+<span><span class="va">simple_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, Value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1.2"</span>, <span class="st">"3.4"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">table_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ClinicalTable.html">ClinicalTable</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, Value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1.2"</span>, <span class="st">"3.4"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  flextable <span class="op">=</span> <span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/flextable.html" class="external-link">flextable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, Value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1.2"</span>, <span class="st">"3.4"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">simple_df</span>,</span>
+<span>  flextable <span class="op">=</span> <span class="fu">flextable</span><span class="fu">::</span><span class="fu"><a href="https://davidgohel.github.io/flextable/reference/flextable.html" class="external-link">flextable</a></span><span class="op">(</span><span class="va">simple_df</span><span class="op">)</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"simple"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -624,7 +628,7 @@ designs.</p>
 <span><span class="va">secondary_endpoint</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SecondaryEndpoint.html">SecondaryEndpoint</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"Progression-Free Survival"</span>,</span>
 <span>  variable <span class="op">=</span> <span class="st">"PFS"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"time_to_event"</span>, </span>
+<span>  type <span class="op">=</span> <span class="st">"time_to_event"</span>,</span>
 <span>  description <span class="op">=</span> <span class="st">"Time from randomization to disease progression or death"</span>,</span>
 <span>  priority <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  exploratory <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -725,7 +729,7 @@ designs.</p>
 <span>    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">x</span><span class="op">@</span><span class="va">variable</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    custom_value <span class="op">=</span> <span class="va">x</span><span class="op">@</span><span class="va">custom_param</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="fu"><a href="../reference/AnalysisResults.html">AnalysisResults</a></span><span class="op">(</span></span>
 <span>    stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>,</span>
 <span>    type <span class="op">=</span> <span class="st">"custom_analysis"</span>,</span>

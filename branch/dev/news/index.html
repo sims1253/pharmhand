@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.6.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,85 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.6.9000" id="pharmhand-0069000">pharmhand 0.0.6.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0069000"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-0-6-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-0-6-9000"></a></h3>
+<ul><li>Added multiplicity adjustment for p-values:
+<ul><li>
+<code><a href="../reference/adjust_pvalues.html">adjust_pvalues()</a></code>: Apply Bonferroni, Holm, BH, or Hochberg corrections</li>
+<li>
+<code><a href="../reference/create_subgroup_table.html">create_subgroup_table()</a></code> now supports <code>adjust_method</code> parameter</li>
+</ul></li>
+<li>Added <code><a href="../reference/calculate_nnt.html">calculate_nnt()</a></code> for Number Needed to Treat calculation with confidence intervals</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.5.9000" id="pharmhand-0059000">pharmhand 0.0.5.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0059000"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-0-5-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-0-5-9000"></a></h3>
+<ul><li>Added comprehensive localization support for German HTA (G-BA/AMNOG) dossiers:
+<ul><li>
+<code><a href="../reference/set_locale.html">set_locale()</a></code> / <code><a href="../reference/get_locale.html">get_locale()</a></code>: Set and retrieve current locale (“en” or “de”)</li>
+<li>
+<code><a href="../reference/tr.html">tr()</a></code>: Translate keys to current locale</li>
+<li>
+<code><a href="../reference/tr_col.html">tr_col()</a></code>: Translate data frame column names</li>
+<li>
+<code><a href="../reference/get_translations.html">get_translations()</a></code>: Get all translations for a locale</li>
+<li>
+<code><a href="../reference/add_translation.html">add_translation()</a></code>: Add custom translations</li>
+<li>
+<code><a href="../reference/reset_custom_translations.html">reset_custom_translations()</a></code>: Clear custom translations</li>
+<li>
+<code><a href="../reference/list_translation_keys.html">list_translation_keys()</a></code>: List all available translation keys</li>
+<li>Built-in German translations for common clinical trial terms (demographics, AEs, efficacy endpoints, populations)</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.4.9000" id="pharmhand-0049000">pharmhand 0.0.4.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0049000"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-0-4-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-0-4-9000"></a></h3>
+<ul><li>Unified treatment variable API across safety and efficacy tables:
+<ul><li>All table functions now consistently use <code>trt_var = "TRT01P"</code> as default</li>
+<li>
+<code><a href="../reference/create_primary_endpoint_table.html">create_primary_endpoint_table()</a></code>, <code><a href="../reference/create_cfb_summary_table.html">create_cfb_summary_table()</a></code>, <code><a href="../reference/create_vs_by_visit_table.html">create_vs_by_visit_table()</a></code> now accept <code>trt_var</code> parameter</li>
+<li>Safety tables (<code><a href="../reference/create_ae_table.html">create_ae_table()</a></code>) default changed from “TRT01A” to “TRT01P” for consistency</li>
+</ul></li>
+<li>Added <code><a href="../reference/create_ae_comparison_table.html">create_ae_comparison_table()</a></code> for adverse event comparisons with risk metrics:
+<ul><li>Accessible via <code>create_ae_table(type = "comparison")</code>
+</li>
+<li>Calculates risk difference (RD) and risk ratio (RR) with confidence intervals</li>
+<li>Supports grouping by SOC, PT, or overall</li>
+<li>Configurable reference group and incidence threshold filtering</li>
+<li>Chi-square or Fisher’s exact test for p-values</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.3.9000" id="pharmhand-0039000">pharmhand 0.0.3.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0039000"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-0-3-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-0-3-9000"></a></h3>
+<ul><li>Added standardized mean difference (SMD) functions for GBA baseline balance assessment:
+<ul><li>
+<code><a href="../reference/calculate_smd.html">calculate_smd()</a></code>: Cohen’s d and Hedges’ g for continuous variables</li>
+<li>
+<code><a href="../reference/calculate_smd_binary.html">calculate_smd_binary()</a></code>: Arcsine/logit methods for binary variables</li>
+<li>
+<code><a href="../reference/calculate_smd_from_data.html">calculate_smd_from_data()</a></code>: Auto-detect variable type from data</li>
+<li>
+<code><a href="../reference/add_smd_to_table.html">add_smd_to_table()</a></code>: Add SMD column to demographics tables</li>
+<li>
+<code><a href="../reference/assess_baseline_balance.html">assess_baseline_balance()</a></code>: Comprehensive multi-variable assessment</li>
+<li>
+<code><a href="../reference/create_love_plot.html">create_love_plot()</a></code>: Covariate balance visualization (Love plot)</li>
+<li>
+<code>BalanceAssessment</code> S7 class for storing assessment results</li>
+</ul></li>
+<li>Updated baseline-tables vignette with SMD examples</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.2.9000" id="pharmhand-0029000">pharmhand 0.0.2.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0029000"></a></h2>
 <div class="section level3">

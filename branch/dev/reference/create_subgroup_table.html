@@ -13,7 +13,7 @@ confidence intervals and interaction p-values."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.6.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,8 @@ confidence intervals and interaction p-values.</p>
 <span>  ref_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  show_interaction <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  adjust_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"holm"</span>, <span class="st">"hochberg"</span>, <span class="st">"hommel"</span>, <span class="st">"bonferroni"</span>, <span class="st">"BH"</span>, <span class="st">"fdr"</span>,</span>
+<span>    <span class="st">"BY"</span><span class="op">)</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Subgroup Analysis"</span>,</span>
 <span>  autofit <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -133,6 +135,18 @@ inverted automatically. Default: "CNSR"</p></dd>
 (default: TRUE)</p></dd>
 
 
+<dt id="arg-adjust-method">adjust_method<a class="anchor" aria-label="anchor" href="#arg-adjust-method"></a></dt>
+<dd><p>Character. Method for adjusting interaction p-values
+for multiple comparisons. One of:</p><ul><li><p>"none" (default): No adjustment</p></li>
+<li><p>"holm": Holm-Bonferroni step-down (recommended for FWER control)</p></li>
+<li><p>"hochberg": Hochberg step-up (controls FWER)</p></li>
+<li><p>"bonferroni": Bonferroni correction (conservative)</p></li>
+<li><p>"BH" or "fdr": Benjamini-Hochberg (controls FDR)</p></li>
+<li><p>"BY": Benjamini-Yekutieli (controls FDR under dependency)
+See <code><a href="adjust_pvalues.html">adjust_pvalues</a></code> for details.</p></li>
+</ul></dd>
+
+
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
 <dd><p>Table title</p></dd>
 
@@ -167,6 +181,19 @@ inverted automatically. Default: "CNSR"</p></dd>
 <span class="r-in"><span>  endpoint_type <span class="op">=</span> <span class="st">"binary"</span>,</span></span>
 <span class="r-in"><span>  response_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CR"</span>, <span class="st">"PR"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  title <span class="op">=</span> <span class="st">"Response Rate by Subgroup"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># With multiplicity adjustment for GBA dossiers</span></span></span>
+<span class="r-in"><span><span class="va">sg_table</span> <span class="op">&lt;-</span> <span class="fu">create_subgroup_table</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">adtte</span>,</span></span>
+<span class="r-in"><span>  subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    AGEGR1 <span class="op">=</span> <span class="st">"Age Group"</span>,</span></span>
+<span class="r-in"><span>    SEX <span class="op">=</span> <span class="st">"Sex"</span>,</span></span>
+<span class="r-in"><span>    RACE <span class="op">=</span> <span class="st">"Race"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  endpoint_type <span class="op">=</span> <span class="st">"tte"</span>,</span></span>
+<span class="r-in"><span>  adjust_method <span class="op">=</span> <span class="st">"holm"</span>,</span></span>
+<span class="r-in"><span>  title <span class="op">=</span> <span class="st">"Subgroup Analysis with Multiplicity Adjustment"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

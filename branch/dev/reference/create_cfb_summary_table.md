@@ -13,6 +13,7 @@ create_cfb_summary_table(
   trt_n,
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
+  trt_var = "TRT01P",
   title = "Change from Baseline Summary",
   autofit = TRUE
 )
@@ -44,6 +45,10 @@ create_cfb_summary_table(
   Character string specifying the analysis visit to summarize. Must
   match a value in the AVISIT column of advs (e.g., "End of Treatment",
   "Week 12").
+
+- trt_var:
+
+  Treatment variable name (default: "TRT01P")
 
 - title:
 

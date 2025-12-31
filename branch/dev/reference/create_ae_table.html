@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.6.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,12 +58,17 @@
 <span>  <span class="va">adae</span>,</span>
 <span>  adsl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"overview"</span>, <span class="st">"soc"</span>, <span class="st">"soc_pt"</span>, <span class="st">"pt"</span>, <span class="st">"common"</span>, <span class="st">"severity"</span>, <span class="st">"relationship"</span>,</span>
-<span>    <span class="st">"sae"</span>, <span class="st">"discontinuation"</span>, <span class="st">"deaths"</span><span class="op">)</span>,</span>
-<span>  trt_var <span class="op">=</span> <span class="st">"TRT01A"</span>,</span>
+<span>    <span class="st">"sae"</span>, <span class="st">"discontinuation"</span>, <span class="st">"deaths"</span>, <span class="st">"comparison"</span><span class="op">)</span>,</span>
+<span>  trt_var <span class="op">=</span> <span class="st">"TRT01P"</span>,</span>
 <span>  n_top <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  soc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  autofit <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  autofit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ref_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  by <span class="op">=</span> <span class="st">"pt"</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sort_by <span class="op">=</span> <span class="st">"incidence"</span>,</span>
+<span>  conf_level <span class="op">=</span> <span class="fl">0.95</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -77,7 +82,7 @@
 
 <dt id="arg-adsl">adsl<a class="anchor" aria-label="anchor" href="#arg-adsl"></a></dt>
 <dd><p>ADSL data frame (optional, required for some table types
-like "deaths" or for denominator calculation)</p></dd>
+like "deaths", "comparison", or for denominator calculation)</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -91,11 +96,12 @@ like "deaths" or for denominator calculation)</p></dd>
 <li><p>"sae" - Serious Adverse Events</p></li>
 <li><p>"discontinuation" - AEs leading to discontinuation</p></li>
 <li><p>"deaths" - Deaths summary (requires adsl)</p></li>
+<li><p>"comparison" - AE comparison with risk difference/ratio (requires adsl)</p></li>
 </ul></dd>
 
 
 <dt id="arg-trt-var">trt_var<a class="anchor" aria-label="anchor" href="#arg-trt-var"></a></dt>
-<dd><p>Treatment variable name (default: "TRT01A")</p></dd>
+<dd><p>Treatment variable name (default: "TRT01P")</p></dd>
 
 
 <dt id="arg-n-top">n_top<a class="anchor" aria-label="anchor" href="#arg-n-top"></a></dt>
@@ -112,6 +118,26 @@ like "deaths" or for denominator calculation)</p></dd>
 
 <dt id="arg-autofit">autofit<a class="anchor" aria-label="anchor" href="#arg-autofit"></a></dt>
 <dd><p>Logical, whether to autofit column widths (default: TRUE)</p></dd>
+
+
+<dt id="arg-ref-group">ref_group<a class="anchor" aria-label="anchor" href="#arg-ref-group"></a></dt>
+<dd><p>For type="comparison", the reference group for comparisons</p></dd>
+
+
+<dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
+<dd><p>For type="comparison", grouping level: "soc", "pt", or "overall"</p></dd>
+
+
+<dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
+<dd><p>For type="comparison", minimum incidence % to include (default: 0)</p></dd>
+
+
+<dt id="arg-sort-by">sort_by<a class="anchor" aria-label="anchor" href="#arg-sort-by"></a></dt>
+<dd><p>For type="comparison", sort by "rd", "rr", or "incidence"</p></dd>
+
+
+<dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
+<dd><p>For type="comparison", confidence level (default: 0.95)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -136,6 +162,15 @@ like "deaths" or for denominator calculation)</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># SAE table</span></span></span>
 <span class="r-in"><span><span class="va">sae</span> <span class="op">&lt;-</span> <span class="fu">create_ae_table</span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"sae"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># AE comparison with risk differences</span></span></span>
+<span class="r-in"><span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu">create_ae_table</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">adae</span>, <span class="va">adsl</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"comparison"</span>,</span></span>
+<span class="r-in"><span>  ref_group <span class="op">=</span> <span class="st">"Placebo"</span>,</span></span>
+<span class="r-in"><span>  by <span class="op">=</span> <span class="st">"pt"</span>,</span></span>
+<span class="r-in"><span>  threshold <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

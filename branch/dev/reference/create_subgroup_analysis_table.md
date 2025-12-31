@@ -11,6 +11,7 @@ create_subgroup_analysis_table(
   paramcd = "SYSBP",
   visit = "End of Treatment",
   subgroups = list(AGEGR1 = "Age Group", SEX = "Sex"),
+  trt_var = "TRT01P",
   title = "Subgroup Analysis",
   autofit = TRUE
 )
@@ -37,6 +38,10 @@ create_subgroup_analysis_table(
 - subgroups:
 
   List of subgroup variables (e.g. list(AGEGR1="Age Group"))
+
+- trt_var:
+
+  Treatment variable name (default: "TRT01P")
 
 - title:
 

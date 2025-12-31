@@ -10,6 +10,7 @@ create_lab_summary_table(
   trt_n,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
   visit = "Week 24",
+  trt_var = "TRT01P",
   title = "Laboratory Parameters Summary",
   autofit = TRUE
 )
@@ -32,6 +33,10 @@ create_lab_summary_table(
 - visit:
 
   Visit to analyze
+
+- trt_var:
+
+  Treatment variable name (default: "TRT01P")
 
 - title:
 

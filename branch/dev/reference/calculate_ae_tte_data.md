@@ -5,7 +5,7 @@ Prepares time-to-event data for Kaplan-Meier analysis of adverse events.
 ## Usage
 
 ``` r
-calculate_ae_tte_data(adsl, adae, soc, trt_var = "TRT01A")
+calculate_ae_tte_data(adsl, adae, soc, trt_var = "TRT01P")
 ```
 
 ## Arguments

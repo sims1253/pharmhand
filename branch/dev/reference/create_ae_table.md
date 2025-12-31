@@ -9,12 +9,17 @@ create_ae_table(
   adae,
   adsl = NULL,
   type = c("overview", "soc", "soc_pt", "pt", "common", "severity", "relationship",
-    "sae", "discontinuation", "deaths"),
-  trt_var = "TRT01A",
+    "sae", "discontinuation", "deaths", "comparison"),
+  trt_var = "TRT01P",
   n_top = 15,
   soc = NULL,
   title = NULL,
-  autofit = TRUE
+  autofit = TRUE,
+  ref_group = NULL,
+  by = "pt",
+  threshold = 0,
+  sort_by = "incidence",
+  conf_level = 0.95
 )
 ```
 
@@ -26,8 +31,8 @@ create_ae_table(
 
 - adsl:
 
-  ADSL data frame (optional, required for some table types like "deaths"
-  or for denominator calculation)
+  ADSL data frame (optional, required for some table types like
+  "deaths", "comparison", or for denominator calculation)
 
 - type:
 
@@ -53,9 +58,12 @@ create_ae_table(
 
   - "deaths" - Deaths summary (requires adsl)
 
+  - "comparison" - AE comparison with risk difference/ratio (requires
+    adsl)
+
 - trt_var:
 
-  Treatment variable name (default: "TRT01A")
+  Treatment variable name (default: "TRT01P")
 
 - n_top:
 
@@ -72,6 +80,26 @@ create_ae_table(
 - autofit:
 
   Logical, whether to autofit column widths (default: TRUE)
+
+- ref_group:
+
+  For type="comparison", the reference group for comparisons
+
+- by:
+
+  For type="comparison", grouping level: "soc", "pt", or "overall"
+
+- threshold:
+
+  For type="comparison", minimum incidence % to include (default: 0)
+
+- sort_by:
+
+  For type="comparison", sort by "rd", "rr", or "incidence"
+
+- conf_level:
+
+  For type="comparison", confidence level (default: 0.95)
 
 ## Value
 
@@ -95,5 +123,14 @@ common <- create_ae_table(adae, adsl, type = "common", n_top = 20)
 
 # SAE table
 sae <- create_ae_table(adae, adsl, type = "sae")
+
+# AE comparison with risk differences
+comparison <- create_ae_table(
+  adae, adsl,
+  type = "comparison",
+  ref_group = "Placebo",
+  by = "pt",
+  threshold = 5
+)
 } # }
 ```

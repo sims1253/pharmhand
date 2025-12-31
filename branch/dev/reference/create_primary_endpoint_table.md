@@ -10,6 +10,7 @@ create_primary_endpoint_table(
   trt_n,
   paramcd = "SYSBP",
   visit = "End of Treatment",
+  trt_var = "TRT01P",
   title = "Primary Endpoint Summary",
   autofit = TRUE
 )
@@ -32,6 +33,10 @@ create_primary_endpoint_table(
 - visit:
 
   Visit to analyze (default: "End of Treatment")
+
+- trt_var:
+
+  Treatment variable name (default: "TRT01P")
 
 - title:
 

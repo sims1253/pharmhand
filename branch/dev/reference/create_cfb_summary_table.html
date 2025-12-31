@@ -13,7 +13,7 @@ analysis visit."><meta property="og:image" content="https://sims1253.github.io/p
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.6.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,6 +68,7 @@ analysis visit.</p>
 <span>  <span class="va">trt_n</span>,</span>
 <span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SYSBP"</span>, <span class="st">"DIABP"</span>, <span class="st">"PULSE"</span><span class="op">)</span>,</span>
 <span>  visit <span class="op">=</span> <span class="st">"End of Treatment"</span>,</span>
+<span>  trt_var <span class="op">=</span> <span class="st">"TRT01P"</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Change from Baseline Summary"</span>,</span>
 <span>  autofit <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -100,6 +101,10 @@ Must match values in the PARAMCD column of advs.</p></dd>
 <dd><p>Character string specifying the analysis visit to summarize.
 Must match a value in the AVISIT column of advs (e.g., "End of Treatment",
 "Week 12").</p></dd>
+
+
+<dt id="arg-trt-var">trt_var<a class="anchor" aria-label="anchor" href="#arg-trt-var"></a></dt>
+<dd><p>Treatment variable name (default: "TRT01P")</p></dd>
 
 
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>

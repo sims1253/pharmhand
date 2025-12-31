@@ -21,6 +21,8 @@ create_subgroup_table(
   ref_group = NULL,
   conf_level = 0.95,
   show_interaction = TRUE,
+  adjust_method = c("none", "holm", "hochberg", "hommel", "bonferroni", "BH", "fdr",
+    "BY"),
   title = "Subgroup Analysis",
   autofit = TRUE
 )
@@ -75,6 +77,25 @@ create_subgroup_table(
 
   Logical, calculate and show interaction p-values (default: TRUE)
 
+- adjust_method:
+
+  Character. Method for adjusting interaction p-values for multiple
+  comparisons. One of:
+
+  - "none" (default): No adjustment
+
+  - "holm": Holm-Bonferroni step-down (recommended for FWER control)
+
+  - "hochberg": Hochberg step-up (controls FWER)
+
+  - "bonferroni": Bonferroni correction (conservative)
+
+  - "BH" or "fdr": Benjamini-Hochberg (controls FDR)
+
+  - "BY": Benjamini-Yekutieli (controls FDR under dependency) See
+    [`adjust_pvalues`](https://sims1253.github.io/pharmhand/branch/dev/reference/adjust_pvalues.md)
+    for details.
+
 - title:
 
   Table title
@@ -109,6 +130,19 @@ sg_table <- create_subgroup_table(
   endpoint_type = "binary",
   response_values = c("CR", "PR"),
   title = "Response Rate by Subgroup"
+)
+
+# With multiplicity adjustment for GBA dossiers
+sg_table <- create_subgroup_table(
+  data = adtte,
+  subgroups = list(
+    AGEGR1 = "Age Group",
+    SEX = "Sex",
+    RACE = "Race"
+  ),
+  endpoint_type = "tte",
+  adjust_method = "holm",
+  title = "Subgroup Analysis with Multiplicity Adjustment"
 )
 } # }
 ```

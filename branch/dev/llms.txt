@@ -265,6 +265,8 @@ laboratory shifts and AE summaries.
 
 - [`create_ae_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_table.md)
   : Create Adverse Event Table
+- [`create_ae_comparison_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_comparison_table.md)
+  : Create AE Comparison Table with Risk Differences
 - [`create_lab_shift_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_lab_shift_table.md)
   : Create Laboratory Shift Table
 - [`create_lab_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_lab_summary_table.md)
@@ -437,6 +439,53 @@ Functions for subgroup and interaction analyses in clinical trials.
 
 - [`apply_subgroups()`](https://sims1253.github.io/pharmhand/branch/dev/reference/apply_subgroups.md)
   : Apply Subgroup Analysis
+
+## GBA/AMNOG Utilities
+
+Functions for German Health Technology Assessment (G-BA/AMNOG) including
+standardized mean difference (SMD) calculation, baseline balance
+assessment, and multiplicity adjustment.
+
+- [`BalanceAssessment()`](https://sims1253.github.io/pharmhand/branch/dev/reference/BalanceAssessment.md)
+  : BalanceAssessment S7 Class
+- [`assess_baseline_balance()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_baseline_balance.md)
+  : Assess Baseline Balance Between Treatment Groups
+- [`add_smd_to_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_smd_to_table.md)
+  : Add SMD Column to Demographics/Baseline Table
+- [`create_love_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_love_plot.md)
+  : Create Love Plot for SMD Visualization
+- [`calculate_smd()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_smd.md)
+  : Calculate Standardized Mean Difference for Continuous Variables
+- [`calculate_smd_binary()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_smd_binary.md)
+  : Calculate Standardized Mean Difference for Binary Variables
+- [`calculate_smd_from_data()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_smd_from_data.md)
+  : Calculate SMD Directly from Data
+- [`adjust_pvalues()`](https://sims1253.github.io/pharmhand/branch/dev/reference/adjust_pvalues.md)
+  : Adjust P-values for Multiple Comparisons
+- [`calculate_nnt()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_nnt.md)
+  : Calculate Number Needed to Treat (NNT) / Number Needed to Harm (NNH)
+
+## Localization
+
+Internationalization and localization functions for translating table
+headers and content.
+
+- [`set_locale()`](https://sims1253.github.io/pharmhand/branch/dev/reference/set_locale.md)
+  : Set the Current Locale
+- [`get_locale()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_locale.md)
+  : Get the Current Locale
+- [`tr()`](https://sims1253.github.io/pharmhand/branch/dev/reference/tr.md)
+  : Translate a Key to the Current Locale
+- [`tr_col()`](https://sims1253.github.io/pharmhand/branch/dev/reference/tr_col.md)
+  : Translate Column Names
+- [`get_translations()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_translations.md)
+  : Get All Translations for a Locale
+- [`add_translation()`](https://sims1253.github.io/pharmhand/branch/dev/reference/add_translation.md)
+  : Add Custom Translation
+- [`list_translation_keys()`](https://sims1253.github.io/pharmhand/branch/dev/reference/list_translation_keys.md)
+  : List Available Translation Keys
+- [`reset_custom_translations()`](https://sims1253.github.io/pharmhand/branch/dev/reference/reset_custom_translations.md)
+  : Reset Custom Translations
 
 ## Utilities
 

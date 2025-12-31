@@ -319,6 +319,123 @@ pop_table@flextable
 | ITT = Intent-To-Treat Population                              |         |                      |                     |
 | Safety = Safety Population (subjects who received study drug) |         |                      |                     |
 
+## Baseline Balance Assessment (SMD)
+
+For GBA/AMNOG dossiers and other regulatory submissions, assessing
+baseline balance between treatment groups is critical. The standardized
+mean difference (SMD) provides a standardized measure of covariate
+balance that is independent of sample size.
+
+### Calculating SMD for individual variables
+
+``` r
+# Calculate SMD for a continuous variable
+smd_age <- calculate_smd_from_data(
+  data = adsl,
+  var = "AGE",
+  trt_var = "TRT01P",
+  ref_group = "Placebo"
+)
+
+# View SMD result
+cat("Age SMD:", round(smd_age$smd, 3),
+    "95% CI: (", round(smd_age$ci_lower, 3), ",",
+    round(smd_age$ci_upper, 3), ")\n")
+#> Age SMD: -0.1 95% CI: ( -0.401 , 0.2 )
+
+# Calculate SMD for a categorical variable
+smd_sex <- calculate_smd_from_data(
+  data = adsl,
+  var = "SEX",
+  trt_var = "TRT01P",
+  ref_group = "Placebo"
+)
+
+cat("Sex SMD:", round(smd_sex$smd, 3), "\n")
+#> Sex SMD: 0.282
+```
+
+### Comprehensive balance assessment
+
+Use
+[`assess_baseline_balance()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_baseline_balance.md)
+for a complete assessment of multiple variables:
+
+``` r
+# Assess balance for continuous and categorical variables
+balance <- assess_baseline_balance(
+  data = adsl,
+  trt_var = "TRT01P",
+  continuous_vars = c("AGE", "WEIGHTBL"),
+  categorical_vars = c("SEX", "RACE", "ETHNIC"),
+  ref_group = "Placebo",
+  threshold = 0.1  # Standard threshold for imbalance
+)
+
+# Check overall balance
+cat("Number of variables assessed:", balance@n_vars, "\n")
+#> Number of variables assessed: 4
+cat("Number of imbalanced variables (|SMD| > 0.1):", balance@n_imbalanced, "\n")
+#> Number of imbalanced variables (|SMD| > 0.1): 2
+cat("Overall balanced:", balance@balanced, "\n")
+#> Overall balanced: FALSE
+
+# View imbalanced variables (if any)
+if (length(balance@imbalanced_vars) > 0) {
+  imbalanced <- paste(balance@imbalanced_vars, collapse = ", ")
+  cat("Imbalanced variables:", imbalanced, "\n")
+}
+#> Imbalanced variables: AGE, SEX
+```
+
+### SMD table for demographics
+
+Add SMD values directly to your demographics table data:
+
+``` r
+# Generate SMD table
+smd_results <- add_smd_to_table(
+  data = adsl,
+  trt_var = "TRT01P",
+  vars = c("AGE", "SEX", "RACE", "ETHNIC"),
+  ref_group = "Placebo",
+  threshold = 0.1
+)
+
+# View the results
+smd_results |>
+  dplyr::select(variable, smd_display, ci, var_type, imbalanced)
+#>   variable smd_display              ci    var_type imbalanced
+#> 1      AGE     -0.100* (-0.401, 0.200)  continuous       TRUE
+#> 2      SEX      0.282* (-0.018, 0.583) categorical       TRUE
+#> 3     RACE      -0.085 (-0.385, 0.216) categorical      FALSE
+#> 4   ETHNIC      -0.005 (-0.305, 0.296) categorical      FALSE
+```
+
+### Love Plot visualization
+
+A Love plot (covariate balance plot) provides a visual summary of
+balance across all covariates:
+
+``` r
+# Create Love plot from balance assessment
+love_plot <- create_love_plot(
+  balance_assessment = balance,
+  threshold = 0.1,
+  title = "Baseline Covariate Balance",
+  show_ci = TRUE
+)
+
+# Display the plot
+love_plot@plot
+```
+
+![](baseline-tables_files/figure-html/love-plot-1.png)
+
+Variables with \|SMD\| \> 0.1 (outside the dashed lines) may indicate
+meaningful imbalance that should be discussed or adjusted for in
+sensitivity analyses.
+
 ## Combining into a report
 
 Combine baseline tables into a report.
