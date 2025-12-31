@@ -545,8 +545,8 @@ describe("calculate_smd_from_data()", {
 			)
 		),
 		SCORE = c(
-			sample(1:5, 100, replace = TRUE),
-			sample(1:5, 100, replace = TRUE)
+			sample.int(5, 100, replace = TRUE),
+			sample.int(5, 100, replace = TRUE)
 		),
 		stringsAsFactors = FALSE
 	)
