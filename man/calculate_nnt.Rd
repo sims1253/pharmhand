@@ -48,7 +48,9 @@ measure of absolute treatment effect.
 calculate_nnt(rd = 0.10, rd_lower = 0.05, rd_upper = 0.15)
 
 # Treatment reduces adverse events (beneficial for harm endpoint)
-calculate_nnt(rd = -0.08, rd_lower = -0.14, rd_upper = -0.02, event_type = "harm")
+calculate_nnt(
+  rd = -0.08, rd_lower = -0.14, rd_upper = -0.02, event_type = "harm"
+)
 
 # Non-significant effect (CI crosses zero)
 calculate_nnt(rd = -0.05, rd_lower = -0.12, rd_upper = 0.02)

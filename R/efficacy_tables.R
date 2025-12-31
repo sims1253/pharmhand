@@ -1,6 +1,7 @@
 #' Efficacy Analysis Tables
 #'
-#' Functions for efficacy tables: endpoints, change from baseline, lab summaries.
+#' Functions for efficacy tables: endpoints, change from baseline,
+#' lab summaries.
 #' @name efficacy_tables
 #' @keywords internal
 NULL

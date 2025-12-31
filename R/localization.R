@@ -509,7 +509,7 @@ get_locale <- function() {
 #' @param key Character. A translation key or vector of keys (e.g.,
 #'   `"treatment"`, `"hazard_ratio"`, `c("age", "sex")`).
 #' @param locale Character or NULL. Optional locale to use instead of the
-#'   current default. If NULL (default), uses the locale set by [set_locale()].
+#'   current default. If NULL (default), uses the locale from [set_locale()].
 #'
 #' @return Character vector of translated strings. If a key is not found,
 #'   returns the key itself with a warning.
@@ -521,7 +521,8 @@ get_locale <- function() {
 #' Custom translations can be added using [add_translation()]. Custom
 #' translations take precedence over built-in translations.
 #'
-#' @seealso [tr_col()], [set_locale()], [get_translations()], [add_translation()]
+#' @seealso [tr_col()], [set_locale()], [get_translations()],
+#'   [add_translation()]
 #'
 #' @export
 #'
@@ -648,8 +649,9 @@ get_translations <- function(locale = NULL, include_custom = TRUE) {
 	}
 
 	if (!locale %in% names(.pharmhand_translations)) {
+		avail <- names(.pharmhand_translations)
 		cli::cli_abort(
-			"Locale {.val {locale}} not supported. Available: {.val {names(.pharmhand_translations)}}"
+			"Locale {.val {locale}} not supported. Available: {.val {avail}}"
 		)
 	}
 
@@ -707,7 +709,9 @@ get_translations <- function(locale = NULL, include_custom = TRUE) {
 #' # [1] "MedikamentX 100mg"
 #'
 #' # Override existing translation
-#' add_translation("treatment", c(en = "Active Treatment", de = "Aktive Behandlung"))
+#' add_translation(
+#'   "treatment", c(en = "Active Treatment", de = "Aktive Behandlung")
+#' )
 add_translation <- function(key, translations) {
 	if (!is.character(key) || length(key) != 1) {
 		cli::cli_abort("{.arg key} must be a single character string")
@@ -715,7 +719,8 @@ add_translation <- function(key, translations) {
 
 	if (!is.character(translations) || is.null(names(translations))) {
 		cli::cli_abort(
-			"{.arg translations} must be a named character vector with locale codes as names"
+			"{.arg translations} must be a named character vector with locale
+			codes as names"
 		)
 	}
 

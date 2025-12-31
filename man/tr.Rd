@@ -11,7 +11,7 @@ tr(key, locale = NULL)
 \code{"treatment"}, \code{"hazard_ratio"}, \code{c("age", "sex")}).}
 
 \item{locale}{Character or NULL. Optional locale to use instead of the
-current default. If NULL (default), uses the locale set by \code{\link[=set_locale]{set_locale()}}.}
+current default. If NULL (default), uses the locale from \code{\link[=set_locale]{set_locale()}}.}
 }
 \value{
 Character vector of translated strings. If a key is not found,
@@ -47,5 +47,6 @@ tr("hazard_ratio")
 # [1] "Hazard Ratio"
 }
 \seealso{
-\code{\link[=tr_col]{tr_col()}}, \code{\link[=set_locale]{set_locale()}}, \code{\link[=get_translations]{get_translations()}}, \code{\link[=add_translation]{add_translation()}}
+\code{\link[=tr_col]{tr_col()}}, \code{\link[=set_locale]{set_locale()}}, \code{\link[=get_translations]{get_translations()}},
+\code{\link[=add_translation]{add_translation()}}
 }

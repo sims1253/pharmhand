@@ -28,7 +28,7 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #'     \item "sae" - Serious Adverse Events
 #'     \item "discontinuation" - AEs leading to discontinuation
 #'     \item "deaths" - Deaths summary (requires adsl)
-#'     \item "comparison" - AE comparison with risk difference/ratio (requires adsl)
+#'     \item "comparison" - AE comparison with RD/RR (requires adsl)
 #'   }
 #' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param n_top For type="common", number of top PTs to show (default: 15)
@@ -37,7 +37,7 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @param ref_group For type="comparison", the reference group for comparisons
 #' @param by For type="comparison", grouping level: "soc", "pt", or "overall"
-#' @param threshold For type="comparison", minimum incidence % to include (default: 0)
+#' @param threshold For type="comparison", minimum incidence pct (default: 0)
 #' @param sort_by For type="comparison", sort by "rd", "rr", or "incidence"
 #' @param conf_level For type="comparison", confidence level (default: 0.95)
 #'
@@ -853,7 +853,7 @@ create_ae_km_plot_for_soc <- function(
 #'
 #' Calculates risk difference, risk ratio, and associated confidence intervals
 #' and p-values for comparing adverse event incidence between two groups.
-#' Uses Wald method for risk difference CI and log-transformation for risk ratio CI.
+#' Uses Wald method for RD CI and log-transformation for RR CI.
 #'
 #' @param n1 Number of subjects with event in treatment group
 #' @param N1 Total subjects in treatment group
@@ -952,15 +952,17 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 #' @param adsl ADSL data frame for denominators
 #' @param ref_group Character. Reference (control) group for comparison
 #' @param trt_var Treatment variable name (default: "TRT01P")
-#' @param by Character. Grouping level: "soc", "pt", or "overall" (default: "pt")
-#' @param threshold Numeric. Minimum incidence % in any group to include (default: 0)
-#' @param sort_by Character. Sort by "rd" (risk difference), "rr" (risk ratio),
-#'   or "incidence" (default: "incidence")
+#' @param by Character. Grouping level: "soc", "pt", or "overall"
+#'   (default: "pt")
+#' @param threshold Numeric. Minimum incidence pct in any group (default: 0)
+#' @param sort_by Character. Sort by "rd", "rr", or "incidence"
+#'   (default: "incidence")
 #' @param conf_level Confidence level for intervals (default: 0.95)
 #' @param title Table title (auto-generated if NULL)
 #' @param autofit Logical (default: TRUE)
 #'
-#' @return ClinicalTable with columns for each group's n(%), RD, 95% CI, RR, p-value
+#' @return ClinicalTable with columns for each group's n(%), RD, 95% CI, RR,
+#'   p-value
 #' @export
 #'
 #' @examples
@@ -1020,7 +1022,7 @@ create_ae_comparison_table <- function(
 	missing_adsl <- setdiff(required_adsl_cols, names(adsl))
 	if (length(missing_adsl) > 0) {
 		cli::cli_abort(
-			"{.arg adsl} is missing required column{?s}: {.val {missing_adsl}}"
+			"{.arg adsl} is missing column{?s}: {.val {missing_adsl}}"
 		)
 	}
 
@@ -1274,7 +1276,7 @@ create_ae_comparison_table <- function(
 			ci_level_pct
 		),
 		paste0("Reference group: ", ref_group),
-		"P-values from Chi-square test (or Fisher's exact test when expected count < 5)"
+		"P-values from Chi-square (or Fisher's exact when expected count < 5)"
 	)
 
 	if (threshold > 0) {

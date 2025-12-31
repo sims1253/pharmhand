@@ -190,7 +190,8 @@ class(ft)
 library(ggplot2)
 
 # Create a simple scatter plot
-p <- ggplot(demo_data, aes(x = AGE, y = as.numeric(factor(SEX, levels = c("M", "F"))))) +
+sex_numeric <- as.numeric(factor(demo_data$SEX, levels = c("M", "F")))
+p <- ggplot(demo_data, aes(x = AGE, y = sex_numeric)) +
   geom_point(alpha = 0.6) +
   labs(x = "Age (years)", y = "Sex (M=1, F=2)")
 

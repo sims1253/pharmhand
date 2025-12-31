@@ -24,8 +24,8 @@ add_smd_to_table(
 \item{ref_group}{Character or NULL. Reference (control) group value.
 If NULL, uses the first level.}
 
-\item{threshold}{Numeric. SMD threshold for flagging imbalance (default: 0.1).
-Common thresholds are 0.1 (strict) and 0.25 (lenient).}
+\item{threshold}{Numeric. SMD threshold for flagging imbalance
+(default: 0.1). Common thresholds are 0.1 (strict) and 0.25 (lenient).}
 
 \item{conf_level}{Numeric. Confidence level for CI (default: 0.95)}
 
