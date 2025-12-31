@@ -1163,7 +1163,7 @@ create_love_plot <- function(
 		)
 
 	# Add confidence intervals if requested
-	if (show_ci && any(!is.na(plot_data$ci_lower))) {
+	if (show_ci && !all(is.na(plot_data$ci_lower))) {
 		if (color_by_type) {
 			p <- p +
 				ggplot2::geom_errorbar(

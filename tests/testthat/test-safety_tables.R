@@ -596,7 +596,7 @@ describe("create_ae_comparison_table()", {
 		expect_s7_class(tbl, ClinicalTable)
 		# Should have exactly 1 row for "Any TEAE"
 		expect_equal(nrow(tbl@data), 1)
-		expect_true(any(grepl("Any TEAE", tbl@data$Term)))
+		expect_true(any(grepl("Any TEAE", tbl@data$Term, fixed = TRUE)))
 	})
 
 	it("filters by threshold correctly", {
@@ -613,7 +613,7 @@ describe("create_ae_comparison_table()", {
 		# Should have 3 rows: Headache (20%), Nausea (15%), Fatigue (10% in Placebo)
 		expect_equal(nrow(tbl@data), 3)
 		# Rash should be excluded (8% max)
-		expect_false(any(grepl("Rash", tbl@data$Term)))
+		expect_false(any(grepl("Rash", tbl@data$Term, fixed = TRUE)))
 	})
 
 	it("sorts by 'rd' correctly", {
@@ -720,7 +720,7 @@ describe("create_ae_comparison_table()", {
 			ref_group = "Placebo",
 			by = "pt"
 		)
-		expect_true(grepl("Preferred Term", tbl_pt@title))
+		expect_true(grepl("Preferred Term", tbl_pt@title, fixed = TRUE))
 
 		tbl_soc <- create_ae_comparison_table(
 			adae = test_data$adae,
@@ -728,7 +728,7 @@ describe("create_ae_comparison_table()", {
 			ref_group = "Placebo",
 			by = "soc"
 		)
-		expect_true(grepl("System Organ Class", tbl_soc@title))
+		expect_true(grepl("System Organ Class", tbl_soc@title, fixed = TRUE))
 	})
 
 	it("respects custom title", {
@@ -789,9 +789,9 @@ describe("create_ae_comparison_table() with multiple treatment groups", {
 		expect_s7_class(tbl, ClinicalTable)
 		# Should have columns for each treatment group comparison
 		col_names <- names(tbl@data)
-		expect_true(any(grepl("Placebo", col_names)))
-		expect_true(any(grepl("Low Dose", col_names)))
-		expect_true(any(grepl("High Dose", col_names)))
+		expect_true(any(grepl("Placebo", col_names, fixed = TRUE)))
+		expect_true(any(grepl("Low Dose", col_names, fixed = TRUE)))
+		expect_true(any(grepl("High Dose", col_names, fixed = TRUE)))
 	})
 })
 
