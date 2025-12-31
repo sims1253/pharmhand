@@ -251,7 +251,10 @@ run_chef_pipeline <- function(
 	# Check chef availability
 	if (!requireNamespace("chef", quietly = TRUE)) {
 		ph_abort(
-			"Package 'chef' is required for pipeline execution. Install with: remotes::install_github('hta-pharma/chef')"
+			paste0(
+				"Package 'chef' is required for pipeline execution. ",
+				"Install with: remotes::install_github('hta-pharma/chef')"
+			)
 		)
 	}
 
@@ -260,7 +263,10 @@ run_chef_pipeline <- function(
 
 	# Warn users about mock data
 	ph_warn(
-		"Returning mock data - full chef integration not yet implemented. Results contain placeholder values only."
+		paste0(
+			"Returning mock data - full chef integration not yet ",
+			"implemented. Results contain placeholder values only."
+		)
 	)
 
 	# Create mock results for development
@@ -318,7 +324,10 @@ run_chef_pipeline <- function(
 get_chef_stat <- function(stat_name) {
 	if (!requireNamespace("chefStats", quietly = TRUE)) {
 		ph_abort(
-			"Package 'chefStats' is required. Install with: remotes::install_github('hta-pharma/chefStats')"
+			paste0(
+				"Package 'chefStats' is required. ",
+				"Install with: remotes::install_github('hta-pharma/chefStats')"
+			)
 		)
 	}
 
@@ -345,7 +354,10 @@ get_chef_stat <- function(stat_name) {
 list_chef_stats <- function() {
 	if (!requireNamespace("chefStats", quietly = TRUE)) {
 		ph_abort(
-			"Package 'chefStats' is required. Install with: remotes::install_github('hta-pharma/chefStats')"
+			paste0(
+				"Package 'chefStats' is required. ",
+				"Install with: remotes::install_github('hta-pharma/chefStats')"
+			)
 		)
 	}
 

@@ -495,7 +495,11 @@ create_subgroup_analysis_table <- function(
 		if (!var_name %in% names(subgroup_data_raw)) {
 			ph_abort(
 				sprintf(
-					"Subgroup variable '%s' not found in advs. Consider merging subgroup variables from adsl or ensuring they are present in the input data",
+					paste0(
+						"Subgroup variable '%s' not found in advs. ",
+						"Consider merging subgroup variables from adsl ",
+						"or ensuring they are present in the input data"
+					),
 					var_name
 				)
 			)
