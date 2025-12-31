@@ -24,6 +24,5 @@ formats. Uses multiple dispatch on both \code{x} and \code{format}.
 \dontrun{
 # Convert table to different formats
 png_data <- format_content(clinical_table, "png")
-pdf_data <- format_content(clinical_table, "pdf")
 }
 }

@@ -1,3 +1,23 @@
+# pharmhand 0.0.8.9000
+
+## Breaking changes
+
+* Removed save_as_pdf() and PDF output for ClinicalTable format_content.
+
+## Fixes
+
+* AE comparison multi-arm columns
+* Zebra striping order
+* Subgroup vars from adsl
+* Required column validation for primary/CFB tables
+
+## Improvements
+
+* continuous_threshold parameter + multi-arm warning
+* Love plot annotation placement
+* Rounded KM y labels/pt constant
+* Clarified errors/ph_abort consistency
+
 # pharmhand 0.0.7.9000
 
 ## Maintenance

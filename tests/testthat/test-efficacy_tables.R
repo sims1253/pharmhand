@@ -128,6 +128,45 @@ test_that("create_subgroup_analysis_table works", {
 	expect_true(any(tbl@data$Subgroup == "Sex"))
 })
 
+test_that("create_subgroup_analysis_table pulls subgroup vars from adsl", {
+	adsl <- data.frame(
+		USUBJID = c("01", "02"),
+		SEX = c("M", "F")
+	)
+	advs <- data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("End of Treatment", "End of Treatment"),
+		AVAL = c(120, 130),
+		AGEGR1 = c("<65", ">=65")
+	)
+
+	tbl <- create_subgroup_analysis_table(
+		adsl,
+		advs,
+		subgroups = list(AGEGR1 = "Age Group", SEX = "Sex")
+	)
+
+	expect_true(any(tbl@data$Subgroup == "Sex"))
+})
+
+test_that("create_subgroup_analysis_table errors on missing subgroup vars", {
+	adsl <- data.frame(USUBJID = c("01", "02"))
+	advs <- data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("End of Treatment", "End of Treatment"),
+		AVAL = c(120, 130)
+	)
+
+	expect_error(
+		create_subgroup_analysis_table(adsl, advs, subgroups = list(FOO = "Foo")),
+		"Subgroup variables not found"
+	)
+})
+
 test_that("create_primary_endpoint_table validates inputs", {
 	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(2, 2))
 
@@ -153,6 +192,12 @@ test_that("create_primary_endpoint_table validates inputs", {
 		create_primary_endpoint_table(advs, NULL),
 		"must be a data frame"
 	)
+
+	advs_missing <- advs[, setdiff(names(advs), "AVAL")]
+	expect_error(
+		create_primary_endpoint_table(advs_missing, trt_n),
+		"missing required columns"
+	)
 })
 
 test_that("create_cfb_summary_table validates inputs", {
@@ -165,6 +210,18 @@ test_that("create_cfb_summary_table validates inputs", {
 	expect_error(
 		create_cfb_summary_table(data.frame(), NULL, params = "SYSBP"),
 		"must be a data frame"
+	)
+
+	advs_missing <- data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("End of Treatment", "End of Treatment"),
+		PARAM = c("SYSBP", "SYSBP")
+	)
+	expect_error(
+		create_cfb_summary_table(advs_missing, trt_n, params = "SYSBP"),
+		"missing required columns"
 	)
 })
 

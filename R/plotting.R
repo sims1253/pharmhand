@@ -77,10 +77,10 @@ create_km_plot <- function(
 	base_size = 11
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
-		ph_abort("Package 'survival' is required for KM plots", call. = FALSE)
+		ph_abort("Package 'survival' is required for KM plots")
 	}
 	if (!requireNamespace("ggplot2", quietly = TRUE)) {
-		ph_abort("Package 'ggplot2' is required for KM plots", call. = FALSE)
+		ph_abort("Package 'ggplot2' is required for KM plots")
 	}
 
 	# Get filtered data if ADaMData
@@ -245,8 +245,7 @@ create_km_plot <- function(
 				grDevices::palette.colors(n = NULL, palette = opt_palette),
 				error = function(e) {
 					ph_warn(
-						paste0("Palette '", opt_palette, "' not found, using 'Okabe-Ito'"),
-						call. = FALSE
+						paste0("Palette '", opt_palette, "' not found, using 'Okabe-Ito'")
 					)
 					grDevices::palette.colors(n = NULL, palette = "Okabe-Ito")
 				}
@@ -275,7 +274,7 @@ create_km_plot <- function(
 	p <- p +
 		x_scale +
 		ggplot2::scale_y_continuous(
-			labels = function(x) paste0(x * 100, "%"),
+			labels = function(x) paste0(round(x * 100, 1), "%"),
 			limits = c(0, 1)
 		) +
 		ggplot2::labs(
@@ -295,8 +294,7 @@ create_km_plot <- function(
 	if (risk_table) {
 		if (!requireNamespace("patchwork", quietly = TRUE)) {
 			ph_warn(
-				"Package 'patchwork' required for risk tables. Returning plot only.",
-				call. = FALSE
+				"Package 'patchwork' required for risk tables. Returning plot only."
 			)
 			return(ClinicalPlot(plot = p, title = title))
 		}
@@ -390,6 +388,9 @@ create_km_plot <- function(
 			")"
 		)
 
+		# Convert points to mm for text sizing
+		pt_to_mm <- 72.27 / 25.4
+
 		rt <- ggplot2::ggplot(
 			risk_data,
 			ggplot2::aes(
@@ -399,7 +400,7 @@ create_km_plot <- function(
 				color = .data$strata
 			)
 		) +
-			ggplot2::geom_text(size = base_size / ggplot2::.pt) +
+			ggplot2::geom_text(size = base_size / pt_to_mm) +
 			ggplot2::scale_x_continuous(
 				limits = c(0, max_time),
 				breaks = break_points

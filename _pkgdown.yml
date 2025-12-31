@@ -129,7 +129,6 @@ reference:
   - add_plot
   - save_plot_as
   - save_as_png
-  - save_as_pdf
 
 - title: "Formatting"
   desc: >

@@ -1006,6 +1006,13 @@ create_ae_comparison_table <- function(
 	assert_data_frame(adae, "adae")
 	assert_data_frame(adsl, "adsl")
 
+	if (is.null(ref_group)) {
+		ph_abort(
+			"'ref_group' must be provided for AE comparison tables",
+			call. = FALSE
+		)
+	}
+
 	required_adae_cols <- c("TRTEMFL", "USUBJID", trt_var)
 	if (by == "soc") {
 		required_adae_cols <- c(required_adae_cols, "AEBODSYS")
@@ -1248,7 +1255,12 @@ create_ae_comparison_table <- function(
 		rd_col <- paste0("rd_", trt)
 		rd_lower_col <- paste0("rd_lower_", trt)
 		rd_upper_col <- paste0("rd_upper_", trt)
-		output_df[[paste0("RD\n(", ci_level_pct, "% CI)")]] <- sprintf(
+		output_df[[sprintf(
+			"RD %s vs %s\n(%d%% CI)",
+			trt,
+			ref_group,
+			ci_level_pct
+		)]] <- sprintf(
 			"%.1f%% (%.1f%%, %.1f%%)",
 			ae_wide[[rd_col]] * 100,
 			ae_wide[[rd_lower_col]] * 100,
@@ -1259,7 +1271,12 @@ create_ae_comparison_table <- function(
 		rr_col <- paste0("rr_", trt)
 		rr_lower_col <- paste0("rr_lower_", trt)
 		rr_upper_col <- paste0("rr_upper_", trt)
-		output_df[[paste0("RR\n(", ci_level_pct, "% CI)")]] <- sprintf(
+		output_df[[sprintf(
+			"RR %s vs %s\n(%d%% CI)",
+			trt,
+			ref_group,
+			ci_level_pct
+		)]] <- sprintf(
 			"%.2f (%.2f, %.2f)",
 			ae_wide[[rr_col]],
 			ae_wide[[rr_lower_col]],
@@ -1268,7 +1285,11 @@ create_ae_comparison_table <- function(
 
 		# P-value
 		pvalue_col <- paste0("pvalue_", trt)
-		output_df[["P-value"]] <- format_pvalue(ae_wide[[pvalue_col]])
+		output_df[[sprintf(
+			"P-value (%s vs %s)",
+			trt,
+			ref_group
+		)]] <- format_pvalue(ae_wide[[pvalue_col]])
 	}
 
 	# Auto-generate title if not provided

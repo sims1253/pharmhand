@@ -29,6 +29,18 @@ create_primary_endpoint_table <- function(
 	assert_data_frame(advs, "advs")
 	assert_data_frame(trt_n, "trt_n")
 
+	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
+	missing_cols <- setdiff(required_cols, names(advs))
+	if (length(missing_cols) > 0) {
+		ph_abort(
+			sprintf(
+				"'advs' is missing required columns: %s. Required: %s",
+				paste(missing_cols, collapse = ", "),
+				paste(required_cols, collapse = ", ")
+			)
+		)
+	}
+
 	# Filter and summarize
 	primary_data <- advs |>
 		dplyr::filter(
@@ -131,6 +143,18 @@ create_cfb_summary_table <- function(
 ) {
 	assert_data_frame(advs, "advs")
 	assert_data_frame(trt_n, "trt_n")
+
+	required_cols <- c("PARAMCD", "AVISIT", trt_var, "PARAM", "CHG")
+	missing_cols <- setdiff(required_cols, names(advs))
+	if (length(missing_cols) > 0) {
+		ph_abort(
+			sprintf(
+				"'advs' is missing required columns: %s. Required: %s",
+				paste(missing_cols, collapse = ", "),
+				paste(required_cols, collapse = ", ")
+			)
+		)
+	}
 
 	cfb_data <- advs |>
 		dplyr::filter(
@@ -424,11 +448,14 @@ create_lab_shift_table <- function(
 
 #' Create Subgroup Analysis Table
 #'
-#' @param adsl ADSL data frame
+#' @param adsl ADSL data frame. Subgroup variables can be sourced from adsl if
+#'   not present in advs. Must contain USUBJID column for joining.
 #' @param advs ADVS data frame
 #' @param paramcd Parameter code to analyze
 #' @param visit Visit to analyze
-#' @param subgroups List of subgroup variables (e.g. list(AGEGR1="Age Group"))
+#' @param subgroups Named list of subgroup variables with display labels
+#'   (e.g. list(AGEGR1="Age Group", SEX="Sex")). Variables can come from
+#'   advs or adsl (joined by USUBJID).
 #' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
@@ -452,7 +479,7 @@ create_subgroup_analysis_table <- function(
 		ph_abort("'advs' must be a data frame")
 	}
 
-	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
+	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL", "USUBJID")
 	missing_cols <- setdiff(required_cols, names(advs))
 	if (length(missing_cols) > 0) {
 		ph_abort(
@@ -462,6 +489,37 @@ create_subgroup_analysis_table <- function(
 				paste(required_cols, collapse = ", ")
 			)
 		)
+	}
+
+	# Validate adsl has USUBJID for joining
+	if (!"USUBJID" %in% names(adsl)) {
+		ph_abort("'adsl' is missing required column: USUBJID")
+	}
+
+	# Compute subgroup variables and handle missing ones
+	subgroup_vars <- names(subgroups)
+	missing_from_advs <- setdiff(subgroup_vars, names(advs))
+
+	# Check which missing variables are in adsl
+	in_adsl <- intersect(missing_from_advs, names(adsl))
+	missing_from_both <- setdiff(missing_from_advs, names(adsl))
+
+	if (length(missing_from_both) > 0) {
+		ph_abort(
+			sprintf(
+				"Subgroup variables not found in advs or adsl: %s",
+				paste(missing_from_both, collapse = ", ")
+			)
+		)
+	}
+
+	# Join subgroup columns from adsl if needed
+	if (length(in_adsl) > 0) {
+		advs <- advs |>
+			dplyr::left_join(
+				adsl[, c("USUBJID", in_adsl), drop = FALSE],
+				by = "USUBJID"
+			)
 	}
 
 	subgroup_data_raw <- advs |>

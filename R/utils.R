@@ -134,7 +134,12 @@ assert_character_scalar <- function(x, arg = deparse(substitute(x))) {
 #' @keywords internal
 assert_in_range <- function(x, lower, upper, arg = deparse(substitute(x))) {
 	if (x <= lower || x >= upper) {
-		ph_abort(sprintf("'%s' must be between %s and %s", arg, lower, upper))
+		ph_abort(sprintf(
+			"'%s' must be greater than %s and less than %s",
+			arg,
+			lower,
+			upper
+		))
 	}
 	invisible(x)
 }

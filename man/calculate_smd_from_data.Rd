@@ -10,7 +10,8 @@ calculate_smd_from_data(
   trt_var,
   ref_group = NULL,
   method = c("auto", "cohens_d", "hedges_g", "arcsine", "logit", "raw"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  continuous_threshold = 10
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ If NULL, uses the first level of the treatment variable.}
 }}
 
 \item{conf_level}{Numeric. Confidence level for CI (default: 0.95)}
+
+\item{continuous_threshold}{Integer. Minimum number of unique values to treat
+numeric variables as continuous (default: 10).}
 }
 \value{
 A named list with components:
@@ -52,9 +56,10 @@ or categorical.
 \details{
 When \code{method = "auto"}:
 \itemize{
-\item Numeric variables with > 10 unique values are treated as continuous
-(using Cohen's d)
-\item Numeric variables with <= 10 unique values are treated as categorical
+\item Numeric variables with > continuous_threshold unique values are treated as
+continuous (using Cohen's d)
+\item Numeric variables with <= continuous_threshold unique values are treated as
+categorical
 \item Character/factor variables are treated as categorical (using arcsine)
 }
 

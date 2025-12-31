@@ -400,12 +400,15 @@ calculate_smd_binary <- function(
 #'   - `"arcsine"`: Arcsine transformation for binary/categorical
 #'   - `"auto"` (default): Automatically selects based on variable type
 #' @param conf_level Numeric. Confidence level for CI (default: 0.95)
+#' @param continuous_threshold Integer. Minimum number of unique values to treat
+#'   numeric variables as continuous (default: 10).
 #'
 #' @details
 #' When `method = "auto"`:
-#' - Numeric variables with > 10 unique values are treated as continuous
-#'   (using Cohen's d)
-#' - Numeric variables with <= 10 unique values are treated as categorical
+#' - Numeric variables with > continuous_threshold unique values are treated as
+#'   continuous (using Cohen's d)
+#' - Numeric variables with <= continuous_threshold unique values are treated as
+#'   categorical
 #' - Character/factor variables are treated as categorical (using arcsine)
 #'
 #' For categorical variables with more than 2 levels, the function calculates
@@ -446,13 +449,15 @@ calculate_smd_from_data <- function(
 	trt_var,
 	ref_group = NULL,
 	method = c("auto", "cohens_d", "hedges_g", "arcsine", "logit", "raw"),
-	conf_level = 0.95
+	conf_level = 0.95,
+	continuous_threshold = 10
 ) {
 	method <- match.arg(method)
 
 	assert_data_frame(data, "data")
 	assert_column_exists(data, var, "data")
 	assert_column_exists(data, trt_var, "data")
+	assert_positive(continuous_threshold, "continuous_threshold")
 
 	# Get treatment groups
 	trt_vals <- unique(data[[trt_var]])
@@ -489,6 +494,24 @@ calculate_smd_from_data <- function(
 	# Get comparison group (first non-reference group)
 	trt_group <- trt_vals[trt_vals != ref_group][1]
 
+	if (length(trt_vals) > 2) {
+		ph_warn(
+			paste0(
+				"Treatment variable '",
+				trt_var,
+				"' has ",
+				length(trt_vals),
+				" groups. ",
+				"Only the first non-reference group ('",
+				trt_group,
+				"') is used. Reference group is '",
+				ref_group,
+				"'."
+			),
+			call. = FALSE
+		)
+	}
+
 	# Split data by treatment
 	data_trt <- data[data[[trt_var]] == trt_group & !is.na(data[[var]]), ]
 	data_ref <- data[data[[trt_var]] == ref_group & !is.na(data[[var]]), ]
@@ -515,7 +538,8 @@ calculate_smd_from_data <- function(
 
 	# Determine variable type
 	x <- data[[var]]
-	is_continuous <- is.numeric(x) && length(unique(x[!is.na(x)])) > 10
+	is_continuous <- is.numeric(x) &&
+		length(unique(x[!is.na(x)])) > continuous_threshold
 
 	if (method == "auto") {
 		method <- if (is_continuous) "cohens_d" else "arcsine"
@@ -639,6 +663,8 @@ calculate_smd_from_data <- function(
 #' @param threshold Numeric. SMD threshold for flagging imbalance
 #'   (default: 0.1). Common thresholds are 0.1 (strict) and 0.25 (lenient).
 #' @param conf_level Numeric. Confidence level for CI (default: 0.95)
+#' @param continuous_threshold Integer. Minimum number of unique values to treat
+#'   numeric variables as continuous (default: 10).
 #' @param flag_symbol Character. Symbol to use for flagging imbalanced
 #'   variables (default: "*")
 #'
@@ -680,6 +706,7 @@ add_smd_to_table <- function(
 	ref_group = NULL,
 	threshold = 0.1,
 	conf_level = 0.95,
+	continuous_threshold = 10,
 	flag_symbol = "*"
 ) {
 	assert_data_frame(data, "data")
@@ -709,7 +736,8 @@ add_smd_to_table <- function(
 			trt_var = trt_var,
 			ref_group = ref_group,
 			method = "auto",
-			conf_level = conf_level
+			conf_level = conf_level,
+			continuous_threshold = continuous_threshold
 		)
 
 		data.frame(
@@ -771,6 +799,8 @@ add_smd_to_table <- function(
 #' @param ref_group Character or NULL. Reference (control) group value.
 #' @param threshold Numeric. SMD threshold for imbalance (default: 0.1).
 #' @param conf_level Numeric. Confidence level for CIs (default: 0.95).
+#' @param continuous_threshold Integer. Minimum number of unique values to treat
+#'   numeric variables as continuous (default: 10).
 #' @param continuous_method Character. SMD method for continuous variables.
 #'   One of "cohens_d" (default) or "hedges_g".
 #' @param categorical_method Character. SMD method for categorical variables.
@@ -830,6 +860,7 @@ assess_baseline_balance <- function(
 	ref_group = NULL,
 	threshold = 0.1,
 	conf_level = 0.95,
+	continuous_threshold = 10,
 	continuous_method = c("cohens_d", "hedges_g"),
 	categorical_method = c("arcsine", "logit", "raw")
 ) {
@@ -876,7 +907,8 @@ assess_baseline_balance <- function(
 				trt_var = trt_var,
 				ref_group = ref_group,
 				method = continuous_method,
-				conf_level = conf_level
+				conf_level = conf_level,
+				continuous_threshold = continuous_threshold
 			)
 			data.frame(
 				variable = v,
@@ -906,7 +938,8 @@ assess_baseline_balance <- function(
 				trt_var = trt_var,
 				ref_group = ref_group,
 				method = categorical_method,
-				conf_level = conf_level
+				conf_level = conf_level,
+				continuous_threshold = continuous_threshold
 			)
 			data.frame(
 				variable = v,
@@ -1216,10 +1249,10 @@ create_love_plot <- function(
 		ggplot2::annotate(
 			"text",
 			x = threshold,
-			y = 0.5,
+			y = Inf,
 			label = paste0("threshold = ", threshold),
 			hjust = -0.1,
-			vjust = -0.5,
+			vjust = 1.5,
 			size = 3,
 			color = colors["threshold"]
 		)
@@ -1418,8 +1451,6 @@ calculate_nnt <- function(
 			ph_abort("'rd_upper' must be greater than or equal to 'rd'")
 		}
 	}
-	# For benefit outcomes, negative RD means treatment is better (fewer events)
-	# For harm outcomes, positive RD means treatment is worse (more events)
 
 	# Calculate NNT (using absolute value of RD)
 	if (abs(rd) < .Machine$double.eps) {

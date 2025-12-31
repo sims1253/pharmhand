@@ -659,8 +659,7 @@ get_translations <- function(locale = NULL, include_custom = TRUE) {
 				locale,
 				"' not supported. Available: ",
 				paste(avail, collapse = ", ")
-			),
-			call. = FALSE
+			)
 		)
 	}
 
