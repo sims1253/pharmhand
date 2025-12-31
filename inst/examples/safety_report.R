@@ -40,7 +40,10 @@ generate_safety_report <- function(
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
 		stop(
-			"Package pharmaverseadam is required. Install with: install.packages('pharmaverseadam')",
+			paste(
+				"Package pharmaverseadam is required.",
+				"Install with: install.packages('pharmaverseadam')"
+			),
 			call. = FALSE
 		)
 	}
@@ -189,7 +192,10 @@ build_time_to_event <- function(adsl, adae) {
 			# Default to 100 days when treatment duration cannot be calculated
 			# This is a conservative estimate for clinical trials
 			warning(
-				"Treatment duration (TRTDURD) not found and cannot be derived. Using default duration of 100 days for time-to-event analysis",
+				paste(
+					"Treatment duration (TRTDURD) not found and cannot be derived.",
+					"Using default duration of 100 days for time-to-event analysis"
+				),
 				call. = FALSE
 			)
 			tte_data$TRTDURD <- 100
