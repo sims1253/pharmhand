@@ -155,25 +155,25 @@ calculate_smd <- function(
 
 	# Input validation
 	if (!is.numeric(mean1) || length(mean1) != 1 || is.na(mean1)) {
-		cli::cli_abort("{.arg mean1} must be a single numeric value")
+		stop("'mean1' must be a single numeric value", call. = FALSE)
 	}
 	if (!is.numeric(mean2) || length(mean2) != 1 || is.na(mean2)) {
-		cli::cli_abort("{.arg mean2} must be a single numeric value")
+		stop("'mean2' must be a single numeric value", call. = FALSE)
 	}
 	if (!is.numeric(sd1) || length(sd1) != 1 || is.na(sd1) || sd1 <= 0) {
-		cli::cli_abort("{.arg sd1} must be a single positive numeric value")
+		stop("'sd1' must be a single positive numeric value", call. = FALSE)
 	}
 	if (!is.numeric(sd2) || length(sd2) != 1 || is.na(sd2) || sd2 <= 0) {
-		cli::cli_abort("{.arg sd2} must be a single positive numeric value")
+		stop("'sd2' must be a single positive numeric value", call. = FALSE)
 	}
 	if (!is.numeric(n1) || length(n1) != 1 || is.na(n1) || n1 < 2) {
-		cli::cli_abort("{.arg n1} must be a single integer >= 2")
+		stop("'n1' must be a single integer >= 2", call. = FALSE)
 	}
 	if (!is.numeric(n2) || length(n2) != 1 || is.na(n2) || n2 < 2) {
-		cli::cli_abort("{.arg n2} must be a single integer >= 2")
+		stop("'n2' must be a single integer >= 2", call. = FALSE)
 	}
 	if (!is.numeric(conf_level) || conf_level <= 0 || conf_level >= 1) {
-		cli::cli_abort("{.arg conf_level} must be between 0 and 1")
+		stop("'conf_level' must be between 0 and 1", call. = FALSE)
 	}
 
 	n1 <- as.integer(n1)
@@ -186,8 +186,9 @@ calculate_smd <- function(
 
 	# Handle edge case where pooled_sd is 0 or very small
 	if (pooled_sd < .Machine$double.eps) {
-		cli::cli_warn(
-			"Pooled standard deviation is essentially zero. Returning NA."
+		warning(
+			"Pooled standard deviation is essentially zero. Returning NA.",
+			call. = FALSE
 		)
 		return(list(
 			smd = NA_real_,
@@ -299,25 +300,25 @@ calculate_smd_binary <- function(
 
 	# Input validation
 	if (!is.numeric(p1) || length(p1) != 1 || is.na(p1)) {
-		cli::cli_abort("{.arg p1} must be a single numeric value")
+		stop("'p1' must be a single numeric value", call. = FALSE)
 	}
 	if (!is.numeric(p2) || length(p2) != 1 || is.na(p2)) {
-		cli::cli_abort("{.arg p2} must be a single numeric value")
+		stop("'p2' must be a single numeric value", call. = FALSE)
 	}
 	if (p1 < 0 || p1 > 1) {
-		cli::cli_abort("{.arg p1} must be between 0 and 1")
+		stop("'p1' must be between 0 and 1", call. = FALSE)
 	}
 	if (p2 < 0 || p2 > 1) {
-		cli::cli_abort("{.arg p2} must be between 0 and 1")
+		stop("'p2' must be between 0 and 1", call. = FALSE)
 	}
 	if (!is.numeric(n1) || length(n1) != 1 || is.na(n1) || n1 < 2) {
-		cli::cli_abort("{.arg n1} must be a single integer >= 2")
+		stop("'n1' must be a single integer >= 2", call. = FALSE)
 	}
 	if (!is.numeric(n2) || length(n2) != 1 || is.na(n2) || n2 < 2) {
-		cli::cli_abort("{.arg n2} must be a single integer >= 2")
+		stop("'n2' must be a single integer >= 2", call. = FALSE)
 	}
 	if (!is.numeric(conf_level) || conf_level <= 0 || conf_level >= 1) {
-		cli::cli_abort("{.arg conf_level} must be between 0 and 1")
+		stop("'conf_level' must be between 0 and 1", call. = FALSE)
 	}
 
 	n1 <- as.integer(n1)
@@ -360,9 +361,7 @@ calculate_smd_binary <- function(
 			p_pooled < .Machine$double.eps ||
 				p_pooled > 1 - .Machine$double.eps
 		) {
-			cli::cli_warn(
-				"Pooled proportion is at boundary. Returning NA."
-			)
+			warning("Pooled proportion is at boundary. Returning NA.", call. = FALSE)
 			return(list(
 				smd = NA_real_,
 				ci_lower = NA_real_,
@@ -464,13 +463,16 @@ calculate_smd_from_data <- function(
 
 	# Input validation
 	if (!is.data.frame(data)) {
-		cli::cli_abort("{.arg data} must be a data frame")
+		stop("'data' must be a data frame", call. = FALSE)
 	}
 	if (!var %in% names(data)) {
-		cli::cli_abort("Variable {.var {var}} not found in data")
+		stop(paste0("Variable '", var, "' not found in data"), call. = FALSE)
 	}
 	if (!trt_var %in% names(data)) {
-		cli::cli_abort("Treatment variable {.var {trt_var}} not found in data")
+		stop(
+			paste0("Treatment variable '", trt_var, "' not found in data"),
+			call. = FALSE
+		)
 	}
 
 	# Get treatment groups
@@ -478,8 +480,9 @@ calculate_smd_from_data <- function(
 	trt_vals <- trt_vals[!is.na(trt_vals)]
 
 	if (length(trt_vals) < 2) {
-		cli::cli_abort(
-			"Treatment variable {.var {trt_var}} must have at least 2 groups"
+		stop(
+			paste0("Treatment variable '", trt_var, "' must have at least 2 groups"),
+			call. = FALSE
 		)
 	}
 
@@ -492,8 +495,9 @@ calculate_smd_from_data <- function(
 	}
 
 	if (!ref_group %in% trt_vals) {
-		cli::cli_abort(
-			"Reference group {.val {ref_group}} not found in {.var {trt_var}}"
+		stop(
+			paste0("Reference group '", ref_group, "' not found in '", trt_var, "'"),
+			call. = FALSE
 		)
 	}
 
@@ -508,8 +512,9 @@ calculate_smd_from_data <- function(
 	n2 <- nrow(data_ref)
 
 	if (n1 < 2 || n2 < 2) {
-		cli::cli_warn(
-			"Insufficient observations in one or both groups for {.var {var}}"
+		warning(
+			paste0("Insufficient observations in one or both groups for '", var, "'"),
+			call. = FALSE
 		)
 		return(list(
 			smd = NA_real_,
@@ -692,26 +697,33 @@ add_smd_to_table <- function(
 ) {
 	# Input validation
 	if (!is.data.frame(data)) {
-		cli::cli_abort("{.arg data} must be a data frame")
+		stop("'data' must be a data frame", call. = FALSE)
 	}
 	if (!trt_var %in% names(data)) {
-		cli::cli_abort("Treatment variable {.var {trt_var}} not found in data")
+		stop(
+			paste0("Treatment variable '", trt_var, "' not found in data"),
+			call. = FALSE
+		)
 	}
 	if (!is.numeric(threshold) || threshold <= 0) {
-		cli::cli_abort("{.arg threshold} must be a positive number")
+		stop("'threshold' must be a positive number", call. = FALSE)
 	}
 
 	# Check which variables exist
 	missing_vars <- vars[!vars %in% names(data)]
 	if (length(missing_vars) > 0) {
-		cli::cli_warn(
-			"Variables not found in data: {.var {missing_vars}}"
+		warning(
+			paste0(
+				"Variables not found in data: ",
+				paste(missing_vars, collapse = ", ")
+			),
+			call. = FALSE
 		)
 		vars <- vars[vars %in% names(data)]
 	}
 
 	if (length(vars) == 0) {
-		cli::cli_abort("No valid variables to calculate SMD for")
+		stop("No valid variables to calculate SMD for", call. = FALSE)
 	}
 
 	# Calculate SMD for each variable
@@ -851,18 +863,21 @@ assess_baseline_balance <- function(
 
 	# Input validation
 	if (!is.data.frame(data)) {
-		cli::cli_abort("{.arg data} must be a data frame")
+		stop("'data' must be a data frame", call. = FALSE)
 	}
 	if (!trt_var %in% names(data)) {
-		cli::cli_abort("Treatment variable {.var {trt_var}} not found in data")
+		stop(
+			paste0("Treatment variable '", trt_var, "' not found in data"),
+			call. = FALSE
+		)
 	}
 	if (!is.numeric(threshold) || threshold <= 0) {
-		cli::cli_abort("{.arg threshold} must be a positive number")
+		stop("'threshold' must be a positive number", call. = FALSE)
 	}
 
 	all_vars <- c(continuous_vars, categorical_vars)
 	if (length(all_vars) == 0) {
-		cli::cli_abort("At least one variable must be specified")
+		stop("At least one variable must be specified", call. = FALSE)
 	}
 
 	# Get treatment groups
@@ -887,7 +902,7 @@ assess_baseline_balance <- function(
 	cont_results <- if (length(continuous_vars) > 0) {
 		lapply(continuous_vars, function(v) {
 			if (!v %in% names(data)) {
-				cli::cli_warn("Variable {.var {v}} not found, skipping")
+				warning(paste0("Variable '", v, "' not found, skipping"), call. = FALSE)
 				return(NULL)
 			}
 			smd_result <- calculate_smd_from_data(
@@ -917,7 +932,7 @@ assess_baseline_balance <- function(
 	cat_results <- if (length(categorical_vars) > 0) {
 		lapply(categorical_vars, function(v) {
 			if (!v %in% names(data)) {
-				cli::cli_warn("Variable {.var {v}} not found, skipping")
+				warning(paste0("Variable '", v, "' not found, skipping"), call. = FALSE)
 				return(NULL)
 			}
 			smd_result <- calculate_smd_from_data(
@@ -948,7 +963,7 @@ assess_baseline_balance <- function(
 	all_results <- all_results[!sapply(all_results, is.null)]
 
 	if (length(all_results) == 0) {
-		cli::cli_abort("No valid variables to assess")
+		stop("No valid variables to assess", call. = FALSE)
 	}
 
 	smd_results <- do.call(rbind, all_results)
@@ -1092,16 +1107,11 @@ create_love_plot <- function(
 	} else if (is.data.frame(balance_assessment)) {
 		plot_data <- balance_assessment
 		if (!"variable" %in% names(plot_data) || !"smd" %in% names(plot_data)) {
-			cli::cli_abort(
-				"Data frame must contain {.var variable} and {.var smd} columns"
-			)
+			ph_abort("Data frame must contain 'variable' and 'smd' columns")
 		}
 	} else {
-		cli::cli_abort(
-			paste0(
-				"{.arg balance_assessment} must be a BalanceAssessment object ",
-				"or data frame"
-			)
+		ph_abort(
+			"'balance_assessment' must be a BalanceAssessment object or data frame"
 		)
 	}
 
@@ -1335,13 +1345,13 @@ adjust_pvalues <- function(
 
 	# Input validation
 	if (!is.numeric(p)) {
-		cli::cli_abort("{.arg p} must be a numeric vector")
+		stop("'p' must be a numeric vector", call. = FALSE)
 	}
 	if (any(p < 0 | p > 1, na.rm = TRUE)) {
-		cli::cli_abort("All p-values must be between 0 and 1")
+		stop("All p-values must be between 0 and 1", call. = FALSE)
 	}
 	if (!is.numeric(alpha) || length(alpha) != 1 || alpha <= 0 || alpha >= 1) {
-		cli::cli_abort("{.arg alpha} must be a single number between 0 and 1")
+		stop("'alpha' must be a single number between 0 and 1", call. = FALSE)
 	}
 
 	# Handle "fdr" as alias for "BH"
@@ -1422,30 +1432,27 @@ calculate_nnt <- function(
 
 	# Input validation
 	if (!is.numeric(rd) || length(rd) != 1) {
-		cli::cli_abort("{.arg rd} must be a single numeric value")
+		stop("'rd' must be a single numeric value", call. = FALSE)
 	}
 	if (abs(rd) > 1) {
-		cli::cli_abort("{.arg rd} must be between -1 and 1")
+		stop("'rd' must be between -1 and 1", call. = FALSE)
 	}
 	if (!is.null(rd_lower)) {
 		if (!is.numeric(rd_lower) || length(rd_lower) != 1) {
-			cli::cli_abort("{.arg rd_lower} must be a single numeric value")
+			stop("'rd_lower' must be a single numeric value", call. = FALSE)
 		}
 		if (rd_lower > rd) {
-			cli::cli_abort("{.arg rd_lower} must be less than or equal to {.arg rd}")
+			stop("'rd_lower' must be less than or equal to 'rd'", call. = FALSE)
 		}
 	}
 	if (!is.null(rd_upper)) {
 		if (!is.numeric(rd_upper) || length(rd_upper) != 1) {
-			cli::cli_abort("{.arg rd_upper} must be a single numeric value")
+			stop("'rd_upper' must be a single numeric value", call. = FALSE)
 		}
 		if (rd_upper < rd) {
-			cli::cli_abort(
-				"{.arg rd_upper} must be greater than or equal to {.arg rd}"
-			)
+			stop("'rd_upper' must be greater than or equal to 'rd'", call. = FALSE)
 		}
 	}
-
 	# For benefit outcomes, negative RD means treatment is better (fewer events)
 	# For harm outcomes, positive RD means treatment is worse (more events)
 

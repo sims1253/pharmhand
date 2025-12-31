@@ -160,8 +160,13 @@ analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
 			# Use standard filter for population flags
 			df <- df |> dplyr::filter(!!dplyr::sym(pop_fl) == "Y")
 		} else {
-			cli::cli_warn(
-				"Population flag {pop_fl} not found in data. No filtering applied."
+			warning(
+				paste0(
+					"Population flag '",
+					pop_fl,
+					"' not found in data. No filtering applied."
+				),
+				call. = FALSE
 			)
 		}
 	}
@@ -262,7 +267,7 @@ calculate_baseline <- function(data, vars) {
 	# Ensure at least one result exists
 	final_stats <- res_num %||% res_cat
 	if (is.null(final_stats)) {
-		cli::cli_warn("No valid variables found for baseline analysis")
+		warning("No valid variables found for baseline analysis", call. = FALSE)
 		final_stats <- data.frame()
 	}
 

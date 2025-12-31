@@ -13,21 +13,20 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends:
     R (>= 4.4.0)
-Imports:
-    S7,
-    officer,
-    flextable,
-    dplyr,
-    tidyr,
-    rlang,
-    tidyselect,
-    admiraldev,
-    gt,
-    cli,
-    data.table,
-    ggplot2,
-    survival,
-    patchwork
+ Imports:
+     S7,
+     officer,
+     flextable,
+     dplyr,
+     tidyr,
+     rlang,
+     tidyselect,
+     admiraldev,
+     gt,
+     data.table,
+     ggplot2,
+     survival,
+     patchwork
 Suggests:
     admiral,
     chef,

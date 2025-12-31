@@ -28,7 +28,7 @@ chef_to_analysis_results <- function(
 	metadata = list()
 ) {
 	if (!requireNamespace("data.table", quietly = TRUE)) {
-		cli::cli_abort("Package {.pkg data.table} is required for chef integration")
+		ph_abort("Package 'data.table' is required for chef integration")
 	}
 
 	# Validate input
@@ -36,7 +36,7 @@ chef_to_analysis_results <- function(
 		if (is.data.frame(chef_output)) {
 			chef_output <- data.table::as.data.table(chef_output)
 		} else {
-			cli::cli_abort("{.arg chef_output} must be a data.table or data.frame")
+			ph_abort("'chef_output' must be a data.table or data.frame")
 		}
 	}
 
@@ -163,32 +163,32 @@ create_chef_endpoint <- function(
 ) {
 	# Input validation
 	if (!is.character(name) || length(name) != 1 || nchar(name) == 0) {
-		cli::cli_abort("{.arg name} must be a non-empty character string")
+		ph_abort("'name' must be a non-empty character string")
 	}
 
 	if (
 		!is.character(variable) || length(variable) != 1 || nchar(variable) == 0
 	) {
-		cli::cli_abort("{.arg variable} must be a non-empty character string")
+		ph_abort("'variable' must be a non-empty character string")
 	}
 
 	valid_types <- c("binary", "continuous", "tte", "count")
 	if (!is.character(type) || length(type) != 1 || !type %in% valid_types) {
-		cli::cli_abort(
-			"{.arg type} must be one of: {.val {valid_types}}"
+		ph_abort(
+			sprintf("'type' must be one of: %s", paste(valid_types, collapse = ", "))
 		)
 	}
 
 	if (!is.character(strata)) {
-		cli::cli_abort("{.arg strata} must be a character vector")
+		ph_abort("'strata' must be a character vector")
 	}
 
 	if (!is.list(stats)) {
-		cli::cli_abort("{.arg stats} must be a list")
+		ph_abort("'stats' must be a list")
 	}
 
 	if (!is.list(criteria)) {
-		cli::cli_abort("{.arg criteria} must be a list")
+		ph_abort("'criteria' must be a list")
 	}
 
 	list(
@@ -245,29 +245,23 @@ run_chef_pipeline <- function(
 
 	# Validate inputs
 	if (!is.list(adam_data) || is.null(names(adam_data))) {
-		cli::cli_abort("{.arg adam_data} must be a named list of data frames")
+		ph_abort("'adam_data' must be a named list of data frames")
 	}
 
 	# Check chef availability
 	if (!requireNamespace("chef", quietly = TRUE)) {
-		cli::cli_abort(
-			c(
-				"Package {.pkg chef} is required for pipeline execution",
-				"i" = "Install with: remotes::install_github('hta-pharma/chef')"
-			)
+		ph_abort(
+			"Package 'chef' is required for pipeline execution. Install with: remotes::install_github('hta-pharma/chef')"
 		)
 	}
 
 	# TODO: Implement full chef pipeline integration (requires targets setup)
-	cli::cli_alert_info(
-		"Chef pipeline configured. Full execution requires targets setup."
-	)
+	message("Chef pipeline configured. Full execution requires targets setup.")
 
 	# Warn users about mock data
-	cli::cli_warn(c(
-		"!" = "Returning mock data - full chef integration not yet implemented",
-		"i" = "Results contain placeholder values only"
-	))
+	ph_warn(
+		"Returning mock data - full chef integration not yet implemented. Results contain placeholder values only."
+	)
 
 	# Create mock results for development
 	# Safely extract endpoint names with fallback for malformed endpoints
@@ -323,18 +317,15 @@ run_chef_pipeline <- function(
 #' @export
 get_chef_stat <- function(stat_name) {
 	if (!requireNamespace("chefStats", quietly = TRUE)) {
-		cli::cli_abort(
-			c(
-				"Package {.pkg chefStats} is required",
-				"i" = "Install with: remotes::install_github('hta-pharma/chefStats')"
-			)
+		ph_abort(
+			"Package 'chefStats' is required. Install with: remotes::install_github('hta-pharma/chefStats')"
 		)
 	}
 
 	fn <- tryCatch(
 		get(stat_name, envir = asNamespace("chefStats")),
 		error = function(e) {
-			cli::cli_abort("Function {.fn {stat_name}} not found in chefStats")
+			ph_abort(sprintf("Function '%s' not found in chefStats", stat_name))
 		}
 	)
 
@@ -353,11 +344,8 @@ get_chef_stat <- function(stat_name) {
 #' @export
 list_chef_stats <- function() {
 	if (!requireNamespace("chefStats", quietly = TRUE)) {
-		cli::cli_abort(
-			c(
-				"Package {.pkg chefStats} is required",
-				"i" = "Install with: remotes::install_github('hta-pharma/chefStats')"
-			)
+		ph_abort(
+			"Package 'chefStats' is required. Install with: remotes::install_github('hta-pharma/chefStats')"
 		)
 	}
 

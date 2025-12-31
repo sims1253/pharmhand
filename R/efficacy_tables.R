@@ -28,10 +28,10 @@ create_primary_endpoint_table <- function(
 ) {
 	# Input validation
 	if (!is.data.frame(advs)) {
-		cli::cli_abort("{.arg advs} must be a data frame")
+		stop("'advs' must be a data frame", call. = FALSE)
 	}
 	if (!is.data.frame(trt_n)) {
-		cli::cli_abort("{.arg trt_n} must be a data frame")
+		stop("'trt_n' must be a data frame", call. = FALSE)
 	}
 
 	# Filter and summarize
@@ -136,10 +136,10 @@ create_cfb_summary_table <- function(
 ) {
 	# Input validation
 	if (!is.data.frame(advs)) {
-		cli::cli_abort("{.arg advs} must be a data frame")
+		stop("'advs' must be a data frame", call. = FALSE)
 	}
 	if (!is.data.frame(trt_n)) {
-		cli::cli_abort("{.arg trt_n} must be a data frame")
+		stop("'trt_n' must be a data frame", call. = FALSE)
 	}
 
 	cfb_data <- advs |>
@@ -213,19 +213,20 @@ create_vs_by_visit_table <- function(
 ) {
 	# Input validation
 	if (!is.data.frame(advs)) {
-		cli::cli_abort("{.arg advs} must be a data frame")
+		ph_abort("'advs' must be a data frame")
 	}
 	if (!is.data.frame(trt_n)) {
-		cli::cli_abort("{.arg trt_n} must be a data frame")
+		ph_abort("'trt_n' must be a data frame")
 	}
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
 	missing_cols <- setdiff(required_cols, names(advs))
 	if (length(missing_cols) > 0) {
-		cli::cli_abort(
-			c(
-				"{.arg advs} is missing required columns: {.field {missing_cols}}",
-				"i" = "Required columns: {.field {required_cols}}"
+		ph_abort(
+			sprintf(
+				"'advs' is missing required columns: %s. Required: %s",
+				paste(missing_cols, collapse = ", "),
+				paste(required_cols, collapse = ", ")
 			)
 		)
 	}
@@ -301,19 +302,20 @@ create_lab_summary_table <- function(
 ) {
 	# Input validation
 	if (!is.data.frame(adlb)) {
-		cli::cli_abort("{.arg adlb} must be a data frame")
+		ph_abort("'adlb' must be a data frame")
 	}
 	if (!is.data.frame(trt_n)) {
-		cli::cli_abort("{.arg trt_n} must be a data frame")
+		ph_abort("'trt_n' must be a data frame")
 	}
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "PARAM", "AVAL")
 	missing_cols <- setdiff(required_cols, names(adlb))
 	if (length(missing_cols) > 0) {
-		cli::cli_abort(
-			c(
-				"{.arg adlb} is missing required columns: {.field {missing_cols}}",
-				"i" = "Required columns: {.field {required_cols}}"
+		ph_abort(
+			sprintf(
+				"'adlb' is missing required columns: %s. Required: %s",
+				paste(missing_cols, collapse = ", "),
+				paste(required_cols, collapse = ", ")
 			)
 		)
 	}
@@ -382,10 +384,10 @@ create_lab_shift_table <- function(
 ) {
 	# Input validation
 	if (!is.data.frame(adlb)) {
-		cli::cli_abort("{.arg adlb} must be a data frame")
+		ph_abort("'adlb' must be a data frame")
 	}
 	if (!is.data.frame(trt_n)) {
-		cli::cli_abort("{.arg trt_n} must be a data frame")
+		ph_abort("'trt_n' must be a data frame")
 	}
 
 	shift_data <- adlb |>
@@ -459,19 +461,20 @@ create_subgroup_analysis_table <- function(
 ) {
 	# Input validation
 	if (!is.data.frame(adsl)) {
-		cli::cli_abort("{.arg adsl} must be a data frame")
+		ph_abort("'adsl' must be a data frame")
 	}
 	if (!is.data.frame(advs)) {
-		cli::cli_abort("{.arg advs} must be a data frame")
+		ph_abort("'advs' must be a data frame")
 	}
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
 	missing_cols <- setdiff(required_cols, names(advs))
 	if (length(missing_cols) > 0) {
-		cli::cli_abort(
-			c(
-				"{.arg advs} is missing required columns: {.field {missing_cols}}",
-				"i" = "Required columns: {.field {required_cols}}"
+		ph_abort(
+			sprintf(
+				"'advs' is missing required columns: %s. Required: %s",
+				paste(missing_cols, collapse = ", "),
+				paste(required_cols, collapse = ", ")
 			)
 		)
 	}
@@ -490,13 +493,10 @@ create_subgroup_analysis_table <- function(
 
 		# Check if subgroup variable exists in data
 		if (!var_name %in% names(subgroup_data_raw)) {
-			cli::cli_abort(
-				c(
-					"Subgroup variable {.var {var_name}} not found in advs",
-					"i" = paste(
-						"Consider merging subgroup variables from adsl",
-						"or ensuring they are present in the input data"
-					)
+			ph_abort(
+				sprintf(
+					"Subgroup variable '%s' not found in advs. Consider merging subgroup variables from adsl or ensuring they are present in the input data",
+					var_name
 				)
 			)
 		}
@@ -1205,7 +1205,7 @@ create_subgroup_table <- function(
 	# Determine other treatment (for column headers)
 	other_trt <- setdiff(trt_levels, ref_group)
 	if (length(other_trt) > 1) {
-		cli::cli_warn(
+		ph_warn(
 			"Multiple treatment arms vs reference. Using first non-reference arm."
 		)
 		other_trt <- other_trt[1]
@@ -1247,7 +1247,7 @@ create_subgroup_table <- function(
 		label <- subgroups[[var_name]]
 
 		if (!var_name %in% names(df)) {
-			cli::cli_warn("Subgroup variable {.var {var_name}} not found, skipping")
+			ph_warn(sprintf("Subgroup variable '%s' not found, skipping", var_name))
 			next
 		}
 

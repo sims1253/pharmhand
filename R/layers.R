@@ -236,10 +236,10 @@ LayeredTable <- S7::new_class(
 #' @export
 add_layer <- function(table, layer) {
 	if (!S7::S7_inherits(table, LayeredTable)) {
-		cli::cli_abort("{.arg table} must be a LayeredTable object")
+		stop("'table' must be a LayeredTable object", call. = FALSE)
 	}
 	if (!S7::S7_inherits(layer, AnalysisLayer)) {
-		cli::cli_abort("{.arg layer} must be an AnalysisLayer object")
+		stop("'layer' must be an AnalysisLayer object", call. = FALSE)
 	}
 	table@layers <- c(table@layers, list(layer))
 	table
@@ -256,7 +256,7 @@ add_layer <- function(table, layer) {
 #' @export
 build_table <- function(table, ...) {
 	if (!S7::S7_inherits(table, LayeredTable)) {
-		cli::cli_abort("{.arg table} must be a LayeredTable object")
+		stop("'table' must be a LayeredTable object", call. = FALSE)
 	}
 
 	data <- table@data
@@ -271,8 +271,9 @@ build_table <- function(table, ...) {
 	big_n <- table@big_n
 	if (is.null(big_n)) {
 		if (!"USUBJID" %in% names(data)) {
-			cli::cli_abort(
-				"Column {.val USUBJID} not found in data. Required for subject counting."
+			stop(
+				"Column 'USUBJID' not found in data. Required for subject counting.",
+				call. = FALSE
 			)
 		}
 		big_n <- data |>

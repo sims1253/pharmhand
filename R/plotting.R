@@ -77,10 +77,10 @@ create_km_plot <- function(
 	base_size = 11
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
-		cli::cli_abort("Package {.pkg survival} is required for KM plots")
+		stop("Package 'survival' is required for KM plots", call. = FALSE)
 	}
 	if (!requireNamespace("ggplot2", quietly = TRUE)) {
-		cli::cli_abort("Package {.pkg ggplot2} is required for KM plots")
+		stop("Package 'ggplot2' is required for KM plots", call. = FALSE)
 	}
 
 	# Get filtered data if ADaMData
@@ -244,8 +244,9 @@ create_km_plot <- function(
 			tryCatch(
 				grDevices::palette.colors(n = NULL, palette = opt_palette),
 				error = function(e) {
-					cli::cli_warn(
-						"Palette {.val {opt_palette}} not found, using {.val Okabe-Ito}"
+					warning(
+						paste0("Palette '", opt_palette, "' not found, using 'Okabe-Ito'"),
+						call. = FALSE
 					)
 					grDevices::palette.colors(n = NULL, palette = "Okabe-Ito")
 				}
@@ -293,8 +294,9 @@ create_km_plot <- function(
 
 	if (risk_table) {
 		if (!requireNamespace("patchwork", quietly = TRUE)) {
-			cli::cli_warn(
-				"Package {.pkg patchwork} required for risk tables. Returning plot only."
+			warning(
+				"Package 'patchwork' required for risk tables. Returning plot only.",
+				call. = FALSE
 			)
 			return(ClinicalPlot(plot = p, title = title))
 		}
@@ -563,7 +565,7 @@ create_forest_plot <- function(
 		label <- subgroups[[var_name]]
 
 		if (!var_name %in% names(df)) {
-			cli::cli_warn("Subgroup variable {.var {var_name}} not found, skipping")
+			ph_warn(sprintf("Subgroup variable '%s' not found, skipping", var_name))
 			next
 		}
 

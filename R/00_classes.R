@@ -232,7 +232,7 @@ ClinicalPlot <- S7::new_class(
 			class = S7::class_any,
 			validator = function(value) {
 				if (!inherits(value, c("ggplot", "ggsurvplot", "gg"))) {
-					cli::cli_abort("Plot must be a ggplot or ggsurvplot object")
+					stop("Plot must be a ggplot or ggsurvplot object", call. = FALSE)
 				}
 				NULL
 			}
