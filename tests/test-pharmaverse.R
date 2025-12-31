@@ -4,7 +4,7 @@ library(pharmhand)
 library(pharmaverseadam)
 library(dplyr)
 
-cli::cli_h1("Generating Example Report with Pharmaverse Data")
+message("\n=== Generating Example Report with Pharmaverse Data ===")
 
 # 1. Load standard pharmaverse ADaM datasets
 data("adsl")
@@ -21,10 +21,10 @@ adam_sl <- ADaMData(
 )
 
 # 3. High-Performance Analysis (Vectorized dplyr logic)
-cli::cli_alert_info("Calculating baseline statistics...")
+message("Calculating baseline statistics...")
 baseline_stats <- calculate_baseline(adam_sl, vars = c("AGE", "SEX", "RACE"))
 
-cli::cli_alert_info("Analyzing Adverse Events by SOC and PT...")
+message("Analyzing Adverse Events by SOC and PT...")
 safety_results <- analyze_soc_pt(adae)
 
 # 4. Create S7 Report Content (Flextable by default for Word)
@@ -55,7 +55,7 @@ report <- ClinicalReport(
 
 # 6. Export to Word (.docx)
 output_path <- file.path(tempdir(), "Example_Pharmaverse_Report.docx")
-cli::cli_alert_info("Writing report to {output_path}...")
+message("Writing report to ", output_path, "...")
 write_docx(report, path = output_path)
 
-cli::cli_alert_success("Report generation complete!")
+message("Report generation complete!")
