@@ -38,10 +38,7 @@ Suggests:
     testthat (>= 3.1.5),
     lintr,
     styler,
-    yaml,
-    checkmate,
     rprojroot,
-    webshot2,
     knitr,
     rmarkdown
 Remotes:

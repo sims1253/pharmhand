@@ -1399,11 +1399,11 @@ adjust_pvalues <- function(
 #' @export
 #'
 #' @examples
-#' # Treatment reduces event rate (beneficial)
-#' calculate_nnt(rd = -0.10, rd_lower = -0.15, rd_upper = -0.05)
+#' # Treatment increases response rate (beneficial for benefit endpoint)
+#' calculate_nnt(rd = 0.10, rd_lower = 0.05, rd_upper = 0.15)
 #'
-#' # Treatment increases event rate (harmful)
-#' calculate_nnt(rd = 0.08, rd_lower = 0.02, rd_upper = 0.14, event_type = "harm")
+#' # Treatment reduces adverse events (beneficial for harm endpoint)
+#' calculate_nnt(rd = -0.08, rd_lower = -0.14, rd_upper = -0.02, event_type = "harm")
 #'
 #' # Non-significant effect (CI crosses zero)
 #' calculate_nnt(rd = -0.05, rd_lower = -0.12, rd_upper = 0.02)
@@ -1452,9 +1452,15 @@ calculate_nnt <- function(
 	}
 
 	# Determine if this is NNT (benefit) or NNH (harm)
-	is_beneficial <- (event_type == "benefit" && rd < 0) ||
+	# For benefit endpoints (e.g., response rate):
+	#   rd > 0 means treatment increases beneficial events = good
+	#   rd < 0 means treatment decreases beneficial events = bad
+	# For harm endpoints (e.g., adverse events):
+	#   rd < 0 means treatment reduces harmful events = good
+	#   rd > 0 means treatment increases harmful events = bad
+	is_beneficial <- (event_type == "benefit" && rd > 0) ||
 		(event_type == "harm" && rd < 0)
-	is_harmful <- (event_type == "benefit" && rd > 0) ||
+	is_harmful <- (event_type == "benefit" && rd < 0) ||
 		(event_type == "harm" && rd > 0)
 
 	# Calculate CI for NNT
