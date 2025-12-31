@@ -274,7 +274,7 @@ create_km_plot <- function(
 	p <- p +
 		x_scale +
 		ggplot2::scale_y_continuous(
-			labels = scales::percent,
+			labels = function(x) paste0(x * 100, "%"),
 			limits = c(0, 1)
 		) +
 		ggplot2::labs(
