@@ -111,7 +111,7 @@ trt_counts
 # Switch to Per Protocol Set
 adam_pps <- ADaMData(
   data = demo_data,
-  domain = "ADSL", 
+  domain = "ADSL",
   population = "PPS"  # Uses PPSFL column
 )
 
@@ -159,14 +159,15 @@ clinical_table@column_names
 # Perform baseline analysis
 baseline_results <- calculate_baseline(adam_data, vars = c("AGE", "SEX"))
 
-# Convert to ClinicalTable
+# Convert to ClinicalTable with flextable
 clinical_table <- ClinicalTable(
   data = baseline_results@stats,
+  flextable = flextable::flextable(baseline_results@stats),
   type = "baseline",
   title = "Baseline Characteristics"
 )
 
-# The table automatically creates a flextable
+# Access the flextable
 class(clinical_table@flextable)
 ```
 
@@ -176,6 +177,7 @@ Access the flextable for styling:
 
 ```{r}
 ft <- clinical_table@flextable
+class(ft)
 ```
 
 ## ClinicalPlot
@@ -378,9 +380,10 @@ analyze_study(one_arm_study) # Uses OneArmStudy method
 doc <- officer::read_docx()
 
 # Create simple objects for demonstration
+simple_df <- data.frame(Var = c("A", "B"), Value = c("1.2", "3.4"))
 table_obj <- ClinicalTable(
-  data = data.frame(Var = c("A", "B"), Value = c("1.2", "3.4")),
-  flextable = flextable::flextable(data.frame(Var = c("A", "B"), Value = c("1.2", "3.4"))),
+  data = simple_df,
+  flextable = flextable::flextable(simple_df),
   type = "simple"
 )
 
@@ -457,7 +460,7 @@ primary_endpoint <- PrimaryEndpoint(
 secondary_endpoint <- SecondaryEndpoint(
   name = "Progression-Free Survival",
   variable = "PFS",
-  type = "time_to_event", 
+  type = "time_to_event",
   description = "Time from randomization to disease progression or death",
   priority = 1,
   exploratory = FALSE
@@ -556,7 +559,7 @@ S7::method(analyze, custom_endpoint) <- function(x, data, ...) {
     estimate = mean(data[[x@variable]]),
     custom_value = x@custom_param
   )
-  
+
   AnalysisResults(
     stats = as.data.frame(results),
     type = "custom_analysis",

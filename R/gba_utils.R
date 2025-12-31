@@ -34,7 +34,7 @@ BalanceAssessment <- S7::new_class(
 	properties = list(
 		smd_results = S7::new_property(
 			S7::class_data.frame,
-			default = data.frame()
+			default = quote(data.frame())
 		),
 		imbalanced_vars = S7::new_property(
 			S7::class_character,
@@ -52,12 +52,12 @@ BalanceAssessment <- S7::new_class(
 		),
 		n_treatment = S7::new_property(S7::class_integer, default = 0L),
 		n_control = S7::new_property(S7::class_integer, default = 0L),
-		summary_stats = S7::new_property(S7::class_list, default = list()),
+		summary_stats = S7::new_property(S7::class_list, default = quote(list())),
 		love_plot_data = S7::new_property(
 			S7::class_data.frame,
-			default = data.frame()
+			default = quote(data.frame())
 		),
-		metadata = S7::new_property(S7::class_list, default = list()),
+		metadata = S7::new_property(S7::class_list, default = quote(list())),
 		# Computed properties
 		n_vars = S7::new_property(
 			class = S7::class_integer,

@@ -5,15 +5,13 @@
 \title{BalanceAssessment S7 Class}
 \usage{
 BalanceAssessment(
-  smd_results = structure(list(), names = character(0), row.names = integer(0), class =
-    "data.frame"),
+  smd_results = data.frame(),
   imbalanced_vars = character(0),
   threshold = 0.1,
   n_treatment = 0L,
   n_control = 0L,
   summary_stats = list(),
-  love_plot_data = structure(list(), names = character(0), row.names = integer(0), class
-    = "data.frame"),
+  love_plot_data = data.frame(),
   metadata = list()
 )
 }

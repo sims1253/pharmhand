@@ -96,6 +96,7 @@ reference:
     including laboratory shifts and AE summaries.
   contents:
   - create_ae_table
+  - create_ae_comparison_table
   - create_lab_shift_table
   - create_lab_summary_table
   - create_conmeds_table
@@ -207,6 +208,36 @@ reference:
     in clinical trials.
   contents:
   - apply_subgroups
+
+- title: "GBA/AMNOG Utilities"
+  desc: >
+    Functions for German Health Technology Assessment (G-BA/AMNOG)
+    including standardized mean difference (SMD) calculation,
+    baseline balance assessment, and multiplicity adjustment.
+  contents:
+  - BalanceAssessment
+  - assess_baseline_balance
+  - add_smd_to_table
+  - create_love_plot
+  - calculate_smd
+  - calculate_smd_binary
+  - calculate_smd_from_data
+  - adjust_pvalues
+  - calculate_nnt
+
+- title: "Localization"
+  desc: >
+    Internationalization and localization functions for
+    translating table headers and content.
+  contents:
+  - set_locale
+  - get_locale
+  - tr
+  - tr_col
+  - get_translations
+  - add_translation
+  - list_translation_keys
+  - reset_custom_translations
 
 - title: "Utilities"
   desc: >
