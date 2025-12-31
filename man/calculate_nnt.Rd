@@ -44,11 +44,11 @@ For GBA benefit assessment, NNT provides a clinically interpretable
 measure of absolute treatment effect.
 }
 \examples{
-# Treatment reduces event rate (beneficial)
-calculate_nnt(rd = -0.10, rd_lower = -0.15, rd_upper = -0.05)
+# Treatment increases response rate (beneficial for benefit endpoint)
+calculate_nnt(rd = 0.10, rd_lower = 0.05, rd_upper = 0.15)
 
-# Treatment increases event rate (harmful)
-calculate_nnt(rd = 0.08, rd_lower = 0.02, rd_upper = 0.14, event_type = "harm")
+# Treatment reduces adverse events (beneficial for harm endpoint)
+calculate_nnt(rd = -0.08, rd_lower = -0.14, rd_upper = -0.02, event_type = "harm")
 
 # Non-significant effect (CI crosses zero)
 calculate_nnt(rd = -0.05, rd_lower = -0.12, rd_upper = 0.02)

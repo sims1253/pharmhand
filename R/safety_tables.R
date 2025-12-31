@@ -881,22 +881,42 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 	rd_upper <- rd + z * se_rd
 
 	# Risk Ratio (with continuity correction for zeros)
-	if (p2 == 0) {
+	if (p1 == 0 && p2 == 0) {
+		# Both proportions are zero - RR is undefined but we can report NA
+		rr <- NA_real_
+		rr_lower <- NA_real_
+		rr_upper <- NA_real_
+	} else if (p2 == 0) {
 		p2_adj <- 0.5 / N2
 		p1_adj <- (n1 + 0.5) / (N1 + 1)
+		rr <- p1_adj / p2_adj
+		log_rr <- log(rr)
+		se_log_rr <- sqrt(
+			(1 - p1_adj) / (N1 * p1_adj) + (1 - p2_adj) / (N2 * p2_adj)
+		)
+		rr_lower <- exp(log_rr - z * se_log_rr)
+		rr_upper <- exp(log_rr + z * se_log_rr)
 	} else if (p1 == 0) {
 		p1_adj <- 0.5 / N1
 		p2_adj <- (n2 + 0.5) / (N2 + 1)
+		rr <- p1_adj / p2_adj
+		log_rr <- log(rr)
+		se_log_rr <- sqrt(
+			(1 - p1_adj) / (N1 * p1_adj) + (1 - p2_adj) / (N2 * p2_adj)
+		)
+		rr_lower <- exp(log_rr - z * se_log_rr)
+		rr_upper <- exp(log_rr + z * se_log_rr)
 	} else {
 		p1_adj <- p1
 		p2_adj <- p2
+		rr <- p1_adj / p2_adj
+		log_rr <- log(rr)
+		se_log_rr <- sqrt(
+			(1 - p1_adj) / (N1 * p1_adj) + (1 - p2_adj) / (N2 * p2_adj)
+		)
+		rr_lower <- exp(log_rr - z * se_log_rr)
+		rr_upper <- exp(log_rr + z * se_log_rr)
 	}
-
-	rr <- p1_adj / p2_adj
-	log_rr <- log(rr)
-	se_log_rr <- sqrt((1 - p1_adj) / (N1 * p1_adj) + (1 - p2_adj) / (N2 * p2_adj))
-	rr_lower <- exp(log_rr - z * se_log_rr)
-	rr_upper <- exp(log_rr + z * se_log_rr)
 
 	# P-value from chi-square or Fisher's exact (for small counts)
 	cont_table <- matrix(c(n1, N1 - n1, n2, N2 - n2), nrow = 2, byrow = TRUE)

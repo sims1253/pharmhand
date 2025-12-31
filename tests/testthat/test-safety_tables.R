@@ -535,6 +535,14 @@ describe("calculate_ae_risk_difference()", {
 		# p-value should be 1 (no difference)
 		expect_true(result$p_value > 0.99)
 	})
+
+	it("handles both proportions zero", {
+		result <- calculate_ae_risk_difference(0, 100, 0, 100)
+		expect_equal(result$rd, 0)
+		expect_true(is.na(result$rr))
+		expect_true(is.na(result$rr_lower))
+		expect_true(is.na(result$rr_upper))
+	})
 })
 
 # ------------------------------------------------------------------------------
