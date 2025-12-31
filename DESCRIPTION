@@ -27,7 +27,6 @@ Imports:
     data.table,
     ggplot2,
     survival,
-    scales,
     patchwork
 Suggests:
     admiral,
