@@ -362,7 +362,7 @@ create_hta_table <- function(
 #' @export
 layered_to_flextable <- function(x, style = "clinical", ...) {
 	if (!S7::S7_inherits(x, LayeredTable)) {
-		cli::cli_abort("{.arg x} must be a LayeredTable object")
+		ph_abort("'x' must be a LayeredTable object")
 	}
 
 	# Build the table data

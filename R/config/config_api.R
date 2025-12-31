@@ -36,7 +36,7 @@ load_config <- function(path = NULL) {
 	}
 
 	if (!file.exists(path)) {
-		cli::cli_abort("Configuration file not found: {path}")
+		ph_abort(sprintf("Configuration file not found: %s", path))
 	}
 
 	config <- yaml::read_yaml(path)

@@ -315,7 +315,7 @@ S7::method(
 		"docx" = to_word(x),
 		"png" = save_as_png(x),
 		"pdf" = save_as_pdf(x),
-		cli::cli_abort("Unsupported format: {format}")
+		stop(paste0("Unsupported format: ", format), call. = FALSE)
 	)
 }
 
@@ -331,7 +331,7 @@ S7::method(format_content, list(ClinicalPlot, S7::class_character)) <- function(
 		"png" = save_plot_as(x, "png"),
 		"pdf" = save_plot_as(x, "pdf"),
 		"svg" = save_plot_as(x, "svg"),
-		cli::cli_abort("Unsupported format: {format}")
+		stop(paste0("Unsupported format: ", format), call. = FALSE)
 	)
 }
 

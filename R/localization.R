@@ -549,8 +549,9 @@ tr <- function(key, locale = NULL) {
 	}
 
 	if (!locale %in% names(.pharmhand_translations)) {
-		cli::cli_warn(
-			"Locale {.val {locale}} not supported, falling back to {.val en}"
+		warning(
+			paste0("Locale '", locale, "' not supported, falling back to 'en'"),
+			call. = FALSE
 		)
 		locale <- "en"
 	}
@@ -568,8 +569,15 @@ tr <- function(key, locale = NULL) {
 			if (k_lower %in% names(translations)) {
 				return(translations[[k_lower]])
 			} else {
-				cli::cli_warn(
-					"Translation key {.val {k}} not found for locale {.val {locale}}"
+				warning(
+					paste0(
+						"Translation key '",
+						k,
+						"' not found for locale '",
+						locale,
+						"'"
+					),
+					call. = FALSE
 				)
 				return(k)
 			}
@@ -650,8 +658,14 @@ get_translations <- function(locale = NULL, include_custom = TRUE) {
 
 	if (!locale %in% names(.pharmhand_translations)) {
 		avail <- names(.pharmhand_translations)
-		cli::cli_abort(
-			"Locale {.val {locale}} not supported. Available: {.val {avail}}"
+		stop(
+			paste0(
+				"Locale '",
+				locale,
+				"' not supported. Available: ",
+				paste(avail, collapse = ", ")
+			),
+			call. = FALSE
 		)
 	}
 
@@ -714,13 +728,13 @@ get_translations <- function(locale = NULL, include_custom = TRUE) {
 #' )
 add_translation <- function(key, translations) {
 	if (!is.character(key) || length(key) != 1) {
-		cli::cli_abort("{.arg key} must be a single character string")
+		stop("'key' must be a single character string", call. = FALSE)
 	}
 
 	if (!is.character(translations) || is.null(names(translations))) {
-		cli::cli_abort(
-			"{.arg translations} must be a named character vector with locale
-			codes as names"
+		stop(
+			"'translations' must be a named character vector with locale codes as names",
+			call. = FALSE
 		)
 	}
 
@@ -729,8 +743,9 @@ add_translation <- function(key, translations) {
 
 	for (locale in names(translations)) {
 		if (!locale %in% c("en", "de")) {
-			cli::cli_warn(
-				"Locale {.val {locale}} not officially supported, adding anyway"
+			warning(
+				paste0("Locale '", locale, "' not officially supported, adding anyway"),
+				call. = FALSE
 			)
 		}
 
@@ -817,7 +832,7 @@ list_translation_keys <- function(locale = NULL, pattern = NULL) {
 		all_keys <- unique(unlist(lapply(.pharmhand_translations, names)))
 	} else {
 		if (!locale %in% names(.pharmhand_translations)) {
-			cli::cli_abort("Locale {.val {locale}} not supported")
+			stop(paste0("Locale '", locale, "' not supported"), call. = FALSE)
 		}
 		all_keys <- names(.pharmhand_translations[[locale]])
 	}
