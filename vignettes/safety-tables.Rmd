@@ -106,7 +106,7 @@ soc_pt_table <- create_ae_table(
   adae = adae,
   adsl = adsl,
   type = "soc_pt",
-  title = "Table 3: Treatment-Emergent AEs by System Organ Class and Preferred Term"
+  title = "Table 3: TEAEs by System Organ Class and Preferred Term"
 )
 
 # Display the table
@@ -219,11 +219,13 @@ deaths_table@flextable
 
 ```{r lab-shift}
 # Example of lab shift analysis
-trt_n <- adsl |> dplyr::group_by(TRT01P) |> dplyr::summarise(N = dplyr::n(), .groups = "drop")
+trt_n <- adsl |>
+  dplyr::group_by(TRT01P) |>
+  dplyr::summarise(N = dplyr::n(), .groups = "drop")
 lab_shift_table <- create_lab_shift_table(
   adlb = adlb,
   trt_n = trt_n,
-  title = "Table 10: Laboratory Shift from Baseline to Maximum Post-Baseline Value"
+  title = "Table 10: Lab Shift from Baseline to Max Post-Baseline"
 )
 
 # Display the table
@@ -437,6 +439,6 @@ For GBA submissions, the risk difference is often the primary measure as it refl
 
 ## See Also
 
-- [Get Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html) - Introduction to pharmhand
-- [Creating Efficacy Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html) - Efficacy analysis
-- [S7 Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html) - Class system documentation
+- [Get Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html)
+- [Creating Efficacy Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html)
+- [S7 Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html)
