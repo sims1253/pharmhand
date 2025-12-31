@@ -58,8 +58,7 @@ create_ae_table(
 
   - "deaths" - Deaths summary (requires adsl)
 
-  - "comparison" - AE comparison with risk difference/ratio (requires
-    adsl)
+  - "comparison" - AE comparison with RD/RR (requires adsl)
 
 - trt_var:
 
@@ -91,7 +90,7 @@ create_ae_table(
 
 - threshold:
 
-  For type="comparison", minimum incidence % to include (default: 0)
+  For type="comparison", minimum incidence pct (default: 0)
 
 - sort_by:
 

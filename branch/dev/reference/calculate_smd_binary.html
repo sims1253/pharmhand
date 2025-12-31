@@ -13,7 +13,7 @@ covariates in clinical trials."><meta property="og:image" content="https://sims1
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.6.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.7.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@ covariates in clinical trials.</p>
 
 
 <dl><dt id="arg-p-">p1<a class="anchor" aria-label="anchor" href="#arg-p-"></a></dt>
-<dd><p>Numeric. Proportion in group 1 (treatment). Must be between 0 and 1.</p></dd>
+<dd><p>Numeric. Proportion in group 1 (treatment). Must be 0 to 1.</p></dd>
 
 
 <dt id="arg-n-">n1<a class="anchor" aria-label="anchor" href="#arg-n-"></a></dt>
@@ -86,7 +86,7 @@ covariates in clinical trials.</p>
 
 
 <dt id="arg-p-">p2<a class="anchor" aria-label="anchor" href="#arg-p-"></a></dt>
-<dd><p>Numeric. Proportion in group 2 (control). Must be between 0 and 1.</p></dd>
+<dd><p>Numeric. Proportion in group 2 (control). Must be 0 to 1.</p></dd>
 
 
 <dt id="arg-n-">n2<a class="anchor" aria-label="anchor" href="#arg-n-"></a></dt>
@@ -96,12 +96,12 @@ covariates in clinical trials.</p>
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>Character. Method for calculating SMD. One of:</p><ul><li><p><code>"arcsine"</code> (default): Uses arcsine square root transformation</p></li>
 <li><p><code>"logit"</code>: Uses logit transformation (log odds)</p></li>
-<li><p><code>"raw"</code>: Uses raw proportion difference standardized by pooled variance</p></li>
+<li><p><code>"raw"</code>: Raw proportion difference standardized by pooled variance</p></li>
 </ul></dd>
 
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
-<dd><p>Numeric. Confidence level for CI calculation (default: 0.95)</p></dd>
+<dd><p>Numeric. Confidence level for CI (default: 0.95)</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -65,5 +65,7 @@ tr("study_drug", locale = "de")
 # [1] "MedikamentX 100mg"
 
 # Override existing translation
-add_translation("treatment", c(en = "Active Treatment", de = "Aktive Behandlung"))
+add_translation(
+  "treatment", c(en = "Active Treatment", de = "Aktive Behandlung")
+)
 ```

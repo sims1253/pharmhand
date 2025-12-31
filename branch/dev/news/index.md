@@ -1,5 +1,15 @@
 # Changelog
 
+## pharmhand 0.0.7.9000
+
+### Maintenance
+
+- Removed cli and scales from Imports and replaced with base R helpers
+- Moved data.table and patchwork to Suggests (optional for chef
+  integration and risk tables)
+- Removed unused Suggests: yaml, checkmate, webshot2
+- Updated example report scripts to use base R messaging
+
 ## pharmhand 0.0.6.9000
 
 ### New features

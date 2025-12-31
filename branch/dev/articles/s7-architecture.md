@@ -193,7 +193,8 @@ capabilities.
 library(ggplot2)
 
 # Create a simple scatter plot
-p <- ggplot(demo_data, aes(x = AGE, y = as.numeric(SEX))) +
+sex_numeric <- as.numeric(factor(demo_data$SEX, levels = c("M", "F")))
+p <- ggplot(demo_data, aes(x = AGE, y = sex_numeric)) +
   geom_point(alpha = 0.6) +
   labs(x = "Age (years)", y = "Sex (M=1, F=2)")
 
@@ -635,6 +636,9 @@ S7::method(analyze, custom_endpoint) <- function(x, data, ...) {
 ### Integration
 
 ``` r
+# Add a custom variable for demonstration
+demo_data$CUSTOM_VAR <- rnorm(nrow(demo_data), mean = 100, sd = 15)
+
 # Custom endpoint works with standard generics
 custom_endpoint_obj <- custom_endpoint(
   name = "Custom Analysis",

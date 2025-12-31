@@ -9,7 +9,7 @@ Positive values indicate NNT (benefit), negative values indicate NNH (harm)."><m
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.6.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.7.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,8 +104,8 @@ measure of absolute treatment effect.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Treatment reduces event rate (beneficial)</span></span></span>
-<span class="r-in"><span><span class="fu">calculate_nnt</span><span class="op">(</span>rd <span class="op">=</span> <span class="op">-</span><span class="fl">0.10</span>, rd_lower <span class="op">=</span> <span class="op">-</span><span class="fl">0.15</span>, rd_upper <span class="op">=</span> <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Treatment increases response rate (beneficial for benefit endpoint)</span></span></span>
+<span class="r-in"><span><span class="fu">calculate_nnt</span><span class="op">(</span>rd <span class="op">=</span> <span class="fl">0.10</span>, rd_lower <span class="op">=</span> <span class="fl">0.05</span>, rd_upper <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nnt</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -116,13 +116,13 @@ measure of absolute treatment effect.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rd_lower</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rd_upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ci_crosses_zero</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -134,10 +134,12 @@ measure of absolute treatment effect.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NNT = 10 (95% CI: 6.7 to 20). Treat 10 patients for one additional patient to benefit."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Treatment increases event rate (harmful)</span></span></span>
-<span class="r-in"><span><span class="fu">calculate_nnt</span><span class="op">(</span>rd <span class="op">=</span> <span class="fl">0.08</span>, rd_lower <span class="op">=</span> <span class="fl">0.02</span>, rd_upper <span class="op">=</span> <span class="fl">0.14</span>, event_type <span class="op">=</span> <span class="st">"harm"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Treatment reduces adverse events (beneficial for harm endpoint)</span></span></span>
+<span class="r-in"><span><span class="fu">calculate_nnt</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  rd <span class="op">=</span> <span class="op">-</span><span class="fl">0.08</span>, rd_lower <span class="op">=</span> <span class="op">-</span><span class="fl">0.14</span>, rd_upper <span class="op">=</span> <span class="op">-</span><span class="fl">0.02</span>, event_type <span class="op">=</span> <span class="st">"harm"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nnt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -12.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nnt_lower</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.142857</span>
@@ -146,13 +148,13 @@ measure of absolute treatment effect.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.08</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rd_lower</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.14</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rd_upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ci_crosses_zero</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -161,13 +163,13 @@ measure of absolute treatment effect.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "harm"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NNH = 12.5 (95% CI: 7.1 to 50). Treat 12 patients for one additional patient to be harmed."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "NNT = 12.5 (95% CI: 7.1 to 50). Treat 12 patients for one additional patient to benefit."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Non-significant effect (CI crosses zero)</span></span></span>
 <span class="r-in"><span><span class="fu">calculate_nnt</span><span class="op">(</span>rd <span class="op">=</span> <span class="op">-</span><span class="fl">0.05</span>, rd_lower <span class="op">=</span> <span class="op">-</span><span class="fl">0.12</span>, rd_upper <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nnt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nnt_lower</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.333333</span>
@@ -191,7 +193,7 @@ measure of absolute treatment effect.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "benefit"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Effect not statistically significant (CI crosses zero). Point estimate NNT = 20 to benefit"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Effect not statistically significant (CI crosses zero). Point estimate NNT = 20 to harm"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

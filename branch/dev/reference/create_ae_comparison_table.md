@@ -45,12 +45,11 @@ create_ae_comparison_table(
 
 - threshold:
 
-  Numeric. Minimum incidence % in any group to include (default: 0)
+  Numeric. Minimum incidence pct in any group (default: 0)
 
 - sort_by:
 
-  Character. Sort by "rd" (risk difference), "rr" (risk ratio), or
-  "incidence" (default: "incidence")
+  Character. Sort by "rd", "rr", or "incidence" (default: "incidence")
 
 - conf_level:
 

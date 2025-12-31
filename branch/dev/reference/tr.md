@@ -20,7 +20,7 @@ tr(key, locale = NULL)
 - locale:
 
   Character or NULL. Optional locale to use instead of the current
-  default. If NULL (default), uses the locale set by
+  default. If NULL (default), uses the locale from
   [`set_locale()`](https://sims1253.github.io/pharmhand/branch/dev/reference/set_locale.md).
 
 ## Value

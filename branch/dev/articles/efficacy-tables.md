@@ -29,12 +29,12 @@ library(pharmaverseadam)
 
 # Load example datasets
 adsl <- pharmaverseadam::adsl         # Subject-level data
-advs <- pharmaverseadam::advs         # Vital signs data  
+advs <- pharmaverseadam::advs         # Vital signs data
 adlb <- pharmaverseadam::adlb         # Laboratory data
 adtte <- pharmaverseadam::adtte_onco  # Time-to-event data (oncology)
 adrs <- pharmaverseadam::adrs_onco    # Response data (oncology)
 
-# Note: adtte_onco and adrs_onco use ARM as the treatment variable instead of TRT01P
+# Note: adtte_onco and adrs_onco use ARM as treatment variable (not TRT01P)
 ```
 
 ## Time-to-Event Analysis
@@ -612,13 +612,13 @@ Combine multiple analyses into a report:
 
 ``` r
 generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
-  
+
   # Get treatment counts for denominators
   trt_n <- adsl |>
     filter(SAFFL == "Y") |>
     group_by(TRT01P) |>
     summarise(N = n(), .groups = "drop")
-  
+
   # Section 1: Primary Endpoint Summary
   primary_content <- create_primary_endpoint_table(
     advs = advs,
@@ -627,8 +627,8 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
     visit = "End of Treatment",
     title = "Table 3.1: Primary Endpoint Summary (Systolic BP)"
   )
-  
-  # Section 2: Change from Baseline  
+
+  # Section 2: Change from Baseline
   cfb_content <- create_cfb_summary_table(
     advs = advs,
     trt_n = trt_n,
@@ -636,7 +636,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
     visit = "End of Treatment",
     title = "Table 3.2: Change from Baseline Summary"
   )
-  
+
   # Section 3: Vital Signs by Visit
   vs_content <- create_vs_by_visit_table(
     advs = advs,
@@ -644,14 +644,14 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
     paramcd = "SYSBP",
     title = "Table 3.3: Vital Signs by Visit"
   )
-  
+
   # Section 4: Laboratory Parameters
   lab_content <- create_lab_summary_table(
     adlb = adlb,
     trt_n = trt_n,
     title = "Table 3.4: Laboratory Parameters Summary"
   )
-  
+
   # Section 5: Laboratory Shift Table
   shift_content <- create_lab_shift_table(
     adlb = adlb,
@@ -659,19 +659,19 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
     paramcd = "ALT",
     title = "Table 3.5: ALT Shift from Baseline"
   )
-  
+
   # Section 6: Subgroup Analysis
   subgroup_content <- create_subgroup_analysis_table(
     adsl = adsl,
     advs = advs,
     title = "Table 3.6: Subgroup Analysis by Age Group"
   )
-  
+
   # Create report sections
   sections <- list(
     ReportSection(
       title = "Primary Endpoint Analysis",
-      section_type = "efficacy", 
+      section_type = "efficacy",
       content = list(primary_content)
     ),
     ReportSection(
@@ -680,7 +680,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
       content = list(cfb_content)
     ),
     ReportSection(
-      title = "Vital Signs by Study Visit", 
+      title = "Vital Signs by Study Visit",
       section_type = "efficacy",
       content = list(vs_content)
     ),
@@ -691,7 +691,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
     ),
     ReportSection(
       title = "Laboratory Shift Analysis",
-      section_type = "efficacy", 
+      section_type = "efficacy",
       content = list(shift_content)
     ),
     ReportSection(
@@ -700,7 +700,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
       content = list(subgroup_content)
     )
   )
-  
+
   # Create and save report
   report <- ClinicalReport(
     study_id = "CDISCPILOT01",
@@ -713,10 +713,10 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
       report_type = "efficacy"
     )
   )
-  
+
   # Generate Word document
   generate_word(report, path = output_path)
-  
+
   cat("Efficacy report generated:", output_path, "\n")
   invisible(report)
 }

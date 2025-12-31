@@ -22,7 +22,7 @@ calculate_smd_binary(
 
 - p1:
 
-  Numeric. Proportion in group 1 (treatment). Must be between 0 and 1.
+  Numeric. Proportion in group 1 (treatment). Must be 0 to 1.
 
 - n1:
 
@@ -30,7 +30,7 @@ calculate_smd_binary(
 
 - p2:
 
-  Numeric. Proportion in group 2 (control). Must be between 0 and 1.
+  Numeric. Proportion in group 2 (control). Must be 0 to 1.
 
 - n2:
 
@@ -44,12 +44,11 @@ calculate_smd_binary(
 
   - `"logit"`: Uses logit transformation (log odds)
 
-  - `"raw"`: Uses raw proportion difference standardized by pooled
-    variance
+  - `"raw"`: Raw proportion difference standardized by pooled variance
 
 - conf_level:
 
-  Numeric. Confidence level for CI calculation (default: 0.95)
+  Numeric. Confidence level for CI (default: 0.95)
 
 ## Value
 
