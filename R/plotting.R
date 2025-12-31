@@ -28,10 +28,11 @@ NULL
 #' @param landmarks Numeric vector of timepoints to highlight with vertical
 #'   lines (e.g., c(12, 24) for 12 and 24 months). NULL for none.
 #' @param xlim Optional x-axis limits as c(min, max)
-#' @param palette Optional color palette for treatment groups. Can be a character
-#'   vector of colors, or NULL to use `getOption("pharmhand.palette")`. Defaults
-#'   to the CVD-friendly "Okabe-Ito" palette. Other built-in options include
-#'   "R4", "Tableau 10", "Alphabet", etc. (see `grDevices::palette.pals()`).
+#' @param palette Optional color palette for treatment groups. Can be a
+#'   character vector of colors, or NULL to use
+#'   `getOption("pharmhand.palette")`. Defaults to the CVD-friendly "Okabe-Ito"
+#'   palette. Other built-in options: "R4", "Tableau 10", "Alphabet", etc.
+#'   (see `grDevices::palette.pals()`).
 #' @param conf_level Confidence level for CI bands (default: 0.95)
 #' @param base_size Base font size for plot text elements (default: 11).
 #'   Also used for risk table text.

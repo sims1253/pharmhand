@@ -39,7 +39,7 @@ like "deaths", "comparison", or for denominator calculation)}
 \item "sae" - Serious Adverse Events
 \item "discontinuation" - AEs leading to discontinuation
 \item "deaths" - Deaths summary (requires adsl)
-\item "comparison" - AE comparison with risk difference/ratio (requires adsl)
+\item "comparison" - AE comparison with RD/RR (requires adsl)
 }}
 
 \item{trt_var}{Treatment variable name (default: "TRT01P")}
@@ -56,7 +56,7 @@ like "deaths", "comparison", or for denominator calculation)}
 
 \item{by}{For type="comparison", grouping level: "soc", "pt", or "overall"}
 
-\item{threshold}{For type="comparison", minimum incidence \% to include (default: 0)}
+\item{threshold}{For type="comparison", minimum incidence pct (default: 0)}
 
 \item{sort_by}{For type="comparison", sort by "rd", "rr", or "incidence"}
 

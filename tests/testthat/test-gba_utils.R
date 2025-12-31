@@ -1,5 +1,5 @@
 # Tests for GBA/AMNOG SMD utilities
-# Tests standardized mean difference calculations for baseline balance assessment
+# Tests SMD calculations for baseline balance assessment
 
 library(testthat)
 library(pharmhand)

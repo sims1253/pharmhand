@@ -28,9 +28,11 @@ Vertical lines are drawn at +/- threshold.}
 \item{show_ci}{Logical. Show confidence intervals as error bars
 (default: TRUE).}
 
-\item{title}{Character. Plot title (default: "Standardized Mean Differences").}
+\item{title}{Character. Plot title
+(default: "Standardized Mean Differences").}
 
-\item{xlab}{Character. X-axis label (default: "Standardized Mean Difference").}
+\item{xlab}{Character. X-axis label
+(default: "Standardized Mean Difference").}
 
 \item{color_by_type}{Logical. Color points by variable type (continuous vs
 categorical) when available (default: TRUE).}

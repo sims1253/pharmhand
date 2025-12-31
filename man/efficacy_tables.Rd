@@ -4,6 +4,7 @@
 \alias{efficacy_tables}
 \title{Efficacy Analysis Tables}
 \description{
-Functions for efficacy tables: endpoints, change from baseline, lab summaries.
+Functions for efficacy tables: endpoints, change from baseline,
+lab summaries.
 }
 \keyword{internal}

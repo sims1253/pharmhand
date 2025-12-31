@@ -634,7 +634,7 @@ describe("create_ae_comparison_table()", {
 		)
 
 		expect_s7_class(tbl, ClinicalTable)
-		# Headache has RD = +10%, Rash has RD = +8%, Nausea has RD = 0%, Fatigue has RD = -5%
+		# Headache RD = +10%, Rash = +8%, Nausea = 0%, Fatigue = -5%
 		# Should be sorted by absolute RD descending
 		expect_equal(tbl@data$Term[1], "Headache")
 	})
@@ -873,7 +873,7 @@ describe("create_ae_table() with type = 'comparison'", {
 
 describe("AE comparison edge cases", {
 	it("handles case where events exist in both groups but different terms", {
-		# This tests when one group has an AE the other doesn't, but both have some AEs
+		# Tests when one group has an AE the other doesn't, but both have AEs
 		adsl <- data.frame(
 			USUBJID = sprintf("SUBJ%03d", 1:100),
 			TRT01P = rep(c("Placebo", "Active"), each = 50),

@@ -34,7 +34,8 @@ calculate_smd(
 \item \code{"hedges_g"}: Applies small-sample bias correction to Cohen's d
 }}
 
-\item{conf_level}{Numeric. Confidence level for CI calculation (default: 0.95).}
+\item{conf_level}{Numeric. Confidence level for CI calculation
+(default: 0.95).}
 }
 \value{
 A named list with components:

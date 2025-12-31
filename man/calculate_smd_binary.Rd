@@ -14,11 +14,11 @@ calculate_smd_binary(
 )
 }
 \arguments{
-\item{p1}{Numeric. Proportion in group 1 (treatment). Must be between 0 and 1.}
+\item{p1}{Numeric. Proportion in group 1 (treatment). Must be 0 to 1.}
 
 \item{n1}{Integer. Sample size of group 1. Must be >= 2.}
 
-\item{p2}{Numeric. Proportion in group 2 (control). Must be between 0 and 1.}
+\item{p2}{Numeric. Proportion in group 2 (control). Must be 0 to 1.}
 
 \item{n2}{Integer. Sample size of group 2. Must be >= 2.}
 
@@ -26,10 +26,10 @@ calculate_smd_binary(
 \itemize{
 \item \code{"arcsine"} (default): Uses arcsine square root transformation
 \item \code{"logit"}: Uses logit transformation (log odds)
-\item \code{"raw"}: Uses raw proportion difference standardized by pooled variance
+\item \code{"raw"}: Raw proportion difference standardized by pooled variance
 }}
 
-\item{conf_level}{Numeric. Confidence level for CI calculation (default: 0.95)}
+\item{conf_level}{Numeric. Confidence level for CI (default: 0.95)}
 }
 \value{
 A named list with components:

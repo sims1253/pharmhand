@@ -94,7 +94,8 @@ BalanceAssessment <- S7::new_class(
 #' @param method Character. Method for calculating SMD. One of:
 #'   - `"cohens_d"` (default): Uses pooled standard deviation
 #'   - `"hedges_g"`: Applies small-sample bias correction to Cohen's d
-#' @param conf_level Numeric. Confidence level for CI calculation (default: 0.95).
+#' @param conf_level Numeric. Confidence level for CI calculation
+#'   (default: 0.95).
 #'
 #' @details
 #' **Cohen's d** is calculated as:
@@ -231,15 +232,15 @@ calculate_smd <- function(
 #' method. This is essential for assessing baseline balance of categorical
 #' covariates in clinical trials.
 #'
-#' @param p1 Numeric. Proportion in group 1 (treatment). Must be between 0 and 1.
+#' @param p1 Numeric. Proportion in group 1 (treatment). Must be 0 to 1.
 #' @param n1 Integer. Sample size of group 1. Must be >= 2.
-#' @param p2 Numeric. Proportion in group 2 (control). Must be between 0 and 1.
+#' @param p2 Numeric. Proportion in group 2 (control). Must be 0 to 1.
 #' @param n2 Integer. Sample size of group 2. Must be >= 2.
 #' @param method Character. Method for calculating SMD. One of:
 #'   - `"arcsine"` (default): Uses arcsine square root transformation
 #'   - `"logit"`: Uses logit transformation (log odds)
-#'   - `"raw"`: Uses raw proportion difference standardized by pooled variance
-#' @param conf_level Numeric. Confidence level for CI calculation (default: 0.95)
+#'   - `"raw"`: Raw proportion difference standardized by pooled variance
+#' @param conf_level Numeric. Confidence level for CI (default: 0.95)
 #'
 #' @details
 #' **Arcsine method** (recommended for proportions):
@@ -643,8 +644,8 @@ calculate_smd_from_data <- function(
 #' @param vars Character vector. Names of variables to calculate SMD for.
 #' @param ref_group Character or NULL. Reference (control) group value.
 #'   If NULL, uses the first level.
-#' @param threshold Numeric. SMD threshold for flagging imbalance (default: 0.1).
-#'   Common thresholds are 0.1 (strict) and 0.25 (lenient).
+#' @param threshold Numeric. SMD threshold for flagging imbalance
+#'   (default: 0.1). Common thresholds are 0.1 (strict) and 0.25 (lenient).
 #' @param conf_level Numeric. Confidence level for CI (default: 0.95)
 #' @param flag_symbol Character. Symbol to use for flagging imbalanced
 #'   variables (default: "*")
@@ -1018,8 +1019,10 @@ assess_baseline_balance <- function(
 #'   Vertical lines are drawn at +/- threshold.
 #' @param show_ci Logical. Show confidence intervals as error bars
 #'   (default: TRUE).
-#' @param title Character. Plot title (default: "Standardized Mean Differences").
-#' @param xlab Character. X-axis label (default: "Standardized Mean Difference").
+#' @param title Character. Plot title
+#'   (default: "Standardized Mean Differences").
+#' @param xlab Character. X-axis label
+#'   (default: "Standardized Mean Difference").
 #' @param color_by_type Logical. Color points by variable type (continuous vs
 #'   categorical) when available (default: TRUE).
 #' @param sort_by Character. How to sort variables: "abs_smd" (default),
@@ -1403,7 +1406,9 @@ adjust_pvalues <- function(
 #' calculate_nnt(rd = 0.10, rd_lower = 0.05, rd_upper = 0.15)
 #'
 #' # Treatment reduces adverse events (beneficial for harm endpoint)
-#' calculate_nnt(rd = -0.08, rd_lower = -0.14, rd_upper = -0.02, event_type = "harm")
+#' calculate_nnt(
+#'   rd = -0.08, rd_lower = -0.14, rd_upper = -0.02, event_type = "harm"
+#' )
 #'
 #' # Non-significant effect (CI crosses zero)
 #' calculate_nnt(rd = -0.05, rd_lower = -0.12, rd_upper = 0.02)

@@ -26,12 +26,13 @@ create_ae_comparison_table(
 
 \item{trt_var}{Treatment variable name (default: "TRT01P")}
 
-\item{by}{Character. Grouping level: "soc", "pt", or "overall" (default: "pt")}
+\item{by}{Character. Grouping level: "soc", "pt", or "overall"
+(default: "pt")}
 
-\item{threshold}{Numeric. Minimum incidence \% in any group to include (default: 0)}
+\item{threshold}{Numeric. Minimum incidence pct in any group (default: 0)}
 
-\item{sort_by}{Character. Sort by "rd" (risk difference), "rr" (risk ratio),
-or "incidence" (default: "incidence")}
+\item{sort_by}{Character. Sort by "rd", "rr", or "incidence"
+(default: "incidence")}
 
 \item{conf_level}{Confidence level for intervals (default: 0.95)}
 
@@ -40,7 +41,8 @@ or "incidence" (default: "incidence")}
 \item{autofit}{Logical (default: TRUE)}
 }
 \value{
-ClinicalTable with columns for each group's n(\%), RD, 95\% CI, RR, p-value
+ClinicalTable with columns for each group's n(\%), RD, 95\% CI, RR,
+p-value
 }
 \description{
 Generate AE table with statistical comparisons (risk difference, risk ratio)

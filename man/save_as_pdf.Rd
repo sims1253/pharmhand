@@ -15,11 +15,5 @@ save_as_pdf(x, path = NULL)
 The file path where the PDF was saved
 }
 \description{
-Saves a ClinicalTable's flextable to a PDF file. Uses webshot2 for
-high-quality HTML-to-PDF conversion if available, otherwise falls back
-to image-based export via flextable::save_as_image().
-}
-\note{
-The image-based fallback may result in lower quality output compared
-to native PDF rendering. For best results, install the webshot2 package.
+Saves a ClinicalTable's flextable to a PDF file via image-based export.
 }

@@ -236,17 +236,12 @@ save_as_png <- function(x, path = NULL) {
 
 #' Save ClinicalTable as PDF
 #'
-#' Saves a ClinicalTable's flextable to a PDF file. Uses webshot2 for
-#' high-quality HTML-to-PDF conversion if available, otherwise falls back
-#' to image-based export via flextable::save_as_image().
+#' Saves a ClinicalTable's flextable to a PDF file via image-based export.
 #'
 #' @param x A ClinicalTable object
 #' @param path Optional file path. If NULL, creates a temp file.
 #'
 #' @return The file path where the PDF was saved
-#'
-#' @note The image-based fallback may result in lower quality output compared
-#'   to native PDF rendering. For best results, install the webshot2 package.
 #'
 #' @export
 save_as_pdf <- function(x, path = NULL) {
@@ -254,24 +249,7 @@ save_as_pdf <- function(x, path = NULL) {
 		path <- tempfile(fileext = ".pdf")
 	}
 
-	# Try webshot2 for higher quality PDF export
-	if (requireNamespace("webshot2", quietly = TRUE)) {
-		# Create temporary HTML file
-		tmp_html <- tempfile(fileext = ".html")
-		on.exit(unlink(tmp_html), add = TRUE)
-
-		flextable::save_as_html(x@flextable, path = tmp_html)
-		webshot2::webshot(tmp_html, file = path, selector = "body")
-	} else {
-		# Fallback to image-based export
-		cli::cli_inform(
-			c(
-				"i" = "Using image-based PDF export (install {.pkg webshot2})"
-			)
-		)
-		flextable::save_as_image(x@flextable, path = path)
-	}
-
+	flextable::save_as_image(x@flextable, path = path)
 	path
 }
 

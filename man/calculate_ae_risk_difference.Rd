@@ -24,6 +24,6 @@ rr_lower, rr_upper, p_value
 \description{
 Calculates risk difference, risk ratio, and associated confidence intervals
 and p-values for comparing adverse event incidence between two groups.
-Uses Wald method for risk difference CI and log-transformation for risk ratio CI.
+Uses Wald method for RD CI and log-transformation for RR CI.
 }
 \keyword{internal}
