@@ -36,7 +36,7 @@ create_demographics_table <- function(
 	autofit = TRUE
 ) {
 	if (!S7::S7_inherits(adsl_data, ADaMData)) {
-		stop("'adsl_data' must be an ADaMData object", call. = FALSE)
+		ph_abort("'adsl_data' must be an ADaMData object")
 	}
 
 	adsl <- adsl_data@data

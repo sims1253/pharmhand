@@ -160,7 +160,7 @@ test_that("add_translation overrides existing key", {
 test_that("add_translation validates arguments", {
 	expect_error(
 		add_translation(123, c(en = "test")),
-		"must be a single character"
+		"'key' must be a non-empty character string"
 	)
 	expect_error(
 		add_translation("key", "unnamed"),

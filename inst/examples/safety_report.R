@@ -39,55 +39,51 @@ generate_safety_report <- function(
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
-		cli::cli_abort(
-			c(
-				"Package {.pkg pharmaverseadam} is required",
-				"i" = "Install with: install.packages('pharmaverseadam')"
-			)
+		stop(
+			"Package pharmaverseadam is required. Install with: install.packages('pharmaverseadam')",
+			call. = FALSE
 		)
 	}
 
 	adsl <- pharmaverseadam::adsl
 	adae <- pharmaverseadam::adae
 
-	cli::cli_h1("Generating Safety Report")
+	message("\n=== Generating Safety Report ===\n")
 
 	# Section 2.1: AE Overview
-	cli::cli_progress_step("Building AE Overview (Table 2.1)")
+	message("Building AE Overview (Table 2.1)")
 	overview_section <- build_ae_overview(adae, adsl)
 
 	# Section 2.2: AEs by SOC
-	cli::cli_progress_step("Building AEs by SOC (Table 2.2)")
+	message("Building AEs by SOC (Table 2.2)")
 	soc_section <- build_ae_by_soc(adae, adsl)
 
 	# Section 2.3: Most Common AEs
-	cli::cli_progress_step("Building Most Common AEs (Table 2.3)")
+	message("Building Most Common AEs (Table 2.3)")
 	common_section <- build_common_aes(adae, adsl)
 
 	# Section 2.4: AEs by Severity
-	cli::cli_progress_step("Building AEs by Severity (Table 2.4)")
+	message("Building AEs by Severity (Table 2.4)")
 	severity_section <- build_ae_by_severity(adae, adsl)
 
 	# Section 2.5: AEs by Relationship
-	cli::cli_progress_step("Building AEs by Relationship (Table 2.5)")
+	message("Building AEs by Relationship (Table 2.5)")
 	rel_section <- build_ae_by_relationship(adae, adsl)
 
 	# Section 2.6: SAEs
-	cli::cli_progress_step("Building SAE Summary (Table 2.6)")
+	message("Building SAE Summary (Table 2.6)")
 	sae_section <- build_sae_summary(adae, adsl)
 
 	# Section 2.7: AEs Leading to Discontinuation
-	cli::cli_progress_step(
-		"Building AEs Leading to Discontinuation (Table 2.7)"
-	)
+	message("Building AEs Leading to Discontinuation (Table 2.7)")
 	disc_section <- build_ae_disc(adae, adsl)
 
 	# Section 2.8: Deaths
-	cli::cli_progress_step("Building Deaths Summary (Table 2.8)")
+	message("Building Deaths Summary (Table 2.8)")
 	death_section <- build_deaths_summary(adsl)
 
 	# Section 2.9: Time to Event
-	cli::cli_progress_step("Building Time to Event Analysis (KM Plot)")
+	message("Building Time to Event Analysis (KM Plot)")
 	km_section <- build_time_to_event(adsl, adae)
 
 	# Combine sections
@@ -106,7 +102,7 @@ generate_safety_report <- function(
 	sections <- Filter(Negate(is.null), sections)
 
 	# Create report
-	cli::cli_progress_step("Assembling report")
+	message("Assembling report")
 	report <- ClinicalReport(
 		study_id = "CDISCPILOT01",
 		study_title = "CDISC Pilot Study - Safety Report",
@@ -120,10 +116,10 @@ generate_safety_report <- function(
 	)
 
 	# Write to file
-	cli::cli_progress_step("Writing to {output_path}")
+	message(paste0("Writing to ", output_path))
 	generate_word(report, path = output_path)
 
-	cli::cli_alert_success("Safety report generated: {output_path}")
+	message(paste0("Safety report generated: ", output_path))
 
 	invisible(report)
 }
@@ -192,10 +188,10 @@ build_time_to_event <- function(adsl, adae) {
 		} else {
 			# Default to 100 days when treatment duration cannot be calculated
 			# This is a conservative estimate for clinical trials
-			cli::cli_warn(c(
-				"Treatment duration (TRTDURD) not found and cannot be derived",
-				"i" = "Using default duration of 100 days for time-to-event analysis"
-			))
+			warning(
+				"Treatment duration (TRTDURD) not found and cannot be derived. Using default duration of 100 days for time-to-event analysis",
+				call. = FALSE
+			)
 			tte_data$TRTDURD <- 100
 		}
 	}

@@ -37,11 +37,9 @@ generate_efficacy_report <- function(
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
-		cli::cli_abort(
-			c(
-				"Package {.pkg pharmaverseadam} is required",
-				"i" = "Install with: install.packages('pharmaverseadam')"
-			)
+		stop(
+			"Package pharmaverseadam is required. Install with: install.packages('pharmaverseadam')",
+			call. = FALSE
 		)
 	}
 
@@ -49,7 +47,7 @@ generate_efficacy_report <- function(
 	advs <- pharmaverseadam::advs
 	adlb <- pharmaverseadam::adlb
 
-	cli::cli_h1("Generating Efficacy Report")
+	message("\n=== Generating Efficacy Report ===\n")
 
 	# Get treatment counts for denominators
 	trt_n <- adsl |>
@@ -58,7 +56,7 @@ generate_efficacy_report <- function(
 		dplyr::summarise(N = dplyr::n(), .groups = "drop")
 
 	# Section 3.1: Primary Endpoint Summary
-	cli::cli_progress_step("Building Primary Endpoint Summary (Table 3.1)")
+	message("Building Primary Endpoint Summary (Table 3.1)")
 	primary_content <- create_primary_endpoint_table(advs, trt_n)
 	primary_section <- ReportSection(
 		title = "Primary Endpoint Analysis",
@@ -67,7 +65,7 @@ generate_efficacy_report <- function(
 	)
 
 	# Section 3.2: Change from Baseline
-	cli::cli_progress_step("Building Change from Baseline (Table 3.2)")
+	message("Building Change from Baseline (Table 3.2)")
 	cfb_content <- create_cfb_summary_table(advs, trt_n)
 	cfb_section <- ReportSection(
 		title = "Change from Baseline Analysis",
@@ -76,7 +74,7 @@ generate_efficacy_report <- function(
 	)
 
 	# Section 3.3: Vital Signs by Visit
-	cli::cli_progress_step("Building Vital Signs by Visit (Table 3.3)")
+	message("Building Vital Signs by Visit (Table 3.3)")
 	vs_content <- create_vs_by_visit_table(advs, trt_n)
 	vs_section <- ReportSection(
 		title = "Vital Signs by Study Visit",
@@ -85,7 +83,7 @@ generate_efficacy_report <- function(
 	)
 
 	# Section 3.4: Laboratory Parameters
-	cli::cli_progress_step("Building Laboratory Parameters (Table 3.4)")
+	message("Building Laboratory Parameters (Table 3.4)")
 	lab_content <- create_lab_summary_table(adlb, trt_n)
 	lab_section <- ReportSection(
 		title = "Laboratory Parameters",
@@ -94,7 +92,7 @@ generate_efficacy_report <- function(
 	)
 
 	# Section 3.5: Laboratory Shift Table
-	cli::cli_progress_step("Building Laboratory Shift Table (Table 3.5)")
+	message("Building Laboratory Shift Table (Table 3.5)")
 	shift_content <- create_lab_shift_table(adlb, trt_n)
 	shift_section <- ReportSection(
 		title = "Laboratory Shift Analysis",
@@ -103,7 +101,7 @@ generate_efficacy_report <- function(
 	)
 
 	# Section 3.6: Subgroup Analysis
-	cli::cli_progress_step("Building Subgroup Analysis (Table 3.6)")
+	message("Building Subgroup Analysis (Table 3.6)")
 	subgroup_content <- create_subgroup_analysis_table(adsl, advs)
 	subgroup_section <- ReportSection(
 		title = "Subgroup Analyses",
@@ -122,7 +120,7 @@ generate_efficacy_report <- function(
 	)
 
 	# Create report
-	cli::cli_progress_step("Assembling report")
+	message("Assembling report")
 	report <- ClinicalReport(
 		study_id = "CDISCPILOT01",
 		study_title = "CDISC Pilot Study - Efficacy Report",
@@ -136,10 +134,10 @@ generate_efficacy_report <- function(
 	)
 
 	# Write to file
-	cli::cli_progress_step("Writing to {output_path}")
+	message(paste0("Writing to ", output_path))
 	generate_word(report, path = output_path)
 
-	cli::cli_alert_success("Efficacy report generated: {output_path}")
+	message(paste0("Efficacy report generated: ", output_path))
 
 	invisible(report)
 }

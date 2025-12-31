@@ -152,7 +152,7 @@ apply_format <- function(spec, x, align = TRUE) {
 	}
 
 	if (!S7::S7_inherits(spec, FormatSpec)) {
-		stop("'spec' must be a FormatSpec or pattern string", call. = FALSE)
+		ph_abort("'spec' must be a FormatSpec or pattern string")
 	}
 
 	# Parse pattern

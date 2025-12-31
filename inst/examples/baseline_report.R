@@ -39,11 +39,9 @@ generate_baseline_report <- function(
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
-		cli::cli_abort(
-			c(
-				"Package {.pkg pharmaverseadam} is required",
-				"i" = "Install with: install.packages('pharmaverseadam')"
-			)
+		stop(
+			"Package 'pharmaverseadam' is required. Install with: install.packages('pharmaverseadam')",
+			call. = FALSE
 		)
 	}
 
@@ -51,10 +49,10 @@ generate_baseline_report <- function(
 	adcm <- pharmaverseadam::adcm
 	admh <- pharmaverseadam::admh
 
-	cli::cli_h1("Generating Baseline Characteristics Report")
+	message("\n=== Generating Baseline Characteristics Report ===\n")
 
 	# Create ADaMData wrappers
-	cli::cli_progress_step("Wrapping ADaM datasets")
+	message("Wrapping ADaM datasets")
 	adsl_data <- ADaMData(
 		data = adsl,
 		domain = "ADSL",
@@ -63,7 +61,7 @@ generate_baseline_report <- function(
 	)
 
 	# Section 1.1: Demographics
-	cli::cli_progress_step("Building Demographics section (Table 1.1)")
+	message("Building Demographics section (Table 1.1)")
 	demo_content <- create_demographics_table(
 		adsl_data = adsl_data,
 		title = "Table 1.1: Demographics and Baseline Characteristics",
@@ -76,7 +74,7 @@ generate_baseline_report <- function(
 	)
 
 	# Section 1.2: Enrollment by Region
-	cli::cli_progress_step("Building Enrollment by Region (Table 1.2)")
+	message("Building Enrollment by Region (Table 1.2)")
 	region_content <- create_region_table(
 		adsl = adsl,
 		title = "Table 1.2: Enrollment by Region"
@@ -88,7 +86,7 @@ generate_baseline_report <- function(
 	)
 
 	# Section 1.3: Medical History
-	cli::cli_progress_step("Building Medical History section (Table 1.3)")
+	message("Building Medical History section (Table 1.3)")
 	mh_content <- create_medical_history_table(
 		adsl = adsl,
 		admh = admh,
@@ -101,9 +99,7 @@ generate_baseline_report <- function(
 	)
 
 	# Section 1.4: Concomitant Medications
-	cli::cli_progress_step(
-		"Building Concomitant Medications section (Table 1.4)"
-	)
+	message("Building Concomitant Medications section (Table 1.4)")
 	cm_content <- create_conmeds_table(
 		adsl = adsl,
 		adcm = adcm,
@@ -116,7 +112,7 @@ generate_baseline_report <- function(
 	)
 
 	# Section 1.5: Disposition
-	cli::cli_progress_step("Building Disposition section (Table 1.5)")
+	message("Building Disposition section (Table 1.5)")
 	disp_content <- create_disposition_table(
 		adsl = adsl,
 		title = "Table 1.5: Subject Disposition"
@@ -128,7 +124,7 @@ generate_baseline_report <- function(
 	)
 
 	# Section 1.6: Analysis Populations
-	cli::cli_progress_step("Building Analysis Populations section (Table 1.6)")
+	message("Building Analysis Populations section (Table 1.6)")
 	pop_content <- create_population_summary_table(
 		adsl = adsl,
 		title = "Table 1.6: Analysis Populations"
@@ -150,7 +146,7 @@ generate_baseline_report <- function(
 	)
 
 	# Create report
-	cli::cli_progress_step("Assembling report")
+	message("Assembling report")
 	report <- ClinicalReport(
 		study_id = "CDISCPILOT01",
 		study_title = "CDISC Pilot Study - Baseline Characteristics Report",
@@ -164,10 +160,10 @@ generate_baseline_report <- function(
 	)
 
 	# Write to file
-	cli::cli_progress_step("Writing to {output_path}")
+	message(paste0("Writing to ", output_path))
 	generate_word(report, path = output_path)
 
-	cli::cli_alert_success("Baseline report generated: {output_path}")
+	message(paste0("Baseline report generated: ", output_path))
 
 	invisible(report)
 }

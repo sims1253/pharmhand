@@ -95,12 +95,16 @@ format_pvalue <- function(p, digits = 3, threshold = 0.001) {
 
 #' @keywords internal
 ph_abort <- function(...) {
-	stop(..., call. = FALSE)
+	args <- list(...)
+	args$call. <- NULL
+	do.call(stop, args)
 }
 
 #' @keywords internal
 ph_warn <- function(...) {
-	warning(..., call. = FALSE)
+	args <- list(...)
+	args$call. <- NULL
+	do.call(warning, args)
 }
 
 #' @keywords internal
@@ -129,7 +133,7 @@ assert_character_scalar <- function(x, arg = deparse(substitute(x))) {
 
 #' @keywords internal
 assert_in_range <- function(x, lower, upper, arg = deparse(substitute(x))) {
-	if (x < lower || x > upper) {
+	if (x <= lower || x >= upper) {
 		ph_abort(sprintf("'%s' must be between %s and %s", arg, lower, upper))
 	}
 	invisible(x)

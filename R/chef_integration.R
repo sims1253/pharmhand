@@ -162,18 +162,13 @@ create_chef_endpoint <- function(
 	criteria = list()
 ) {
 	# Input validation
-	if (!is.character(name) || length(name) != 1 || nchar(name) == 0) {
-		ph_abort("'name' must be a non-empty character string")
-	}
+	assert_character_scalar(name, "name")
 
-	if (
-		!is.character(variable) || length(variable) != 1 || nchar(variable) == 0
-	) {
-		ph_abort("'variable' must be a non-empty character string")
-	}
+	assert_character_scalar(variable, "variable")
 
 	valid_types <- c("binary", "continuous", "tte", "count")
-	if (!is.character(type) || length(type) != 1 || !type %in% valid_types) {
+	assert_character_scalar(type, "type")
+	if (!type %in% valid_types) {
 		ph_abort(
 			sprintf("'type' must be one of: %s", paste(valid_types, collapse = ", "))
 		)

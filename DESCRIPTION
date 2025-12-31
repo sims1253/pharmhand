@@ -44,5 +44,6 @@ Remotes:
     hta-pharma/chefStats,
     hta-pharma/chefCriteria
 Config/testthat/edition: 3
+Config/testthat/parallel: true
 Config/Needs/website: tidyverse/tidytemplate
 VignetteBuilder: knitr

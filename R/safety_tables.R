@@ -101,16 +101,16 @@ create_ae_table <- function(
 
 	# Input validation
 	if (!type %in% c("deaths") && !is.data.frame(adae)) {
-		stop("'adae' must be a data frame", call. = FALSE)
+		assert_data_frame(adae, "adae")
 	}
 	if (type == "deaths" && !is.data.frame(adsl)) {
-		stop("'adsl' is required for type = 'deaths'", call. = FALSE)
+		assert_data_frame(adsl, "adsl")
 	}
 	if (type == "comparison" && !is.data.frame(adsl)) {
-		stop("'adsl' is required for type = 'comparison'", call. = FALSE)
+		ph_abort("'adsl' is required for type = 'comparison'", call. = FALSE)
 	}
 	if (type == "comparison" && is.null(ref_group)) {
-		stop("'ref_group' is required for type = 'comparison'", call. = FALSE)
+		ph_abort("'ref_group' is required for type = 'comparison'", call. = FALSE)
 	}
 
 	# Validate required columns when deriving trt_n from adae
@@ -269,7 +269,7 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 	overview_combined <- dplyr::bind_rows(categories)
 
 	if (nrow(overview_combined) == 0) {
-		warning("No adverse event data found matching criteria", call. = FALSE)
+		ph_warn("No adverse event data found matching criteria", call. = FALSE)
 		return(NULL)
 	}
 
@@ -752,18 +752,13 @@ calculate_ae_tte_data <- function(
 	soc,
 	trt_var = "TRT01P"
 ) {
-	# Input validation
-	if (!is.data.frame(adsl)) {
-		stop("'adsl' must be a data frame", call. = FALSE)
-	}
-	if (!is.data.frame(adae)) {
-		stop("'adae' must be a data frame", call. = FALSE)
-	}
+	assert_data_frame(adsl, "adsl")
+	assert_data_frame(adae, "adae")
 
 	adae_cols <- c("AEBODSYS", "TRTEMFL", "USUBJID", "ASTDY")
 	missing_adae <- setdiff(adae_cols, names(adae))
 	if (length(missing_adae) > 0) {
-		stop(
+		ph_abort(
 			paste0(
 				"'adae' is missing required column(s): ",
 				paste(missing_adae, collapse = ", ")
@@ -775,7 +770,7 @@ calculate_ae_tte_data <- function(
 	adsl_cols <- c("SAFFL", "USUBJID", trt_var)
 	missing_adsl <- setdiff(adsl_cols, names(adsl))
 	if (length(missing_adsl) > 0) {
-		stop(
+		ph_abort(
 			paste0(
 				"'adsl' is missing required column(s): ",
 				paste(missing_adsl, collapse = ", ")
@@ -805,7 +800,7 @@ calculate_ae_tte_data <- function(
 			tte_data$TRTDURD <- as.numeric(tte_data$TRTEDT - tte_data$TRTSDT) +
 				1
 		} else {
-			stop(
+			ph_abort(
 				paste0(
 					"Cannot calculate treatment duration for time-to-event analysis. ",
 					"TRTDURD, TRTEDT, and TRTSDT are all missing from the data"
@@ -1008,13 +1003,8 @@ create_ae_comparison_table <- function(
 	by <- match.arg(by)
 	sort_by <- match.arg(sort_by)
 
-	# Input validation
-	if (!is.data.frame(adae)) {
-		stop("'adae' must be a data frame", call. = FALSE)
-	}
-	if (!is.data.frame(adsl)) {
-		stop("'adsl' must be a data frame", call. = FALSE)
-	}
+	assert_data_frame(adae, "adae")
+	assert_data_frame(adsl, "adsl")
 
 	required_adae_cols <- c("TRTEMFL", "USUBJID", trt_var)
 	if (by == "soc") {
@@ -1024,7 +1014,7 @@ create_ae_comparison_table <- function(
 	}
 	missing_adae <- setdiff(required_adae_cols, names(adae))
 	if (length(missing_adae) > 0) {
-		stop(
+		ph_abort(
 			paste0(
 				"'adae' is missing required column(s): ",
 				paste(missing_adae, collapse = ", ")
@@ -1036,7 +1026,7 @@ create_ae_comparison_table <- function(
 	required_adsl_cols <- c("SAFFL", "USUBJID", trt_var)
 	missing_adsl <- setdiff(required_adsl_cols, names(adsl))
 	if (length(missing_adsl) > 0) {
-		stop(
+		ph_abort(
 			paste0(
 				"'adsl' is missing required column(s): ",
 				paste(missing_adsl, collapse = ", ")
@@ -1053,7 +1043,7 @@ create_ae_comparison_table <- function(
 	# Validate ref_group
 	trt_levels <- unique(trt_n[[trt_var]])
 	if (!ref_group %in% trt_levels) {
-		stop(
+		ph_abort(
 			paste0(
 				"'ref_group' must be one of the treatment groups. Available groups: ",
 				paste(trt_levels, collapse = ", "),
@@ -1124,7 +1114,7 @@ create_ae_comparison_table <- function(
 	}
 
 	if (nrow(ae_counts) == 0) {
-		warning(
+		ph_warn(
 			"No adverse events meet the specified threshold criteria",
 			call. = FALSE
 		)
