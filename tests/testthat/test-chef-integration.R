@@ -118,15 +118,27 @@ test_that("run_chef_pipeline returns correct output type", {
 	)
 
 	# Test results output
-	result <- run_chef_pipeline(adam_data, endpoints, output_type = "results")
+	result <- suppressWarnings(run_chef_pipeline(
+		adam_data,
+		endpoints,
+		output_type = "results"
+	))
 	expect_true(S7::S7_inherits(result, AnalysisResults))
 
 	# Test table output
-	result <- run_chef_pipeline(adam_data, endpoints, output_type = "table")
+	result <- suppressWarnings(run_chef_pipeline(
+		adam_data,
+		endpoints,
+		output_type = "table"
+	))
 	expect_true(S7::S7_inherits(result, ClinicalTable))
 
 	# Test report output
-	result <- run_chef_pipeline(adam_data, endpoints, output_type = "report")
+	result <- suppressWarnings(run_chef_pipeline(
+		adam_data,
+		endpoints,
+		output_type = "report"
+	))
 	expect_true(S7::S7_inherits(result, ClinicalReport))
 })
 

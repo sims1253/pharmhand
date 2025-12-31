@@ -37,21 +37,19 @@ generate_reference_report <- function(
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
-		cli::cli_abort(
-			c(
-				"Package {.pkg pharmaverseadam} is required",
-				"i" = "Install with: install.packages('pharmaverseadam')"
-			)
+		stop(
+			"Package pharmaverseadam is required. Install with: install.packages('pharmaverseadam')",
+			call. = FALSE
 		)
 	}
 
 	adsl <- pharmaverseadam::adsl
 	adae <- pharmaverseadam::adae
 
-	cli::cli_h1("Generating Reference Report")
+	message("\n=== Generating Reference Report ===\n")
 
 	# Create ADaMData wrappers
-	cli::cli_progress_step("Wrapping ADaM datasets")
+	message("Wrapping ADaM datasets")
 	adsl_data <- ADaMData(
 		data = adsl,
 		domain = "ADSL",
@@ -67,19 +65,19 @@ generate_reference_report <- function(
 	)
 
 	# Section 1: Demographics
-	cli::cli_progress_step("Building Demographics section")
+	message("Building Demographics section")
 	demo_section <- build_demographics_section(adsl_data)
 
 	# Section 2: Disposition
-	cli::cli_progress_step("Building Disposition section")
+	message("Building Disposition section")
 	disp_section <- build_disposition_section(adsl_data)
 
 	# Section 3: Adverse Events
-	cli::cli_progress_step("Building Adverse Events section")
+	message("Building Adverse Events section")
 	ae_section <- build_ae_section(adae_data, adsl_data)
 
 	# Section 4: SAE Summary
-	cli::cli_progress_step("Building SAE section")
+	message("Building SAE section")
 	sae_section <- build_sae_section(adae_data, adsl_data)
 
 	# Combine sections
@@ -87,13 +85,13 @@ generate_reference_report <- function(
 
 	# Add HTA section if requested
 	if (include_hta) {
-		cli::cli_progress_step("Building HTA section")
+		message("Building HTA section")
 		hta_section <- build_hta_section(adsl_data, adae_data)
 		sections <- c(sections, list(hta_section))
 	}
 
 	# Create report
-	cli::cli_progress_step("Assembling report")
+	message("Assembling report")
 	report <- ClinicalReport(
 		study_id = "CDISCPILOT01",
 		study_title = "CDISC Pilot Study - Reference Report",
@@ -106,10 +104,10 @@ generate_reference_report <- function(
 	)
 
 	# Write to file
-	cli::cli_progress_step("Writing to {output_path}")
+	message(paste0("Writing to ", output_path))
 	generate_word(report, path = output_path)
 
-	cli::cli_alert_success("Reference report generated: {output_path}")
+	message(paste0("Reference report generated: ", output_path))
 
 	invisible(report)
 }

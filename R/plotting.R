@@ -77,10 +77,10 @@ create_km_plot <- function(
 	base_size = 11
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
-		stop("Package 'survival' is required for KM plots", call. = FALSE)
+		ph_abort("Package 'survival' is required for KM plots", call. = FALSE)
 	}
 	if (!requireNamespace("ggplot2", quietly = TRUE)) {
-		stop("Package 'ggplot2' is required for KM plots", call. = FALSE)
+		ph_abort("Package 'ggplot2' is required for KM plots", call. = FALSE)
 	}
 
 	# Get filtered data if ADaMData
@@ -244,7 +244,7 @@ create_km_plot <- function(
 			tryCatch(
 				grDevices::palette.colors(n = NULL, palette = opt_palette),
 				error = function(e) {
-					warning(
+					ph_warn(
 						paste0("Palette '", opt_palette, "' not found, using 'Okabe-Ito'"),
 						call. = FALSE
 					)
@@ -294,7 +294,7 @@ create_km_plot <- function(
 
 	if (risk_table) {
 		if (!requireNamespace("patchwork", quietly = TRUE)) {
-			warning(
+			ph_warn(
 				"Package 'patchwork' required for risk tables. Returning plot only.",
 				call. = FALSE
 			)

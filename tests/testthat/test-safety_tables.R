@@ -270,7 +270,7 @@ test_that("create_ae_table works without adsl (derives trt_n from adae)", {
 test_that("create_ae_table validates input for deaths type", {
 	expect_error(
 		create_ae_table(adae = NULL, adsl = NULL, type = "deaths"),
-		"adsl.*required"
+		"'adsl' must be a data frame"
 	)
 })
 

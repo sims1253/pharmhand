@@ -26,13 +26,8 @@ create_primary_endpoint_table <- function(
 	title = "Primary Endpoint Summary",
 	autofit = TRUE
 ) {
-	# Input validation
-	if (!is.data.frame(advs)) {
-		stop("'advs' must be a data frame", call. = FALSE)
-	}
-	if (!is.data.frame(trt_n)) {
-		stop("'trt_n' must be a data frame", call. = FALSE)
-	}
+	assert_data_frame(advs, "advs")
+	assert_data_frame(trt_n, "trt_n")
 
 	# Filter and summarize
 	primary_data <- advs |>
@@ -134,13 +129,8 @@ create_cfb_summary_table <- function(
 	title = "Change from Baseline Summary",
 	autofit = TRUE
 ) {
-	# Input validation
-	if (!is.data.frame(advs)) {
-		stop("'advs' must be a data frame", call. = FALSE)
-	}
-	if (!is.data.frame(trt_n)) {
-		stop("'trt_n' must be a data frame", call. = FALSE)
-	}
+	assert_data_frame(advs, "advs")
+	assert_data_frame(trt_n, "trt_n")
 
 	cfb_data <- advs |>
 		dplyr::filter(
@@ -211,13 +201,8 @@ create_vs_by_visit_table <- function(
 	title = "Vital Signs by Visit",
 	autofit = TRUE
 ) {
-	# Input validation
-	if (!is.data.frame(advs)) {
-		ph_abort("'advs' must be a data frame")
-	}
-	if (!is.data.frame(trt_n)) {
-		ph_abort("'trt_n' must be a data frame")
-	}
+	assert_data_frame(advs, "advs")
+	assert_data_frame(trt_n, "trt_n")
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
 	missing_cols <- setdiff(required_cols, names(advs))
@@ -492,18 +477,7 @@ create_subgroup_analysis_table <- function(
 		label <- subgroups[[var_name]]
 
 		# Check if subgroup variable exists in data
-		if (!var_name %in% names(subgroup_data_raw)) {
-			ph_abort(
-				sprintf(
-					paste0(
-						"Subgroup variable '%s' not found in advs. ",
-						"Consider merging subgroup variables from adsl ",
-						"or ensuring they are present in the input data"
-					),
-					var_name
-				)
-			)
-		}
+		assert_column_exists(subgroup_data_raw, var_name, "subgroup_data_raw")
 
 		res <- subgroup_data_raw |>
 			dplyr::group_by(

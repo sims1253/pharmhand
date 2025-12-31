@@ -827,13 +827,16 @@ describe("add_smd_to_table()", {
 	})
 
 	it("errors when all variables are missing", {
-		expect_error(
-			add_smd_to_table(
-				data = test_data,
-				trt_var = "TRT01P",
-				vars = c("NONEXISTENT1", "NONEXISTENT2")
+		expect_warning(
+			expect_error(
+				add_smd_to_table(
+					data = test_data,
+					trt_var = "TRT01P",
+					vars = c("NONEXISTENT1", "NONEXISTENT2")
+				),
+				"No valid variables"
 			),
-			"No valid variables"
+			"Variables not found in data: NONEXISTENT1, NONEXISTENT2"
 		)
 	})
 

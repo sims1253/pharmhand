@@ -154,27 +154,20 @@ calculate_smd <- function(
 	method <- match.arg(method)
 
 	# Input validation
-	if (!is.numeric(mean1) || length(mean1) != 1 || is.na(mean1)) {
-		stop("'mean1' must be a single numeric value", call. = FALSE)
+	assert_numeric_scalar(mean1, "mean1")
+	assert_numeric_scalar(mean2, "mean2")
+	assert_positive(sd1, "sd1")
+	assert_positive(sd2, "sd2")
+	assert_numeric_scalar(n1, "n1")
+	if (n1 < 2) {
+		ph_abort("'n1' must be a single integer >= 2")
 	}
-	if (!is.numeric(mean2) || length(mean2) != 1 || is.na(mean2)) {
-		stop("'mean2' must be a single numeric value", call. = FALSE)
+	assert_numeric_scalar(n2, "n2")
+	if (n2 < 2) {
+		ph_abort("'n2' must be a single integer >= 2")
 	}
-	if (!is.numeric(sd1) || length(sd1) != 1 || is.na(sd1) || sd1 <= 0) {
-		stop("'sd1' must be a single positive numeric value", call. = FALSE)
-	}
-	if (!is.numeric(sd2) || length(sd2) != 1 || is.na(sd2) || sd2 <= 0) {
-		stop("'sd2' must be a single positive numeric value", call. = FALSE)
-	}
-	if (!is.numeric(n1) || length(n1) != 1 || is.na(n1) || n1 < 2) {
-		stop("'n1' must be a single integer >= 2", call. = FALSE)
-	}
-	if (!is.numeric(n2) || length(n2) != 1 || is.na(n2) || n2 < 2) {
-		stop("'n2' must be a single integer >= 2", call. = FALSE)
-	}
-	if (!is.numeric(conf_level) || conf_level <= 0 || conf_level >= 1) {
-		stop("'conf_level' must be between 0 and 1", call. = FALSE)
-	}
+	assert_numeric_scalar(conf_level, "conf_level")
+	assert_in_range(conf_level, 0, 1, "conf_level")
 
 	n1 <- as.integer(n1)
 	n2 <- as.integer(n2)
@@ -186,10 +179,7 @@ calculate_smd <- function(
 
 	# Handle edge case where pooled_sd is 0 or very small
 	if (pooled_sd < .Machine$double.eps) {
-		warning(
-			"Pooled standard deviation is essentially zero. Returning NA.",
-			call. = FALSE
-		)
+		ph_warn("Pooled standard deviation is essentially zero. Returning NA.")
 		return(list(
 			smd = NA_real_,
 			ci_lower = NA_real_,
@@ -300,26 +290,25 @@ calculate_smd_binary <- function(
 
 	# Input validation
 	if (!is.numeric(p1) || length(p1) != 1 || is.na(p1)) {
-		stop("'p1' must be a single numeric value", call. = FALSE)
+		ph_abort("'p1' must be a single numeric value")
 	}
 	if (!is.numeric(p2) || length(p2) != 1 || is.na(p2)) {
-		stop("'p2' must be a single numeric value", call. = FALSE)
+		ph_abort("'p2' must be a single numeric value")
 	}
 	if (p1 < 0 || p1 > 1) {
-		stop("'p1' must be between 0 and 1", call. = FALSE)
+		ph_abort("'p1' must be between 0 and 1")
 	}
 	if (p2 < 0 || p2 > 1) {
-		stop("'p2' must be between 0 and 1", call. = FALSE)
+		ph_abort("'p2' must be between 0 and 1")
 	}
 	if (!is.numeric(n1) || length(n1) != 1 || is.na(n1) || n1 < 2) {
-		stop("'n1' must be a single integer >= 2", call. = FALSE)
+		ph_abort("'n1' must be a single integer >= 2")
 	}
 	if (!is.numeric(n2) || length(n2) != 1 || is.na(n2) || n2 < 2) {
-		stop("'n2' must be a single integer >= 2", call. = FALSE)
+		ph_abort("'n2' must be a single integer >= 2")
 	}
-	if (!is.numeric(conf_level) || conf_level <= 0 || conf_level >= 1) {
-		stop("'conf_level' must be between 0 and 1", call. = FALSE)
-	}
+	assert_numeric_scalar(conf_level, "conf_level")
+	assert_in_range(conf_level, 0, 1, "conf_level")
 
 	n1 <- as.integer(n1)
 	n2 <- as.integer(n2)
@@ -361,7 +350,7 @@ calculate_smd_binary <- function(
 			p_pooled < .Machine$double.eps ||
 				p_pooled > 1 - .Machine$double.eps
 		) {
-			warning("Pooled proportion is at boundary. Returning NA.", call. = FALSE)
+			ph_warn("Pooled proportion is at boundary. Returning NA.")
 			return(list(
 				smd = NA_real_,
 				ci_lower = NA_real_,
@@ -461,29 +450,21 @@ calculate_smd_from_data <- function(
 ) {
 	method <- match.arg(method)
 
-	# Input validation
-	if (!is.data.frame(data)) {
-		stop("'data' must be a data frame", call. = FALSE)
-	}
-	if (!var %in% names(data)) {
-		stop(paste0("Variable '", var, "' not found in data"), call. = FALSE)
-	}
-	if (!trt_var %in% names(data)) {
-		stop(
-			paste0("Treatment variable '", trt_var, "' not found in data"),
-			call. = FALSE
-		)
-	}
+	assert_data_frame(data, "data")
+	assert_column_exists(data, var, "data")
+	assert_column_exists(data, trt_var, "data")
 
 	# Get treatment groups
 	trt_vals <- unique(data[[trt_var]])
 	trt_vals <- trt_vals[!is.na(trt_vals)]
 
 	if (length(trt_vals) < 2) {
-		stop(
-			paste0("Treatment variable '", trt_var, "' must have at least 2 groups"),
-			call. = FALSE
-		)
+		ph_abort(paste(
+			"Treatment variable '",
+			trt_var,
+			"' must have at least 2 groups",
+			sep = ""
+		))
 	}
 
 	if (is.null(ref_group)) {
@@ -495,10 +476,14 @@ calculate_smd_from_data <- function(
 	}
 
 	if (!ref_group %in% trt_vals) {
-		stop(
-			paste0("Reference group '", ref_group, "' not found in '", trt_var, "'"),
-			call. = FALSE
-		)
+		ph_abort(paste(
+			"Reference group '",
+			ref_group,
+			"' not found in '",
+			trt_var,
+			"'",
+			sep = ""
+		))
 	}
 
 	# Get comparison group (first non-reference group)
@@ -512,10 +497,12 @@ calculate_smd_from_data <- function(
 	n2 <- nrow(data_ref)
 
 	if (n1 < 2 || n2 < 2) {
-		warning(
-			paste0("Insufficient observations in one or both groups for '", var, "'"),
-			call. = FALSE
-		)
+		ph_warn(paste(
+			"Insufficient observations in one or both groups for '",
+			var,
+			"'",
+			sep = ""
+		))
 		return(list(
 			smd = NA_real_,
 			ci_lower = NA_real_,
@@ -695,35 +682,23 @@ add_smd_to_table <- function(
 	conf_level = 0.95,
 	flag_symbol = "*"
 ) {
-	# Input validation
-	if (!is.data.frame(data)) {
-		stop("'data' must be a data frame", call. = FALSE)
-	}
-	if (!trt_var %in% names(data)) {
-		stop(
-			paste0("Treatment variable '", trt_var, "' not found in data"),
-			call. = FALSE
-		)
-	}
-	if (!is.numeric(threshold) || threshold <= 0) {
-		stop("'threshold' must be a positive number", call. = FALSE)
-	}
+	assert_data_frame(data, "data")
+	assert_column_exists(data, trt_var, "data")
+	assert_positive(threshold, "threshold")
 
 	# Check which variables exist
 	missing_vars <- vars[!vars %in% names(data)]
 	if (length(missing_vars) > 0) {
-		warning(
-			paste0(
-				"Variables not found in data: ",
-				paste(missing_vars, collapse = ", ")
-			),
-			call. = FALSE
-		)
+		ph_warn(paste(
+			"Variables not found in data: ",
+			paste(missing_vars, collapse = ", "),
+			sep = ""
+		))
 		vars <- vars[vars %in% names(data)]
 	}
 
 	if (length(vars) == 0) {
-		stop("No valid variables to calculate SMD for", call. = FALSE)
+		ph_abort("No valid variables to calculate SMD for")
 	}
 
 	# Calculate SMD for each variable
@@ -861,23 +836,13 @@ assess_baseline_balance <- function(
 	continuous_method <- match.arg(continuous_method)
 	categorical_method <- match.arg(categorical_method)
 
-	# Input validation
-	if (!is.data.frame(data)) {
-		stop("'data' must be a data frame", call. = FALSE)
-	}
-	if (!trt_var %in% names(data)) {
-		stop(
-			paste0("Treatment variable '", trt_var, "' not found in data"),
-			call. = FALSE
-		)
-	}
-	if (!is.numeric(threshold) || threshold <= 0) {
-		stop("'threshold' must be a positive number", call. = FALSE)
-	}
+	assert_data_frame(data, "data")
+	assert_column_exists(data, trt_var, "data")
+	assert_positive(threshold, "threshold")
 
 	all_vars <- c(continuous_vars, categorical_vars)
 	if (length(all_vars) == 0) {
-		stop("At least one variable must be specified", call. = FALSE)
+		ph_abort("At least one variable must be specified")
 	}
 
 	# Get treatment groups
@@ -902,7 +867,7 @@ assess_baseline_balance <- function(
 	cont_results <- if (length(continuous_vars) > 0) {
 		lapply(continuous_vars, function(v) {
 			if (!v %in% names(data)) {
-				warning(paste0("Variable '", v, "' not found, skipping"), call. = FALSE)
+				ph_warn(paste0("Variable '", v, "' not found, skipping"), call. = FALSE)
 				return(NULL)
 			}
 			smd_result <- calculate_smd_from_data(
@@ -932,7 +897,7 @@ assess_baseline_balance <- function(
 	cat_results <- if (length(categorical_vars) > 0) {
 		lapply(categorical_vars, function(v) {
 			if (!v %in% names(data)) {
-				warning(paste0("Variable '", v, "' not found, skipping"), call. = FALSE)
+				ph_warn(paste0("Variable '", v, "' not found, skipping"), call. = FALSE)
 				return(NULL)
 			}
 			smd_result <- calculate_smd_from_data(
@@ -963,7 +928,7 @@ assess_baseline_balance <- function(
 	all_results <- all_results[!sapply(all_results, is.null)]
 
 	if (length(all_results) == 0) {
-		stop("No valid variables to assess", call. = FALSE)
+		ph_abort("No valid variables to assess")
 	}
 
 	smd_results <- do.call(rbind, all_results)
@@ -1345,13 +1310,13 @@ adjust_pvalues <- function(
 
 	# Input validation
 	if (!is.numeric(p)) {
-		stop("'p' must be a numeric vector", call. = FALSE)
+		ph_abort("'p' must be a numeric vector")
 	}
 	if (any(p < 0 | p > 1, na.rm = TRUE)) {
-		stop("All p-values must be between 0 and 1", call. = FALSE)
+		ph_abort("All p-values must be between 0 and 1")
 	}
 	if (!is.numeric(alpha) || length(alpha) != 1 || alpha <= 0 || alpha >= 1) {
-		stop("'alpha' must be a single number between 0 and 1", call. = FALSE)
+		ph_abort("'alpha' must be a single number between 0 and 1")
 	}
 
 	# Handle "fdr" as alias for "BH"
@@ -1432,25 +1397,25 @@ calculate_nnt <- function(
 
 	# Input validation
 	if (!is.numeric(rd) || length(rd) != 1) {
-		stop("'rd' must be a single numeric value", call. = FALSE)
+		ph_abort("'rd' must be a single numeric value")
 	}
 	if (abs(rd) > 1) {
-		stop("'rd' must be between -1 and 1", call. = FALSE)
+		ph_abort("'rd' must be between -1 and 1")
 	}
 	if (!is.null(rd_lower)) {
 		if (!is.numeric(rd_lower) || length(rd_lower) != 1) {
-			stop("'rd_lower' must be a single numeric value", call. = FALSE)
+			ph_abort("'rd_lower' must be a single numeric value")
 		}
 		if (rd_lower > rd) {
-			stop("'rd_lower' must be less than or equal to 'rd'", call. = FALSE)
+			ph_abort("'rd_lower' must be less than or equal to 'rd'")
 		}
 	}
 	if (!is.null(rd_upper)) {
 		if (!is.numeric(rd_upper) || length(rd_upper) != 1) {
-			stop("'rd_upper' must be a single numeric value", call. = FALSE)
+			ph_abort("'rd_upper' must be a single numeric value")
 		}
 		if (rd_upper < rd) {
-			stop("'rd_upper' must be greater than or equal to 'rd'", call. = FALSE)
+			ph_abort("'rd_upper' must be greater than or equal to 'rd'")
 		}
 	}
 	# For benefit outcomes, negative RD means treatment is better (fewer events)
