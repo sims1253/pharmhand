@@ -321,9 +321,8 @@ and other graphics.
 - [`save_plot_as()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_plot_as.md)
   : Save ClinicalPlot to file
 - [`save_as_png()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_as_png.md)
-  : Save ClinicalTable as PNG
-- [`save_as_pdf()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_as_pdf.md)
-  : Save ClinicalTable as PDF
+  : Save ClinicalTable as PNG Saves a ClinicalTable's flextable to a PNG
+  file.
 
 ## Formatting
 

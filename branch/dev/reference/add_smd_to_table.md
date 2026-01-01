@@ -14,6 +14,7 @@ add_smd_to_table(
   ref_group = NULL,
   threshold = 0.1,
   conf_level = 0.95,
+  continuous_threshold = 10,
   flag_symbol = "*"
 )
 ```
@@ -45,6 +46,11 @@ add_smd_to_table(
 - conf_level:
 
   Numeric. Confidence level for CI (default: 0.95)
+
+- continuous_threshold:
+
+  Integer. Minimum number of unique values to treat numeric variables as
+  continuous (default: 10).
 
 - flag_symbol:
 

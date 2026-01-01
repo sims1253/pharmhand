@@ -13,7 +13,8 @@ calculate_smd_from_data(
   trt_var,
   ref_group = NULL,
   method = c("auto", "cohens_d", "hedges_g", "arcsine", "logit", "raw"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  continuous_threshold = 10
 )
 ```
 
@@ -52,6 +53,11 @@ calculate_smd_from_data(
 
   Numeric. Confidence level for CI (default: 0.95)
 
+- continuous_threshold:
+
+  Integer. Minimum number of unique values to treat numeric variables as
+  continuous (default: 10).
+
 ## Value
 
 A named list with components:
@@ -73,10 +79,11 @@ A named list with components:
 
 When `method = "auto"`:
 
-- Numeric variables with \> 10 unique values are treated as continuous
-  (using Cohen's d)
+- Numeric variables with \> continuous_threshold unique values are
+  treated as continuous (using Cohen's d)
 
-- Numeric variables with \<= 10 unique values are treated as categorical
+- Numeric variables with \<= continuous_threshold unique values are
+  treated as categorical
 
 - Character/factor variables are treated as categorical (using arcsine)
 

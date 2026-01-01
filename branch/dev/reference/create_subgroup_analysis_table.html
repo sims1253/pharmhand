@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.7.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.8.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,8 @@
 
 
 <dl><dt id="arg-adsl">adsl<a class="anchor" aria-label="anchor" href="#arg-adsl"></a></dt>
-<dd><p>ADSL data frame</p></dd>
+<dd><p>ADSL data frame. Subgroup variables can be sourced from adsl if
+not present in advs. Must contain USUBJID column for joining.</p></dd>
 
 
 <dt id="arg-advs">advs<a class="anchor" aria-label="anchor" href="#arg-advs"></a></dt>
@@ -87,7 +88,9 @@
 
 
 <dt id="arg-subgroups">subgroups<a class="anchor" aria-label="anchor" href="#arg-subgroups"></a></dt>
-<dd><p>List of subgroup variables (e.g. list(AGEGR1="Age Group"))</p></dd>
+<dd><p>Named list of subgroup variables with display labels
+(e.g. list(AGEGR1="Age Group", SEX="Sex")). Variables can come from
+advs or adsl (joined by USUBJID).</p></dd>
 
 
 <dt id="arg-trt-var">trt_var<a class="anchor" aria-label="anchor" href="#arg-trt-var"></a></dt>

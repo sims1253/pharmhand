@@ -33,6 +33,5 @@ Formatted content in the specified format
 if (FALSE) { # \dontrun{
 # Convert table to different formats
 png_data <- format_content(clinical_table, "png")
-pdf_data <- format_content(clinical_table, "pdf")
 } # }
 ```

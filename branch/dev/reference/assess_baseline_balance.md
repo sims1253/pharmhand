@@ -16,6 +16,7 @@ assess_baseline_balance(
   ref_group = NULL,
   threshold = 0.1,
   conf_level = 0.95,
+  continuous_threshold = 10,
   continuous_method = c("cohens_d", "hedges_g"),
   categorical_method = c("arcsine", "logit", "raw")
 )
@@ -50,6 +51,11 @@ assess_baseline_balance(
 - conf_level:
 
   Numeric. Confidence level for CIs (default: 0.95).
+
+- continuous_threshold:
+
+  Integer. Minimum number of unique values to treat numeric variables as
+  continuous (default: 10).
 
 - continuous_method:
 

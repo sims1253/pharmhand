@@ -13,7 +13,7 @@ data formatted for Love plot visualization."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.7.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.8.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,7 @@ data formatted for Love plot visualization.</p>
 <span>  ref_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  continuous_threshold <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  continuous_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohens_d"</span>, <span class="st">"hedges_g"</span><span class="op">)</span>,</span>
 <span>  categorical_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arcsine"</span>, <span class="st">"logit"</span>, <span class="st">"raw"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -106,6 +107,11 @@ data formatted for Love plot visualization.</p>
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
 <dd><p>Numeric. Confidence level for CIs (default: 0.95).</p></dd>
+
+
+<dt id="arg-continuous-threshold">continuous_threshold<a class="anchor" aria-label="anchor" href="#arg-continuous-threshold"></a></dt>
+<dd><p>Integer. Minimum number of unique values to treat
+numeric variables as continuous (default: 10).</p></dd>
 
 
 <dt id="arg-continuous-method">continuous_method<a class="anchor" aria-label="anchor" href="#arg-continuous-method"></a></dt>

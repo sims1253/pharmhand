@@ -21,7 +21,8 @@ create_subgroup_analysis_table(
 
 - adsl:
 
-  ADSL data frame
+  ADSL data frame. Subgroup variables can be sourced from adsl if not
+  present in advs. Must contain USUBJID column for joining.
 
 - advs:
 
@@ -37,7 +38,9 @@ create_subgroup_analysis_table(
 
 - subgroups:
 
-  List of subgroup variables (e.g. list(AGEGR1="Age Group"))
+  Named list of subgroup variables with display labels (e.g.
+  list(AGEGR1="Age Group", SEX="Sex")). Variables can come from advs or
+  adsl (joined by USUBJID).
 
 - trt_var:
 

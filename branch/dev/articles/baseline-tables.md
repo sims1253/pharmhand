@@ -366,7 +366,7 @@ for a complete assessment of multiple variables:
 balance <- assess_baseline_balance(
   data = adsl,
   trt_var = "TRT01P",
-  continuous_vars = c("AGE", "WEIGHTBL"),
+  continuous_vars = c("AGE"),
   categorical_vars = c("SEX", "RACE", "ETHNIC"),
   ref_group = "Placebo",
   threshold = 0.1  # Standard threshold for imbalance

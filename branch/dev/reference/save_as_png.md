@@ -1,6 +1,7 @@
-# Save ClinicalTable as PNG
+# Save ClinicalTable as PNG Saves a ClinicalTable's flextable to a PNG file.
 
-Saves a ClinicalTable's flextable to a PNG file.
+Save ClinicalTable as PNG Saves a ClinicalTable's flextable to a PNG
+file.
 
 ## Usage
 
