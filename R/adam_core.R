@@ -203,7 +203,7 @@ calculate_baseline <- function(data, vars) {
 	# Separate numeric and categorical analysis for robustness
 	num_vars <- df |>
 		dplyr::select(dplyr::all_of(vars)) |>
-		dplyr::select(where(is.numeric)) |>
+		dplyr::select(dplyr::where(is.numeric)) |>
 		names()
 	cat_vars <- setdiff(vars, num_vars)
 

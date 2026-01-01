@@ -151,6 +151,30 @@ test_that("create_subgroup_analysis_table pulls subgroup vars from adsl", {
 	expect_true(any(tbl@data$Subgroup == "Sex"))
 })
 
+test_that("create_subgroup_analysis_table errors on duplicate adsl USUBJID", {
+	adsl <- data.frame(
+		USUBJID = c("01", "01"),
+		SEX = c("M", "F")
+	)
+	advs <- data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("End of Treatment", "End of Treatment"),
+		AVAL = c(120, 130),
+		AGEGR1 = c("<65", ">=65")
+	)
+
+	expect_error(
+		create_subgroup_analysis_table(
+			adsl,
+			advs,
+			subgroups = list(AGEGR1 = "Age Group", SEX = "Sex")
+		),
+		"'adsl' must have unique USUBJID"
+	)
+})
+
 test_that("create_subgroup_analysis_table errors on missing subgroup vars", {
 	adsl <- data.frame(USUBJID = c("01", "02"))
 	advs <- data.frame(

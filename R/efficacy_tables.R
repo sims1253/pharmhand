@@ -309,13 +309,8 @@ create_lab_summary_table <- function(
 	title = "Laboratory Parameters Summary",
 	autofit = TRUE
 ) {
-	# Input validation
-	if (!is.data.frame(adlb)) {
-		ph_abort("'adlb' must be a data frame")
-	}
-	if (!is.data.frame(trt_n)) {
-		ph_abort("'trt_n' must be a data frame")
-	}
+	assert_data_frame(adlb, "adlb")
+	assert_data_frame(trt_n, "trt_n")
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "PARAM", "AVAL")
 	missing_cols <- setdiff(required_cols, names(adlb))
@@ -391,13 +386,8 @@ create_lab_shift_table <- function(
 	title = "Laboratory Shift Table",
 	autofit = TRUE
 ) {
-	# Input validation
-	if (!is.data.frame(adlb)) {
-		ph_abort("'adlb' must be a data frame")
-	}
-	if (!is.data.frame(trt_n)) {
-		ph_abort("'trt_n' must be a data frame")
-	}
+	assert_data_frame(adlb, "adlb")
+	assert_data_frame(trt_n, "trt_n")
 
 	shift_data <- adlb |>
 		dplyr::filter(
@@ -471,13 +461,8 @@ create_subgroup_analysis_table <- function(
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
-	# Input validation
-	if (!is.data.frame(adsl)) {
-		ph_abort("'adsl' must be a data frame")
-	}
-	if (!is.data.frame(advs)) {
-		ph_abort("'advs' must be a data frame")
-	}
+	assert_data_frame(adsl, "adsl")
+	assert_data_frame(advs, "advs")
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL", "USUBJID")
 	missing_cols <- setdiff(required_cols, names(advs))
@@ -515,6 +500,10 @@ create_subgroup_analysis_table <- function(
 
 	# Join subgroup columns from adsl if needed
 	if (length(in_adsl) > 0) {
+		if (nrow(adsl) > dplyr::n_distinct(adsl$USUBJID)) {
+			ph_abort("'adsl' must have unique USUBJID (one row per subject)")
+		}
+
 		advs <- advs |>
 			dplyr::left_join(
 				adsl[, c("USUBJID", in_adsl), drop = FALSE],
@@ -1138,7 +1127,8 @@ calculate_proportion_ci <- function(
 #'   - "none" (default): No adjustment
 #'   - "holm": Holm-Bonferroni step-down (recommended for FWER control)
 #'   - "hochberg": Hochberg step-up (controls FWER)
-#'   - "hommel": Hommel's method (closed testing procedure, good for correlated tests)
+#'   - "hommel": Hommel's method (closed testing procedure, good for
+#'     correlated tests)
 #'   - "bonferroni": Bonferroni correction (conservative)
 #'   - "BH" or "fdr": Benjamini-Hochberg (controls FDR)
 #'   - "BY": Benjamini-Yekutieli (controls FDR under dependency)
@@ -1347,6 +1337,8 @@ create_subgroup_table <- function(
 		# These are in rows where interaction_p is not NA
 		pval_rows <- which(!is.na(results_df$interaction_p))
 
+		# Adjustment only needed when >1 p-value; skip even if
+		# adjust_method != "none".
 		if (length(pval_rows) > 1) {
 			# Get the original p-values
 			original_pvals <- results_df$interaction_p[pval_rows]

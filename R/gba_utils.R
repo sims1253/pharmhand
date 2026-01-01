@@ -403,7 +403,8 @@ calculate_smd_binary <- function(
 #'   - `"auto"` (default): Automatically selects based on variable type
 #' @param conf_level Numeric. Confidence level for CI (default: 0.95)
 #' @param continuous_threshold Integer. Minimum number of unique values to treat
-#'   numeric variables as continuous (default: 10).
+#'   numeric variables as continuous (default: 10). Used only when
+#'   `method = "auto"`.
 #'
 #' @details
 #' When `method = "auto"`:
@@ -425,7 +426,9 @@ calculate_smd_binary <- function(
 #'   pooled standard deviation of the binary variable.
 #'
 #' @return A named list with components:
-#'   - `smd`: The standardized mean difference (absolute value for multi-level)
+#'   - `smd`: The standardized mean difference. For multi-level categorical
+#'     variables, returns the SMD with the maximum absolute value, preserving
+#'     sign.
 #'   - `ci_lower`: Lower bound of confidence interval
 #'   - `ci_upper`: Upper bound of confidence interval
 #'   - `method`: Method used
@@ -1039,7 +1042,9 @@ assess_baseline_balance <- function(
 #'   [assess_baseline_balance()], or a data frame with columns `variable`,
 #'   `smd`, and optionally `ci_lower`, `ci_upper`, `var_type`.
 #' @param threshold Numeric. SMD threshold for reference lines (default: 0.1).
-#'   Vertical lines are drawn at +/- threshold.
+#'   Vertical lines are drawn at +/- threshold. When `balance_assessment` is a
+#'   `BalanceAssessment` object, its stored threshold is used regardless of
+#'   this parameter.
 #' @param show_ci Logical. Show confidence intervals as error bars
 #'   (default: TRUE).
 #' @param title Character. Plot title

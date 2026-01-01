@@ -23,7 +23,9 @@ create_love_plot(
 \code{smd}, and optionally \code{ci_lower}, \code{ci_upper}, \code{var_type}.}
 
 \item{threshold}{Numeric. SMD threshold for reference lines (default: 0.1).
-Vertical lines are drawn at +/- threshold.}
+Vertical lines are drawn at +/- threshold. When \code{balance_assessment} is a
+\code{BalanceAssessment} object, its stored threshold is used regardless of
+this parameter.}
 
 \item{show_ci}{Logical. Show confidence intervals as error bars
 (default: TRUE).}

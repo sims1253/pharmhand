@@ -1,3 +1,24 @@
+# pharmhand 0.0.10.9000
+
+## Fixes
+
+* Enforce unique ADSL USUBJID when joining subgroup variables
+* Standardize data frame validation in lab summary, shift, and subgroup tables
+
+## Documentation
+
+* Clarify Love plot threshold override for BalanceAssessment inputs
+* Clarify multi-level categorical SMD return semantics
+
+## Tests
+
+* Add coverage for duplicate ADSL USUBJID checks in subgroup analysis
+
+## Maintenance
+
+* Use modifyList for translation merges
+* Drop explicit tidyselect import (dplyr re-exports used)
+
 # pharmhand 0.0.9.9000
 
 ## Fixes

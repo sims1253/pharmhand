@@ -37,12 +37,15 @@ If NULL, uses the first level of the treatment variable.}
 \item{conf_level}{Numeric. Confidence level for CI (default: 0.95)}
 
 \item{continuous_threshold}{Integer. Minimum number of unique values to treat
-numeric variables as continuous (default: 10).}
+numeric variables as continuous (default: 10). Used only when
+\code{method = "auto"}.}
 }
 \value{
 A named list with components:
 \itemize{
-\item \code{smd}: The standardized mean difference (absolute value for multi-level)
+\item \code{smd}: The standardized mean difference. For multi-level categorical
+variables, returns the SMD with the maximum absolute value, preserving
+sign.
 \item \code{ci_lower}: Lower bound of confidence interval
 \item \code{ci_upper}: Upper bound of confidence interval
 \item \code{method}: Method used

@@ -20,6 +20,16 @@ NULL
 #' @param trt_var Character string for treatment variable (default: "TRT01P")
 #' @param metadata List of additional metadata
 #'
+#' @usage ADaMData(
+#'   data = structure(list(), names = character(0),
+#'     row.names = integer(0), class = "data.frame"),
+#'   domain = "",
+#'   population = "FAS",
+#'   subject_var = "USUBJID",
+#'   trt_var = "TRT01P",
+#'   metadata = list()
+#' )
+#'
 #' @return An ADaMData object
 #' @export ADaMData
 ADaMData <- S7::new_class(
@@ -111,6 +121,14 @@ ADaMData <- S7::new_class(
 #' @param groupings List of grouping variables used
 #' @param metadata List of additional metadata
 #'
+#' @usage AnalysisResults(
+#'   stats = structure(list(), names = character(0),
+#'     row.names = integer(0), class = "data.frame"),
+#'   type = "",
+#'   groupings = list(),
+#'   metadata = list()
+#' )
+#'
 #' @return An AnalysisResults object
 #' @export AnalysisResults
 AnalysisResults <- S7::new_class(
@@ -152,6 +170,22 @@ ClinicalContent <- S7::new_class(
 #'   (e.g., "demographics", "adverse_events")
 #' @param title Character string for table title
 #' @param metadata List of additional metadata
+#'
+#' @usage ClinicalTable(
+#'   type = character(0),
+#'   title = NULL,
+#'   metadata = list(),
+#'   data = (function (.data = list(), row.names = NULL) {
+#'     if (is.null(row.names)) {
+#'       list2DF(.data)
+#'     } else {
+#'       out <- list2DF(.data, length(row.names))
+#'       attr(out, "row.names") <- row.names
+#'       out
+#'     }
+#'   })(),
+#'   flextable = NULL
+#' )
 #'
 #' @return A ClinicalTable object
 #'
@@ -428,6 +462,15 @@ ClinicalReport <- S7::new_class(
 #' @param results List of analysis results
 #' @param metadata List of additional metadata
 #'
+#' @usage OneArmStudy(
+#'   data = structure(list(), names = character(0),
+#'     row.names = integer(0), class = "data.frame"),
+#'   study_id = character(0),
+#'   study_title = character(0),
+#'   results = list(),
+#'   metadata = list()
+#' )
+#'
 #' @return A OneArmStudy object
 #' @export OneArmStudy
 OneArmStudy <- S7::new_class(
@@ -473,6 +516,16 @@ OneArmStudy <- S7::new_class(
 #' @param study_title Character string for study title
 #' @param results List of analysis results
 #' @param metadata List of additional metadata
+#'
+#' @usage TwoArmStudy(
+#'   data = structure(list(), names = character(0),
+#'     row.names = integer(0), class = "data.frame"),
+#'   group_var = "",
+#'   study_id = character(0),
+#'   study_title = character(0),
+#'   results = list(),
+#'   metadata = list()
+#' )
 #'
 #' @return A TwoArmStudy object
 #' @export TwoArmStudy
