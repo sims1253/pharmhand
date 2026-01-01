@@ -1,5 +1,11 @@
 # Changelog
 
+## pharmhand 0.0.12.9000
+
+### Maintenance
+
+- Wrap add_translation assignment to satisfy lintr line-length limits
+
 ## pharmhand 0.0.11.9000
 
 ### Fixes
