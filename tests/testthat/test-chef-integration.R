@@ -105,6 +105,7 @@ test_that("extract_chef_metadata extracts correct info", {
 
 test_that("run_chef_pipeline returns correct output type", {
 	skip_if_not_installed("chef")
+	skip_if_not_installed("data.table")
 	# This test checks the mock/placeholder behavior
 	# Full chef integration requires chef package
 
@@ -118,27 +119,42 @@ test_that("run_chef_pipeline returns correct output type", {
 	)
 
 	# Test results output
-	result <- suppressWarnings(run_chef_pipeline(
-		adam_data,
-		endpoints,
-		output_type = "results"
-	))
+	msg <- warn <- NULL
+	result <- withCallingHandlers(
+		run_chef_pipeline(
+			adam_data,
+			endpoints,
+			output_type = "results"
+		),
+		message = function(m) {
+			msg <<- m
+			invokeRestart("muffleMessage")
+		},
+		warning = function(w) {
+			warn <<- w
+			invokeRestart("muffleWarning")
+		}
+	)
+	expect_s3_class(msg, "message")
+	expect_match(conditionMessage(msg), "Chef pipeline configured")
+	expect_s3_class(warn, "warning")
+	expect_match(conditionMessage(warn), "Returning mock data")
 	expect_true(S7::S7_inherits(result, AnalysisResults))
 
 	# Test table output
-	result <- suppressWarnings(run_chef_pipeline(
+	result <- suppressMessages(suppressWarnings(run_chef_pipeline(
 		adam_data,
 		endpoints,
 		output_type = "table"
-	))
+	)))
 	expect_true(S7::S7_inherits(result, ClinicalTable))
 
 	# Test report output
-	result <- suppressWarnings(run_chef_pipeline(
+	result <- suppressMessages(suppressWarnings(run_chef_pipeline(
 		adam_data,
 		endpoints,
 		output_type = "report"
-	))
+	)))
 	expect_true(S7::S7_inherits(result, ClinicalReport))
 })
 

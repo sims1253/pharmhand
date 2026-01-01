@@ -40,6 +40,8 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #' @param threshold For type="comparison", minimum incidence pct (default: 0)
 #' @param sort_by For type="comparison", sort by "rd", "rr", or "incidence"
 #' @param conf_level For type="comparison", confidence level (default: 0.95)
+#' @param soc_order For type="soc" or type="soc_pt", custom ordering of SOCs
+#'   (character vector). If NULL, SOCs are sorted alphabetically (default: NULL)
 #'
 #' @return A ClinicalTable object
 #' @export
@@ -69,6 +71,13 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #'   by = "pt",
 #'   threshold = 5
 #' )
+#'
+#' # SOC table with custom ordering
+#' soc_ordered <- create_ae_table(
+#'   adae, adsl,
+#'   type = "soc",
+#'   soc_order = c("Infections", "Nervous system disorders", "Gastrointestinal disorders")
+#' )
 #' }
 create_ae_table <- function(
 	adae,
@@ -95,7 +104,8 @@ create_ae_table <- function(
 	by = "pt",
 	threshold = 0,
 	sort_by = "incidence",
-	conf_level = 0.95
+	conf_level = 0.95,
+	soc_order = NULL
 ) {
 	type <- match.arg(type)
 
@@ -159,8 +169,15 @@ create_ae_table <- function(
 	result <- switch(
 		type,
 		overview = create_ae_table_overview(adae, trt_n, trt_var, title, autofit),
-		soc = create_ae_table_soc(adae, trt_n, trt_var, title, autofit),
-		soc_pt = create_ae_table_soc_pt(adae, trt_n, trt_var, title, autofit),
+		soc = create_ae_table_soc(adae, trt_n, trt_var, title, autofit, soc_order),
+		soc_pt = create_ae_table_soc_pt(
+			adae,
+			trt_n,
+			trt_var,
+			title,
+			autofit,
+			soc_order
+		),
 		pt = create_ae_table_pt(adae, trt_n, trt_var, soc, title, autofit),
 		common = create_ae_table_common(
 			adae,
@@ -293,7 +310,14 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 }
 
 #' @keywords internal
-create_ae_table_soc <- function(adae, trt_n, trt_var, title, autofit) {
+create_ae_table_soc <- function(
+	adae,
+	trt_n,
+	trt_var,
+	title,
+	autofit,
+	soc_order = NULL
+) {
 	soc_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AEBODSYS) |>
@@ -312,8 +336,25 @@ create_ae_table_soc <- function(adae, trt_n, trt_var, title, autofit) {
 			values_from = "display",
 			values_fill = "0 (0.0%)"
 		) |>
-		dplyr::rename(`System Organ Class` = "AEBODSYS") |>
-		dplyr::arrange(.data$`System Organ Class`)
+		dplyr::rename(`System Organ Class` = "AEBODSYS")
+
+	# Apply custom SOC ordering if provided
+	if (!is.null(soc_order)) {
+		soc_summary <- soc_summary |>
+			dplyr::mutate(
+				`System Organ Class` = factor(
+					.data$`System Organ Class`,
+					levels = soc_order
+				)
+			) |>
+			dplyr::arrange(.data$`System Organ Class`) |>
+			dplyr::mutate(
+				`System Organ Class` = as.character(.data$`System Organ Class`)
+			)
+	} else {
+		soc_summary <- soc_summary |>
+			dplyr::arrange(.data$`System Organ Class`)
+	}
 
 	ft <- create_hta_table(
 		soc_summary,
@@ -334,7 +375,14 @@ create_ae_table_soc <- function(adae, trt_n, trt_var, title, autofit) {
 }
 
 #' @keywords internal
-create_ae_table_soc_pt <- function(adae, trt_n, trt_var, title, autofit) {
+create_ae_table_soc_pt <- function(
+	adae,
+	trt_n,
+	trt_var,
+	title,
+	autofit,
+	soc_order = NULL
+) {
 	soc_pt_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::group_by(
@@ -360,8 +408,25 @@ create_ae_table_soc_pt <- function(adae, trt_n, trt_var, title, autofit) {
 		dplyr::rename(
 			`System Organ Class` = "AEBODSYS",
 			`Preferred Term` = "AEDECOD"
-		) |>
-		dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`)
+		)
+
+	# Apply custom SOC ordering if provided
+	if (!is.null(soc_order)) {
+		soc_pt_summary <- soc_pt_summary |>
+			dplyr::mutate(
+				`System Organ Class` = factor(
+					.data$`System Organ Class`,
+					levels = soc_order
+				)
+			) |>
+			dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`) |>
+			dplyr::mutate(
+				`System Organ Class` = as.character(.data$`System Organ Class`)
+			)
+	} else {
+		soc_pt_summary <- soc_pt_summary |>
+			dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`)
+	}
 
 	ft <- create_hta_table(
 		soc_pt_summary,

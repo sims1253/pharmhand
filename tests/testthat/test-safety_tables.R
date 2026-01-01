@@ -233,6 +233,62 @@ test_that("create_ae_table auto-generates titles", {
 	expect_equal(tbl_common@title, "Most Common Adverse Events (Top 10)")
 })
 
+test_that("create_ae_table respects soc_order for type='soc'", {
+	adae <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "A", "A"),
+		TRTEMFL = c("Y", "Y", "Y", "Y"),
+		AEBODSYS = c("Z-SOC", "A-SOC", "M-SOC", "B-SOC")
+	)
+	adsl <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "A", "A"),
+		SAFFL = c("Y", "Y", "Y", "Y")
+	)
+
+	# Without soc_order, should be alphabetical
+	tbl_alpha <- create_ae_table(adae, adsl, type = "soc")
+	socs_alpha <- tbl_alpha@data$`System Organ Class`
+	expect_equal(socs_alpha, c("A-SOC", "B-SOC", "M-SOC", "Z-SOC"))
+
+	# With soc_order, should follow custom order
+	custom_order <- c("M-SOC", "A-SOC", "Z-SOC", "B-SOC")
+	tbl_custom <- create_ae_table(
+		adae,
+		adsl,
+		type = "soc",
+		soc_order = custom_order
+	)
+	socs_custom <- tbl_custom@data$`System Organ Class`
+	expect_equal(socs_custom, custom_order)
+})
+
+test_that("create_ae_table respects soc_order for type='soc_pt'", {
+	adae <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "A", "A"),
+		TRTEMFL = c("Y", "Y", "Y", "Y"),
+		AEBODSYS = c("Z-SOC", "A-SOC", "M-SOC", "M-SOC"),
+		AEDECOD = c("PT1", "PT2", "PT3", "PT4")
+	)
+	adsl <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "A", "A"),
+		SAFFL = c("Y", "Y", "Y", "Y")
+	)
+
+	# With soc_order, SOC groups should follow custom order
+	custom_order <- c("M-SOC", "A-SOC", "Z-SOC")
+	tbl_custom <- create_ae_table(
+		adae,
+		adsl,
+		type = "soc_pt",
+		soc_order = custom_order
+	)
+	socs_custom <- unique(tbl_custom@data$`System Organ Class`)
+	expect_equal(socs_custom, custom_order)
+})
+
 test_that("create_ae_table respects custom title", {
 	adae <- data.frame(
 		USUBJID = c("01"),

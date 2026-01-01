@@ -18,7 +18,8 @@ create_ae_table(
   by = "pt",
   threshold = 0,
   sort_by = "incidence",
-  conf_level = 0.95
+  conf_level = 0.95,
+  soc_order = NULL
 )
 }
 \arguments{
@@ -61,6 +62,9 @@ like "deaths", "comparison", or for denominator calculation)}
 \item{sort_by}{For type="comparison", sort by "rd", "rr", or "incidence"}
 
 \item{conf_level}{For type="comparison", confidence level (default: 0.95)}
+
+\item{soc_order}{For type="soc" or type="soc_pt", custom ordering of SOCs
+(character vector). If NULL, SOCs are sorted alphabetically (default: NULL)}
 }
 \value{
 A ClinicalTable object
@@ -92,6 +96,13 @@ comparison <- create_ae_table(
   ref_group = "Placebo",
   by = "pt",
   threshold = 5
+)
+
+# SOC table with custom ordering
+soc_ordered <- create_ae_table(
+  adae, adsl,
+  type = "soc",
+  soc_order = c("Infections", "Nervous system disorders", "Gastrointestinal disorders")
 )
 }
 }
