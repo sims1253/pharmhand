@@ -751,7 +751,6 @@ add_translation <- function(key, translations) {
 		# Initialize locale list if needed
 		if (is.null(custom_trans)) {
 			.pharmhand_locale$custom_translations[[locale]] <- list()
-			custom_trans <- .pharmhand_locale$custom_translations[[locale]]
 		}
 
 		# Add translation
