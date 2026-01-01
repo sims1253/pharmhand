@@ -9,7 +9,7 @@ Useful for reviewing available translation keys and their values."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.9.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.10.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,17 +89,12 @@ are translated strings.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Get all English translations</span></span></span>
 <span class="r-in"><span><span class="va">translations</span> <span class="op">&lt;-</span> <span class="fu">get_translations</span><span class="op">(</span><span class="st">"en"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">translations</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "study_drug" "treatment"  "statistic"  "parameter"  "category"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "placebo"    "total"      "value"      "variable"   "subgroup"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "statistic"      "parameter"      "category"       "treatment"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "placebo"        "total"          "value"          "variable"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "subgroup"       "characteristic"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get current locale translations</span></span></span>
 <span class="r-in"><span><span class="fu">get_translations</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $study_drug</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MedikamentX 100mg"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $treatment</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Aktive Behandlung"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $statistic</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Statistik"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -108,6 +103,9 @@ are translated strings.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $category</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Kategorie"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $treatment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Aktive Behandlung"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $placebo</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Placebo"</span>
@@ -627,6 +625,9 @@ are translated strings.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $comparator</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Komparator"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $study_drug</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MedikamentX 100mg"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

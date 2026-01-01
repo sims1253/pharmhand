@@ -39,17 +39,12 @@ translated strings.
 # Get all English translations
 translations <- get_translations("en")
 names(translations)[1:10]
-#>  [1] "study_drug" "treatment"  "statistic"  "parameter"  "category"  
-#>  [6] "placebo"    "total"      "value"      "variable"   "subgroup"  
+#>  [1] "statistic"      "parameter"      "category"       "treatment"     
+#>  [5] "placebo"        "total"          "value"          "variable"      
+#>  [9] "subgroup"       "characteristic"
 
 # Get current locale translations
 get_translations()
-#> $study_drug
-#> [1] "MedikamentX 100mg"
-#> 
-#> $treatment
-#> [1] "Aktive Behandlung"
-#> 
 #> $statistic
 #> [1] "Statistik"
 #> 
@@ -58,6 +53,9 @@ get_translations()
 #> 
 #> $category
 #> [1] "Kategorie"
+#> 
+#> $treatment
+#> [1] "Aktive Behandlung"
 #> 
 #> $placebo
 #> [1] "Placebo"
@@ -577,5 +575,8 @@ get_translations()
 #> 
 #> $comparator
 #> [1] "Komparator"
+#> 
+#> $study_drug
+#> [1] "MedikamentX 100mg"
 #> 
 ```

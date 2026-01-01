@@ -6,8 +6,7 @@ Base class for ADaM datasets with population filters.
 
 ``` r
 ADaMData(
-  data = structure(list(), names = character(0), row.names = integer(0), class =
-    "data.frame"),
+  data = structure(list(), names = character(0), row.names = integer(0), class = "data.frame"),
   domain = "",
   population = "FAS",
   subject_var = "USUBJID",

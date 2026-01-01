@@ -60,14 +60,15 @@ calculate_smd_from_data(
 - continuous_threshold:
 
   Integer. Minimum number of unique values to treat numeric variables as
-  continuous (default: 10).
+  continuous (default: 10). Used only when `method = "auto"`.
 
 ## Value
 
 A named list with components:
 
-- `smd`: The standardized mean difference (absolute value for
-  multi-level)
+- `smd`: The standardized mean difference. For multi-level categorical
+  variables, returns the SMD with the maximum absolute value, preserving
+  sign.
 
 - `ci_lower`: Lower bound of confidence interval
 

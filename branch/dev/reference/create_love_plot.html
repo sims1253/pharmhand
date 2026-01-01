@@ -13,7 +13,7 @@ and propensity score analysis to assess covariate balance."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.9.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.10.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,9 @@ and propensity score analysis to assess covariate balance.</p>
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
 <dd><p>Numeric. SMD threshold for reference lines (default: 0.1).
-Vertical lines are drawn at +/- threshold.</p></dd>
+Vertical lines are drawn at +/- threshold. When <code>balance_assessment</code> is a
+<code>BalanceAssessment</code> object, its stored threshold is used regardless of
+this parameter.</p></dd>
 
 
 <dt id="arg-show-ci">show_ci<a class="anchor" aria-label="anchor" href="#arg-show-ci"></a></dt>

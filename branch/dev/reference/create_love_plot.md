@@ -34,7 +34,9 @@ create_love_plot(
 - threshold:
 
   Numeric. SMD threshold for reference lines (default: 0.1). Vertical
-  lines are drawn at +/- threshold.
+  lines are drawn at +/- threshold. When `balance_assessment` is a
+  `BalanceAssessment` object, its stored threshold is used regardless of
+  this parameter.
 
 - show_ci:
 

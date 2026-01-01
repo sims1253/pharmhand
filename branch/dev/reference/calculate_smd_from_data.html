@@ -11,7 +11,7 @@ or categorical."><meta property="og:image" content="https://sims1253.github.io/p
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.9.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.10.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,12 +108,15 @@ If NULL, uses the first level of the treatment variable.</p></dd>
 
 <dt id="arg-continuous-threshold">continuous_threshold<a class="anchor" aria-label="anchor" href="#arg-continuous-threshold"></a></dt>
 <dd><p>Integer. Minimum number of unique values to treat
-numeric variables as continuous (default: 10).</p></dd>
+numeric variables as continuous (default: 10). Used only when
+<code>method = "auto"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with components:</p><ul><li><p><code>smd</code>: The standardized mean difference (absolute value for multi-level)</p></li>
+    <p>A named list with components:</p><ul><li><p><code>smd</code>: The standardized mean difference. For multi-level categorical
+variables, returns the SMD with the maximum absolute value, preserving
+sign.</p></li>
 <li><p><code>ci_lower</code>: Lower bound of confidence interval</p></li>
 <li><p><code>ci_upper</code>: Upper bound of confidence interval</p></li>
 <li><p><code>method</code>: Method used</p></li>
