@@ -1,0 +1,148 @@
+# Create Adverse Event Table
+
+Generate AE tables for clinical study reports.
+
+## Usage
+
+``` r
+create_ae_table(
+  adae,
+  adsl = NULL,
+  type = c("overview", "soc", "soc_pt", "pt", "common", "severity", "relationship",
+    "sae", "discontinuation", "deaths", "comparison"),
+  trt_var = "TRT01P",
+  n_top = 15,
+  soc = NULL,
+  title = NULL,
+  autofit = TRUE,
+  ref_group = NULL,
+  by = "pt",
+  threshold = 0,
+  sort_by = "incidence",
+  conf_level = 0.95,
+  soc_order = NULL
+)
+```
+
+## Arguments
+
+- adae:
+
+  ADAE data frame (ADaM Adverse Events dataset)
+
+- adsl:
+
+  ADSL data frame (optional, required for some table types like
+  "deaths", "comparison", or for denominator calculation)
+
+- type:
+
+  Character string specifying the table type:
+
+  - "overview" - Summary of TEAEs, related AEs, SAEs, discontinuations
+
+  - "soc" - AEs by System Organ Class
+
+  - "soc_pt" - AEs by SOC and Preferred Term (hierarchical)
+
+  - "pt" - AEs by Preferred Term only
+
+  - "common" - Most frequently reported AEs
+
+  - "severity" - AEs by maximum severity
+
+  - "relationship" - AEs by relationship to study drug
+
+  - "sae" - Serious Adverse Events
+
+  - "discontinuation" - AEs leading to discontinuation
+
+  - "deaths" - Deaths summary (requires adsl)
+
+  - "comparison" - AE comparison with RD/RR (requires adsl)
+
+- trt_var:
+
+  Treatment variable name (default: "TRT01P")
+
+- n_top:
+
+  For type="common", number of top PTs to show (default: 15)
+
+- soc:
+
+  For type="pt", filter to specific SOC (optional)
+
+- title:
+
+  Table title (auto-generated if NULL)
+
+- autofit:
+
+  Logical, whether to autofit column widths (default: TRUE)
+
+- ref_group:
+
+  For type="comparison", the reference group for comparisons
+
+- by:
+
+  For type="comparison", grouping level: "soc", "pt", or "overall"
+
+- threshold:
+
+  For type="comparison", minimum incidence pct (default: 0)
+
+- sort_by:
+
+  For type="comparison", sort by "rd", "rr", or "incidence"
+
+- conf_level:
+
+  For type="comparison", confidence level (default: 0.95)
+
+- soc_order:
+
+  For type="soc" or type="soc_pt", custom ordering of SOCs (character
+  vector). If NULL, SOCs are sorted alphabetically (default: NULL)
+
+## Value
+
+A ClinicalTable object
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# AE Overview
+overview <- create_ae_table(adae, adsl, type = "overview")
+
+# SOC table
+soc_table <- create_ae_table(adae, adsl, type = "soc")
+
+# SOC/PT hierarchical table
+soc_pt <- create_ae_table(adae, adsl, type = "soc_pt")
+
+# Most common AEs (top 20)
+common <- create_ae_table(adae, adsl, type = "common", n_top = 20)
+
+# SAE table
+sae <- create_ae_table(adae, adsl, type = "sae")
+
+# AE comparison with risk differences
+comparison <- create_ae_table(
+  adae, adsl,
+  type = "comparison",
+  ref_group = "Placebo",
+  by = "pt",
+  threshold = 5
+)
+
+# SOC table with custom ordering
+soc_ordered <- create_ae_table(
+  adae, adsl,
+  type = "soc",
+  soc_order = c("Infections", "Nervous system disorders", "Gastrointestinal disorders")
+)
+} # }
+```
