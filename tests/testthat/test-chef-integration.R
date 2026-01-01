@@ -127,11 +127,15 @@ test_that("run_chef_pipeline returns correct output type", {
 			output_type = "results"
 		),
 		message = function(m) {
-			msg <<- m
+			if (is.null(msg)) {
+				msg <<- m
+			}
 			invokeRestart("muffleMessage")
 		},
 		warning = function(w) {
-			warn <<- w
+			if (is.null(warn)) {
+				warn <<- w
+			}
 			invokeRestart("muffleWarning")
 		}
 	)
