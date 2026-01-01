@@ -733,32 +733,30 @@ add_translation <- function(key, translations) {
 
 	for (locale in names(translations)) {
 		if (!locale %in% c("en", "de")) {
-			ph_warn(paste(
+			ph_warn(paste0(
 				"Locale '",
 				locale,
-				"' not officially supported, adding anyway",
-				sep = ""
+				"' not officially supported, adding anyway"
 			))
 		}
 
+		# Reference to locale's custom translations
+		custom_trans <- .pharmhand_locale$custom_translations[[locale]]
+
 		# Store old translation if it exists
-		if (
-			!is.null(.pharmhand_locale$custom_translations[[locale]][[key_lower]])
-		) {
-			old_translations[[locale]] <- .pharmhand_locale$custom_translations[[
-				locale
-			]][[key_lower]]
+		if (!is.null(custom_trans[[key_lower]])) {
+			old_translations[[locale]] <- custom_trans[[key_lower]]
 		}
 
 		# Initialize locale list if needed
-		if (is.null(.pharmhand_locale$custom_translations[[locale]])) {
+		if (is.null(custom_trans)) {
 			.pharmhand_locale$custom_translations[[locale]] <- list()
+			custom_trans <- .pharmhand_locale$custom_translations[[locale]]
 		}
 
 		# Add translation
-		.pharmhand_locale$custom_translations[[locale]][[
-			key_lower
-		]] <- translations[[locale]]
+		.pharmhand_locale$custom_translations[[locale]][[key_lower]] <-
+			translations[[locale]]
 	}
 
 	invisible(if (length(old_translations) > 0) old_translations else NULL)

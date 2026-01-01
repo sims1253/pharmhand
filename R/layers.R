@@ -355,7 +355,8 @@ build_count_layer <- function(layer, data, trt_var, big_n = NULL) {
 		# Use pre-calculated big_n if it matches trt_var and no other denoms_by
 		if (
 			!is.null(big_n) &&
-				identical(denom_vars, trt_var) &&
+				setequal(denom_vars, trt_var) &&
+				length(denom_vars) == 1 &&
 				trt_var %in% names(big_n)
 		) {
 			denoms <- big_n
