@@ -1,3 +1,15 @@
+# pharmhand 0.0.13.9000
+
+## Fixes
+
+* Make chef integration resilient to missing stratification columns
+* Add data.table guardrails and endpoints validation for chef pipeline usage
+
+## Maintenance
+
+* Add internal ph_inform helper for consistent messaging
+* Scope custom translation keys to requested locale in list_translation_keys()
+
 # pharmhand 0.0.12.9000
 
 ## Maintenance

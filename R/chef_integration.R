@@ -51,12 +51,31 @@ chef_to_analysis_results <- function(
 	chef_meta <- extract_chef_metadata(chef_output)
 	full_metadata <- c(metadata, chef_meta)
 
+	# Validate required columns before building AnalysisResults
+	required_cols <- "endpoint_id"
+	missing_cols <- setdiff(required_cols, names(chef_output))
+	if (length(missing_cols) > 0) {
+		ph_abort(
+			sprintf(
+				"Required columns missing from chef_output: %s",
+				paste(missing_cols, collapse = ", ")
+			)
+		)
+	}
+
+	by_endpoint <- unique(chef_output$endpoint_id)
+	by_strata <- if ("strat_id" %in% names(chef_output)) {
+		unique(chef_output$strat_id)
+	} else {
+		character(0)
+	}
+
 	AnalysisResults(
 		stats = stats_df,
 		type = type,
 		groupings = list(
-			by_endpoint = unique(chef_output$endpoint_id),
-			by_strata = unique(chef_output$strat_id)
+			by_endpoint = by_endpoint,
+			by_strata = by_strata
 		),
 		metadata = full_metadata
 	)
@@ -121,8 +140,16 @@ flatten_chef_results <- function(dt) {
 extract_chef_metadata <- function(dt) {
 	list(
 		source = "chef",
-		n_endpoints = length(unique(dt$endpoint_id)),
-		n_strata = length(unique(dt$strat_id)),
+		n_endpoints = if ("endpoint_id" %in% names(dt)) {
+			length(unique(dt$endpoint_id))
+		} else {
+			0L
+		},
+		n_strata = if ("strat_id" %in% names(dt)) {
+			length(unique(dt$strat_id))
+		} else {
+			0L
+		},
 		generated_at = Sys.time()
 	)
 }
@@ -243,6 +270,10 @@ run_chef_pipeline <- function(
 		ph_abort("'adam_data' must be a named list of data frames")
 	}
 
+	if (!is.list(endpoints) || length(endpoints) == 0) {
+		ph_abort("'endpoints' must be a non-empty list")
+	}
+
 	# Check chef availability
 	if (!requireNamespace("chef", quietly = TRUE)) {
 		ph_abort(
@@ -263,7 +294,7 @@ run_chef_pipeline <- function(
 	}
 
 	# TODO: Implement full chef pipeline integration (requires targets setup)
-	message("Chef pipeline configured. Full execution requires targets setup.")
+	ph_inform("Chef pipeline configured. Full execution requires targets setup.")
 
 	# Warn users about mock data
 	ph_warn(

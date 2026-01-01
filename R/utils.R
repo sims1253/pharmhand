@@ -108,6 +108,13 @@ ph_warn <- function(...) {
 }
 
 #' @keywords internal
+ph_inform <- function(...) {
+	args <- list(...)
+	args$call. <- NULL
+	do.call(message, args)
+}
+
+#' @keywords internal
 assert_data_frame <- function(x, arg = deparse(substitute(x))) {
 	if (!is.data.frame(x)) {
 		ph_abort(sprintf("'%s' must be a data frame", arg))

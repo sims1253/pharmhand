@@ -827,10 +827,19 @@ list_translation_keys <- function(locale = NULL, pattern = NULL) {
 	}
 
 	# Add custom translation keys
-	custom_keys <- unique(unlist(lapply(
-		.pharmhand_locale$custom_translations,
-		names
-	)))
+	if (is.null(locale)) {
+		custom_keys <- unique(unlist(lapply(
+			.pharmhand_locale$custom_translations,
+			names
+		)))
+	} else {
+		custom_translations <- .pharmhand_locale$custom_translations[[locale]]
+		custom_keys <- if (is.null(custom_translations)) {
+			character(0)
+		} else {
+			names(custom_translations)
+		}
+	}
 	all_keys <- unique(c(all_keys, custom_keys))
 
 	# Filter by pattern if provided
