@@ -96,21 +96,20 @@ format_pvalue <- function(p, digits = 3, threshold = 0.001) {
 #' @keywords internal
 ph_abort <- function(...) {
 	args <- list(...)
-	args$call. <- NULL
+	args$call. <- FALSE
 	do.call(stop, args)
 }
 
 #' @keywords internal
 ph_warn <- function(...) {
 	args <- list(...)
-	args$call. <- NULL
+	args$call. <- FALSE
 	do.call(warning, args)
 }
 
 #' @keywords internal
 ph_inform <- function(...) {
 	args <- list(...)
-	args$call. <- NULL
 	do.call(message, args)
 }
 
