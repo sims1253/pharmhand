@@ -23,6 +23,7 @@ test_that("ph_abort strips call and reports message", {
 	)
 
 	expect_s3_class(err, "error")
+	expect_null(conditionCall(err))
 	expect_match(conditionMessage(err), "Test error message")
 })
 
@@ -38,6 +39,7 @@ test_that("ph_warn strips call and reports message", {
 	)
 
 	expect_s3_class(warn, "warning")
+	expect_null(conditionCall(warn))
 	expect_match(conditionMessage(warn), "Test warning message")
 })
 
