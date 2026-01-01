@@ -8,7 +8,8 @@ plots, and performing hypothesis tests.
 
 ``` r
 TwoArmStudy(
-  data = structure(list(), names = character(0), row.names = integer(0), class = "data.frame"),
+  data = structure(list(), names = character(0),
+    row.names = integer(0), class = "data.frame"),
   group_var = "",
   study_id = character(0),
   study_title = character(0),

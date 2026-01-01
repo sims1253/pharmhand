@@ -6,7 +6,8 @@ Container for pre-calculated statistics.
 
 ``` r
 AnalysisResults(
-  stats = structure(list(), names = character(0), row.names = integer(0), class = "data.frame"),
+  stats = structure(list(), names = character(0),
+    row.names = integer(0), class = "data.frame"),
   type = "",
   groupings = list(),
   metadata = list()
