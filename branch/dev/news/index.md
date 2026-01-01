@@ -1,5 +1,23 @@
 # Changelog
 
+## pharmhand 0.0.9.9000
+
+### Fixes
+
+- NNT CI crossing zero now returns non-estimable bounds
+- NA handling in assert_character_scalar
+- Translations merge precedence
+- ClinicalContent validation now uses assert_true for clearer errors
+
+### Documentation
+
+- Logit/raw SMD method documentation
+- Hommel method in adjust_method
+
+### Tests
+
+- calculate_nnt coverage
+
 ## pharmhand 0.0.8.9000
 
 ### Breaking changes

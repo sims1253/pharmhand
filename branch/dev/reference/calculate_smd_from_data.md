@@ -47,6 +47,10 @@ calculate_smd_from_data(
 
   - `"arcsine"`: Arcsine transformation for binary/categorical
 
+  - `"logit"`: Logit transformation for binary/categorical variables
+
+  - `"raw"`: Raw proportions/means without transformation
+
   - `"auto"` (default): Automatically selects based on variable type
 
 - conf_level:
@@ -90,6 +94,16 @@ When `method = "auto"`:
 For categorical variables with more than 2 levels, the function
 calculates the maximum absolute SMD across all pairwise level
 comparisons.
+
+**Method-specific considerations:**
+
+- `"logit"`: Useful for binary variables but requires boundary handling
+  for proportions at 0 or 1 (adds 0.5/N continuity correction). Results
+  are on the logit scale; back-transformation is not straightforward.
+
+- `"raw"`: Appropriate when no transformation is desired. Calculates SMD
+  directly from raw proportions for binary variables, standardized by
+  the pooled standard deviation of the binary variable.
 
 ## See also
 

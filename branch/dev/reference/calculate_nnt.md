@@ -127,10 +127,10 @@ calculate_nnt(rd = -0.05, rd_lower = -0.12, rd_upper = 0.02)
 #> [1] -20
 #> 
 #> $nnt_lower
-#> [1] 8.333333
+#> [1] NA
 #> 
 #> $nnt_upper
-#> [1] -50
+#> [1] NA
 #> 
 #> $rd
 #> [1] -0.05
@@ -148,6 +148,6 @@ calculate_nnt(rd = -0.05, rd_lower = -0.12, rd_upper = 0.02)
 #> [1] "benefit"
 #> 
 #> $interpretation
-#> [1] "Effect not statistically significant (CI crosses zero). Point estimate NNT = 20 to harm"
+#> [1] "NNT not estimable (CI crosses zero). Point estimate NNT = 20 to harm"
 #> 
 ```

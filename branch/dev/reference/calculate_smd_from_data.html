@@ -11,7 +11,7 @@ or categorical."><meta property="og:image" content="https://sims1253.github.io/p
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.8.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.9.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,6 +96,8 @@ If NULL, uses the first level of the treatment variable.</p></dd>
 <dd><p>Character. Method for SMD calculation:</p><ul><li><p><code>"cohens_d"</code>: Cohen's d for continuous variables</p></li>
 <li><p><code>"hedges_g"</code>: Hedges' g (bias-corrected) for continuous variables</p></li>
 <li><p><code>"arcsine"</code>: Arcsine transformation for binary/categorical</p></li>
+<li><p><code>"logit"</code>: Logit transformation for binary/categorical variables</p></li>
+<li><p><code>"raw"</code>: Raw proportions/means without transformation</p></li>
 <li><p><code>"auto"</code> (default): Automatically selects based on variable type</p></li>
 </ul></dd>
 
@@ -127,7 +129,13 @@ categorical</p></li>
 <li><p>Character/factor variables are treated as categorical (using arcsine)</p></li>
 </ul><p>For categorical variables with more than 2 levels, the function calculates
 the maximum absolute SMD across all pairwise level comparisons.</p>
-    </div>
+<p><strong>Method-specific considerations:</strong></p><ul><li><p><code>"logit"</code>: Useful for binary variables but requires boundary handling
+for proportions at 0 or 1 (adds 0.5/N continuity correction). Results
+are on the logit scale; back-transformation is not straightforward.</p></li>
+<li><p><code>"raw"</code>: Appropriate when no transformation is desired. Calculates SMD
+directly from raw proportions for binary variables, standardized by the
+pooled standard deviation of the binary variable.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="calculate_smd.html">calculate_smd()</a></code>, <code><a href="calculate_smd_binary.html">calculate_smd_binary()</a></code>,
