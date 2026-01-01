@@ -253,6 +253,15 @@ run_chef_pipeline <- function(
 		)
 	}
 
+	if (!requireNamespace("data.table", quietly = TRUE)) {
+		ph_abort(
+			paste0(
+				"Package 'data.table' is required for pipeline execution. ",
+				"Install with: install.packages('data.table')"
+			)
+		)
+	}
+
 	# TODO: Implement full chef pipeline integration (requires targets setup)
 	message("Chef pipeline configured. Full execution requires targets setup.")
 
