@@ -29,6 +29,8 @@ If NULL, uses the first level of the treatment variable.}
 \item \code{"cohens_d"}: Cohen's d for continuous variables
 \item \code{"hedges_g"}: Hedges' g (bias-corrected) for continuous variables
 \item \code{"arcsine"}: Arcsine transformation for binary/categorical
+\item \code{"logit"}: Logit transformation for binary/categorical variables
+\item \code{"raw"}: Raw proportions/means without transformation
 \item \code{"auto"} (default): Automatically selects based on variable type
 }}
 
@@ -65,6 +67,16 @@ categorical
 
 For categorical variables with more than 2 levels, the function calculates
 the maximum absolute SMD across all pairwise level comparisons.
+
+\strong{Method-specific considerations:}
+\itemize{
+\item \code{"logit"}: Useful for binary variables but requires boundary handling
+for proportions at 0 or 1 (adds 0.5/N continuity correction). Results
+are on the logit scale; back-transformation is not straightforward.
+\item \code{"raw"}: Appropriate when no transformation is desired. Calculates SMD
+directly from raw proportions for binary variables, standardized by the
+pooled standard deviation of the binary variable.
+}
 }
 \examples{
 \dontrun{

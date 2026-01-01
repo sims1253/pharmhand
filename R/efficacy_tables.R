@@ -1138,6 +1138,7 @@ calculate_proportion_ci <- function(
 #'   - "none" (default): No adjustment
 #'   - "holm": Holm-Bonferroni step-down (recommended for FWER control)
 #'   - "hochberg": Hochberg step-up (controls FWER)
+#'   - "hommel": Hommel's method (closed testing procedure, good for correlated tests)
 #'   - "bonferroni": Bonferroni correction (conservative)
 #'   - "BH" or "fdr": Benjamini-Hochberg (controls FDR)
 #'   - "BY": Benjamini-Yekutieli (controls FDR under dependency)
