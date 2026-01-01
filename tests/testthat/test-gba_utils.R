@@ -1421,7 +1421,7 @@ describe("SMD workflow integration", {
 		expect_equal(love_plot@type, "love_plot")
 
 		# Check the plot can be rendered (doesn't error)
-		expect_no_error(print(love_plot@plot))
+		expect_no_error(ggplot2::ggplot_build(love_plot@plot))
 	})
 })
 

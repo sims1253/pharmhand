@@ -1,3 +1,19 @@
+# pharmhand 0.0.11.9000
+
+## Fixes
+
+* Avoid `Rplot.pdf` during tests by building plots instead of printing
+
+## Documentation
+
+* Simplify LayeredTable usage default to `data.frame()`
+
+## Maintenance
+
+* Relax R version requirement to >= 4.1.0
+* Consolidate development artifacts under `notes/` and exclude the directory in `.Rbuildignore`
+* Use `paste0()` for missing-translation warnings
+
 # pharmhand 0.0.10.9000
 
 ## Fixes
