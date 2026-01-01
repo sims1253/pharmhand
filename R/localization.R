@@ -556,7 +556,7 @@ tr <- function(key, locale = NULL) {
 	# Get translations for locale (custom translations take precedence)
 	custom <- .pharmhand_locale$custom_translations[[locale]] %||% list()
 	builtin <- .pharmhand_translations[[locale]]
-	translations <- c(custom, builtin[!names(builtin) %in% names(custom)])
+	translations <- modifyList(builtin, custom)
 
 	# Translate each key
 	result <- vapply(

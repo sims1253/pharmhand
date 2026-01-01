@@ -1424,3 +1424,70 @@ describe("SMD workflow integration", {
 		expect_no_error(print(love_plot@plot))
 	})
 })
+
+# =============================================================================
+# Tests for calculate_nnt()
+# =============================================================================
+
+describe("calculate_nnt()", {
+	it("returns NA values when CI crosses zero", {
+		result <- calculate_nnt(
+			rd = -0.05,
+			rd_lower = -0.12,
+			rd_upper = 0.02
+		)
+
+		expect_true(result$ci_crosses_zero)
+		expect_true(is.na(result$nnt_lower))
+		expect_true(is.na(result$nnt_upper))
+		expect_true(grepl(
+			"NNT not estimable \\(CI crosses zero\\)",
+			result$interpretation
+		))
+	})
+
+	it("calculates NNT correctly for beneficial positive RD", {
+		result <- calculate_nnt(
+			rd = 0.10,
+			rd_lower = 0.05,
+			rd_upper = 0.15
+		)
+
+		expect_equal(result$nnt, 10.0, tolerance = 0.01)
+		expect_equal(result$nnt_lower, 1 / 0.15, tolerance = 0.01)
+		expect_equal(result$nnt_upper, 1 / 0.05, tolerance = 0.01)
+		expect_false(result$ci_crosses_zero)
+		expect_true(grepl("NNT = 10", result$interpretation, fixed = TRUE))
+		expect_true(grepl("benefit", result$interpretation, fixed = TRUE))
+	})
+
+	it("returns positive signed NNT for harm endpoint with beneficial effect", {
+		result <- calculate_nnt(
+			rd = -0.08,
+			rd_lower = -0.14,
+			rd_upper = -0.02,
+			event_type = "harm"
+		)
+
+		# For harm endpoint, negative RD is beneficial, so signed NNT is positive
+		expect_gt(result$nnt, 0)
+		expect_equal(abs(result$nnt), 1 / 0.08, tolerance = 0.01)
+		expect_true(grepl("NNT = ", result$interpretation, fixed = TRUE))
+		expect_true(grepl("benefit", result$interpretation, fixed = TRUE))
+	})
+
+	it("returns negative signed NNT for harm endpoint with harmful effect", {
+		result <- calculate_nnt(
+			rd = 0.08,
+			rd_lower = 0.02,
+			rd_upper = 0.12,
+			event_type = "harm"
+		)
+
+		# For harm endpoint, positive RD is harmful, so signed NNT is negative
+		expect_lt(result$nnt, 0)
+		expect_equal(abs(result$nnt), 1 / 0.08, tolerance = 0.01)
+		expect_true(grepl("NNH = ", result$interpretation, fixed = TRUE))
+		expect_true(grepl("harmed", result$interpretation, fixed = TRUE))
+	})
+})

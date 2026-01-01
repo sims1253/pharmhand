@@ -398,6 +398,8 @@ calculate_smd_binary <- function(
 #'   - `"cohens_d"`: Cohen's d for continuous variables
 #'   - `"hedges_g"`: Hedges' g (bias-corrected) for continuous variables
 #'   - `"arcsine"`: Arcsine transformation for binary/categorical
+#'   - `"logit"`: Logit transformation for binary/categorical variables
+#'   - `"raw"`: Raw proportions/means without transformation
 #'   - `"auto"` (default): Automatically selects based on variable type
 #' @param conf_level Numeric. Confidence level for CI (default: 0.95)
 #' @param continuous_threshold Integer. Minimum number of unique values to treat
@@ -413,6 +415,14 @@ calculate_smd_binary <- function(
 #'
 #' For categorical variables with more than 2 levels, the function calculates
 #' the maximum absolute SMD across all pairwise level comparisons.
+#'
+#' **Method-specific considerations:**
+#' - `"logit"`: Useful for binary variables but requires boundary handling
+#'   for proportions at 0 or 1 (adds 0.5/N continuity correction). Results
+#'   are on the logit scale; back-transformation is not straightforward.
+#' - `"raw"`: Appropriate when no transformation is desired. Calculates SMD
+#'   directly from raw proportions for binary variables, standardized by the
+#'   pooled standard deviation of the binary variable.
 #'
 #' @return A named list with components:
 #'   - `smd`: The standardized mean difference (absolute value for multi-level)
@@ -1478,19 +1488,13 @@ calculate_nnt <- function(
 	ci_crosses_zero <- FALSE
 
 	if (!is.null(rd_lower) && !is.null(rd_upper)) {
-		ci_crosses_zero <- rd_lower <= 0 && rd_upper >= 0
+		ci_crosses_zero <- rd_lower < 0 && rd_upper > 0
 
 		if (ci_crosses_zero) {
-			# CI crosses zero - NNT CI includes infinity
-			# Need to handle NNTB and NNTH separately
-			if (rd_lower < 0) {
-				# Lower bound gives NNTB
-				nnt_lower <- 1 / abs(rd_lower)
-			}
-			if (rd_upper > 0) {
-				# Upper bound gives NNTH
-				nnt_upper <- -1 / rd_upper
-			}
+			# CI crosses zero - NNT CI is not estimable
+			# Set bounds to NA to avoid mixed positive/negative bounds
+			nnt_lower <- NA_real_
+			nnt_upper <- NA_real_
 		} else if (rd > 0) {
 			# Both bounds positive (harmful)
 			nnt_lower <- 1 / rd_upper
@@ -1507,32 +1511,38 @@ calculate_nnt <- function(
 		interpretation <- "No difference between groups"
 	} else if (ci_crosses_zero) {
 		interpretation <- paste0(
-			"Effect not statistically significant (CI crosses zero). ",
+			"NNT not estimable (CI crosses zero). ",
 			"Point estimate NNT = ",
 			round(nnt, 1),
 			if (is_beneficial) " to benefit" else " to harm"
 		)
 	} else if (is_beneficial) {
+		ci_text <- if (is.na(nnt_lower) || is.na(nnt_upper)) {
+			"NA"
+		} else {
+			paste0(round(nnt_lower, 1), " to ", round(nnt_upper, 1))
+		}
 		interpretation <- paste0(
 			"NNT = ",
 			round(nnt, 1),
 			" (95% CI: ",
-			round(nnt_lower, 1),
-			" to ",
-			round(nnt_upper, 1),
+			ci_text,
 			"). ",
 			"Treat ",
 			round(nnt, 0),
 			" patients for one additional patient to benefit."
 		)
 	} else if (is_harmful) {
+		ci_text <- if (is.na(nnt_lower) || is.na(nnt_upper)) {
+			"NA"
+		} else {
+			paste0(round(nnt_lower, 1), " to ", round(nnt_upper, 1))
+		}
 		interpretation <- paste0(
 			"NNH = ",
 			round(nnt, 1),
 			" (95% CI: ",
-			round(nnt_lower, 1),
-			" to ",
-			round(nnt_upper, 1),
+			ci_text,
 			"). ",
 			"Treat ",
 			round(nnt, 0),

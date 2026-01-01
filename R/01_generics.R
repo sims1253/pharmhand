@@ -502,9 +502,9 @@ add_content <- S7::new_generic(
 #' @describeIn add_content Method for ReportSection
 #' @noRd
 S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
-	checkmate::assertTRUE(
+	checkmate::assert_true(
 		S7::S7_inherits(content, ClinicalContent),
-		add = "Must be a ClinicalContent object"
+		.var.name = "content"
 	)
 	checkmate::assert_string(name, null.ok = TRUE)
 

@@ -56,6 +56,7 @@ for multiple comparisons. One of:
 \item "none" (default): No adjustment
 \item "holm": Holm-Bonferroni step-down (recommended for FWER control)
 \item "hochberg": Hochberg step-up (controls FWER)
+\item "hommel": Hommel's method (closed testing procedure, good for correlated tests)
 \item "bonferroni": Bonferroni correction (conservative)
 \item "BH" or "fdr": Benjamini-Hochberg (controls FDR)
 \item "BY": Benjamini-Yekutieli (controls FDR under dependency)

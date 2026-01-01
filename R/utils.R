@@ -125,7 +125,7 @@ assert_numeric_scalar <- function(x, arg = deparse(substitute(x))) {
 
 #' @keywords internal
 assert_character_scalar <- function(x, arg = deparse(substitute(x))) {
-	if (!is.character(x) || length(x) != 1 || nchar(x) == 0) {
+	if (!is.character(x) || length(x) != 1 || is.na(x) || nchar(x) == 0) {
 		ph_abort(sprintf("'%s' must be a non-empty character string", arg))
 	}
 	invisible(x)
