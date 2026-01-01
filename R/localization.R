@@ -566,13 +566,12 @@ tr <- function(key, locale = NULL) {
 			if (k_lower %in% names(translations)) {
 				return(translations[[k_lower]])
 			} else {
-				ph_warn(paste(
+				ph_warn(paste0(
 					"Translation key '",
 					k,
 					"' not found for locale '",
 					locale,
-					"'",
-					sep = ""
+					"'"
 				))
 				return(k)
 			}
