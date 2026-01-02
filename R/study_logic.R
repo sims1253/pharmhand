@@ -7,23 +7,26 @@ NULL
 
 #' Analyze Study (S7 Method)
 #'
-#' @param x Study object (OneArmStudy or TwoArmStudy)
+#' @param x Study object (SingleArmStudy, TwoArmStudy, or MultiArmStudy)
 #' @param ... Additional arguments
 #'
 #' @export
 analyze_study <- S7::new_generic("analyze_study", "x")
 
-#' Analyze OneArmStudy
+#' Analyze SingleArmStudy
 #'
-#' Analyze OneArmStudy objects.
+#' Analyze SingleArmStudy objects.
 #'
-#' @param x A OneArmStudy object
+#' @param x A SingleArmStudy object
 #' @param ... Additional arguments
 #'
-#' @return The modified OneArmStudy object with results
+#' @return The modified SingleArmStudy object with results
 #' @export
-#' @name analyze_study_OneArmStudy
-analyze_study_OneArmStudy <- S7::method(analyze_study, OneArmStudy) <- function(
+#' @name analyze_study_SingleArmStudy
+analyze_study_SingleArmStudy <- S7::method(
+	analyze_study,
+	SingleArmStudy
+) <- function(
 	x,
 	...
 ) {
@@ -62,13 +65,13 @@ analyze_study_TwoArmStudy <- S7::method(analyze_study, TwoArmStudy) <- function(
 	...
 ) {
 	# Analyze
-	adam <- ADaMData(data = x@data, trt_var = x@group_var)
+	adam <- ADaMData(data = x@data, trt_var = x@treatment_var)
 
 	results <- list()
 
 	# Only analyze columns that exist
 	all_vars <- names(x@data)
-	baseline_vars <- all_vars[!all_vars %in% c(x@group_var, "USUBJID")]
+	baseline_vars <- all_vars[!all_vars %in% c(x@treatment_var, "USUBJID")]
 
 	results$baseline <- calculate_baseline(adam, vars = baseline_vars)
 

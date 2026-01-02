@@ -57,7 +57,7 @@ test_that("Study Logic works", {
 	# Two Arm Study
 	study <- TwoArmStudy(
 		data = adsl,
-		group_var = "TRT01P",
+		treatment_var = "TRT01P",
 		study_id = "TEST-001",
 		study_title = "Test Study"
 	)
