@@ -1,3 +1,15 @@
+# pharmhand 0.0.16.9000
+
+## New Features
+
+* Add `check_gba_compliance()` for pre-export validation of G-BA Module 4
+  tables.
+* Mark IQWiG and G-BA flextable themes with a `pharmhand_theme` attribute.
+
+## Tests
+
+* Add coverage for G-BA compliance checks.
+
 # pharmhand 0.0.15.9000
 
 ## Breaking Changes
