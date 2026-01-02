@@ -1,3 +1,14 @@
+# pharmhand 0.0.18.9000
+
+## New Features
+
+* Add `to_gba_template()` to export ClinicalTable/ClinicalReport objects in
+  G-BA Module 4 format.
+
+## Tests
+
+* Add coverage for G-BA template export.
+
 # pharmhand 0.0.17.9000
 
 ## New Features
