@@ -351,17 +351,215 @@ fmt_ci <- function() {
 	)
 }
 
-#' @describeIn format_presets P-value with significance threshold
+# =============================================================================
+# IQWiG-Compliant Formatting Functions
+# =============================================================================
+
+#' Format P-Value (IQWiG-Compliant)
+#'
+#' Formats p-values according to IQWiG Methods v8.0, Chapter 10.3.2 (p. 212):
+#' - 3 decimal places
+#' - Values < 0.001 displayed as "<0.001" (or "<0,001" in German locale)
+#' - Locale-aware decimal separator
+#'
+#' @param p Numeric p-value or vector of p-values
+#' @param digits Integer number of decimal places (default: 3, per IQWiG)
 #' @param threshold Numeric threshold below which to display "<threshold"
+#'   (default: 0.001)
+#' @param locale Character locale for decimal separator: "en" or "de"
+#'   (default: current pharmhand locale)
+#'
+#' @return Character vector of formatted p-values
 #' @export
-fmt_pvalue <- function(threshold = 0.001) {
-	function(p) {
-		if (is.na(p)) {
-			return("--")
-		}
-		if (p < threshold) {
-			return(paste0("<", threshold))
-		}
-		apply_format("a.xxx", p, align = FALSE)
+#'
+#' @references
+#' IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+#'
+#' @examples
+#' format_pvalue(0.0234)
+#' # [1] "0.023"
+#'
+#' format_pvalue(0.0234, locale = "de")
+#' # [1] "0,023"
+#'
+#' format_pvalue(0.00005)
+#' # [1] "<0.001"
+#'
+#' format_pvalue(c(0.05, 0.001, 0.0001))
+#' # [1] "0.050" "0.001" "<0.001"
+format_pvalue <- function(
+	p,
+	digits = 3L,
+	threshold = 0.001,
+	locale = get_locale()
+) {
+	# Vectorized implementation
+	vapply(
+		p,
+		function(pval) {
+			# Handle NA
+			if (is.na(pval)) {
+				return("--")
+			}
+
+			# Validate range
+			if (pval < 0 || pval > 1) {
+				warning("p-value outside [0, 1] range: ", pval)
+			}
+
+			# Format based on threshold
+			if (pval < threshold) {
+				result <- paste0("<", format_number(threshold, digits, locale))
+			} else {
+				result <- format_number(pval, digits, locale)
+			}
+
+			result
+		},
+		character(1)
+	)
+}
+
+#' Format Confidence Interval (IQWiG-Compliant)
+#'
+#' Formats confidence intervals according to IQWiG Methods v8.0, Chapter 10.3.2:
+#' - Semicolon separator: \code{[lower; upper]}
+#' - Locale-aware decimal separator
+#'
+#' @param lower Numeric lower bound (or vector)
+#' @param upper Numeric upper bound (or vector)
+#' @param digits Integer number of decimal places (default: 2)
+#' @param locale Character locale for decimal separator: "en" or "de"
+#'   (default: current pharmhand locale)
+#' @param brackets Character vector of length 2 for opening/closing brackets
+#'   (default: \code{c("[", "]")})
+#'
+#' @return Character vector of formatted confidence intervals
+#' @export
+#'
+#' @references
+#' IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+#'
+#' @examples
+#' format_ci(0.85, 1.23)
+#' # [1] "[0.85; 1.23]"
+#'
+#' format_ci(0.85, 1.23, locale = "de")
+#' # [1] "[0,85; 1,23]"
+#'
+#' format_ci(c(0.5, 0.7), c(0.9, 1.1))
+#' # [1] "[0.50; 0.90]" "[0.70; 1.10]"
+format_ci <- function(
+	lower,
+	upper,
+	digits = 2L,
+	locale = get_locale(),
+	brackets = c("[", "]")
+) {
+	# Validate inputs
+	if (length(lower) != length(upper)) {
+		ph_abort("'lower' and 'upper' must have the same length")
 	}
+
+	# Vectorized formatting
+	mapply(
+		function(l, u) {
+			if (is.na(l) || is.na(u)) {
+				return("--")
+			}
+
+			l_fmt <- format_number(l, digits, locale)
+			u_fmt <- format_number(u, digits, locale)
+
+			paste0(brackets[1], l_fmt, "; ", u_fmt, brackets[2])
+		},
+		lower,
+		upper,
+		USE.NAMES = FALSE
+	)
+}
+
+#' Format Number with Locale
+#'
+#' Helper function to format a number with locale-aware decimal separator.
+#'
+#' @param x Numeric value
+#' @param digits Integer number of decimal places
+#' @param locale Character locale: "en" (period) or "de" (comma)
+#'
+#' @return Character formatted number
+#' @export
+#'
+#' @examples
+#' format_number(1234.567, 2, "en")
+#' # [1] "1234.57"
+#'
+#' format_number(1234.567, 2, "de")
+#' # [1] "1234,57"
+format_number <- function(x, digits = 2L, locale = get_locale()) {
+	if (is.na(x)) {
+		return("--")
+	}
+
+	# Add tiny epsilon for proper "round half up" behavior
+	# R uses banker's rounding, which rounds 1.2345 to 1.234
+	# We want 1.2345 to round to 1.235
+	epsilon <- 1e-12
+
+	result <- sprintf(paste0("%.", digits, "f"), x + epsilon)
+
+	# Replace decimal separator for German locale
+	if (locale == "de") {
+		result <- gsub(".", ",", result, fixed = TRUE)
+	}
+
+	result
+}
+
+#' Format Percentage
+#'
+#' Formats percentages with locale-aware decimal separator.
+#'
+#' @param x Numeric value (proportion 0-1 or percentage 0-100)
+#' @param digits Integer number of decimal places (default: 1)
+#' @param locale Character locale: "en" or "de"
+#' @param is_proportion Logical, if TRUE treats x as proportion (0-1),
+#'   otherwise as percentage (0-100). Default: FALSE
+#' @param symbol Logical, if TRUE appends "%" symbol. Default: TRUE
+#'
+#' @return Character formatted percentage
+#' @export
+#'
+#' @examples
+#' format_percentage(23.5)
+#' # [1] "23.5%"
+#'
+#' format_percentage(0.235, is_proportion = TRUE)
+#' # [1] "23.5%"
+#'
+#' format_percentage(23.5, locale = "de")
+#' # [1] "23,5%"
+format_percentage <- function(
+	x,
+	digits = 1L,
+	locale = get_locale(),
+	is_proportion = FALSE,
+	symbol = TRUE
+) {
+	if (is.na(x)) {
+		return("--")
+	}
+
+	# Convert proportion to percentage if needed
+	if (is_proportion) {
+		x <- x * 100
+	}
+
+	result <- format_number(x, digits, locale)
+
+	if (symbol) {
+		result <- paste0(result, "%")
+	}
+
+	result
 }

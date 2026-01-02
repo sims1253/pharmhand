@@ -1,3 +1,24 @@
+# pharmhand 0.0.15.9000
+
+## Breaking Changes
+
+* Remove `fmt_pvalue()` format preset. Use `format_pvalue()` for
+  IQWiG-compliant p-value formatting.
+
+## New Features
+
+* IQWiG-compliant formatting functions: `format_pvalue()` and `format_ci()`.
+* Locale-aware helpers: `format_number()` and `format_percentage()`.
+* New flextable themes: `theme_iqwig()` and `theme_gba()`.
+
+## Tests
+
+* Add coverage for IQWiG formatting and theme functions.
+
+## Maintenance
+
+* Remove duplicate formatting helpers to avoid shadowing.
+
 # pharmhand 0.0.14.9000
 
 ## Breaking Changes
