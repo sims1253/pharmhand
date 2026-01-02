@@ -377,6 +377,8 @@ theme_iqwig <- function(
 			flextable::fit_to_width(max_width = 7.5)
 	}
 
+	attr(ft, "pharmhand_theme") <- "iqwig"
+
 	ft
 }
 
@@ -468,6 +470,8 @@ theme_gba <- function(
 			flextable::autofit() |>
 			flextable::fit_to_width(max_width = 7.5)
 	}
+
+	attr(ft, "pharmhand_theme") <- "gba"
 
 	ft
 }
