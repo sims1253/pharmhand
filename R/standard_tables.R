@@ -6,6 +6,119 @@
 #' @keywords internal
 NULL
 
+#' Create Module 4 Table Template
+#'
+#' Standardized G-BA Module 4 table with fixed column structure.
+#'
+#' @param data Data frame to display. If NULL, an empty template is created.
+#' @param title Table title (default: "Module 4 Summary")
+#' @param footnotes Character vector of footnotes
+#' @param columns Character vector of required column names
+#' @param col_widths Named numeric vector of column widths (optional)
+#' @param allow_extra Logical, allow extra columns beyond `columns`
+#'   (default: FALSE)
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
+#'
+#' @return A ClinicalTable object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' table <- create_hta_module4_table()
+#' }
+create_hta_module4_table <- function(
+	data = NULL,
+	title = "Module 4 Summary",
+	footnotes = character(),
+	columns = c(
+		"Endpoint",
+		"Analysis Set",
+		"Treatment",
+		"Comparator",
+		"Effect",
+		"95% CI",
+		"p-value"
+	),
+	col_widths = NULL,
+	allow_extra = FALSE,
+	autofit = TRUE
+) {
+	if (!is.null(data)) {
+		assert_data_frame(data, "data")
+	} else {
+		data <- data.frame(matrix(nrow = 0, ncol = length(columns)))
+		names(data) <- columns
+	}
+
+	if (length(columns) == 0) {
+		ph_abort("'columns' must contain at least one column name")
+	}
+
+	missing_cols <- setdiff(columns, names(data))
+	if (length(missing_cols) > 0) {
+		for (col in missing_cols) {
+			data[[col]] <- NA
+		}
+	}
+
+	extra_cols <- setdiff(names(data), columns)
+	if (length(extra_cols) > 0) {
+		if (allow_extra) {
+			data <- data[, c(columns, extra_cols), drop = FALSE]
+		} else {
+			ph_warn(paste(
+				"Dropping extra columns:",
+				paste(extra_cols, collapse = ", ")
+			))
+			data <- data[, columns, drop = FALSE]
+		}
+	} else {
+		data <- data[, columns, drop = FALSE]
+	}
+
+	ft <- flextable::flextable(data)
+
+	if (!is.null(title) && nchar(title) > 0) {
+		ft <- ft |>
+			flextable::add_header_lines(title) |>
+			flextable::bold(i = 1, part = "header")
+	}
+
+	if (length(footnotes) > 0) {
+		for (fn in footnotes) {
+			ft <- ft |> flextable::add_footer_lines(fn)
+		}
+		ft <- ft |>
+			flextable::fontsize(size = 8, part = "footer") |>
+			flextable::italic(part = "footer")
+	}
+
+	ft <- theme_gba(ft, autofit = autofit)
+
+	if (!is.null(col_widths)) {
+		for (col_name in names(col_widths)) {
+			if (col_name %in% names(data)) {
+				ft <- ft |>
+					flextable::width(
+						j = col_name,
+						width = col_widths[[col_name]]
+					)
+			}
+		}
+	}
+
+	ClinicalTable(
+		data = data,
+		flextable = ft,
+		type = "module4",
+		title = title,
+		metadata = list(
+			columns = columns,
+			allow_extra = allow_extra
+		)
+	)
+}
+
 #' Create Demographics Table
 #'
 #' Standard demographics and baseline characteristics table.

@@ -1,3 +1,13 @@
+# pharmhand 0.0.17.9000
+
+## New Features
+
+* Add `create_hta_module4_table()` for standardized G-BA Module 4 tables.
+
+## Tests
+
+* Add coverage for Module 4 table creation.
+
 # pharmhand 0.0.16.9000
 
 ## New Features
