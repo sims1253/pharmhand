@@ -1,3 +1,32 @@
+# pharmhand 0.0.14.9000
+
+## Breaking Changes
+
+* **Endpoint classes unified**: `PrimaryEndpoint`, `SecondaryEndpoint`, and 
+  `SafetyEndpoint` have been replaced with a single `Endpoint` class. Use the 
+  `category` property ("primary", "secondary", "safety", "exploratory") instead.
+
+* **Study class renamed**: `OneArmStudy` is now `SingleArmStudy` for clarity.
+
+* **New property name**: `TwoArmStudy@group_var` is now `TwoArmStudy@treatment_var`.
+
+## New Features
+  
+* **Study base class**: New abstract `Study` class provides common properties 
+  for all study types.
+
+* **MultiArmStudy**: New class for studies with 3+ treatment arms.
+
+* **StudySet**: New class for collections of studies (meta-analysis, NMA).
+
+* **Statistical result classes**: New `StatResult` hierarchy with 
+  `ComparisonResult`, `MetaResult`, and `EvidenceGrade` for type-safe results.
+
+## Documentation
+
+* Added `notes/ARCHITECTURE_DECISIONS.md` documenting class hierarchy and 
+  naming conventions.
+
 # pharmhand 0.0.13.9000
 
 ## Fixes

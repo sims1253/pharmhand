@@ -167,13 +167,15 @@ test_that("HTAEndpoint class works correctly", {
 		name = "Primary Efficacy",
 		variable = "AVAL",
 		type = "continuous",
+		category = "primary",
 		strata = c("SEX", "AGEGR1"),
 		criteria = list()
 	)
 
 	expect_true(S7::S7_inherits(ep, HTAEndpoint))
-	expect_true(S7::S7_inherits(ep, PrimaryEndpoint))
+	expect_true(S7::S7_inherits(ep, Endpoint))
 	expect_equal(ep@name, "Primary Efficacy")
+	expect_equal(ep@category, "primary")
 	expect_equal(ep@strata, c("SEX", "AGEGR1"))
 })
 

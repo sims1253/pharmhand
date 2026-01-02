@@ -7,7 +7,7 @@
 analyze_study(x, ...)
 }
 \arguments{
-\item{x}{Study object (OneArmStudy or TwoArmStudy)}
+\item{x}{Study object (SingleArmStudy, TwoArmStudy, or MultiArmStudy)}
 
 \item{...}{Additional arguments}
 }

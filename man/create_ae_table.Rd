@@ -102,7 +102,11 @@ comparison <- create_ae_table(
 soc_ordered <- create_ae_table(
   adae, adsl,
   type = "soc",
-  soc_order = c("Infections", "Nervous system disorders", "Gastrointestinal disorders")
+  soc_order = c(
+    "Infections",
+    "Nervous system disorders",
+    "Gastrointestinal disorders"
+  )
 )
 }
 }

@@ -142,6 +142,314 @@ AnalysisResults <- S7::new_class(
 	)
 )
 
+# =============================================================================
+# Statistical Result Classes
+# =============================================================================
+
+#' StatResult Class (Abstract Base)
+#'
+#' Abstract base class for statistical analysis results. Provides common
+#' properties for effect estimates, confidence intervals, and p-values.
+#'
+#' @param estimate Numeric effect estimate
+#' @param ci Numeric vector of length 2: c(lower, upper)
+#'   confidence interval bounds
+#' @param ci_level Numeric confidence level (default: 0.95)
+#' @param p_value Numeric p-value (can be NA)
+#' @param method Character string describing the statistical method used
+#' @param n Integer sample size or number of studies
+#' @param metadata List of additional metadata
+#'
+#' @return A StatResult object
+#' @keywords internal
+StatResult <- S7::new_class(
+	"StatResult",
+	package = "pharmhand",
+	properties = list(
+		estimate = S7::new_property(
+			S7::class_numeric,
+			validator = function(value) {
+				if (length(value) != 1) {
+					return("estimate must be a single numeric value")
+				}
+				NULL
+			}
+		),
+		ci = S7::new_property(
+			S7::class_numeric,
+			validator = function(value) {
+				if (length(value) != 2) {
+					return("ci must be a numeric vector of length 2: c(lower, upper)")
+				}
+				if (value[1] > value[2]) {
+					return("ci lower bound must be <= upper bound")
+				}
+				NULL
+			}
+		),
+		ci_level = S7::new_property(
+			S7::class_numeric,
+			default = 0.95,
+			validator = function(value) {
+				if (length(value) != 1 || value <= 0 || value >= 1) {
+					return("ci_level must be a single value between 0 and 1")
+				}
+				NULL
+			}
+		),
+		p_value = S7::new_property(S7::class_any, default = NA_real_),
+		method = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		n = S7::new_property(S7::class_any, default = NA_integer_),
+		metadata = S7::new_property(S7::class_list, default = list())
+	),
+	abstract = TRUE
+)
+
+#' ComparisonResult Class
+#'
+#' An S7 class for representing results of a single treatment comparison
+#' (e.g., hazard ratio, risk difference, odds ratio).
+#'
+#' @export
+#'
+#' @param estimate Numeric effect estimate
+#' @param ci Numeric vector c(lower, upper)
+#' @param ci_level Numeric confidence level
+#' @param p_value Numeric p-value
+#' @param method Character string for statistical method
+#' @param n Integer sample size
+#' @param effect_measure Character string: "hr", "or", "rr", "rd", "md", "smd"
+#' @param treatment Character string for treatment arm name
+#' @param control Character string for control arm name
+#' @param metadata List of additional metadata
+#'
+#' @return A ComparisonResult object
+#'
+#' @examples
+#' \dontrun{
+#' result <- ComparisonResult(
+#'   estimate = 0.75,
+#'   ci = c(0.60, 0.93),
+#'   p_value = 0.008,
+#'   effect_measure = "hr",
+#'   treatment = "Drug A",
+#'   control = "Placebo",
+#'   method = "Cox proportional hazards"
+#' )
+#' }
+ComparisonResult <- S7::new_class(
+	"ComparisonResult",
+	package = "pharmhand",
+	parent = StatResult,
+	properties = list(
+		effect_measure = S7::new_property(
+			S7::class_character,
+			default = "hr",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_measures <- c("hr", "or", "rr", "rd", "md", "smd", "irr")
+				if (!value %in% valid_measures) {
+					return(sprintf(
+						"effect_measure must be one of: %s",
+						paste(valid_measures, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		treatment = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		control = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		)
+	)
+)
+
+#' MetaResult Class
+#'
+#' An S7 class for representing meta-analysis results including pooled
+#' estimates, heterogeneity statistics, and study weights.
+#'
+#' @export
+#'
+#' @param estimate Numeric pooled effect estimate
+#' @param ci Numeric vector c(lower, upper)
+#' @param ci_level Numeric confidence level
+#' @param p_value Numeric p-value
+#' @param method Character string for statistical method
+#' @param n Integer number of studies
+#' @param model Character string: "fixed" or "random"
+#' @param effect_measure Character string: "hr", "or", "rr", "rd", "md", "smd"
+#' @param heterogeneity List with Q, I2, tau2, H2 statistics
+#' @param weights Numeric vector of study weights
+#' @param prediction_interval Numeric vector c(lower, upper)
+#'   for prediction interval
+#' @param study_results List of individual study ComparisonResult objects
+#' @param metadata List of additional metadata
+#'
+#' @return A MetaResult object
+#'
+#' @examples
+#' \dontrun{
+#' result <- MetaResult(
+#'   estimate = 0.80,
+#'   ci = c(0.70, 0.91),
+#'   p_value = 0.001,
+#'   model = "random",
+#'   effect_measure = "hr",
+#'   heterogeneity = list(Q = 15.2, I2 = 0.45, tau2 = 0.02),
+#'   n = 5L,
+#'   method = "REML with Knapp-Hartung"
+#' )
+#' }
+MetaResult <- S7::new_class(
+	"MetaResult",
+	package = "pharmhand",
+	parent = StatResult,
+	properties = list(
+		model = S7::new_property(
+			S7::class_character,
+			default = "random",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				if (!value %in% c("fixed", "random")) {
+					return("model must be 'fixed' or 'random'")
+				}
+				NULL
+			}
+		),
+		effect_measure = S7::new_property(
+			S7::class_character,
+			default = "hr",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_measures <- c("hr", "or", "rr", "rd", "md", "smd", "irr")
+				if (!value %in% valid_measures) {
+					return(sprintf(
+						"effect_measure must be one of: %s",
+						paste(valid_measures, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		heterogeneity = S7::new_property(
+			S7::class_list,
+			default = list(
+				Q = NA_real_,
+				I2 = NA_real_,
+				tau2 = NA_real_,
+				H2 = NA_real_
+			)
+		),
+		weights = S7::new_property(S7::class_any, default = NULL),
+		prediction_interval = S7::new_property(S7::class_any, default = NULL),
+		study_results = S7::new_property(S7::class_list, default = list())
+	)
+)
+
+#' EvidenceGrade Class
+#'
+#' An S7 class for representing IQWiG evidence grading results
+#' (Beleg/Hinweis/Anhaltspunkt).
+#'
+#' @export
+#'
+#' @param grade Character string: "proof" (Beleg), "indication" (Hinweis),
+#'   "hint" (Anhaltspunkt), or "none" (kein Beleg)
+#' @param grade_de Character string: German grade name
+#' @param direction Character string: "benefit", "harm", or "none"
+#' @param certainty Numeric certainty score (0-1)
+#' @param n_studies Integer number of studies
+#' @param domains List of domain assessments
+#' @param justification Character string explaining the grade
+#' @param metadata List of additional metadata
+#'
+#' @return An EvidenceGrade object
+#'
+#' @examples
+#' \dontrun{
+#' grade <- EvidenceGrade(
+#'   grade = "indication",
+#'   grade_de = "Hinweis",
+#'   direction = "benefit",
+#'   n_studies = 3L,
+#'   justification = "Consistent results from 3 RCTs with moderate risk of bias"
+#' )
+#' }
+EvidenceGrade <- S7::new_class(
+	"EvidenceGrade",
+	package = "pharmhand",
+	properties = list(
+		grade = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_grades <- c("proof", "indication", "hint", "none")
+				if (!value %in% valid_grades) {
+					return(sprintf(
+						"grade must be one of: %s",
+						paste(valid_grades, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		grade_de = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		direction = S7::new_property(
+			S7::class_character,
+			default = "none",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				if (!value %in% c("benefit", "harm", "none")) {
+					return("direction must be 'benefit', 'harm', or 'none'")
+				}
+				NULL
+			}
+		),
+		certainty = S7::new_property(
+			S7::class_numeric,
+			default = NA_real_
+		),
+		n_studies = S7::new_property(S7::class_any, default = NA_integer_),
+		domains = S7::new_property(S7::class_list, default = list()),
+		justification = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
+)
+
 #' Abstract base class for all clinical content
 #'
 #' @keywords internal
@@ -450,41 +758,27 @@ ClinicalReport <- S7::new_class(
 	)
 )
 
-#' OneArmStudy Class
+#' Study Class (Abstract Base)
 #'
-#' An S7 class for representing and analyzing single-arm clinical studies.
-#' Provides methods for calculating statistics, creating tables and plots,
-#' and performing hypothesis tests.
+#' Abstract base class for clinical studies. Provides common properties
+#' shared by all study types.
 #'
-#' @param data A data frame containing the study data
 #' @param study_id Character string for study identifier
 #' @param study_title Character string for study title
+#' @param design Character string for study design:
+#'   "rct", "observational", "single-arm"
+#' @param population Character string for population (e.g., "ITT", "FAS", "PP")
+#' @param endpoints List of Endpoint objects
 #' @param results List of analysis results
+#' @param risk_of_bias Risk of bias assessment result (optional)
 #' @param metadata List of additional metadata
 #'
-#' @usage OneArmStudy(
-#'   data = structure(list(), names = character(0),
-#'     row.names = integer(0), class = "data.frame"),
-#'   study_id = character(0),
-#'   study_title = character(0),
-#'   results = list(),
-#'   metadata = list()
-#' )
-#'
-#' @return A OneArmStudy object
-#' @export OneArmStudy
-OneArmStudy <- S7::new_class(
-	"OneArmStudy",
+#' @return A Study object
+#' @keywords internal
+Study <- S7::new_class(
+	"Study",
 	package = "pharmhand",
 	properties = list(
-		data = S7::new_property(
-			S7::class_data.frame,
-			default = data.frame(),
-			validator = function(value) {
-				admiraldev::assert_data_frame(value)
-				NULL
-			}
-		),
 		study_id = S7::new_property(
 			S7::class_character,
 			validator = function(value) {
@@ -499,39 +793,119 @@ OneArmStudy <- S7::new_class(
 				NULL
 			}
 		),
+		design = S7::new_property(
+			S7::class_character,
+			default = "rct",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_designs <- c("rct", "observational", "single-arm", "crossover")
+				if (!value %in% valid_designs) {
+					return(sprintf(
+						"design must be one of: %s",
+						paste(valid_designs, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		population = S7::new_property(
+			S7::class_character,
+			default = "ITT",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		endpoints = S7::new_property(S7::class_list, default = list()),
 		results = S7::new_property(S7::class_list, default = list()),
+		risk_of_bias = S7::new_property(S7::class_any, default = NULL),
 		metadata = S7::new_property(S7::class_list, default = list())
+	),
+	abstract = TRUE
+)
+
+#' SingleArmStudy Class
+#'
+#' An S7 class for representing and analyzing single-arm clinical studies.
+#' Inherits from Study.
+#'
+#' @export
+#'
+#' @param data A data frame containing the study data
+#' @param study_id Character string for study identifier
+#' @param study_title Character string for study title
+#' @param design Character string for study design (default: "single-arm")
+#' @param population Character string for population
+#' @param endpoints List of Endpoint objects
+#' @param results List of analysis results
+#' @param risk_of_bias Risk of bias assessment result
+#' @param metadata List of additional metadata
+#'
+#' @return A SingleArmStudy object
+#'
+#' @examples
+#' \dontrun{
+#' study <- SingleArmStudy(
+#'   data = my_data,
+#'   study_id = "STUDY001",
+#'   study_title = "Phase II Study"
+#' )
+#' }
+SingleArmStudy <- S7::new_class(
+	"SingleArmStudy",
+	package = "pharmhand",
+	parent = Study,
+	properties = list(
+		data = S7::new_property(
+			S7::class_data.frame,
+			default = data.frame(),
+			validator = function(value) {
+				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		design = S7::new_property(
+			S7::class_character,
+			default = "single-arm"
+		)
 	)
 )
 
 #' TwoArmStudy Class
 #'
 #' An S7 class for representing and analyzing two-arm clinical studies.
-#' Provides methods for comparing treatment groups, creating tables and plots,
-#' and performing hypothesis tests.
+#' Inherits from Study.
+#'
+#' @export
 #'
 #' @param data A data frame containing the study data
-#' @param group_var Character string for treatment group variable
+#' @param treatment_var Character string for treatment variable name
+#' @param comparator Character string describing the comparator arm
 #' @param study_id Character string for study identifier
 #' @param study_title Character string for study title
+#' @param design Character string for study design (default: "rct")
+#' @param population Character string for population
+#' @param endpoints List of Endpoint objects
 #' @param results List of analysis results
+#' @param risk_of_bias Risk of bias assessment result
 #' @param metadata List of additional metadata
 #'
-#' @usage TwoArmStudy(
-#'   data = structure(list(), names = character(0),
-#'     row.names = integer(0), class = "data.frame"),
-#'   group_var = "",
-#'   study_id = character(0),
-#'   study_title = character(0),
-#'   results = list(),
-#'   metadata = list()
-#' )
-#'
 #' @return A TwoArmStudy object
-#' @export TwoArmStudy
+#'
+#' @examples
+#' \dontrun{
+#' study <- TwoArmStudy(
+#'   data = my_data,
+#'   study_id = "STUDY001",
+#'   study_title = "Phase III RCT",
+#'   treatment_var = "TRT01P",
+#'   comparator = "Placebo"
+#' )
+#' }
 TwoArmStudy <- S7::new_class(
 	"TwoArmStudy",
 	package = "pharmhand",
+	parent = Study,
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
@@ -541,61 +915,229 @@ TwoArmStudy <- S7::new_class(
 				NULL
 			}
 		),
-		group_var = S7::new_property(
+		treatment_var = S7::new_property(
+			S7::class_character,
+			default = "TRT01P",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		comparator = S7::new_property(
 			S7::class_character,
 			default = "",
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
 				NULL
 			}
-		),
-		study_id = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		study_title = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		results = S7::new_property(S7::class_list, default = list()),
-		metadata = S7::new_property(S7::class_list, default = list())
+		)
 	)
 )
 
-#' PrimaryEndpoint Class
+#' MultiArmStudy Class
 #'
-#' An S7 class for representing primary endpoints in clinical studies.
+#' An S7 class for representing and analyzing multi-arm clinical studies
+#' (3+ treatment arms). Inherits from Study.
+#'
+#' @export
+#'
+#' @param data A data frame containing the study data
+#' @param treatment_var Character string for treatment variable name
+#' @param arms Character vector of treatment arm names
+#' @param reference_arm Character string for the reference/control arm
+#' @param study_id Character string for study identifier
+#' @param study_title Character string for study title
+#' @param design Character string for study design (default: "rct")
+#' @param population Character string for population
+#' @param endpoints List of Endpoint objects
+#' @param results List of analysis results
+#' @param risk_of_bias Risk of bias assessment result
+#' @param metadata List of additional metadata
+#'
+#' @return A MultiArmStudy object
+#'
+#' @examples
+#' \dontrun{
+#' study <- MultiArmStudy(
+#'   data = my_data,
+#'   study_id = "STUDY001",
+#'   study_title = "Phase III Multi-Arm RCT",
+#'   treatment_var = "TRT01P",
+#'   arms = c("Drug A", "Drug B", "Drug C", "Placebo"),
+#'   reference_arm = "Placebo"
+#' )
+#' }
+MultiArmStudy <- S7::new_class(
+	"MultiArmStudy",
+	package = "pharmhand",
+	parent = Study,
+	properties = list(
+		data = S7::new_property(
+			S7::class_data.frame,
+			default = data.frame(),
+			validator = function(value) {
+				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		treatment_var = S7::new_property(
+			S7::class_character,
+			default = "TRT01P",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		arms = S7::new_property(
+			S7::class_character,
+			default = character(),
+			validator = function(value) {
+				admiraldev::assert_character_vector(value)
+				if (length(value) > 0 && length(value) < 3) {
+					return("arms must have at least 3 elements for a multi-arm study")
+				}
+				NULL
+			}
+		),
+		reference_arm = S7::new_property(
+			S7::class_character,
+			default = "",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		)
+	)
+)
+
+#' StudySet Class
+#'
+#' An S7 class for representing a collection of studies for evidence synthesis
+#' (meta-analysis, indirect comparison, network meta-analysis).
+#'
+#' @export
+#'
+#' @param studies List of Study objects
+#' @param endpoint Endpoint object being synthesized
+#' @param comparison_type Type of comparison: "direct", "indirect", "network"
+#' @param common_comparator Common comparator for indirect/network comparisons
+#' @param characteristics Data frame of study-level characteristics
+#' @param metadata List of additional metadata
+#'
+#' @return A StudySet object
+#'
+#' @examples
+#' \dontrun{
+#' study_set <- StudySet(
+#'   studies = list(study1, study2, study3),
+#'   endpoint = os_endpoint,
+#'   comparison_type = "direct"
+#' )
+#' }
+StudySet <- S7::new_class(
+	"StudySet",
+	package = "pharmhand",
+	properties = list(
+		studies = S7::new_property(
+			S7::class_list,
+			default = list(),
+			validator = function(value) {
+				if (length(value) > 0) {
+					# Check all elements are Study objects
+					for (i in seq_along(value)) {
+						if (!S7::S7_inherits(value[[i]], Study)) {
+							return(sprintf(
+								"Element %d of studies must be a Study object",
+								i
+							))
+						}
+					}
+				}
+				NULL
+			}
+		),
+		endpoint = S7::new_property(S7::class_any, default = NULL),
+		comparison_type = S7::new_property(
+			S7::class_character,
+			default = "direct",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_types <- c("direct", "indirect", "network")
+				if (!value %in% valid_types) {
+					return(sprintf(
+						"comparison_type must be one of: %s",
+						paste(valid_types, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		common_comparator = S7::new_property(S7::class_any, default = NULL),
+		characteristics = S7::new_property(
+			S7::class_data.frame,
+			default = data.frame()
+		),
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed properties
+		n_studies = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) length(self@studies)
+		),
+		study_ids = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) {
+				vapply(self@studies, function(s) s@study_id, character(1))
+			}
+		)
+	)
+)
+
+#' Endpoint Class
+#'
+#' An S7 class for representing clinical study endpoints.
+#' Replaces the previous PrimaryEndpoint, SecondaryEndpoint, and SafetyEndpoint
+#' classes with a unified class using the `category` property.
 #'
 #' @export
 #'
 #' @param name Character string for endpoint name
 #' @param variable Character string for variable name in the dataset
-#' @param type Character string for endpoint type
+#' @param type Character string for endpoint type:
+#'   "continuous", "binary", "tte", "count", "pro"
+#' @param category Character string for endpoint category:
+#'   "primary", "secondary", "safety", "exploratory"
 #' @param description Character string for endpoint description
-#' @param hypothesis Character string for hypothesis type
-#' @param margin Numeric value for non-inferiority margin
-#' @param alpha Numeric value for significance level
+#' @param hypothesis Character string for hypothesis type:
+#'   "superiority", "non-inferiority", "equivalence"
+#' @param margin Numeric value for non-inferiority/equivalence margin
+#'   (if applicable)
+#' @param alpha Numeric value for significance level (default: 0.05)
+#' @param priority Numeric value for analysis priority (default: 1)
 #' @param metadata List of additional metadata
 #'
-#' @return A PrimaryEndpoint object
-#'
+#' @return An Endpoint object
 #'
 #' @examples
 #' \dontrun{
-#' endpoint <- PrimaryEndpoint(
-#'   name = "Primary",
-#'   variable = "VAL",
-#'   type = "continuous"
+#' # Primary efficacy endpoint
+#' endpoint <- Endpoint(
+#'   name = "Overall Survival",
+#'   variable = "AVAL",
+#'   type = "tte",
+#'   category = "primary",
+#'   hypothesis = "superiority"
+#' )
+#'
+#' # Safety endpoint
+#' ae_endpoint <- Endpoint(
+#'   name = "Treatment-Emergent AEs",
+#'   variable = "AETERM",
+#'   type = "count",
+#'   category = "safety"
 #' )
 #' }
-PrimaryEndpoint <- S7::new_class(
-	"PrimaryEndpoint",
+Endpoint <- S7::new_class(
+	"Endpoint",
 	package = "pharmhand",
 	properties = list(
 		name = S7::new_property(
@@ -614,84 +1156,62 @@ PrimaryEndpoint <- S7::new_class(
 		),
 		type = S7::new_property(
 			S7::class_character,
+			default = "continuous",
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
+				valid_types <- c("continuous", "binary", "tte", "count", "pro")
+				if (!value %in% valid_types) {
+					return(sprintf(
+						"type must be one of: %s",
+						paste(valid_types, collapse = ", ")
+					))
+				}
 				NULL
 			}
 		),
-		description = S7::new_property(S7::class_any),
+		category = S7::new_property(
+			S7::class_character,
+			default = "primary",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_cats <- c("primary", "secondary", "safety", "exploratory")
+				if (!value %in% valid_cats) {
+					return(sprintf(
+						"category must be one of: %s",
+						paste(valid_cats, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		description = S7::new_property(S7::class_any, default = NULL),
 		hypothesis = S7::new_property(
 			S7::class_character,
 			default = "superiority",
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
+				valid_hyp <- c("superiority", "non-inferiority", "equivalence")
+				if (!value %in% valid_hyp) {
+					return(sprintf(
+						"hypothesis must be one of: %s",
+						paste(valid_hyp, collapse = ", ")
+					))
+				}
 				NULL
 			}
 		),
-		margin = S7::new_property(S7::class_any),
+		margin = S7::new_property(S7::class_any, default = NULL),
 		alpha = S7::new_property(
 			S7::class_numeric,
 			default = 0.05,
 			validator = function(value) {
 				admiraldev::assert_numeric_vector(value, len = 1)
+				if (value <= 0 || value >= 1) {
+					return("alpha must be between 0 and 1")
+				}
 				NULL
 			}
 		),
-		metadata = S7::new_property(S7::class_list, default = list())
-	)
-)
-
-#' SecondaryEndpoint Class
-#'
-#' An S7 class for representing secondary endpoints in clinical studies.
-#'
-#' @export
-#'
-#' @param name Character string for endpoint name
-#' @param variable Character string for variable name in the dataset
-#' @param type Character string for endpoint type
-#' @param description Character string for endpoint description
-#' @param priority Numeric value for priority
-#' @param exploratory Logical, whether this is an exploratory endpoint
-#' @param metadata List of additional metadata
-#'
-#' @return A SecondaryEndpoint object
-#'
-#'
-#' @examples
-#' \dontrun{
-#' endpoint <- SecondaryEndpoint(
-#'   name = "Secondary",
-#'   variable = "VAL2",
-#'   type = "continuous"
-#' )
-#' }
-SecondaryEndpoint <- S7::new_class(
-	"SecondaryEndpoint",
-	package = "pharmhand",
-	properties = list(
-		name = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		variable = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		type = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		description = S7::new_property(S7::class_any),
 		priority = S7::new_property(
 			S7::class_numeric,
 			default = 1,
@@ -700,64 +1220,6 @@ SecondaryEndpoint <- S7::new_class(
 				NULL
 			}
 		),
-		exploratory = S7::new_property(S7::class_logical, default = FALSE),
-		metadata = S7::new_property(S7::class_list, default = list())
-	)
-)
-
-#' SafetyEndpoint Class
-#'
-#' An S7 class for representing safety endpoints in clinical studies.
-#'
-#' @export
-#'
-#' @param name Character string for endpoint name
-#' @param variable Character string for variable name in the dataset
-#' @param type Character string for endpoint type
-#' @param description Character string for endpoint description
-#' @param severity Character string for severity level
-#' @param relatedness Character string for relatedness to treatment
-#' @param metadata List of additional metadata
-#'
-#' @return A SafetyEndpoint object
-#'
-#'
-#' @examples
-#' \dontrun{
-#' endpoint <- SafetyEndpoint(
-#'   name = "Safety",
-#'   variable = "AE",
-#'   type = "adverse_event"
-#' )
-#' }
-SafetyEndpoint <- S7::new_class(
-	"SafetyEndpoint",
-	package = "pharmhand",
-	properties = list(
-		name = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		variable = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		type = S7::new_property(
-			S7::class_character,
-			validator = function(value) {
-				admiraldev::assert_character_scalar(value)
-				NULL
-			}
-		),
-		description = S7::new_property(S7::class_any),
-		severity = S7::new_property(S7::class_any),
-		relatedness = S7::new_property(S7::class_any),
 		metadata = S7::new_property(S7::class_list, default = list())
 	)
 )
@@ -973,6 +1435,9 @@ SubgroupSection <- S7::new_class(
 #' @param strata Character vector of stratification variables
 #' @param criteria List of inclusion criteria for chef pipeline
 #' @param metadata List of additional metadata
+#' @param category Character string for endpoint category
+#'   (inherited from Endpoint)
+#' @param priority Numeric value for analysis priority (inherited from Endpoint)
 #'
 #' @return An HTAEndpoint object
 #'
@@ -988,7 +1453,7 @@ SubgroupSection <- S7::new_class(
 HTAEndpoint <- S7::new_class(
 	"HTAEndpoint",
 	package = "pharmhand",
-	parent = PrimaryEndpoint,
+	parent = Endpoint,
 	properties = list(
 		chef_spec = S7::new_property(S7::class_list, default = list()),
 		strata = S7::new_property(

@@ -7,11 +7,13 @@
 HTAEndpoint(
   name = character(0),
   variable = character(0),
-  type = character(0),
+  type = "continuous",
+  category = "primary",
   description = NULL,
   hypothesis = "superiority",
   margin = NULL,
   alpha = 0.05,
+  priority = 1,
   metadata = list(),
   chef_spec = list(),
   strata = character(0),
@@ -25,6 +27,9 @@ HTAEndpoint(
 
 \item{type}{Character string for endpoint type}
 
+\item{category}{Character string for endpoint category
+(inherited from Endpoint)}
+
 \item{description}{Character string for endpoint description}
 
 \item{hypothesis}{Character string for hypothesis type}
@@ -32,6 +37,8 @@ HTAEndpoint(
 \item{margin}{Numeric value for non-inferiority margin}
 
 \item{alpha}{Numeric value for significance level}
+
+\item{priority}{Numeric value for analysis priority (inherited from Endpoint)}
 
 \item{metadata}{List of additional metadata}
 
