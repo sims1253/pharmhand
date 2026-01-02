@@ -131,14 +131,6 @@ test_that("fmt_ci preset works", {
 	expect_equal(result, "0.85 (0.75, 0.95)")
 })
 
-test_that("fmt_pvalue formats correctly", {
-	pval_fmt <- fmt_pvalue(threshold = 0.001)
-
-	expect_equal(pval_fmt(0.05), "0.050")
-	expect_equal(pval_fmt(0.0001), "<0.001")
-	expect_equal(pval_fmt(NA), "--")
-})
-
 test_that("format_spec accepts custom null_format", {
 	spec <- format_spec("xx.x", null_format = "N/A")
 	result <- apply_format(spec, NA_real_)

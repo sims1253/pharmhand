@@ -6,7 +6,6 @@
 \alias{fmt_mean_sd}
 \alias{fmt_median_range}
 \alias{fmt_ci}
-\alias{fmt_pvalue}
 \title{Common Clinical Format Presets}
 \usage{
 fmt_n_pct()
@@ -16,11 +15,6 @@ fmt_mean_sd()
 fmt_median_range()
 
 fmt_ci()
-
-fmt_pvalue(threshold = 0.001)
-}
-\arguments{
-\item{threshold}{Numeric threshold below which to display "<threshold"}
 }
 \description{
 Pre-defined format specifications for common clinical table patterns.
@@ -34,7 +28,5 @@ Pre-defined format specifications for common clinical table patterns.
 \item \code{fmt_median_range()}: Median with range: "xx.x (xx.x, xx.x)"
 
 \item \code{fmt_ci()}: Confidence interval: "xx.xx (xx.xx, xx.xx)"
-
-\item \code{fmt_pvalue()}: P-value with significance threshold
 
 }}

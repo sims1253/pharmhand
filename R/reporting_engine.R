@@ -290,6 +290,188 @@ apply_clinical_style <- function(
 	ft
 }
 
+# =============================================================================
+# IQWiG and G-BA Compliant Themes
+# =============================================================================
+
+#' IQWiG Theme for Flextable
+#'
+#' Apply IQWiG-compliant styling to a flextable. Based on formatting standards
+#' from IQWiG Methods v8.0.
+#'
+#' @param ft A flextable object
+#' @param font_name Font family (default: "Arial")
+#' @param font_size Font size in points (default: 9)
+#' @param header_bold Logical, bold header text (default: TRUE)
+#' @param decimal_separator Decimal separator: "." or "," (default: ",")
+#' @param autofit Logical, autofit column widths (default: TRUE)
+#'
+#' @return A styled flextable object
+#' @export
+#'
+#' @references
+#' IQWiG (2023). Allgemeine Methoden, Version 8.0.
+#'
+#' @examples
+#' \dontrun{
+#' ft <- flextable::flextable(mtcars[1:5, 1:4])
+#' ft <- theme_iqwig(ft)
+#' }
+theme_iqwig <- function(
+	ft,
+	font_name = "Arial",
+	font_size = 9,
+	header_bold = TRUE,
+	decimal_separator = ",",
+	autofit = TRUE
+) {
+	# Validate input
+	if (!inherits(ft, "flextable")) {
+		ph_abort("'ft' must be a flextable object")
+	}
+
+	# IQWiG standard colors
+	border_color <- "black"
+	header_bg <- "white"
+	body_bg <- "white"
+
+	# Base styling - IQWiG uses clean, professional formatting
+	ft <- ft |>
+		flextable::font(fontname = font_name, part = "all") |>
+		flextable::fontsize(size = font_size, part = "all") |>
+		flextable::color(color = "black", part = "all") |>
+		flextable::bg(bg = body_bg, part = "body") |>
+		flextable::bg(bg = header_bg, part = "header") |>
+		flextable::align(align = "left", part = "body") |>
+		flextable::align(align = "center", part = "header") |>
+		flextable::valign(valign = "center", part = "all")
+
+	# Bold header if requested
+	if (header_bold) {
+		ft <- ft |> flextable::bold(part = "header")
+	}
+
+	# IQWiG border style: horizontal lines at top/bottom of header and bottom
+	# of table
+	border_style <- officer::fp_border(color = border_color, width = 1)
+
+	ft <- ft |>
+		flextable::border_remove() |>
+		flextable::hline_top(border = border_style, part = "header") |>
+		flextable::hline_bottom(border = border_style, part = "header") |>
+		flextable::hline_bottom(border = border_style, part = "body")
+
+	# Padding for readability
+	ft <- ft |> flextable::padding(padding = 3, part = "all")
+
+	# Handle NA values
+	ft <- ft |>
+		flextable::colformat_char(na_str = "--") |>
+		flextable::colformat_double(na_str = "--") |>
+		flextable::colformat_int(na_str = "--")
+
+	# Autofit
+	if (autofit) {
+		ft <- ft |>
+			flextable::autofit() |>
+			flextable::fit_to_width(max_width = 7.5)
+	}
+
+	ft
+}
+
+#' G-BA Module 4 Theme for Flextable
+#'
+#' Apply G-BA Module 4 compliant styling to a flextable. Based on formatting
+#' requirements from G-BA Dossier templates for AMNOG submissions.
+#'
+#' @param ft A flextable object
+#' @param font_name Font family (default: "Arial")
+#' @param font_size Font size in points (default: 10)
+#' @param header_bold Logical, bold header text (default: TRUE)
+#' @param header_bg Header background color (default: "#E8E8E8" light gray)
+#' @param decimal_separator Decimal separator: "." or "," (default: ",")
+#' @param autofit Logical, autofit column widths (default: TRUE)
+#'
+#' @return A styled flextable object
+#' @export
+#'
+#' @references
+#' G-BA (2023). Dossiervorlage Modul 4.
+#'
+#' @examples
+#' \dontrun{
+#' ft <- flextable::flextable(mtcars[1:5, 1:4])
+#' ft <- theme_gba(ft)
+#' }
+theme_gba <- function(
+	ft,
+	font_name = "Arial",
+	font_size = 10,
+	header_bold = TRUE,
+	header_bg = "#E8E8E8",
+	decimal_separator = ",",
+	autofit = TRUE
+) {
+	# Validate input
+	if (!inherits(ft, "flextable")) {
+		ph_abort("'ft' must be a flextable object")
+	}
+
+	# G-BA standard colors
+	border_color <- "black"
+	body_bg <- "white"
+
+	# Base styling - G-BA uses slightly larger font and gray header
+	ft <- ft |>
+		flextable::font(fontname = font_name, part = "all") |>
+		flextable::fontsize(size = font_size, part = "all") |>
+		flextable::color(color = "black", part = "all") |>
+		flextable::bg(bg = body_bg, part = "body") |>
+		flextable::bg(bg = header_bg, part = "header") |>
+		flextable::align(align = "left", part = "body") |>
+		flextable::align(align = "center", part = "header") |>
+		flextable::valign(valign = "center", part = "all")
+
+	# Bold header if requested
+	if (header_bold) {
+		ft <- ft |> flextable::bold(part = "header")
+	}
+
+	# G-BA border style: full grid with black borders
+	border_style <- officer::fp_border(color = border_color, width = 1)
+	border_thin <- officer::fp_border(color = border_color, width = 0.5)
+
+	ft <- ft |>
+		flextable::border_remove() |>
+		# Outer borders (thicker)
+		flextable::hline_top(border = border_style, part = "header") |>
+		flextable::hline_bottom(border = border_style, part = "body") |>
+		flextable::vline(border = border_thin, part = "all") |>
+		# Header bottom line
+		flextable::hline_bottom(border = border_style, part = "header") |>
+		# Inner horizontal lines (thinner)
+		flextable::hline(border = border_thin, part = "body")
+
+	# Padding for readability
+	ft <- ft |> flextable::padding(padding = 4, part = "all")
+
+	# Handle NA values
+	ft <- ft |>
+		flextable::colformat_char(na_str = "--") |>
+		flextable::colformat_double(na_str = "--") |>
+		flextable::colformat_int(na_str = "--")
+
+	# Autofit
+	if (autofit) {
+		ft <- ft |>
+			flextable::autofit() |>
+			flextable::fit_to_width(max_width = 7.5)
+	}
+
+	ft
+}
+
 #' Create HTA-Style Table
 #'
 #' Create a flextable formatted for HTA/AMNOG submissions.
