@@ -536,6 +536,64 @@ create_hta_table <- function(
 	ft
 }
 
+#' Convert Clinical Content to G-BA Template
+#'
+#' Applies G-BA Module 4 formatting rules to clinical content.
+#' For ClinicalTable objects, the G-BA theme is applied.
+#' For ClinicalReport objects, all contained tables are formatted.
+#'
+#' @param x A ClinicalTable, ClinicalReport, or list of these
+#' @param path Optional file path. If provided with a ClinicalReport,
+#'   the report is written to disk.
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
+#'
+#' @return A ClinicalTable or ClinicalReport with G-BA formatting applied
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' table <- create_hta_module4_table()
+#' table <- to_gba_template(table)
+#' }
+to_gba_template <- function(x, path = NULL, autofit = TRUE) {
+	if (S7::S7_inherits(x, ClinicalTable)) {
+		if (is.null(x@flextable)) {
+			x@flextable <- flextable::flextable(x@data)
+		}
+		x@flextable <- theme_gba(x@flextable, autofit = autofit)
+		return(x)
+	}
+
+	if (S7::S7_inherits(x, ClinicalReport)) {
+		sections <- lapply(x@sections, function(section) {
+			section@content <- lapply(section@content, function(item) {
+				if (S7::S7_inherits(item, ClinicalTable)) {
+					if (is.null(item@flextable)) {
+						item@flextable <- flextable::flextable(item@data)
+					}
+					item@flextable <- theme_gba(item@flextable, autofit = autofit)
+				}
+				item
+			})
+			section
+		})
+
+		x@sections <- sections
+
+		if (!is.null(path)) {
+			write_docx(x, path)
+		}
+
+		return(x)
+	}
+
+	if (is.list(x)) {
+		return(lapply(x, to_gba_template, path = path, autofit = autofit))
+	}
+
+	ph_abort("'x' must be a ClinicalTable, ClinicalReport, or list")
+}
+
 #' Convert LayeredTable to flextable
 #'
 #' Build and style a LayeredTable as a flextable.
