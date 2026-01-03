@@ -230,6 +230,18 @@ create_cfb_summary_table <- function(
 #'   - ceiling_flag: TRUE if pct_ceiling > threshold
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Detect floor/ceiling effects in PRO scores
+#' result <- detect_floor_ceiling(
+#'   data = adqs,
+#'   score_var = "AVAL",
+#'   min_score = 0,
+#'   max_score = 100
+#' )
+#' print(result)
+#' }
 detect_floor_ceiling <- function(
 	data,
 	score_var,
@@ -1564,6 +1576,29 @@ create_responder_table <- function(
 #' IQWiG Methods v8.0, Section 10.3.5, p. 217-218.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Non-inferiority test for continuous endpoint
+#' result <- test_non_inferiority(
+#'   data = adeff,
+#'   outcome_var = "CHG",
+#'   trt_var = "TRT01P",
+#'   ref_group = "Active Control",
+#'   ni_margin = 0.5,
+#'   type = "continuous"
+#' )
+#'
+#' # Non-inferiority test for binary endpoint
+#' result <- test_non_inferiority(
+#'   data = adrs,
+#'   outcome_var = "AVALC",
+#'   trt_var = "TRT01P",
+#'   ref_group = "Active Control",
+#'   ni_margin = 0.10,
+#'   type = "binary"
+#' )
+#' }
 test_non_inferiority <- function(
 	data,
 	outcome_var,
@@ -1774,6 +1809,20 @@ test_non_inferiority <- function(
 #' IQWiG Methods v8.0, Section 10.3.6, p. 218-220.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # ANCOVA-adjusted treatment comparison
+#' result <- ancova_adjust_continuous(
+#'   data = adeff,
+#'   outcome_var = "CHG",
+#'   trt_var = "TRT01P",
+#'   baseline_var = "BASE",
+#'   ref_group = "Placebo",
+#'   covariates = c("AGEGR1", "SEX")
+#' )
+#' print(result$treatment_effects)
+#' }
 ancova_adjust_continuous <- function(
 	data,
 	outcome_var,

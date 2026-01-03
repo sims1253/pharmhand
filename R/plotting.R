@@ -532,6 +532,19 @@ create_km_plot <- function(
 #' using dedicated competing risk packages like cmprsk.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Cumulative incidence plot for AEs
+#' plot <- create_ae_cumulative_incidence_plot(
+#'   data = adaette,
+#'   time_var = "AVAL",
+#'   event_var = "CNSR",
+#'   trt_var = "TRT01P",
+#'   title = "Cumulative Incidence of Serious AEs"
+#' )
+#' print(plot)
+#' }
 create_ae_cumulative_incidence_plot <- function(
 	data,
 	time_var,
@@ -747,6 +760,19 @@ create_ae_cumulative_incidence_plot <- function(
 #' IQWiG Methods v8.0, Section 10.3.12, p. 235-237.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Log-log plot to assess PH assumption
+#' plot <- create_loglog_plot(
+#'   data = adtte,
+#'   time_var = "AVAL",
+#'   event_var = "CNSR",
+#'   trt_var = "TRT01P",
+#'   title = "Log-Log Plot: PH Assumption Check"
+#' )
+#' print(plot)
+#' }
 create_loglog_plot <- function(
 	data,
 	time_var,
