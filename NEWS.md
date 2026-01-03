@@ -1,3 +1,9 @@
+# pharmhand 0.1.4.9000
+
+## Documentation
+
+* Finalized IQWiG-compliant CI formatter documentation.
+
 # pharmhand 0.1.3.9000
 
 ## Improvements
