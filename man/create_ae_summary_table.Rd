@@ -19,6 +19,7 @@ create_ae_summary_table(
   threshold = 0,
   sort_by = "incidence",
   conf_level = 0.95,
+  include_nnh = TRUE,
   soc_order = NULL
 )
 }
@@ -62,6 +63,8 @@ like "deaths", "comparison", or for denominator calculation)}
 \item{sort_by}{For type="comparison", sort by "rd", "rr", or "incidence"}
 
 \item{conf_level}{For type="comparison", confidence level (default: 0.95)}
+
+\item{include_nnh}{For type="comparison", include NNH column (default: TRUE)}
 
 \item{soc_order}{For type="soc" or type="soc_pt", custom ordering of SOCs
 (character vector). If NULL, SOCs are sorted alphabetically (default: NULL)}

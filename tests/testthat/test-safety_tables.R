@@ -625,6 +625,18 @@ describe("create_ae_comparison_table()", {
 		expect_equal(tbl@type, "ae_comparison")
 	})
 
+	it("includes NNH column by default", {
+		tbl <- create_ae_comparison_table(
+			adae = test_data$adae,
+			adsl = test_data$adsl,
+			ref_group = "Placebo",
+			by = "pt"
+		)
+
+		nnh_col <- sprintf("NNH %s vs %s\n(95%% CI)", "Active", "Placebo")
+		expect_true(nnh_col %in% names(tbl@data))
+	})
+
 	it("works with 'soc' grouping", {
 		tbl <- create_ae_comparison_table(
 			adae = test_data$adae,
@@ -652,6 +664,47 @@ describe("create_ae_comparison_table()", {
 		expect_true("Term" %in% names(tbl@data))
 		# Should have 4 PT-level rows (Headache, Nausea, Fatigue, Rash)
 		expect_equal(nrow(tbl@data), 4)
+	})
+
+	it("calculates NNH as inverse of absolute RD", {
+		tbl <- create_ae_comparison_table(
+			adae = test_data$adae,
+			adsl = test_data$adsl,
+			ref_group = "Placebo",
+			by = "pt"
+		)
+
+		nnh_col <- sprintf("NNH %s vs %s\n(95%% CI)", "Active", "Placebo")
+		headache_nnh <- tbl@data[tbl@data$Term == "Headache", nnh_col]
+		result <- calculate_ae_risk_difference(n1 = 20, N1 = 100, n2 = 10, N2 = 100)
+		expected_nnh <- 1 / abs(result$rd)
+		expected_prefix <- format_number(expected_nnh, digits = 1)
+		expect_true(startsWith(headache_nnh, expected_prefix))
+	})
+
+	it("shows NE when RD CI crosses zero", {
+		tbl <- create_ae_comparison_table(
+			adae = test_data$adae,
+			adsl = test_data$adsl,
+			ref_group = "Placebo",
+			by = "pt"
+		)
+
+		nnh_col <- sprintf("NNH %s vs %s\n(95%% CI)", "Active", "Placebo")
+		nausea_nnh <- tbl@data[tbl@data$Term == "Nausea", nnh_col]
+		expect_equal(nausea_nnh, "NE")
+	})
+
+	it("allows excluding NNH column", {
+		tbl <- create_ae_comparison_table(
+			adae = test_data$adae,
+			adsl = test_data$adsl,
+			ref_group = "Placebo",
+			by = "pt",
+			include_nnh = FALSE
+		)
+
+		expect_false(any(grepl("NNH", names(tbl@data), fixed = TRUE)))
 	})
 
 	it("works with 'overall' grouping", {

@@ -1,3 +1,9 @@
+# pharmhand 0.1.9.9000
+
+## Improvements
+
+* Added NNH (Number Needed to Harm) to AE comparison tables with estimability handling.
+
 # pharmhand 0.1.8.9000
 
 ## Breaking Changes
