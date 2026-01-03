@@ -88,6 +88,7 @@ reference:
   - create_subgroup_analysis_table
   - create_primary_endpoint_table
   - create_cfb_summary_table
+  - ancova_adjust_continuous
 
 - title: "Safety Tables"
   desc: >
