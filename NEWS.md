@@ -1,3 +1,28 @@
+# pharmhand 0.1.1.9000
+
+## Bug Fixes
+
+* Fixed redundant null check in `check_gba_compliance()` title validation.
+* Fixed `to_gba_template()` list handling that would overwrite same file path.
+* Fixed list handling in `check_gba_compliance()` for unnamed elements.
+
+## Improvements
+
+* `theme_iqwig()` and `theme_gba()` now apply the `decimal_separator` parameter
+  to numeric columns (was declared but unused).
+* `SingleArmStudy` now has a `treatment_var` property for consistency with
+  `TwoArmStudy` and `MultiArmStudy`.
+
+## Documentation
+
+* Updated G-BA citation to 2024 reference.
+* Added missing `adae` and `adrs` datasets to README examples.
+
+## Maintenance
+
+* Added `notes/` to `.gitignore`.
+* Fixed lintr line-length violations.
+
 # pharmhand 0.1.0.9000
 
 ## Breaking Changes

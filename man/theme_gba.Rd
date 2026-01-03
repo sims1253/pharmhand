@@ -43,6 +43,5 @@ ft <- theme_gba(ft)
 }
 }
 \references{
-G-BA (2024). Dossiervorlage Modul 4.
-\url{https://www.g-ba.de/themen/arzneimittel/arzneimittel-richtlinie-anlagen/nutzenbewertung-35a/}
+G-BA (2024). Dossiervorlage Modul 4. See \url{https://www.g-ba.de}
 }
