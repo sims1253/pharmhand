@@ -1,3 +1,9 @@
+# pharmhand 0.1.5.9000
+
+## Documentation
+
+* Clarified IQWiG flextable theme formatting and decimal separator behavior.
+
 # pharmhand 0.1.4.9000
 
 ## Documentation
