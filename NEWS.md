@@ -1,4 +1,8 @@
-# pharmhand 0.1.15.9000
+# pharmhand 0.1.19.9000
+
+## Improvements
+
+* Added ANCOVA adjustment for continuous endpoints via `ancova_adjust_continuous()`.
 
 # pharmhand 0.1.18.9000
 

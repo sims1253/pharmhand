@@ -1168,6 +1168,102 @@ test_that("test_non_inferiority works for binary endpoints", {
 	expect_equal(result_fail$method, "exact")
 })
 
+# Tests for ANCOVA ----
+
+test_that("ancova_adjust_continuous adjusts for baseline", {
+	set.seed(123)
+
+	n <- 120
+	baseline <- rnorm(n, 50, 10)
+	trt <- rep(c("Placebo", "Active"), each = n / 2)
+	outcome <- 0.4 * baseline + ifelse(trt == "Active", 4, 0) + rnorm(n, 0, 2)
+
+	df <- data.frame(
+		OUTCOME = outcome,
+		BASE = baseline,
+		TRT = trt,
+		stringsAsFactors = FALSE
+	)
+
+	result <- ancova_adjust_continuous(
+		data = df,
+		outcome_var = "OUTCOME",
+		trt_var = "TRT",
+		baseline_var = "BASE",
+		ref_group = "Placebo"
+	)
+
+	expect_true(is.data.frame(result$treatment_effects))
+	expect_equal(result$treatment_effects$Treatment, "Active")
+	expect_equal(result$treatment_effects$estimate, 4, tolerance = 1)
+})
+
+test_that("ancova_adjust_continuous supports multiple covariates", {
+	set.seed(456)
+
+	n <- 80
+	baseline <- rnorm(n, 100, 15)
+	age <- rnorm(n, 60, 5)
+	bmi <- rnorm(n, 25, 3)
+	trt <- rep(c("A", "B"), each = n / 2)
+	outcome <- 0.2 *
+		baseline +
+		0.5 * age +
+		1.2 * bmi +
+		ifelse(trt == "B", 3, 0) +
+		rnorm(n, 0, 1)
+
+	df <- data.frame(
+		OUTCOME = outcome,
+		BASE = baseline,
+		AGE = age,
+		BMI = bmi,
+		TRT = trt,
+		stringsAsFactors = FALSE
+	)
+
+	result <- ancova_adjust_continuous(
+		data = df,
+		outcome_var = "OUTCOME",
+		trt_var = "TRT",
+		baseline_var = "BASE",
+		covariates = c("AGE", "BMI")
+	)
+
+	term_labels <- attr(result$model$terms, "term.labels")
+	expect_true(all(c("BASE", "TRT", "AGE", "BMI") %in% term_labels))
+})
+
+test_that("ancova_adjust_continuous extracts treatment effect CI", {
+	set.seed(789)
+
+	n <- 60
+	baseline <- rnorm(n, 10, 2)
+	trt <- rep(c("Ref", "Trt"), each = n / 2)
+	outcome <- 1 + 0.3 * baseline + ifelse(trt == "Trt", 2, 0) + rnorm(n, 0, 1)
+
+	df <- data.frame(
+		OUTCOME = outcome,
+		BASE = baseline,
+		TRT = trt,
+		stringsAsFactors = FALSE
+	)
+
+	result <- ancova_adjust_continuous(
+		data = df,
+		outcome_var = "OUTCOME",
+		trt_var = "TRT",
+		baseline_var = "BASE",
+		ref_group = "Ref",
+		conf_level = 0.9
+	)
+
+	effects <- result$treatment_effects
+	expect_true(all(c("estimate", "ci_lower", "ci_upper") %in% names(effects)))
+	expect_true(effects$ci_lower < effects$estimate)
+	expect_true(effects$ci_upper > effects$estimate)
+})
+
 # Tests for Proportion CI Calculation ----
 
 test_that("calculate_proportion_ci wilson method works", {

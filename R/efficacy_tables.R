@@ -1719,6 +1719,151 @@ test_non_inferiority <- function(
 	)
 }
 
+#' ANCOVA Analysis for Continuous Endpoints
+#'
+#' Performs ANCOVA to estimate treatment effects adjusted for baseline
+#' and other covariates.
+#'
+#' @param data Data frame with outcome and covariates
+#' @param outcome_var Character. Post-baseline outcome variable
+#' @param trt_var Character. Treatment variable
+#' @param baseline_var Character. Baseline value variable
+#' @param covariates Character vector. Additional covariates to adjust for
+#' @param ref_group Character. Reference group for contrast
+#' @param conf_level Numeric. Confidence level (default: 0.95)
+#'
+#' @return List with:
+#'   - treatment_effects: Data frame with adjusted differences vs reference
+#'   - model: The fitted lm object
+#'   - summary: Model summary
+#'   - anova: ANOVA table
+#'
+#' @details
+#' Fits model: outcome ~ baseline + trt + covariates
+#' Treatment effects are extracted from model coefficients (trt - ref)
+#' and confidence intervals are computed with confint.
+#'
+#' @references
+#' IQWiG Methods v8.0, Section 10.3.6, p. 218-220.
+#'
+#' @export
+#' @keywords internal
+ancova_adjust_continuous <- function(
+	data,
+	outcome_var,
+	trt_var,
+	baseline_var,
+	covariates = NULL,
+	ref_group = NULL,
+	conf_level = 0.95
+) {
+	assert_data_frame(data, "data")
+	assert_character_scalar(outcome_var, "outcome_var")
+	assert_character_scalar(trt_var, "trt_var")
+	assert_character_scalar(baseline_var, "baseline_var")
+
+	if (is.null(covariates)) {
+		covariates <- character()
+	}
+	if (!is.character(covariates)) {
+		ph_abort("'covariates' must be a character vector")
+	}
+	if (
+		length(covariates) > 0 && any(is.na(covariates) | nchar(covariates) == 0)
+	) {
+		ph_abort("'covariates' must be a non-empty character vector")
+	}
+	if (!is.null(ref_group)) {
+		assert_character_scalar(ref_group, "ref_group")
+	}
+	assert_numeric_scalar(conf_level, "conf_level")
+	assert_in_range(conf_level, 0, 1, "conf_level")
+
+	covariates <- unique(covariates)
+	covariates <- setdiff(covariates, c(outcome_var, trt_var, baseline_var))
+
+	required_cols <- unique(c(outcome_var, trt_var, baseline_var, covariates))
+	missing_cols <- setdiff(required_cols, names(data))
+	if (length(missing_cols) > 0) {
+		ph_abort(sprintf(
+			"'data' is missing required columns: %s",
+			paste(missing_cols, collapse = ", ")
+		))
+	}
+
+	df <- data[, required_cols, drop = FALSE]
+	df <- df[stats::complete.cases(df), , drop = FALSE]
+	if (nrow(df) == 0) {
+		ph_abort("No complete cases available for ANCOVA")
+	}
+
+	if (!is.numeric(df[[outcome_var]])) {
+		ph_abort("'outcome_var' must be numeric")
+	}
+	if (!is.numeric(df[[baseline_var]])) {
+		ph_abort("'baseline_var' must be numeric")
+	}
+
+	df[[trt_var]] <- as.factor(df[[trt_var]])
+	trt_levels <- levels(df[[trt_var]])
+	if (length(trt_levels) < 2) {
+		ph_abort("At least two treatment groups are required")
+	}
+
+	if (is.null(ref_group)) {
+		ref_group <- trt_levels[1]
+	} else if (!ref_group %in% trt_levels) {
+		ph_abort(sprintf(
+			"Reference group '%s' not found in '%s'",
+			ref_group,
+			trt_var
+		))
+	}
+
+	df[[trt_var]] <- stats::relevel(df[[trt_var]], ref = ref_group)
+
+	predictors <- c(baseline_var, trt_var, covariates)
+	formula_str <- paste(outcome_var, "~", paste(predictors, collapse = " + "))
+	model <- stats::lm(stats::as.formula(formula_str), data = df)
+	model_summary <- summary(model)
+	anova_table <- stats::anova(model)
+
+	coef_values <- stats::coef(model)
+	conf_int <- stats::confint(model, level = conf_level)
+
+	trt_levels <- levels(df[[trt_var]])
+	non_ref_levels <- trt_levels[trt_levels != ref_group]
+	expected_terms <- paste0(trt_var, make.names(non_ref_levels))
+	if (all(expected_terms %in% names(coef_values))) {
+		effect_terms <- expected_terms
+		effect_labels <- non_ref_levels
+	} else {
+		effect_terms <- names(coef_values)[
+			grepl(paste0("^", trt_var), names(coef_values))
+		]
+		effect_labels <- gsub(paste0("^", trt_var), "", effect_terms)
+	}
+
+	if (length(effect_terms) == 0) {
+		ph_abort("No treatment effects could be extracted from the ANCOVA model")
+	}
+
+	treatment_effects <- data.frame(
+		Treatment = effect_labels,
+		estimate = unname(coef_values[effect_terms]),
+		ci_lower = conf_int[effect_terms, 1],
+		ci_upper = conf_int[effect_terms, 2],
+		stringsAsFactors = FALSE
+	)
+
+	list(
+		treatment_effects = treatment_effects,
+		model = model,
+		summary = model_summary,
+		anova = anova_table
+	)
+}
+
 #' Calculate Proportion Confidence Interval
 #'
 #' @param x Number of successes
