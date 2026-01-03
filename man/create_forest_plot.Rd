@@ -20,7 +20,8 @@ create_forest_plot(
   title = "Subgroup Analysis",
   xlab = NULL,
   log_scale = TRUE,
-  colors = NULL
+  colors = NULL,
+  base_size = 11
 )
 }
 \arguments{
@@ -60,6 +61,8 @@ inverted automatically. Default: "CNSR"}
 \item{log_scale}{Logical, use log scale for x-axis (default: TRUE)}
 
 \item{colors}{Optional named vector of colors for estimate types}
+
+\item{base_size}{Base font size for plot text elements (default: 11)}
 }
 \value{
 A ClinicalPlot object

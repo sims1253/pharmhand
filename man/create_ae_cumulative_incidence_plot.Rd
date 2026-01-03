@@ -13,7 +13,9 @@ create_ae_cumulative_incidence_plot(
   xlab = "Time",
   ylab = "Cumulative Incidence",
   show_ci = TRUE,
-  colors = NULL
+  conf_level = 0.95,
+  colors = NULL,
+  base_size = 11
 )
 }
 \arguments{
@@ -33,7 +35,11 @@ create_ae_cumulative_incidence_plot(
 
 \item{show_ci}{Logical. Show confidence bands (default: TRUE)}
 
+\item{conf_level}{Numeric. Confidence level for intervals (default: 0.95)}
+
 \item{colors}{Named character vector of colors}
+
+\item{base_size}{Base font size for plot text elements (default: 11)}
 }
 \value{
 ClinicalPlot with cumulative incidence curves
@@ -51,4 +57,17 @@ events and coded as censored for this estimator.
 
 For analyses with significant competing risks (e.g., mortality), consider
 using dedicated competing risk packages like cmprsk.
+}
+\examples{
+\dontrun{
+# Cumulative incidence plot for AEs
+plot <- create_ae_cumulative_incidence_plot(
+  data = adaette,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "TRT01P",
+  title = "Cumulative Incidence of Serious AEs"
+)
+print(plot)
+}
 }

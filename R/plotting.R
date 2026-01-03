@@ -54,6 +54,26 @@ NULL
 	}
 }
 
+#' Create pharmhand plotting theme with consistent white background
+#' @param base_size Base font size for plot text elements (default: 11)
+#' @keywords internal
+.pharmhand_theme <- function(base_size = 11) {
+	ggplot2::theme_minimal(base_size = base_size) +
+		ggplot2::theme(
+			panel.background = ggplot2::element_rect(fill = "white", color = NA),
+			plot.background = ggplot2::element_rect(fill = "white", color = NA),
+			panel.border = ggplot2::element_rect(fill = NA, color = "gray90"),
+			panel.grid.major = ggplot2::element_line(color = "gray90"),
+			panel.grid.minor = ggplot2::element_blank(),
+			legend.background = ggplot2::element_rect(
+				fill = "white",
+				color = "gray90"
+			),
+			legend.key = ggplot2::element_rect(fill = "white", color = NA),
+			legend.position = "bottom"
+		)
+}
+
 #' Create Kaplan-Meier Plot
 #'
 #' Kaplan-Meier plot using ggplot2 and survival.
@@ -348,12 +368,8 @@ create_km_plot <- function(
 			color = "Treatment",
 			fill = "Treatment"
 		) +
-		ggplot2::theme_minimal(base_size = base_size) +
-		ggplot2::theme(
-			legend.position = "bottom",
-			plot.title = ggplot2::element_text(hjust = 0.5),
-			panel.grid.minor = ggplot2::element_blank()
-		)
+		.pharmhand_theme(base_size = base_size) +
+		ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
 	if (risk_table) {
 		if (!requireNamespace("patchwork", quietly = TRUE)) {
@@ -470,12 +486,12 @@ create_km_plot <- function(
 				breaks = break_points
 			) +
 			ggplot2::labs(x = NULL, y = NULL) +
-			ggplot2::theme_minimal(base_size = base_size) +
+			.pharmhand_theme(base_size = base_size) +
 			ggplot2::theme(
 				panel.grid = ggplot2::element_blank(),
 				axis.text.x = ggplot2::element_blank(),
 				legend.position = "none",
-				plot.margin = ggplot2::margin(0, 0, 0, 0)
+				plot.margin = ggplot2::margin(0, 0, 0, 0, "lines")
 			)
 
 		rt <- rt + ggplot2::scale_color_manual(values = resolved_palette)
@@ -518,6 +534,7 @@ create_km_plot <- function(
 #' @param show_ci Logical. Show confidence bands (default: TRUE)
 #' @param conf_level Numeric. Confidence level for intervals (default: 0.95)
 #' @param colors Named character vector of colors
+#' @param base_size Base font size for plot text elements (default: 11)
 #'
 #' @return ClinicalPlot with cumulative incidence curves
 #'
@@ -555,7 +572,8 @@ create_ae_cumulative_incidence_plot <- function(
 	ylab = "Cumulative Incidence",
 	show_ci = TRUE,
 	conf_level = 0.95,
-	colors = NULL
+	colors = NULL,
+	base_size = 11
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
 		ph_abort("Package 'survival' is required for cumulative incidence plots")
@@ -709,12 +727,8 @@ create_ae_cumulative_incidence_plot <- function(
 			color = "Treatment",
 			fill = "Treatment"
 		) +
-		ggplot2::theme_minimal() +
-		ggplot2::theme(
-			legend.position = "bottom",
-			plot.title = ggplot2::element_text(hjust = 0.5),
-			panel.grid.minor = ggplot2::element_blank()
-		)
+		.pharmhand_theme(base_size = base_size) +
+		ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
 	ClinicalPlot(
 		plot = p,
@@ -743,6 +757,7 @@ create_ae_cumulative_incidence_plot <- function(
 #' @param colors Named character vector of colors for each treatment group.
 #'   If NULL, uses `getOption("pharmhand.palette")` or the default palette.
 #' @param base_size Base font size for plot text elements (default: 11).
+#' @param conf_level Confidence level for survival fit (default: 0.95)
 #'
 #' @return A ClinicalPlot object containing a ggplot2 log-log survival plot
 #'
@@ -783,7 +798,8 @@ create_loglog_plot <- function(
 	ylab = "Log(-Log(Survival))",
 	show_censor = TRUE,
 	colors = NULL,
-	base_size = 11
+	base_size = 11,
+	conf_level = 0.95
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
 		ph_abort("Package 'survival' is required for log-log plots")
@@ -809,7 +825,11 @@ create_loglog_plot <- function(
 
 	# Fit model
 	formula_str <- paste("surv_obj ~", trt_var_actual)
-	fit <- survival::survfit(as.formula(formula_str), data = df)
+	fit <- survival::survfit(
+		as.formula(formula_str),
+		data = df,
+		conf.int = conf_level
+	)
 
 	# Extract data for plotting
 	if (!is.null(fit[["strata"]])) {
@@ -881,12 +901,8 @@ create_loglog_plot <- function(
 			y = ylab,
 			color = "Treatment"
 		) +
-		ggplot2::theme_minimal(base_size = base_size) +
-		ggplot2::theme(
-			legend.position = "bottom",
-			plot.title = ggplot2::element_text(hjust = 0.5),
-			panel.grid.minor = ggplot2::element_blank()
-		)
+		.pharmhand_theme(base_size = base_size) +
+		ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
 	ClinicalPlot(
 		plot = p,
@@ -925,6 +941,7 @@ create_loglog_plot <- function(
 #' @param xlab X-axis label. If NULL, auto-generated based on endpoint_type.
 #' @param log_scale Logical, use log scale for x-axis (default: TRUE)
 #' @param colors Optional named vector of colors for estimate types
+#' @param base_size Base font size for plot text elements (default: 11)
 #'
 #' @return A ClinicalPlot object
 #' @export
@@ -968,7 +985,8 @@ create_forest_plot <- function(
 	title = "Subgroup Analysis",
 	xlab = NULL,
 	log_scale = TRUE,
-	colors = NULL
+	colors = NULL,
+	base_size = 11
 ) {
 	endpoint_type <- match.arg(endpoint_type)
 
@@ -1144,10 +1162,9 @@ create_forest_plot <- function(
 		# Points
 		ggplot2::geom_point(size = 3) +
 		# Styling
-		ggplot2::theme_minimal() +
+		.pharmhand_theme(base_size = base_size) +
 		ggplot2::theme(
 			panel.grid.major.y = ggplot2::element_blank(),
-			panel.grid.minor = ggplot2::element_blank(),
 			axis.text.y = ggplot2::element_text(hjust = 0),
 			plot.title = ggplot2::element_text(hjust = 0.5)
 		) +

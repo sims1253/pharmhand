@@ -1,3 +1,37 @@
+# pharmhand 0.2.1.9000
+
+## Improvements
+
+* Added `conf_level` parameter to `create_ae_cumulative_incidence_plot()` (was hard-coded at 0.95).
+* Exposed `subgroup_counts` and `min_subgroup_size` in `create_subgroup_analysis_table()` metadata for programmatic access.
+* Wrapped `test_ph_assumption()` call in `create_tte_summary_table()` with tryCatch for robustness with sparse Cox models.
+
+## Plotting
+
+* Created `.pharmhand_theme()` internal helper for consistent white backgrounds across all plots.
+* Refactored all plotting functions to use `.pharmhand_theme()` with `base_size` parameter.
+* Added `conf_level` parameter to `create_loglog_plot()`.
+* Added `base_size` parameter to `create_ae_cumulative_incidence_plot()` and `create_forest_plot()`.
+* Updated `build_schoenfeld_plot()` to use `.pharmhand_theme()` for consistent styling.
+
+## Documentation
+
+* Clarified that `method` parameter in `test_non_inferiority()` applies only to binary endpoints.
+* Added `@examples` to `detect_floor_ceiling()`, `test_non_inferiority()`, `ancova_adjust_continuous()`, `create_loglog_plot()`, and `create_ae_cumulative_incidence_plot()`.
+* Added Time-to-Event Safety Analysis section to safety-tables vignette.
+* Added NNH (Number Needed to Harm) documentation to safety-tables vignette.
+* Added Non-Inferiority Testing section to efficacy-tables vignette.
+* Added ANCOVA Adjustment section to efficacy-tables vignette.
+* Added Floor/Ceiling Detection section to efficacy-tables and baseline-tables vignettes.
+
+## Tests
+
+* Added test for NNH calculation when risk difference is negative (treatment beneficial).
+
+## Internal
+
+* Added `comparison_results` stub with `TODO(#196)` for future Report/Result comparison feature.
+
 # pharmhand 0.2.0.9000
 
 ## Code Quality

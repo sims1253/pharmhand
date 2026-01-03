@@ -14,7 +14,8 @@ create_loglog_plot(
   ylab = "Log(-Log(Survival))",
   show_censor = TRUE,
   colors = NULL,
-  base_size = 11
+  base_size = 11,
+  conf_level = 0.95
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ If "CNSR" (ADaM censoring flag), it will be inverted (0=event becomes 1).}
 If NULL, uses \code{getOption("pharmhand.palette")} or the default palette.}
 
 \item{base_size}{Base font size for plot text elements (default: 11).}
+
+\item{conf_level}{Confidence level for survival fit (default: 0.95)}
 }
 \value{
 A ClinicalPlot object containing a ggplot2 log-log survival plot
@@ -57,6 +60,19 @@ This is a complementary visual diagnostic to the statistical test
 provided by test_ph_assumption(). Censor marks are supported; median
 lines, CI bands, risk tables, and landmarks are intentionally omitted
 to keep the diagnostic scale uncluttered.
+}
+\examples{
+\dontrun{
+# Log-log plot to assess PH assumption
+plot <- create_loglog_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "TRT01P",
+  title = "Log-Log Plot: PH Assumption Check"
+)
+print(plot)
+}
 }
 \references{
 IQWiG Methods v8.0, Section 10.3.12, p. 235-237.
