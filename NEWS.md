@@ -1,4 +1,22 @@
-# pharmhand 0.1.19.9000
+# pharmhand 0.1.21.9000
+
+## Bug Fixes
+
+* Fixed ComparisonResult defaults from `integer(0)` to `numeric(0)` for consistency with S7 class.
+* Fixed line length lint errors in `test_non_inferiority()` documentation.
+
+## Documentation
+
+* Updated pkgdown Utilities section description to include "statistical diagnostics".
+* Added missing topics to pkgdown reference index: `calculate_exposure_adjusted_rate()`, `create_ae_exposure_table()`, `create_time_to_first_ae()`, and `test_non_inferiority()`.
+* Cleaned up duplicate NEWS.md heading.
+* Added explanatory comment for PH assumption check disable in time-to-first AE function.
+
+## Plotting
+
+* Added `show_censor` support to `create_loglog_plot()` and passed through from `create_km_plot(type = "loglog")`.
+* Updated documentation to clarify that censor marks are supported on log-log plots while median lines, CI bands, risk tables, and landmarks are intentionally omitted.
+* Added test for log-log plot censor marks.
 
 # pharmhand 0.1.20.9000
 

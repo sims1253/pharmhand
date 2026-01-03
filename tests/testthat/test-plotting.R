@@ -314,6 +314,25 @@ test_that("create_loglog_plot works with valid data", {
 	expect_equal(p@title, "Log-Log Survival Plot")
 })
 
+test_that("create_loglog_plot supports censor marks", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	df <- data.frame(
+		time = c(1, 2, 3, 4, 1.5, 2.5, 3.5, 4.5),
+		event = c(1, 0, 1, 0, 1, 0, 1, 0),
+		trt = rep(c("A", "B"), each = 4)
+	)
+
+	p <- create_loglog_plot(df, "time", "event", "trt", show_censor = TRUE)
+	layer_classes <- sapply(p@plot$layers, function(l) class(l$geom)[1])
+	expect_true(any(grepl("Point", layer_classes, fixed = TRUE)))
+
+	p_no <- create_loglog_plot(df, "time", "event", "trt", show_censor = FALSE)
+	layer_classes_no <- sapply(p_no@plot$layers, function(l) class(l$geom)[1])
+	expect_false(any(grepl("Point", layer_classes_no, fixed = TRUE)))
+})
+
 test_that("create_loglog_plot supports multiple treatment groups", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")

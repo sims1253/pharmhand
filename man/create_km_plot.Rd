@@ -69,8 +69,10 @@ Other built-in options: "Okabe-Ito",
 Also used for risk table text.}
 
 \item{type}{Character. Plot type: "km" for Kaplan-Meier or "loglog" for
-log(-log(S(t))) vs log(t). When "loglog", median lines, CI bands,
-censor marks, risk tables, and landmarks are not applied.}
+log(-log(S(t))) vs log(t). For "loglog", median lines, CI bands,
+risk tables, and landmarks are intentionally omitted to keep the
+diagnostic scale uncluttered; censor marks are supported via
+\code{show_censor}.}
 }
 \value{
 A ClinicalPlot object
