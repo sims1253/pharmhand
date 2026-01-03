@@ -1,5 +1,14 @@
 # pharmhand 0.1.15.9000
 
+# pharmhand 0.1.16.9000
+
+## Improvements
+
+* Added exposure-adjusted incidence rate tables with Poisson confidence intervals
+  via `calculate_exposure_adjusted_rate()` and `create_ae_exposure_table()`.
+
+# pharmhand 0.1.15.9000
+
 ## Improvements
 
 * Added configurable warnings for small subgroups in `create_subgroup_table()` and
