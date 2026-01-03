@@ -1,3 +1,9 @@
+# pharmhand 0.1.10.9000
+
+## Improvements
+
+* Added `detect_floor_ceiling()` to flag floor/ceiling effects in PRO scores by visit and treatment arm.
+
 # pharmhand 0.1.9.9000
 
 ## Improvements
