@@ -74,3 +74,13 @@ assert_column_exists <- function(data, col, data_arg = "data") {
 	}
 	invisible(TRUE)
 }
+
+#' Get NA String
+#'
+#' Returns the string to display for NA values.
+#'
+#' @return Character string for NA display
+#' @keywords internal
+get_na_string <- function() {
+	getOption("pharmhand.na_string", "--")
+}

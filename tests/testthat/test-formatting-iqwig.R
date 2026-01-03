@@ -17,7 +17,7 @@ test_that("format_pvalue formats correctly with default locale (en)", {
 	expect_equal(format_pvalue(1), "1.000")
 
 	# NA handling
-	expect_equal(format_pvalue(NA), "NA")
+	expect_equal(format_pvalue(NA), "--")
 })
 
 test_that("format_pvalue respects German locale", {
@@ -39,7 +39,7 @@ test_that("format_pvalue handles custom digits and threshold", {
 
 test_that("format_pvalue is vectorized", {
 	p_values <- c(0.05, 0.001, 0.0001, NA)
-	expected <- c("0.050", "0.001", "<0.001", "NA")
+	expected <- c("0.050", "0.001", "<0.001", "--")
 	expect_equal(format_pvalue(p_values), expected)
 })
 
@@ -52,8 +52,8 @@ test_that("format_ci formats correctly with semicolon separator", {
 	expect_equal(format_ci(-0.5, 0.5), "[-0.50; 0.50]")
 
 	# NA handling
-	expect_equal(format_ci(NA, 1.0), "NA")
-	expect_equal(format_ci(0.5, NA), "NA")
+	expect_equal(format_ci(NA, 1.0), "--")
+	expect_equal(format_ci(0.5, NA), "--")
 })
 
 test_that("format_ci respects German locale", {
@@ -74,7 +74,7 @@ test_that("format_ci handles custom digits and brackets", {
 test_that("format_ci is vectorized", {
 	lower <- c(0.5, 0.7, NA)
 	upper <- c(0.9, 1.1, 1.0)
-	expected <- c("[0.50; 0.90]", "[0.70; 1.10]", "NA")
+	expected <- c("[0.50; 0.90]", "[0.70; 1.10]", "--")
 	expect_equal(format_ci(lower, upper), expected)
 })
 
@@ -93,7 +93,7 @@ test_that("format_number handles locale correctly", {
 	expect_equal(format_number(1234.567, 2, "de"), "1234,57")
 
 	# NA handling
-	expect_equal(format_number(NA, 2, "en"), "NA")
+	expect_equal(format_number(NA, 2, "en"), "--")
 })
 
 test_that("format_percentage formats correctly", {
@@ -114,5 +114,5 @@ test_that("format_percentage formats correctly", {
 	expect_equal(format_percentage(23.567, digits = 2), "23.57%")
 
 	# NA handling
-	expect_equal(format_percentage(NA), "NA")
+	expect_equal(format_percentage(NA), "--")
 })

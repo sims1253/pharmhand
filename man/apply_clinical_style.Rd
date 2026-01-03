@@ -15,7 +15,7 @@ apply_clinical_style(
   body_bg = "white",
   font_color = "black",
   zebra = FALSE,
-  na_string = "--",
+  na_string = get_na_string(),
   autofit = TRUE
 )
 }
@@ -40,7 +40,8 @@ apply_clinical_style(
 
 \item{zebra}{Logical, apply zebra striping (default: FALSE)}
 
-\item{na_string}{String to display for NA values (default: "--")}
+\item{na_string}{String to display for NA values
+(default: getOption("pharmhand.na_string", "--"))}
 
 \item{autofit}{Logical, perform expensive layout calculations (default: TRUE)}
 }

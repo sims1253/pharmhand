@@ -11,6 +11,7 @@ theme_gba(
   header_bold = TRUE,
   header_bg = "#E8E8E8",
   decimal_separator = ",",
+  na_string = getOption("pharmhand.na_string", "--"),
   autofit = TRUE
 )
 }
@@ -26,6 +27,9 @@ theme_gba(
 \item{header_bg}{Header background color (default: "#E8E8E8" light gray)}
 
 \item{decimal_separator}{Decimal separator: "." or "," (default: ",")}
+
+\item{na_string}{String to display for missing values
+(default: getOption("pharmhand.na_string", "--"))}
 
 \item{autofit}{Logical, autofit column widths (default: TRUE)}
 }
