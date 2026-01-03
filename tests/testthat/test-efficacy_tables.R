@@ -601,6 +601,125 @@ test_that("create_tte_summary_table includes HR for two-arm studies", {
 	expect_true(any(grepl("p-value", tbl@data$Statistic, fixed = TRUE)))
 })
 
+# Tests for PH Assumption ----
+
+test_that("test_ph_assumption flags PH violations", {
+	skip_if_not_installed("survival")
+
+	set.seed(123)
+	n <- 400
+	ph_data <- data.frame(
+		TIME = c(
+			rweibull(n / 2, shape = 1, scale = 10),
+			rweibull(n / 2, shape = 2.5, scale = 10)
+		),
+		EVENT = rep(1, n),
+		TRT01P = rep(c("A", "B"), each = n / 2),
+		stringsAsFactors = FALSE
+	)
+
+	result <- test_ph_assumption(
+		data = ph_data,
+		time_var = "TIME",
+		event_var = "EVENT",
+		trt_var = "TRT01P"
+	)
+
+	expect_true(result$violation)
+	expect_true(all(
+		c(
+			"variable",
+			"rho",
+			"chisq",
+			"p_value",
+			"violation"
+		) %in%
+			names(result$results)
+	))
+	expect_true(any(result$results$violation))
+	expect_true(is.numeric(result$global_test))
+})
+
+test_that("test_ph_assumption handles proportional hazards data", {
+	skip_if_not_installed("survival")
+
+	set.seed(456)
+	n <- 400
+	ph_data <- data.frame(
+		TIME = c(
+			rweibull(n / 2, shape = 1.2, scale = 10),
+			rweibull(n / 2, shape = 1.2, scale = 8)
+		),
+		EVENT = rep(1, n),
+		TRT01P = rep(c("A", "B"), each = n / 2),
+		stringsAsFactors = FALSE
+	)
+
+	result <- test_ph_assumption(
+		data = ph_data,
+		time_var = "TIME",
+		event_var = "EVENT",
+		trt_var = "TRT01P"
+	)
+
+	expect_false(result$violation)
+	expect_true(result$global_test > 0.1)
+})
+
+test_that("test_ph_assumption accepts coxph model input", {
+	skip_if_not_installed("survival")
+
+	set.seed(456)
+	n <- 200
+	ph_data <- data.frame(
+		TIME = c(
+			rweibull(n / 2, shape = 1.2, scale = 10),
+			rweibull(n / 2, shape = 1.2, scale = 8)
+		),
+		EVENT = rep(1, n),
+		TRT01P = rep(c("A", "B"), each = n / 2),
+		stringsAsFactors = FALSE
+	)
+
+	fit <- survival::coxph(
+		survival::Surv(TIME, EVENT) ~ TRT01P,
+		data = ph_data
+	)
+
+	result <- test_ph_assumption(fit)
+
+	expect_s3_class(result$model, "coxph")
+	expect_s3_class(result$zph, "cox.zph")
+})
+
+test_that("test_ph_assumption can generate Schoenfeld plots", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(456)
+	n <- 200
+	ph_data <- data.frame(
+		TIME = c(
+			rweibull(n / 2, shape = 1.2, scale = 10),
+			rweibull(n / 2, shape = 1.2, scale = 8)
+		),
+		EVENT = rep(1, n),
+		TRT01P = rep(c("A", "B"), each = n / 2),
+		stringsAsFactors = FALSE
+	)
+
+	result <- test_ph_assumption(
+		data = ph_data,
+		time_var = "TIME",
+		event_var = "EVENT",
+		trt_var = "TRT01P",
+		plot = TRUE
+	)
+
+	expect_s7_class(result$plot, ClinicalPlot)
+	expect_true(inherits(result$plot@plot, "ggplot"))
+})
+
 # Tests for Responder Table ----
 
 test_that("create_responder_table works with basic data", {
