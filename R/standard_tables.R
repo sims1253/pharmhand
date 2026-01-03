@@ -13,10 +13,11 @@ NULL
 #' @param data Data frame to display. If NULL, an empty template is created.
 #' @param title Table title (default: "Module 4 Summary")
 #' @param footnotes Character vector of footnotes
-#' @param columns Character vector of required column names
+#' @param columns Character vector of required column names in display order.
+#'   Missing columns are added with `NA`.
 #' @param col_widths Named numeric vector of column widths (optional)
-#' @param allow_extra Logical, allow extra columns beyond `columns`
-#'   (default: FALSE)
+#' @param allow_extra Logical, allow extra columns beyond `columns`. When FALSE,
+#'   extra columns are dropped; when TRUE, they are appended after `columns`.
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #'
 #' @return A ClinicalTable object
