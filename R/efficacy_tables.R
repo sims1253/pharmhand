@@ -964,6 +964,270 @@ create_tte_summary_table <- function(
 	)
 }
 
+#' Test Proportional Hazards Assumption
+#'
+#' Tests the proportional hazards assumption for Cox regression models
+#' using Schoenfeld residuals (cox.zph test).
+#'
+#' @param data Data frame with time-to-event data, or a coxph model object
+#' @param time_var Character. Time variable (required if data is a data frame)
+#' @param event_var Character. Event variable (required if data is a data frame)
+#' @param trt_var Character. Treatment variable (required if data is a
+#'   data frame)
+#' @param covariates Character vector. Additional covariates to include
+#' @param alpha Numeric. Significance level for flagging violations
+#'   (default: 0.05)
+#' @param plot Logical. Whether to create diagnostic plot (default: FALSE)
+#'
+#' @return A list with:
+#'   - results: Data frame with variable, rho, chisq, p-value, violation flag
+#'   - global_test: Global test result (p-value)
+#'   - violation: Logical, TRUE if any p < alpha
+#'   - model: The fitted coxph model
+#'   - zph: The cox.zph result object
+#'   - plot: ClinicalPlot if plot=TRUE
+#'
+#' @export
+#'
+#' @references
+#' Grambsch, P. M. and Therneau, T. M. (1994).
+#' Proportional hazards tests and diagnostics based on weighted residuals.
+#' Biometrika, 81, 515-26.
+#'
+#' IQWiG Methods v8.0, Section 10.3.12, p. 235-237.
+#'
+#' @examples
+#' \dontrun{
+#' result <- test_ph_assumption(
+#'   data = adtte,
+#'   time_var = "AVAL",
+#'   event_var = "CNSR",
+#'   trt_var = "TRT01P",
+#'   plot = TRUE
+#' )
+#' }
+test_ph_assumption <- function(
+	data,
+	time_var = NULL,
+	event_var = NULL,
+	trt_var = NULL,
+	covariates = character(),
+	alpha = 0.05,
+	plot = FALSE
+) {
+	if (!requireNamespace("survival", quietly = TRUE)) {
+		ph_abort("Package 'survival' is required for proportional hazards tests")
+	}
+
+	if (is.null(covariates)) {
+		covariates <- character()
+	}
+	if (!is.character(covariates)) {
+		ph_abort("'covariates' must be a character vector")
+	}
+	if (!is.logical(plot) || length(plot) != 1 || is.na(plot)) {
+		ph_abort("'plot' must be TRUE or FALSE")
+	}
+
+	assert_numeric_scalar(alpha, "alpha")
+	assert_in_range(alpha, 0, 1, "alpha")
+
+	if (inherits(data, "coxph")) {
+		model <- data
+	} else {
+		df <- get_filtered_data(data)
+		assert_data_frame(df, "data")
+
+		if (is.null(time_var)) {
+			ph_abort("'time_var' is required when 'data' is a data frame")
+		}
+		if (is.null(event_var)) {
+			ph_abort("'event_var' is required when 'data' is a data frame")
+		}
+
+		trt_var_actual <- get_trt_var(data, default = trt_var)
+		if (is.null(trt_var_actual)) {
+			ph_abort("'trt_var' is required when 'data' is a data frame")
+		}
+
+		assert_character_scalar(time_var, "time_var")
+		assert_character_scalar(event_var, "event_var")
+		assert_character_scalar(trt_var_actual, "trt_var")
+
+		required_cols <- c(time_var, event_var, trt_var_actual, covariates)
+		missing_cols <- setdiff(required_cols, names(df))
+		if (length(missing_cols) > 0) {
+			ph_abort(sprintf(
+				"'data' is missing required columns: %s",
+				paste(missing_cols, collapse = ", ")
+			))
+		}
+
+		# Handle CNSR inversion (ADaM: 0=event, 1=censor -> survival: 1=event)
+		if (event_var == "CNSR") {
+			df$event <- 1 - df[[event_var]]
+			event_var_use <- "event"
+		} else {
+			event_var_use <- event_var
+		}
+
+		df[[trt_var_actual]] <- as.factor(df[[trt_var_actual]])
+		predictors <- c(trt_var_actual, covariates)
+		formula_str <- paste0(
+			"survival::Surv(",
+			time_var,
+			", ",
+			event_var_use,
+			") ~ ",
+			paste(predictors, collapse = " + ")
+		)
+
+		model <- survival::coxph(stats::as.formula(formula_str), data = df)
+	}
+
+	zph <- survival::cox.zph(model)
+	zph_table <- as.data.frame(zph$table)
+	p_col <- if ("p" %in% names(zph_table)) {
+		"p"
+	} else if ("p.value" %in% names(zph_table)) {
+		"p.value"
+	} else {
+		names(zph_table)[ncol(zph_table)]
+	}
+	zph_table$variable <- rownames(zph$table)
+
+	global_row <- zph_table[zph_table$variable == "GLOBAL", , drop = FALSE]
+	global_test <- if (nrow(global_row) > 0) {
+		global_row[[p_col]][1]
+	} else if (nrow(zph_table) == 1) {
+		zph_table[[p_col]][1]
+	} else {
+		NA_real_
+	}
+
+	results_df <- zph_table[zph_table$variable != "GLOBAL", , drop = FALSE]
+	rho_values <- if ("rho" %in% names(results_df)) {
+		results_df[["rho"]]
+	} else {
+		rep(NA_real_, nrow(results_df))
+	}
+	chisq_values <- if ("chisq" %in% names(results_df)) {
+		results_df[["chisq"]]
+	} else {
+		rep(NA_real_, nrow(results_df))
+	}
+	results_df <- data.frame(
+		variable = results_df$variable,
+		rho = rho_values,
+		chisq = chisq_values,
+		p_value = results_df[[p_col]],
+		stringsAsFactors = FALSE
+	)
+	results_df$violation <- !is.na(results_df$p_value) &
+		results_df$p_value < alpha
+
+	plot_obj <- NULL
+	if (isTRUE(plot)) {
+		plot_obj <- build_schoenfeld_plot(zph)
+	}
+
+	list(
+		results = results_df,
+		global_test = global_test,
+		violation = any(results_df$violation, na.rm = TRUE),
+		model = model,
+		zph = zph,
+		plot = plot_obj
+	)
+}
+
+#' @keywords internal
+build_schoenfeld_plot <- function(zph, title = "Schoenfeld Residuals") {
+	if (!requireNamespace("ggplot2", quietly = TRUE)) {
+		ph_abort("Package 'ggplot2' is required for Schoenfeld residual plots")
+	}
+
+	time_values <- zph$time
+	if (is.null(time_values)) {
+		time_values <- zph$x
+	}
+	if (is.null(time_values)) {
+		ph_abort("Schoenfeld residuals do not contain time values for plotting")
+	}
+
+	resid_matrix <- zph$y
+	if (is.null(resid_matrix)) {
+		ph_abort("Schoenfeld residuals are missing from the cox.zph result")
+	}
+	if (is.null(dim(resid_matrix))) {
+		resid_matrix <- matrix(resid_matrix, ncol = 1)
+		if (!is.null(names(zph$y))) {
+			colnames(resid_matrix) <- names(zph$y)
+		}
+	}
+	if (is.null(colnames(resid_matrix))) {
+		colnames(resid_matrix) <- paste0("term_", seq_len(ncol(resid_matrix)))
+	}
+
+	order_idx <- order(time_values)
+	plot_time <- time_values[order_idx]
+	resid_matrix <- resid_matrix[order_idx, , drop = FALSE]
+
+	plot_df <- data.frame(
+		time = rep(plot_time, times = ncol(resid_matrix)),
+		residual = as.vector(resid_matrix),
+		term = rep(colnames(resid_matrix), each = length(plot_time)),
+		stringsAsFactors = FALSE
+	)
+	plot_df <- plot_df[!is.na(plot_df$residual), , drop = FALSE]
+	plot_df$term <- factor(plot_df$term, levels = unique(colnames(resid_matrix)))
+
+	base_plot <- ggplot2::ggplot(
+		plot_df,
+		ggplot2::aes(x = .data$time, y = .data$residual)
+	) +
+		ggplot2::geom_hline(
+			yintercept = 0,
+			linetype = "dashed",
+			color = "gray50"
+		) +
+		ggplot2::geom_point(alpha = 0.6, size = 1) +
+		ggplot2::facet_wrap(~term, scales = "free_y", ncol = 2) +
+		ggplot2::labs(
+			title = title,
+			x = "Time",
+			y = "Scaled Schoenfeld Residuals"
+		) +
+		ggplot2::theme_minimal(base_size = 11) +
+		ggplot2::theme(
+			plot.title = ggplot2::element_text(hjust = 0.5),
+			panel.grid.minor = ggplot2::element_blank()
+		)
+
+	if (length(unique(plot_time)) >= 4) {
+		base_plot <- base_plot +
+			ggplot2::geom_smooth(
+				method = "loess",
+				formula = y ~ x,
+				se = FALSE,
+				color = "#0072B2",
+				linewidth = 0.8
+			)
+	}
+
+	n_terms <- ncol(resid_matrix)
+	n_rows <- ceiling(n_terms / 2)
+	height <- max(4, 1.8 * n_rows + 2)
+
+	ClinicalPlot(
+		plot = base_plot,
+		title = title,
+		width = 7,
+		height = height,
+		dpi = 300
+	)
+}
+
 #' Create Responder Summary Table
 #'
 #' Generates a response rate table with confidence intervals and

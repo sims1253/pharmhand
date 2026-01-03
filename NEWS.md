@@ -1,3 +1,9 @@
+# pharmhand 0.1.11.9000
+
+## Improvements
+
+* Added `test_ph_assumption()` to run Schoenfeld residual tests with optional diagnostic plots.
+
 # pharmhand 0.1.10.9000
 
 ## Improvements
