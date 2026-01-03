@@ -50,7 +50,8 @@ test_non_inferiority(
 
 - conf_level:
 
-  Numeric. One-sided confidence level (default: 0.975 for 95% CI)
+  Numeric. One-sided confidence level (default: 0.975, equivalent to
+  two-sided 95% CI)
 
 - method:
 
@@ -69,8 +70,9 @@ List with:
 
 - ni_margin: The margin used
 
-- non_inferior: Logical. TRUE if lower CI \> -ni_margin (or upper \<
-  margin if lower is worse)
+- non_inferior: Logical. TRUE if non-inferiority is concluded. When
+  higher_better=TRUE: ci_lower \> -ni_margin. When higher_better=FALSE:
+  ci_upper \< ni_margin.
 
 - conclusion: Character summary
 
@@ -83,6 +85,13 @@ For continuous endpoints: Tests if (mean_trt - mean_ref) + ni_margin \>
 
 Non-inferiority is concluded if the lower bound of the one-sided CI for
 the treatment difference exceeds -ni_margin.
+
+The direction of the test depends on higher_better:
+
+- If higher_better=TRUE (default): the lower CI bound must exceed
+  -ni_margin
+
+- If higher_better=FALSE: the upper CI bound must be below ni_margin
 
 For binary endpoints, the Wilson method uses the Newcombe-Wilson hybrid
 CI approach. The Wald method provides a simpler alternative. For

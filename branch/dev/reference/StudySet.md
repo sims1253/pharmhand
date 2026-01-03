@@ -11,8 +11,7 @@ StudySet(
   endpoint = NULL,
   comparison_type = "direct",
   common_comparator = NULL,
-  characteristics = structure(list(), names = character(0), row.names = integer(0), class
-    = "data.frame"),
+  characteristics = NULL,
   metadata = list()
 )
 ```
@@ -37,7 +36,7 @@ StudySet(
 
 - characteristics:
 
-  Data frame of study-level characteristics
+  Data frame of study-level characteristics (optional, NULL by default)
 
 - metadata:
 

@@ -94,7 +94,7 @@
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
 <dd><p>Numeric. One-sided confidence level
-(default: 0.975 for 95% CI)</p></dd>
+(default: 0.975, equivalent to two-sided 95% CI)</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
@@ -108,8 +108,9 @@
 <li><p>ci_lower: Lower bound of one-sided CI</p></li>
 <li><p>ci_upper: Upper bound (may be Inf for one-sided)</p></li>
 <li><p>ni_margin: The margin used</p></li>
-<li><p>non_inferior: Logical. TRUE if lower CI &gt; -ni_margin
-(or upper &lt; margin if lower is worse)</p></li>
+<li><p>non_inferior: Logical. TRUE if non-inferiority is concluded.
+When higher_better=TRUE: ci_lower &gt; -ni_margin.
+When higher_better=FALSE: ci_upper &lt; ni_margin.</p></li>
 <li><p>conclusion: Character summary</p></li>
 <li><p>method: Method used</p></li>
 </ul></div>
@@ -119,7 +120,9 @@
 For binary endpoints: Tests if (prop_trt - prop_ref) + ni_margin &gt; 0</p>
 <p>Non-inferiority is concluded if the lower bound of the one-sided CI
 for the treatment difference exceeds -ni_margin.</p>
-<p>For binary endpoints, the Wilson method uses the Newcombe-Wilson
+<p>The direction of the test depends on higher_better:</p><ul><li><p>If higher_better=TRUE (default): the lower CI bound must exceed -ni_margin</p></li>
+<li><p>If higher_better=FALSE: the upper CI bound must be below ni_margin</p></li>
+</ul><p>For binary endpoints, the Wilson method uses the Newcombe-Wilson
 hybrid CI approach. The Wald method provides a simpler alternative.
 For regulatory submissions, verify the CI method aligns with
 agency preferences.</p>
