@@ -1,3 +1,11 @@
+# pharmhand 0.1.8.9000
+
+## Breaking Changes
+
+* `build_time_to_event()` in the safety report example no longer assumes a
+  100-day default duration. Supply `default_duration` when TRTDURD cannot be
+  derived from TRTSDT/TRTEDT.
+
 # pharmhand 0.1.7.9000
 
 ## Improvements

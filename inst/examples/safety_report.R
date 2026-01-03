@@ -89,7 +89,7 @@ generate_safety_report <- function(
 
 	# Section 2.9: Time to Event
 	message("Building Time to Event Analysis (KM Plot)")
-	km_section <- build_time_to_event(adsl, adae, default_duration = 100)
+	km_section <- build_time_to_event(adsl, adae, default_duration = 365)
 
 	# Combine sections
 	sections <- list(
@@ -166,22 +166,25 @@ build_ae_overview <- function(adae, adsl) {
 #' @param adsl ADSL data frame
 #' @param adae ADAE data frame
 #' @param default_duration Default treatment duration in days when
-#'   TRTDURD is not available
+#'   TRTDURD is not available and cannot be derived from TRTSDT/TRTEDT.
+#'   Required in that case.
 #' @return ReportSection object
 #' @keywords internal
-build_time_to_event <- function(adsl, adae, default_duration = 100) {
-	# Input validation for default_duration
-	if (!is.numeric(default_duration)) {
-		stop("default_duration must be numeric", call. = FALSE)
-	}
-	if (length(default_duration) != 1) {
-		stop("default_duration must be a single value (length 1)", call. = FALSE)
-	}
-	if (is.na(default_duration)) {
-		stop("default_duration must not be NA", call. = FALSE)
-	}
-	if (default_duration <= 0) {
-		stop("default_duration must be greater than 0", call. = FALSE)
+build_time_to_event <- function(adsl, adae, default_duration = NULL) {
+	# Input validation for default_duration when supplied
+	if (!is.null(default_duration)) {
+		if (!is.numeric(default_duration)) {
+			stop("default_duration must be numeric", call. = FALSE)
+		}
+		if (length(default_duration) != 1) {
+			stop("default_duration must be a single value (length 1)", call. = FALSE)
+		}
+		if (is.na(default_duration)) {
+			stop("default_duration must not be NA", call. = FALSE)
+		}
+		if (default_duration <= 0) {
+			stop("default_duration must be greater than 0", call. = FALSE)
+		}
 	}
 
 	# Define event of interest: Time to first Dermatologic event
@@ -198,30 +201,25 @@ build_time_to_event <- function(adsl, adae, default_duration = 100) {
 
 	# Merge with ADSL
 	# Censor at TRTEDT (Treatment End Date) or last contact
-	# Calculating a proxy for study duration for demo purposes
-	# Assuming TRTEDT exists. Convert dates to numeric relative to TRTSDT
-	# if needed,
-	# but here ASTDY is already relative days.
-	# We will use TRTDURD if available, else derive it.
+	# We will use TRTDURD if available, else derive it from TRTSDT/TRTEDT.
+	# If neither is available, default_duration must be supplied.
 
 	tte_data <- adsl
 
 	if (!"TRTDURD" %in% names(adsl)) {
 		if ("TRTEDT" %in% names(adsl) && "TRTSDT" %in% names(adsl)) {
 			tte_data$TRTDURD <- as.numeric(adsl$TRTEDT - adsl$TRTSDT) + 1
+		} else if (!is.null(default_duration)) {
+			tte_data$TRTDURD <- default_duration
 		} else {
-			# Use configurable default duration when treatment duration cannot be
-			# calculated. This is a conservative estimate for clinical trials
-			warning(
+			stop(
 				paste(
-					"Treatment duration (TRTDURD) not found and cannot be derived.",
-					"Using default duration of",
-					default_duration,
-					"days for time-to-event analysis"
+					"Treatment duration (TRTDURD) is missing and cannot be derived",
+					"from TRTSDT/TRTEDT. Provide default_duration explicitly",
+					"to build the time-to-event analysis."
 				),
 				call. = FALSE
 			)
-			tte_data$TRTDURD <- default_duration
 		}
 	}
 

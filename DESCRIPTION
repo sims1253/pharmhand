@@ -1,6 +1,6 @@
 Package: pharmhand
 Title: Clinical Study Tables and Reports from ADaM Data
-Version: 0.1.7.9000
+Version: 0.1.8.9000
 Authors@R:
     person("Maximilian", "Scholz", , "dev.scholz@mailbox.org", role = c("aut", "cre"))
 Description: Create clinical study tables and reports from ADaM datasets.
