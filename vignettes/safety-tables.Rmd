@@ -382,6 +382,8 @@ comparison_table <- create_ae_summary_table(
 comparison_table@flextable
 ```
 
+> **Note**: `create_ae_summary_table(type = "comparison")` is a convenience wrapper around `create_ae_comparison_table()`. Both functions produce identical results—use whichever entry point you prefer.
+
 The comparison table includes:
 - **n/N (%)** for each treatment group
 - **Risk Difference (RD)** with 95% CI

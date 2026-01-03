@@ -95,7 +95,7 @@ test_that("check_gba_compliance flags missing header row in flextable", {
 	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
 
 	# Remove header part
-	ft$header <- data.frame()
+	ft <- flextable::delete_part(ft, part = "header")
 
 	res <- check_gba_compliance(
 		ft,
@@ -194,7 +194,7 @@ test_that("check_gba_compliance can skip header requirement", {
 	# Create flextable without header
 	df <- data.frame(Statistic = "n", Value = 10)
 	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
-	ft$header <- data.frame()
+	ft <- flextable::delete_part(ft, part = "header")
 
 	res <- check_gba_compliance(
 		ft,
