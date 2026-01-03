@@ -14,6 +14,7 @@ create_tte_summary_table(
   trt_var = "TRT01P",
   ref_group = NULL,
   conf_level = 0.95,
+  check_ph = TRUE,
   landmarks = NULL,
   time_unit = "months",
   title = "Time-to-Event Summary",
@@ -49,6 +50,11 @@ create_tte_summary_table(
 - conf_level:
 
   Confidence level for intervals (default: 0.95)
+
+- check_ph:
+
+  Logical. Whether to test proportional hazards assumption and warn on
+  violations (default: TRUE)
 
 - landmarks:
 

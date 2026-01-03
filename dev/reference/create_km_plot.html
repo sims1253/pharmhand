@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,8 @@
 <span>  xlim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  base_size <span class="op">=</span> <span class="fl">11</span></span>
+<span>  base_size <span class="op">=</span> <span class="fl">11</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"km"</span>, <span class="st">"loglog"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -128,12 +129,12 @@ lines (e.g., c(12, 24) for 12 and 24 months). NULL for none.</p></dd>
 
 
 <dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>
-<dd><p>Color palette for treatment groups. Precedence: (1) explicit
-palette argument (character vector of colors or named palette string),
-(2) <code>getOption("pharmhand.palette")</code>, (3) default Okabe-Ito reordered
-(orange, sky blue for first two arms). Named palette strings from
-<code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">grDevices::palette.pals()</a></code> can be used (e.g., "Okabe-Ito", "R4",
-"Tableau 10", "Alphabet").</p></dd>
+<dd><p>Optional color palette for treatment groups. Can be a
+character vector of colors, or NULL to use
+<code>getOption("pharmhand.palette")</code>. Defaults to the CVD-friendly
+"Okabe-Ito (reordered)" palette (orange, sky blue for first two arms).
+Other built-in options: "Okabe-Ito",
+"R4", "Tableau 10", "Alphabet", etc. (see <code><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">grDevices::palette.pals()</a></code>).</p></dd>
 
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
@@ -143,6 +144,14 @@ palette argument (character vector of colors or named palette string),
 <dt id="arg-base-size">base_size<a class="anchor" aria-label="anchor" href="#arg-base-size"></a></dt>
 <dd><p>Base font size for plot text elements (default: 11).
 Also used for risk table text.</p></dd>
+
+
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
+<dd><p>Character. Plot type: "km" for Kaplan-Meier or "loglog" for
+log(-log(S(t))) vs log(t). For "loglog", median lines, CI bands,
+risk tables, and landmarks are intentionally omitted to keep the
+diagnostic scale uncluttered; censor marks are supported via
+<code>show_censor</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

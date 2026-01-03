@@ -23,7 +23,8 @@ create_forest_plot(
   title = "Subgroup Analysis",
   xlab = NULL,
   log_scale = TRUE,
-  colors = NULL
+  colors = NULL,
+  base_size = 11
 )
 ```
 
@@ -95,6 +96,10 @@ create_forest_plot(
 - colors:
 
   Optional named vector of colors for estimate types
+
+- base_size:
+
+  Base font size for plot text elements (default: 11)
 
 ## Value
 

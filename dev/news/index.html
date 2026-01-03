@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,202 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1.9000" id="pharmhand-0219000">pharmhand 0.2.1.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0219000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-2-1-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-1-9000"></a></h3>
+<ul><li>Added <code>conf_level</code> parameter to <code><a href="../reference/create_ae_cumulative_incidence_plot.html">create_ae_cumulative_incidence_plot()</a></code> (was hard-coded at 0.95).</li>
+<li>Exposed <code>subgroup_counts</code> and <code>min_subgroup_size</code> in <code><a href="../reference/create_subgroup_analysis_table.html">create_subgroup_analysis_table()</a></code> metadata for programmatic access.</li>
+<li>Wrapped <code><a href="../reference/test_ph_assumption.html">test_ph_assumption()</a></code> call in <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> with tryCatch for robustness with sparse Cox models.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="plotting-0-2-1-9000">Plotting<a class="anchor" aria-label="anchor" href="#plotting-0-2-1-9000"></a></h3>
+<ul><li>Created <code><a href="../reference/dot-pharmhand_theme.html">.pharmhand_theme()</a></code> internal helper for consistent white backgrounds across all plots.</li>
+<li>Refactored all plotting functions to use <code><a href="../reference/dot-pharmhand_theme.html">.pharmhand_theme()</a></code> with <code>base_size</code> parameter.</li>
+<li>Added <code>conf_level</code> parameter to <code><a href="../reference/create_loglog_plot.html">create_loglog_plot()</a></code>.</li>
+<li>Added <code>base_size</code> parameter to <code><a href="../reference/create_ae_cumulative_incidence_plot.html">create_ae_cumulative_incidence_plot()</a></code> and <code><a href="../reference/create_forest_plot.html">create_forest_plot()</a></code>.</li>
+<li>Updated <code>build_schoenfeld_plot()</code> to use <code><a href="../reference/dot-pharmhand_theme.html">.pharmhand_theme()</a></code> for consistent styling.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-2-1-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-1-9000"></a></h3>
+<ul><li>Clarified that <code>method</code> parameter in <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code> applies only to binary endpoints.</li>
+<li>Added <code>@examples</code> to <code><a href="../reference/detect_floor_ceiling.html">detect_floor_ceiling()</a></code>, <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code>, <code><a href="../reference/ancova_adjust_continuous.html">ancova_adjust_continuous()</a></code>, <code><a href="../reference/create_loglog_plot.html">create_loglog_plot()</a></code>, and <code><a href="../reference/create_ae_cumulative_incidence_plot.html">create_ae_cumulative_incidence_plot()</a></code>.</li>
+<li>Added Time-to-Event Safety Analysis section to safety-tables vignette.</li>
+<li>Added NNH (Number Needed to Harm) documentation to safety-tables vignette.</li>
+<li>Added Non-Inferiority Testing section to efficacy-tables vignette.</li>
+<li>Added ANCOVA Adjustment section to efficacy-tables vignette.</li>
+<li>Added Floor/Ceiling Detection section to efficacy-tables and baseline-tables vignettes.</li>
+<li>Improved documentation for <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code> with clarified conf_level, decision logic, and higher_better parameter.</li>
+<li>Improved documentation for <code><a href="../reference/ancova_adjust_continuous.html">ancova_adjust_continuous()</a></code> with edge case behavior and runnable simulated example.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="code-quality-0-2-1-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-2-1-9000"></a></h3>
+<ul><li>Added Newcombe-Wilson reference citation for binary difference in proportions CI calculation.</li>
+<li>Removed unused <code>comparison_results</code> stub from AE comparison function.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-2-1-9000">Tests<a class="anchor" aria-label="anchor" href="#tests-0-2-1-9000"></a></h3>
+<ul><li>Added test for NNH calculation when risk difference is negative (treatment beneficial).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0.9000" id="pharmhand-0209000">pharmhand 0.2.0.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0209000"></a></h2>
+<div class="section level3">
+<h3 id="code-quality-0-2-0-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-2-0-9000"></a></h3>
+<ul><li>Refactored duplicated palette resolution logic into <code><a href="../reference/dot-resolve_palette.html">.resolve_palette()</a></code> helper.</li>
+<li>Added warning when log-log plot drops data points with non-finite values.</li>
+<li>Expanded PH assumption disable comment with rationale for time-to-first AE.</li>
+<li>Added clarifying comments in floor/ceiling detection and event conversion.</li>
+<li>Added documentation note about CI construction methods for non-inferiority binary endpoints.</li>
+<li>Removed redundant <code>@keywords internal</code> from exported <code><a href="../reference/ancova_adjust_continuous.html">ancova_adjust_continuous()</a></code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-2-0-9000">Tests<a class="anchor" aria-label="anchor" href="#tests-0-2-0-9000"></a></h3>
+<ul><li>Made color palette test assertions order-agnostic with <code>expect_setequal()</code>.</li>
+<li>Added edge case tests for <code><a href="../reference/calculate_exposure_adjusted_rate.html">calculate_exposure_adjusted_rate()</a></code> (zero events, small exposure, large counts).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.21.9000" id="pharmhand-01219000">pharmhand 0.1.21.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01219000"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-1-21-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-21-9000"></a></h3>
+<ul><li>Fixed ComparisonResult defaults from <code>integer(0)</code> to <code>numeric(0)</code> for consistency with S7 class.</li>
+<li>Fixed line length lint errors in <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code> documentation.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-1-21-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-1-21-9000"></a></h3>
+<ul><li>Updated pkgdown Utilities section description to include “statistical diagnostics”.</li>
+<li>Added missing topics to pkgdown reference index: <code><a href="../reference/calculate_exposure_adjusted_rate.html">calculate_exposure_adjusted_rate()</a></code>, <code><a href="../reference/create_ae_exposure_table.html">create_ae_exposure_table()</a></code>, <code><a href="../reference/create_time_to_first_ae.html">create_time_to_first_ae()</a></code>, and <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code>.</li>
+<li>Cleaned up duplicate NEWS.md heading.</li>
+<li>Added explanatory comment for PH assumption check disable in time-to-first AE function.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="plotting-0-1-21-9000">Plotting<a class="anchor" aria-label="anchor" href="#plotting-0-1-21-9000"></a></h3>
+<ul><li>Added <code>show_censor</code> support to <code><a href="../reference/create_loglog_plot.html">create_loglog_plot()</a></code> and passed through from <code>create_km_plot(type = "loglog")</code>.</li>
+<li>Updated documentation to clarify that censor marks are supported on log-log plots while median lines, CI bands, risk tables, and landmarks are intentionally omitted.</li>
+<li>Added test for log-log plot censor marks.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.20.9000" id="pharmhand-01209000">pharmhand 0.1.20.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01209000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-20-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-20-9000"></a></h3>
+<ul><li>Added AE cumulative incidence plots via <code><a href="../reference/create_ae_cumulative_incidence_plot.html">create_ae_cumulative_incidence_plot()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.19.9000" id="pharmhand-01199000">pharmhand 0.1.19.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01199000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-19-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-19-9000"></a></h3>
+<ul><li>Added ANCOVA adjustment for continuous endpoints via <code><a href="../reference/ancova_adjust_continuous.html">ancova_adjust_continuous()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.18.9000" id="pharmhand-01189000">pharmhand 0.1.18.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01189000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-18-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-18-9000"></a></h3>
+<ul><li>Added non-inferiority testing for continuous and binary endpoints via <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.17.9000" id="pharmhand-01179000">pharmhand 0.1.17.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01179000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-17-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-17-9000"></a></h3>
+<ul><li>Added time-to-first adverse event analysis with KM tables, plots, and Cox HRs via <code><a href="../reference/create_time_to_first_ae.html">create_time_to_first_ae()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.16.9000" id="pharmhand-01169000">pharmhand 0.1.16.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01169000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-16-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-16-9000"></a></h3>
+<ul><li>Added exposure-adjusted incidence rate tables with Poisson confidence intervals via <code><a href="../reference/calculate_exposure_adjusted_rate.html">calculate_exposure_adjusted_rate()</a></code> and <code><a href="../reference/create_ae_exposure_table.html">create_ae_exposure_table()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.15.9000" id="pharmhand-01159000">pharmhand 0.1.15.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01159000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-15-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-15-9000"></a></h3>
+<ul><li>Added configurable warnings for small subgroups in <code><a href="../reference/create_subgroup_table.html">create_subgroup_table()</a></code> and <code><a href="../reference/create_subgroup_analysis_table.html">create_subgroup_analysis_table()</a></code> via <code>min_subgroup_size</code> (default: 20).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.14.9000" id="pharmhand-01149000">pharmhand 0.1.14.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01149000"></a></h2>
+<div class="section level3">
+<h3 id="documentation-0-1-14-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-1-14-9000"></a></h3>
+<ul><li>Documented the complete proportional hazards assumption testing suite for Cox models: Schoenfeld residual tests via <code><a href="../reference/test_ph_assumption.html">test_ph_assumption()</a></code>, log-log survival plots via <code><a href="../reference/create_loglog_plot.html">create_loglog_plot()</a></code>, and automatic warnings in <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.13.9000" id="pharmhand-01139000">pharmhand 0.1.13.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01139000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-13-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-13-9000"></a></h3>
+<ul><li>Added automatic PH violation warnings in <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> with guidance on stratified or alternative survival models.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.12.9000" id="pharmhand-01129000">pharmhand 0.1.12.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01129000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-12-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-12-9000"></a></h3>
+<ul><li>Added log-log survival plots for PH diagnostics via <code><a href="../reference/create_loglog_plot.html">create_loglog_plot()</a></code> and <code>create_km_plot(type = "loglog")</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.11.9000" id="pharmhand-01119000">pharmhand 0.1.11.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01119000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-11-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-11-9000"></a></h3>
+<ul><li>Added <code><a href="../reference/test_ph_assumption.html">test_ph_assumption()</a></code> to run Schoenfeld residual tests with optional diagnostic plots.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.10.9000" id="pharmhand-01109000">pharmhand 0.1.10.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01109000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-10-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-10-9000"></a></h3>
+<ul><li>Added <code><a href="../reference/detect_floor_ceiling.html">detect_floor_ceiling()</a></code> to flag floor/ceiling effects in PRO scores by visit and treatment arm.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.9.9000" id="pharmhand-0199000">pharmhand 0.1.9.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0199000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-9-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-9-9000"></a></h3>
+<ul><li>Added NNH (Number Needed to Harm) to AE comparison tables with estimability handling.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.8.9000" id="pharmhand-0189000">pharmhand 0.1.8.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0189000"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-1-8-9000">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-8-9000"></a></h3>
+<ul><li>
+<code>build_time_to_event()</code> in the safety report example no longer assumes a 100-day default duration. Supply <code>default_duration</code> when TRTDURD cannot be derived from TRTSDT/TRTEDT.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.7.9000" id="pharmhand-0179000">pharmhand 0.1.7.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0179000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-1-7-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-7-9000"></a></h3>
+<ul><li>Standardized NA display via <code>pharmhand.na_string</code> across reporting themes and clinical table styling.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.6.9000" id="pharmhand-0169000">pharmhand 0.1.6.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0169000"></a></h2>
+<div class="section level3">
+<h3 id="documentation-0-1-6-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-1-6-9000"></a></h3>
+<ul><li>Documented fixed-column handling for the Module 4 table template.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.5.9000" id="pharmhand-0159000">pharmhand 0.1.5.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0159000"></a></h2>
+<div class="section level3">
+<h3 id="documentation-0-1-5-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-1-5-9000"></a></h3>
+<ul><li>Clarified IQWiG flextable theme formatting and decimal separator behavior.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.4.9000" id="pharmhand-0149000">pharmhand 0.1.4.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0149000"></a></h2>
+<div class="section level3">
+<h3 id="documentation-0-1-4-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-1-4-9000"></a></h3>
+<ul><li>Finalized IQWiG-compliant CI formatter documentation.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.3.9000" id="pharmhand-0139000">pharmhand 0.1.3.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0139000"></a></h2>
 <div class="section level3">

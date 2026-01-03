@@ -21,7 +21,8 @@ create_km_plot(
   xlim = NULL,
   palette = NULL,
   conf_level = 0.95,
-  base_size = 11
+  base_size = 11,
+  type = c("km", "loglog")
 )
 ```
 
@@ -85,12 +86,12 @@ create_km_plot(
 
 - palette:
 
-  Color palette for treatment groups. Precedence: (1) explicit palette
-  argument (character vector of colors or named palette string), (2)
-  `getOption("pharmhand.palette")`, (3) default Okabe-Ito reordered
-  (orange, sky blue for first two arms). Named palette strings from
-  [`grDevices::palette.pals()`](https://rdrr.io/r/grDevices/palette.html)
-  can be used (e.g., "Okabe-Ito", "R4", "Tableau 10", "Alphabet").
+  Optional color palette for treatment groups. Can be a character vector
+  of colors, or NULL to use `getOption("pharmhand.palette")`. Defaults
+  to the CVD-friendly "Okabe-Ito (reordered)" palette (orange, sky blue
+  for first two arms). Other built-in options: "Okabe-Ito", "R4",
+  "Tableau 10", "Alphabet", etc. (see
+  [`grDevices::palette.pals()`](https://rdrr.io/r/grDevices/palette.html)).
 
 - conf_level:
 
@@ -100,6 +101,13 @@ create_km_plot(
 
   Base font size for plot text elements (default: 11). Also used for
   risk table text.
+
+- type:
+
+  Character. Plot type: "km" for Kaplan-Meier or "loglog" for
+  log(-log(S(t))) vs log(t). For "loglog", median lines, CI bands, risk
+  tables, and landmarks are intentionally omitted to keep the diagnostic
+  scale uncluttered; censor marks are supported via `show_censor`.
 
 ## Value
 

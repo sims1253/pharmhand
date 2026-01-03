@@ -14,6 +14,7 @@ theme_gba(
   header_bold = TRUE,
   header_bg = "#E8E8E8",
   decimal_separator = ",",
+  na_string = getOption("pharmhand.na_string", "--"),
   autofit = TRUE
 )
 ```
@@ -43,6 +44,11 @@ theme_gba(
 - decimal_separator:
 
   Decimal separator: "." or "," (default: ",")
+
+- na_string:
+
+  String to display for missing values (default:
+  getOption("pharmhand.na_string", "–"))
 
 - autofit:
 

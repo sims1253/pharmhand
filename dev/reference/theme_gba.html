@@ -9,7 +9,7 @@ requirements from G-BA Dossier templates for AMNOG submissions."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,7 @@ requirements from G-BA Dossier templates for AMNOG submissions.</p>
 <span>  header_bold <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  header_bg <span class="op">=</span> <span class="st">"#E8E8E8"</span>,</span>
 <span>  decimal_separator <span class="op">=</span> <span class="st">","</span>,</span>
+<span>  na_string <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"pharmhand.na_string"</span>, <span class="st">"--"</span><span class="op">)</span>,</span>
 <span>  autofit <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -86,6 +87,11 @@ requirements from G-BA Dossier templates for AMNOG submissions.</p>
 
 <dt id="arg-decimal-separator">decimal_separator<a class="anchor" aria-label="anchor" href="#arg-decimal-separator"></a></dt>
 <dd><p>Decimal separator: "." or "," (default: ",")</p></dd>
+
+
+<dt id="arg-na-string">na_string<a class="anchor" aria-label="anchor" href="#arg-na-string"></a></dt>
+<dd><p>String to display for missing values
+(default: getOption("pharmhand.na_string", "–"))</p></dd>
 
 
 <dt id="arg-autofit">autofit<a class="anchor" aria-label="anchor" href="#arg-autofit"></a></dt>

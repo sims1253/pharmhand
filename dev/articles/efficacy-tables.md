@@ -142,6 +142,36 @@ km_plot_advanced@plot
 
 ![](efficacy-tables_files/figure-html/km-plot-advanced-1.png)
 
+### Proportional Hazards Diagnostics
+
+Use Schoenfeld residual tests, log-log plots, and automatic warnings to
+validate Cox model assumptions across time-to-event analyses.
+
+``` r
+# Schoenfeld residual test with optional diagnostic plot
+ph_results <- test_ph_assumption(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",
+  plot = TRUE
+)
+ph_results$results
+ph_results$plot@plot
+
+# Log-log survival plot for visual PH assessment
+loglog_plot <- create_loglog_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",
+  title = "Log-log Survival Plot"
+)
+loglog_plot@plot
+
+# create_tte_summary_table() checks PH by default (check_ph = TRUE)
+```
+
 ## Responder Analysis
 
 create_responder_table() provides response summaries with multiple

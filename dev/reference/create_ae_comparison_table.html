@@ -9,7 +9,7 @@ between treatment groups. Essential for GBA/AMNOG safety assessments."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,6 +58,7 @@ between treatment groups. Essential for GBA/AMNOG safety assessments.</p>
 <span>  threshold <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  sort_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"incidence"</span>, <span class="st">"rd"</span>, <span class="st">"rr"</span><span class="op">)</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  include_nnh <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  autofit <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -101,6 +102,10 @@ between treatment groups. Essential for GBA/AMNOG safety assessments.</p>
 <dd><p>Confidence level for intervals (default: 0.95)</p></dd>
 
 
+<dt id="arg-include-nnh">include_nnh<a class="anchor" aria-label="anchor" href="#arg-include-nnh"></a></dt>
+<dd><p>Logical. Include NNH column (default: TRUE)</p></dd>
+
+
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
 <dd><p>Table title (auto-generated if NULL)</p></dd>
 
@@ -111,8 +116,8 @@ between treatment groups. Essential for GBA/AMNOG safety assessments.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>ClinicalTable with columns for each group's n(%), RD, 95% CI, RR,
-p-value</p>
+    <p>ClinicalTable with columns for each group's n(%), RD, 95% CI, NNH,
+RR, p-value</p>
     </div>
 
     <div class="section level2">
