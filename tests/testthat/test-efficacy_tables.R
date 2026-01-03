@@ -101,6 +101,226 @@ test_that("create_lab_shift_table works", {
 	expect_true("Baseline Status" %in% names(tbl@data))
 })
 
+test_that("detect_floor_ceiling flags floor and ceiling effects", {
+	pro_data <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:40),
+		VISIT = rep(c("Baseline", "Week 4"), each = 20),
+		TRT01P = rep(rep(c("A", "B"), each = 10), times = 2),
+		SCORE = c(
+			0,
+			0,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			10,
+			10,
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			9
+		),
+		stringsAsFactors = FALSE
+	)
+
+	result <- detect_floor_ceiling(
+		pro_data,
+		score_var = "SCORE",
+		min_score = 0,
+		max_score = 10,
+		by_var = c("VISIT", "TRT01P")
+	)
+
+	baseline_a <- result[result$VISIT == "Baseline" & result$TRT01P == "A", ]
+	baseline_b <- result[result$VISIT == "Baseline" & result$TRT01P == "B", ]
+
+	expect_equal(baseline_a$n, 10)
+	expect_equal(baseline_a$n_floor, 2)
+	expect_true(baseline_a$floor_flag)
+	expect_false(baseline_a$ceiling_flag)
+
+	expect_equal(baseline_b$n_ceiling, 2)
+	expect_true(baseline_b$ceiling_flag)
+	expect_false(baseline_b$floor_flag)
+})
+
+test_that("detect_floor_ceiling respects threshold overrides", {
+	pro_data <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:40),
+		VISIT = rep(c("Baseline", "Week 4"), each = 20),
+		TRT01P = rep(rep(c("A", "B"), each = 10), times = 2),
+		SCORE = c(
+			0,
+			0,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			10,
+			10,
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			9
+		),
+		stringsAsFactors = FALSE
+	)
+
+	result <- detect_floor_ceiling(
+		pro_data,
+		score_var = "SCORE",
+		min_score = 0,
+		max_score = 10,
+		by_var = c("VISIT", "TRT01P"),
+		threshold = 0.25
+	)
+
+	baseline_a <- result[result$VISIT == "Baseline" & result$TRT01P == "A", ]
+	baseline_b <- result[result$VISIT == "Baseline" & result$TRT01P == "B", ]
+
+	expect_false(baseline_a$floor_flag)
+	expect_false(baseline_b$ceiling_flag)
+})
+
+test_that("detect_floor_ceiling reports by visit and treatment arm", {
+	pro_data <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:40),
+		VISIT = rep(c("Baseline", "Week 4"), each = 20),
+		TRT01P = rep(rep(c("A", "B"), each = 10), times = 2),
+		SCORE = c(
+			0,
+			0,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			10,
+			10,
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			9
+		),
+		stringsAsFactors = FALSE
+	)
+
+	result <- detect_floor_ceiling(
+		pro_data,
+		score_var = "SCORE",
+		min_score = 0,
+		max_score = 10,
+		by_var = c("VISIT", "TRT01P")
+	)
+
+	expect_equal(nrow(result), 4)
+	expect_true(all(c("VISIT", "TRT01P") %in% names(result)))
+})
+
+test_that("detect_floor_ceiling handles no limit responses", {
+	pro_data <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:12),
+		VISIT = rep(c("Baseline", "Week 4"), each = 6),
+		TRT01P = rep(rep(c("A", "B"), each = 3), times = 2),
+		SCORE = c(1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7),
+		stringsAsFactors = FALSE
+	)
+
+	result <- detect_floor_ceiling(
+		pro_data,
+		score_var = "SCORE",
+		min_score = 0,
+		max_score = 10,
+		by_var = c("VISIT", "TRT01P")
+	)
+
+	expect_false(any(result$floor_flag))
+	expect_false(any(result$ceiling_flag))
+})
+
 test_that("create_subgroup_analysis_table works", {
 	# Not heavily used in function but passed
 	adsl <- data.frame(USUBJID = c("01", "02"))

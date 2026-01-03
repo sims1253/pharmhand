@@ -205,6 +205,106 @@ create_cfb_summary_table <- function(
 	)
 }
 
+#' Detect Floor and Ceiling Effects
+#'
+#' Identifies floor/ceiling effects in PRO data when >15% of responses
+#' are at the minimum or maximum possible scale values.
+#'
+#' @param data Data frame containing PRO scores
+#' @param score_var Character. Name of the score variable
+#' @param min_score Numeric. Minimum possible score on the scale
+#' @param max_score Numeric. Maximum possible score on the scale
+#' @param by_var Character vector. Variables to group by (e.g.,
+#'   c("VISIT", "TRT01P"))
+#' @param threshold Numeric. Threshold for flagging (default: 0.15 = 15%)
+#' @param subject_var Character. Subject identifier (default: "USUBJID")
+#'
+#' @return A data frame with columns:
+#'   - Grouping variables
+#'   - n: number of subjects with non-missing scores
+#'   - n_floor: count of subjects at minimum
+#'   - pct_floor: percentage at minimum
+#'   - floor_flag: TRUE if pct_floor > threshold
+#'   - n_ceiling: count of subjects at maximum
+#'   - pct_ceiling: percentage at maximum
+#'   - ceiling_flag: TRUE if pct_ceiling > threshold
+#'
+#' @export
+detect_floor_ceiling <- function(
+	data,
+	score_var,
+	min_score,
+	max_score,
+	by_var = NULL,
+	threshold = 0.15,
+	subject_var = "USUBJID"
+) {
+	assert_data_frame(data, "data")
+	assert_character_scalar(score_var, "score_var")
+	assert_numeric_scalar(min_score, "min_score")
+	assert_numeric_scalar(max_score, "max_score")
+	assert_numeric_scalar(threshold, "threshold")
+	assert_character_scalar(subject_var, "subject_var")
+	assert_in_range(threshold, 0, 1, "threshold")
+
+	if (min_score >= max_score) {
+		ph_abort("'min_score' must be less than 'max_score'")
+	}
+
+	assert_column_exists(data, score_var, "data")
+	assert_column_exists(data, subject_var, "data")
+
+	group_vars <- NULL
+	if (!is.null(by_var)) {
+		if (!is.character(by_var) || length(by_var) == 0) {
+			ph_abort("'by_var' must be a non-empty character vector or NULL")
+		}
+
+		missing_cols <- setdiff(by_var, names(data))
+		if (length(missing_cols) > 0) {
+			ph_abort(sprintf(
+				"Column(s) not found in 'data': %s",
+				paste(missing_cols, collapse = ", ")
+			))
+		}
+
+		group_vars <- by_var
+	}
+
+	score_data <- data |>
+		dplyr::select(dplyr::all_of(c(group_vars, subject_var, score_var))) |>
+		dplyr::filter(!is.na(.data[[score_var]]))
+
+	grouped <- if (is.null(group_vars)) {
+		score_data
+	} else {
+		score_data |>
+			dplyr::group_by(dplyr::across(dplyr::all_of(group_vars)))
+	}
+
+	grouped |>
+		dplyr::summarise(
+			n = dplyr::n_distinct(.data[[subject_var]]),
+			n_floor = dplyr::n_distinct(
+				.data[[subject_var]][.data[[score_var]] == min_score]
+			),
+			n_ceiling = dplyr::n_distinct(
+				.data[[subject_var]][.data[[score_var]] == max_score]
+			),
+			.groups = "drop"
+		) |>
+		dplyr::mutate(
+			pct_floor = ifelse(.data$n > 0, .data$n_floor / .data$n, NA_real_),
+			floor_flag = .data$n > 0 & .data$pct_floor > threshold,
+			pct_ceiling = ifelse(
+				.data$n > 0,
+				.data$n_ceiling / .data$n,
+				NA_real_
+			),
+			ceiling_flag = .data$n > 0 & .data$pct_ceiling > threshold
+		)
+}
+
 #' Create Vital Signs by Visit Table
 #'
 #' @param advs ADVS data frame
