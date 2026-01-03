@@ -38,8 +38,8 @@ Character vector of formatted confidence intervals
 \description{
 Formats confidence intervals according to IQWiG Methods v8.0, Chapter 10.3.2:
 \itemize{
-\item Requires reporting whether CIs are 1- or 2-sided and the confidence
-level (e.g., 95%) but does not prescribe punctuation between bounds
+\item Report whether CIs are 1- or 2-sided and the confidence level (e.g., 95\%);
+IQWiG does not prescribe punctuation between bounds
 \item Semicolon separator is a formatting choice: \code{[lower; upper]}
 \item Locale-aware decimal separator
 }
