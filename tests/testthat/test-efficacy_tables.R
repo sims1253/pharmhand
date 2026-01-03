@@ -1094,6 +1094,80 @@ test_that("create_subgroup_table warns for missing subgroup variables", {
 	)
 })
 
+# Tests for Non-Inferiority ----
+
+test_that("test_non_inferiority works for continuous endpoints", {
+	ref_vals <- rep(c(10.0, 10.1, 9.9, 10.2, 9.8), 20)
+	trt_vals <- rep(c(9.6, 9.7, 9.5, 9.6, 9.7), 20)
+
+	df <- data.frame(
+		TRT = rep(c("Ref", "Trt"), each = 100),
+		OUTCOME = c(ref_vals, trt_vals)
+	)
+
+	result <- test_non_inferiority(
+		data = df,
+		outcome_var = "OUTCOME",
+		trt_var = "TRT",
+		ref_group = "Ref",
+		ni_margin = 0.5,
+		type = "continuous"
+	)
+
+	expect_true(result$non_inferior)
+	expect_true(is.infinite(result$ci_upper))
+	expect_equal(result$estimate, -0.38, tolerance = 0.001)
+
+	result_fail <- test_non_inferiority(
+		data = df,
+		outcome_var = "OUTCOME",
+		trt_var = "TRT",
+		ref_group = "Ref",
+		ni_margin = 0.1,
+		type = "continuous"
+	)
+
+	expect_false(result_fail$non_inferior)
+})
+
+test_that("test_non_inferiority works for binary endpoints", {
+	ref_bin <- c(rep(1, 600), rep(0, 400))
+	trt_bin <- c(rep(1, 580), rep(0, 420))
+
+	df <- data.frame(
+		TRT = rep(c("Ref", "Trt"), each = 1000),
+		RESP = c(ref_bin, trt_bin)
+	)
+
+	result <- test_non_inferiority(
+		data = df,
+		outcome_var = "RESP",
+		trt_var = "TRT",
+		ref_group = "Ref",
+		ni_margin = 0.1,
+		type = "binary",
+		method = "wilson"
+	)
+
+	expect_true(result$non_inferior)
+	expect_true(is.infinite(result$ci_upper))
+	expect_equal(result$method, "wilson")
+	expect_equal(result$estimate, -0.02, tolerance = 0.001)
+
+	result_fail <- test_non_inferiority(
+		data = df,
+		outcome_var = "RESP",
+		trt_var = "TRT",
+		ref_group = "Ref",
+		ni_margin = 0.01,
+		type = "binary",
+		method = "exact"
+	)
+
+	expect_false(result_fail$non_inferior)
+	expect_equal(result_fail$method, "exact")
+})
+
 # Tests for Proportion CI Calculation ----
 
 test_that("calculate_proportion_ci wilson method works", {
