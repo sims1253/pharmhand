@@ -793,6 +793,12 @@ comparison_table@flextable
 
 [TABLE]
 
+> **Note**: `create_ae_summary_table(type = "comparison")` is a
+> convenience wrapper around
+> [`create_ae_comparison_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_comparison_table.md).
+> Both functions produce identical results—use whichever entry point you
+> prefer.
+
 The comparison table includes: - **n/N (%)** for each treatment group -
 **Risk Difference (RD)** with 95% CI - **Risk Ratio (RR)** with 95% CI -
 **P-value** (Chi-square or Fisher’s exact test)

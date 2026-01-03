@@ -1,6 +1,23 @@
 # Changelog
 
-## pharmhand 0.1.2.9000
+## pharmhand 0.1.3.9000
+
+### Improvements
+
+- Added validation for `default_duration` in the safety report example.
+
+### Documentation
+
+- Clarified palette resolution for
+  [`create_km_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_km_plot.md)
+  and CI formatting guidance.
+- Added a note on comparison-table entry points in the safety tables
+  vignette.
+- Fixed the pkgdown badge URL in the README.
+
+### Maintenance
+
+- Updated compliance tests to use flextable’s public header removal API.
 
 ## pharmhand 0.1.1.9000
 

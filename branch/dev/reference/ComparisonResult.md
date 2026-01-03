@@ -7,8 +7,8 @@ An S7 class for representing results of a single treatment comparison
 
 ``` r
 ComparisonResult(
-  estimate = integer(0),
-  ci = integer(0),
+  estimate = numeric(0),
+  ci = numeric(0),
   ci_level = 0.95,
   p_value = NA_real_,
   method = "",

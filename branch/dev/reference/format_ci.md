@@ -3,7 +3,10 @@
 Formats confidence intervals according to IQWiG Methods v8.0, Chapter
 10.3.2:
 
-- Semicolon separator: `[lower; upper]`
+- Requires reporting 1- or 2-sided CIs and confidence level but does not
+  prescribe punctuation
+
+- Semicolon separator is a formatting choice: `[lower; upper]`
 
 - Locale-aware decimal separator
 
@@ -60,7 +63,7 @@ Character vector of formatted confidence intervals
 
 ## References
 
-IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+IQWiG (2025). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
 
 ## Examples
 

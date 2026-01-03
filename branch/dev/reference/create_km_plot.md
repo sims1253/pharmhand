@@ -85,12 +85,12 @@ create_km_plot(
 
 - palette:
 
-  Optional color palette for treatment groups. Can be a character vector
-  of colors, or NULL to use `getOption("pharmhand.palette")`. Defaults
-  to the CVD-friendly "Okabe-Ito (reordered)" palette (orange, sky blue
-  for first two arms). Other built-in options: "Okabe-Ito", "R4",
-  "Tableau 10", "Alphabet", etc. (see
-  [`grDevices::palette.pals()`](https://rdrr.io/r/grDevices/palette.html)).
+  Color palette for treatment groups. Precedence: (1) explicit palette
+  argument (character vector of colors or named palette string), (2)
+  `getOption("pharmhand.palette")`, (3) default Okabe-Ito reordered
+  (orange, sky blue for first two arms). Named palette strings from
+  [`grDevices::palette.pals()`](https://rdrr.io/r/grDevices/palette.html)
+  can be used (e.g., "Okabe-Ito", "R4", "Tableau 10", "Alphabet").
 
 - conf_level:
 
