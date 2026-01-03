@@ -57,7 +57,7 @@ Character vector of formatted p-values
 
 ## References
 
-IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+IQWiG (2025). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
 
 ## Examples
 

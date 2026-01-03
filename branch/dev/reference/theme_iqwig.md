@@ -48,7 +48,7 @@ A styled flextable object
 
 ## References
 
-IQWiG (2023). Allgemeine Methoden, Version 8.0.
+IQWiG (2025). Allgemeine Methoden, Version 8.0.
 
 ## Examples
 
