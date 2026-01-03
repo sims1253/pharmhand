@@ -1503,6 +1503,222 @@ create_responder_table <- function(
 	)
 }
 
+#' Non-Inferiority Test
+#'
+#' Tests non-inferiority of treatment vs comparator.
+#'
+#' @param data Data frame
+#' @param outcome_var Character. Outcome variable name
+#' @param trt_var Character. Treatment variable name
+#' @param ref_group Character. Reference group name
+#' @param ni_margin Numeric. Non-inferiority margin (positive value)
+#' @param type Character. "continuous" or "binary"
+#' @param higher_better Logical. TRUE if higher values are better (default: TRUE)
+#' @param conf_level Numeric. One-sided confidence level (default: 0.975 for 95% CI)
+#' @param method Character. For binary: "wald", "wilson", "exact" (default: "wilson")
+#'
+#' @return List with:
+#'   - estimate: Point estimate of difference (trt - ref)
+#'   - ci_lower: Lower bound of one-sided CI
+#'   - ci_upper: Upper bound (may be Inf for one-sided)
+#'   - ni_margin: The margin used
+#'   - non_inferior: Logical. TRUE if lower CI > -ni_margin (or upper < margin if lower is worse)
+#'   - conclusion: Character summary
+#'   - method: Method used
+#'
+#' @details
+#' For continuous endpoints: Tests if (mean_trt - mean_ref) + ni_margin > 0
+#' For binary endpoints: Tests if (prop_trt - prop_ref) + ni_margin > 0
+#'
+#' Non-inferiority is concluded if the lower bound of the one-sided CI
+#' for the treatment difference exceeds -ni_margin.
+#'
+#' @references
+#' IQWiG Methods v8.0, Section 10.3.5, p. 217-218.
+#'
+#' @export
+test_non_inferiority <- function(
+	data,
+	outcome_var,
+	trt_var,
+	ref_group,
+	ni_margin,
+	type = c("continuous", "binary"),
+	higher_better = TRUE,
+	conf_level = 0.975,
+	method = c("wilson", "wald", "exact")
+) {
+	type <- match.arg(type)
+	method <- match.arg(method)
+
+	assert_data_frame(data, "data")
+	assert_character_scalar(outcome_var, "outcome_var")
+	assert_character_scalar(trt_var, "trt_var")
+	assert_character_scalar(ref_group, "ref_group")
+	assert_numeric_scalar(ni_margin, "ni_margin")
+	assert_numeric_scalar(conf_level, "conf_level")
+
+	if (
+		!is.logical(higher_better) ||
+			length(higher_better) != 1 ||
+			is.na(higher_better)
+	) {
+		ph_abort("'higher_better' must be TRUE or FALSE")
+	}
+	if (is.na(ni_margin) || ni_margin <= 0) {
+		ph_abort("'ni_margin' must be a positive number")
+	}
+	if (conf_level <= 0.5 || conf_level >= 1) {
+		ph_abort("'conf_level' must be > 0.5 and < 1")
+	}
+
+	assert_column_exists(data, outcome_var, "data")
+	assert_column_exists(data, trt_var, "data")
+
+	df <- data[, c(outcome_var, trt_var), drop = FALSE]
+	df <- df[!is.na(df[[outcome_var]]) & !is.na(df[[trt_var]]), , drop = FALSE]
+	if (nrow(df) == 0) {
+		ph_abort("No non-missing observations available for analysis")
+	}
+
+	df[[trt_var]] <- as.character(df[[trt_var]])
+	if (!ref_group %in% df[[trt_var]]) {
+		ph_abort(sprintf(
+			"Reference group '%s' not found in '%s'",
+			ref_group,
+			trt_var
+		))
+	}
+
+	trt_groups <- setdiff(unique(df[[trt_var]]), ref_group)
+	if (length(trt_groups) != 1) {
+		ph_abort("Exactly one non-reference treatment group is required")
+	}
+	trt_group <- trt_groups[1]
+
+	trt_vals <- df[df[[trt_var]] == trt_group, outcome_var]
+	ref_vals <- df[df[[trt_var]] == ref_group, outcome_var]
+
+	if (length(trt_vals) == 0 || length(ref_vals) == 0) {
+		ph_abort("Both treatment and reference groups must have observations")
+	}
+
+	if (type == "continuous") {
+		if (!is.numeric(trt_vals) || !is.numeric(ref_vals)) {
+			ph_abort("'outcome_var' must be numeric for continuous endpoints")
+		}
+		if (length(trt_vals) < 2 || length(ref_vals) < 2) {
+			ph_abort("Each group must have at least 2 observations")
+		}
+
+		alternative <- if (isTRUE(higher_better)) "greater" else "less"
+		test <- stats::t.test(
+			trt_vals,
+			ref_vals,
+			alternative = alternative,
+			conf.level = conf_level
+		)
+		estimate <- mean(trt_vals) - mean(ref_vals)
+		ci_lower <- test$conf.int[1]
+		ci_upper <- test$conf.int[2]
+		method_used <- "welch-t"
+	} else {
+		if (!is.logical(trt_vals) && !is.numeric(trt_vals)) {
+			ph_abort("'outcome_var' must be logical or numeric for binary endpoints")
+		}
+		if (!is.logical(ref_vals) && !is.numeric(ref_vals)) {
+			ph_abort("'outcome_var' must be logical or numeric for binary endpoints")
+		}
+
+		trt_bin <- if (is.logical(trt_vals)) {
+			as.integer(trt_vals)
+		} else {
+			trt_vals
+		}
+		ref_bin <- if (is.logical(ref_vals)) {
+			as.integer(ref_vals)
+		} else {
+			ref_vals
+		}
+
+		if (any(!trt_bin %in% c(0, 1)) || any(!ref_bin %in% c(0, 1))) {
+			ph_abort("Binary endpoints must be coded as 0/1 or TRUE/FALSE")
+		}
+
+		n_trt <- length(trt_bin)
+		n_ref <- length(ref_bin)
+		x_trt <- sum(trt_bin)
+		x_ref <- sum(ref_bin)
+		p_trt <- x_trt / n_trt
+		p_ref <- x_ref / n_ref
+		estimate <- p_trt - p_ref
+
+		if (method == "wald") {
+			z <- stats::qnorm(conf_level)
+			se <- sqrt(p_trt * (1 - p_trt) / n_trt + p_ref * (1 - p_ref) / n_ref)
+			lower <- estimate - z * se
+			upper <- estimate + z * se
+		} else {
+			conf_level_two_sided <- 2 * conf_level - 1
+			trt_ci <- calculate_proportion_ci(
+				x_trt,
+				n_trt,
+				method = method,
+				conf_level = conf_level_two_sided
+			)
+			ref_ci <- calculate_proportion_ci(
+				x_ref,
+				n_ref,
+				method = method,
+				conf_level = conf_level_two_sided
+			)
+			lower <- estimate -
+				sqrt(
+					(p_trt - trt_ci$lower)^2 + (ref_ci$upper - p_ref)^2
+				)
+			upper <- estimate +
+				sqrt(
+					(trt_ci$upper - p_trt)^2 + (p_ref - ref_ci$lower)^2
+				)
+		}
+
+		lower <- max(-1, lower)
+		upper <- min(1, upper)
+
+		if (isTRUE(higher_better)) {
+			ci_lower <- lower
+			ci_upper <- Inf
+		} else {
+			ci_lower <- -Inf
+			ci_upper <- upper
+		}
+
+		method_used <- method
+	}
+
+	if (isTRUE(higher_better)) {
+		non_inferior <- ci_lower > -ni_margin
+	} else {
+		non_inferior <- ci_upper < ni_margin
+	}
+
+	conclusion <- if (isTRUE(non_inferior)) {
+		"Non-inferiority demonstrated"
+	} else {
+		"Non-inferiority not demonstrated"
+	}
+
+	list(
+		estimate = estimate,
+		ci_lower = ci_lower,
+		ci_upper = ci_upper,
+		ni_margin = ni_margin,
+		non_inferior = non_inferior,
+		conclusion = conclusion,
+		method = method_used
+	)
+}
+
 #' Calculate Proportion Confidence Interval
 #'
 #' @param x Number of successes

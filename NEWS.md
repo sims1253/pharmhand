@@ -1,5 +1,11 @@
 # pharmhand 0.1.15.9000
 
+# pharmhand 0.1.18.9000
+
+## Improvements
+
+* Added non-inferiority testing for continuous and binary endpoints via `test_non_inferiority()`.
+
 # pharmhand 0.1.17.9000
 
 ## Improvements
