@@ -297,13 +297,15 @@ apply_clinical_style <- function(
 #' IQWiG Theme for Flextable
 #'
 #' Apply IQWiG-compliant styling to a flextable. Based on formatting standards
-#' from IQWiG Methods v8.0.
+#' from IQWiG Methods v8.0, with numeric formatting driven by
+#' `decimal_separator` and missing values shown as `--`.
 #'
 #' @param ft A flextable object
 #' @param font_name Font family (default: "Arial")
 #' @param font_size Font size in points (default: 9)
 #' @param header_bold Logical, bold header text (default: TRUE)
-#' @param decimal_separator Decimal separator: "." or "," (default: ",")
+#' @param decimal_separator Decimal separator: "." or "," (default: ",");
+#'   applies to numeric columns with "." as the thousands separator when ",".
 #' @param autofit Logical, autofit column widths (default: TRUE)
 #'
 #' @return A styled flextable object

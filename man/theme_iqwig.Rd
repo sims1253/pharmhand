@@ -22,7 +22,8 @@ theme_iqwig(
 
 \item{header_bold}{Logical, bold header text (default: TRUE)}
 
-\item{decimal_separator}{Decimal separator: "." or "," (default: ",")}
+\item{decimal_separator}{Decimal separator: "." or "," (default: ",");
+applies to numeric columns with "." as the thousands separator when ",".}
 
 \item{autofit}{Logical, autofit column widths (default: TRUE)}
 }
@@ -31,7 +32,8 @@ A styled flextable object
 }
 \description{
 Apply IQWiG-compliant styling to a flextable. Based on formatting standards
-from IQWiG Methods v8.0.
+from IQWiG Methods v8.0, with numeric formatting driven by
+\code{decimal_separator} and missing values shown as \verb{--}.
 }
 \examples{
 \dontrun{
