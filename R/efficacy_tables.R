@@ -689,24 +689,7 @@ create_subgroup_analysis_table <- function(
 		results_list[[var_name]] <- res
 	}
 
-	if (!is.null(min_subgroup_size) && length(subgroup_counts_list) > 0) {
-		subgroup_counts <- dplyr::bind_rows(subgroup_counts_list)
-		small_subgroups <- subgroup_counts |>
-			dplyr::filter(.data$n < min_subgroup_size)
-
-		if (nrow(small_subgroups) > 0) {
-			ph_warn(sprintf(
-				paste(
-					"Small subgroup warning: %d subgroup(s) have fewer than %d subjects.",
-					"Results may be unreliable for: %s.",
-					"Consider combining small subgroups or interpreting with caution."
-				),
-				nrow(small_subgroups),
-				min_subgroup_size,
-				paste(small_subgroups$subgroup, collapse = ", ")
-			))
-		}
-	}
+	warn_small_subgroups(subgroup_counts_list, min_subgroup_size)
 
 	all_subgroups <- dplyr::bind_rows(results_list) |>
 		dplyr::select("Subgroup", "Category", dplyr::all_of(trt_var), "display") |>
@@ -1550,7 +1533,7 @@ create_responder_table <- function(
 #' @param higher_better Logical. TRUE if higher values are better
 #'   (default: TRUE)
 #' @param conf_level Numeric. One-sided confidence level
-#'   (default: 0.975 for 95% CI)
+#'   (default: 0.975, equivalent to two-sided 95% CI)
 #' @param method Character. Method for binary endpoints only: "wald", "wilson",
 #'   "exact" (default: "wilson"). Ignored for continuous endpoints.
 #'
@@ -1559,8 +1542,9 @@ create_responder_table <- function(
 #'   - ci_lower: Lower bound of one-sided CI
 #'   - ci_upper: Upper bound (may be Inf for one-sided)
 #'   - ni_margin: The margin used
-#'   - non_inferior: Logical. TRUE if lower CI > -ni_margin
-#'     (or upper < margin if lower is worse)
+#'   - non_inferior: Logical. TRUE if non-inferiority is concluded.
+#'     When higher_better=TRUE: ci_lower > -ni_margin.
+#'     When higher_better=FALSE: ci_upper < ni_margin.
 #'   - conclusion: Character summary
 #'   - method: Method used
 #'
@@ -1570,6 +1554,11 @@ create_responder_table <- function(
 #'
 #' Non-inferiority is concluded if the lower bound of the one-sided CI
 #' for the treatment difference exceeds -ni_margin.
+#'
+#' The direction of the test depends on higher_better:
+#' - If higher_better=TRUE (default): the lower CI bound must exceed -ni_margin
+#' - If higher_better=FALSE: the upper CI bound must be below ni_margin
+#'
 #'
 #' For binary endpoints, the Wilson method uses the Newcombe-Wilson
 #' hybrid CI approach. The Wald method provides a simpler alternative.
@@ -1725,6 +1714,8 @@ test_non_inferiority <- function(
 			lower <- estimate - z * se
 			upper <- estimate + z * se
 		} else {
+			# Newcombe-Wilson hybrid CI for difference in proportions
+			# (Newcombe RG. Statist. Med. 1998; 17:873-890, Method 10)
 			conf_level_two_sided <- 2 * conf_level - 1
 			trt_ci <- calculate_proportion_ci(
 				x_trt,
@@ -1795,7 +1786,8 @@ test_non_inferiority <- function(
 #' @param trt_var Character. Treatment variable
 #' @param baseline_var Character. Baseline value variable
 #' @param covariates Character vector. Additional covariates to adjust for
-#' @param ref_group Character. Reference group for contrast
+#' @param ref_group Character. Reference group for contrast. If NULL, the first
+#'   level of the treatment variable is used as reference.
 #' @param conf_level Numeric. Confidence level (default: 0.95)
 #'
 #' @return List with:
@@ -1808,6 +1800,8 @@ test_non_inferiority <- function(
 #' Fits model: outcome ~ baseline + trt + covariates
 #' Treatment effects are extracted from model coefficients (trt - ref)
 #' and confidence intervals are computed with confint.
+#' Missing values are handled by lm() via listwise deletion.
+#' Specified variables must exist in the data.
 #'
 #' @references
 #' IQWiG Methods v8.0, Section 10.3.6, p. 218-220.
@@ -1815,10 +1809,19 @@ test_non_inferiority <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # ANCOVA-adjusted treatment comparison
+#' # Simulated example
+#' set.seed(123)
+#' n <- 100
+#' sim_data <- data.frame(
+#'   TRT01P = rep(c("Placebo", "Drug A"), each = n/2),
+#'   BASE = rnorm(n, 50, 10),
+#'   CHG = rnorm(n, 5, 8),
+#'   AGEGR1 = sample(c("<65", ">=65"), n, replace = TRUE),
+#'   SEX = sample(c("F", "M"), n, replace = TRUE)
+#' )
+#'
 #' result <- ancova_adjust_continuous(
-#'   data = adeff,
+#'   data = sim_data,
 #'   outcome_var = "CHG",
 #'   trt_var = "TRT01P",
 #'   baseline_var = "BASE",
@@ -1826,7 +1829,6 @@ test_non_inferiority <- function(
 #'   covariates = c("AGEGR1", "SEX")
 #' )
 #' print(result$treatment_effects)
-#' }
 ancova_adjust_continuous <- function(
 	data,
 	outcome_var,
@@ -2246,24 +2248,7 @@ create_subgroup_table <- function(
 		}
 	}
 
-	if (!is.null(min_subgroup_size) && length(subgroup_counts_list) > 0) {
-		subgroup_counts <- dplyr::bind_rows(subgroup_counts_list)
-		small_subgroups <- subgroup_counts |>
-			dplyr::filter(.data$n < min_subgroup_size)
-
-		if (nrow(small_subgroups) > 0) {
-			ph_warn(sprintf(
-				paste(
-					"Small subgroup warning: %d subgroup(s) have fewer than %d subjects.",
-					"Results may be unreliable for: %s.",
-					"Consider combining small subgroups or interpreting with caution."
-				),
-				nrow(small_subgroups),
-				min_subgroup_size,
-				paste(small_subgroups$subgroup, collapse = ", ")
-			))
-		}
-	}
+	warn_small_subgroups(subgroup_counts_list, min_subgroup_size)
 
 	# Combine results
 	results_df <- do.call(rbind, results_list)
@@ -2399,6 +2384,32 @@ create_subgroup_table <- function(
 			full_results = results_df
 		)
 	)
+}
+
+#' @keywords internal
+warn_small_subgroups <- function(subgroup_counts_list, min_subgroup_size) {
+	if (is.null(min_subgroup_size) || length(subgroup_counts_list) == 0) {
+		return(invisible(NULL))
+	}
+
+	subgroup_counts <- dplyr::bind_rows(subgroup_counts_list)
+	small_subgroups <- subgroup_counts |>
+		dplyr::filter(.data$n < min_subgroup_size)
+
+	if (nrow(small_subgroups) > 0) {
+		ph_warn(sprintf(
+			paste(
+				"Small subgroup warning: %d subgroup(s) have fewer than %d subjects.",
+				"Results may be unreliable for: %s.",
+				"Consider combining small subgroups or interpreting with caution."
+			),
+			nrow(small_subgroups),
+			min_subgroup_size,
+			paste(small_subgroups$subgroup, collapse = ", ")
+		))
+	}
+
+	invisible(NULL)
 }
 
 #' Calculate Subgroup Effect for Table (HR or OR)

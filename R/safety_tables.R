@@ -1047,13 +1047,31 @@ create_time_to_first_ae <- function(
 		}
 	}
 
+	n_before <- nrow(tte_data)
 	tte_data <- tte_data |>
 		dplyr::mutate(
-			event = ifelse(!is.na(.data$event), 1, 0),
-			time = ifelse(.data$event == 1, .data$event_time, .data[[censor_var]]),
-			time = ifelse(is.na(.data$time), .data[[censor_var]], .data$time)
+			event = dplyr::if_else(!is.na(.data$event), 1L, 0L),
+			time = dplyr::case_when(
+				.data$event == 1 & !is.na(.data$event_time) ~ .data$event_time,
+				TRUE ~ .data[[censor_var]]
+			)
 		) |>
-		dplyr::filter(!is.na(.data$time), !is.na(.data[[trt_var]]))
+		dplyr::filter(
+			!is.na(.data$time),
+			.data$time > 0,
+			!is.na(.data[[trt_var]])
+		)
+
+	n_dropped <- n_before - nrow(tte_data)
+	if (n_dropped > 0) {
+		ph_warn(
+			sprintf(
+				"%d subjects excluded: missing or non-positive time, or no treatment",
+				n_dropped
+			),
+			call. = FALSE
+		)
+	}
 
 	if (nrow(tte_data) == 0) {
 		ph_abort(
@@ -1392,10 +1410,6 @@ create_ae_comparison_table <- function(
 	# Get treatment groups (excluding reference)
 	trt_groups <- setdiff(trt_levels, ref_group)
 
-	# TODO(#196): This stub will be used for the diff feature
-	# when that post-1.0 feature is implemented. Currently unused but reserved.
-	comparison_results <- list() # nolint: object_usage_linter
-
 	# Calculate risk differences and ratios for each treatment vs reference
 
 	for (trt in trt_groups) {
@@ -1453,6 +1467,7 @@ create_ae_comparison_table <- function(
 				)
 			})
 
+			# NNH reported as positive (absolute value of NNT for harm)
 			ae_wide[[paste0("nnh_", trt)]] <- vapply(
 				nnh_list,
 				function(stats) abs(stats$nnt),
@@ -1717,6 +1732,16 @@ calculate_exposure_adjusted_rate <- function(
 	assert_numeric_scalar(patient_years, "patient_years")
 	if (is.na(patient_years) || patient_years <= 0) {
 		ph_abort("'patient_years' must be a positive number")
+	}
+
+	if (patient_years < 0.01) {
+		ph_warn(
+			sprintf(
+				"Very small patient_years value (%g) may produce unstable rate estimates",
+				patient_years
+			),
+			call. = FALSE
+		)
 	}
 
 	assert_numeric_scalar(conf_level, "conf_level")

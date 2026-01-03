@@ -307,7 +307,8 @@ test_that("create_loglog_plot works with valid data", {
 		trt = rep(c("A", "B"), each = 10)
 	)
 
-	p <- create_loglog_plot(df, "time", "event", "trt")
+	# Log-log plots may warn about tied events or non-finite values
+	p <- suppressWarnings(create_loglog_plot(df, "time", "event", "trt"))
 
 	expect_s7_class(p, ClinicalPlot)
 	expect_true(ggplot2::is_ggplot(p@plot))
@@ -344,7 +345,7 @@ test_that("create_loglog_plot supports multiple treatment groups", {
 		trt = rep(c("A", "B", "C"), each = 10)
 	)
 
-	p <- create_loglog_plot(df, "time", "event", "trt")
+	p <- suppressWarnings(create_loglog_plot(df, "time", "event", "trt"))
 
 	expect_s7_class(p, ClinicalPlot)
 	expect_equal(length(unique(p@plot$data$strata)), 3)
@@ -362,14 +363,20 @@ test_that("create_loglog_plot applies custom colors", {
 	)
 
 	custom_colors <- c("Placebo" = "red", "Active" = "blue")
-	p <- create_loglog_plot(df, "time", "event", "trt", colors = custom_colors)
+	p <- suppressWarnings(create_loglog_plot(
+		df,
+		"time",
+		"event",
+		"trt",
+		colors = custom_colors
+	))
 
 	expect_s7_class(p, ClinicalPlot)
 	scale_color <- p@plot$scales$get_scales("colour")
 	expect_true(!is.null(scale_color))
 	# Verify custom colors are being used (order-agnostic)
 	actual_colors <- scale_color$palette(2)
-	expect_setequal(actual_colors, custom_colors)
+	expect_setequal(unname(actual_colors), unname(custom_colors))
 })
 
 # Tests for Forest Plot ----

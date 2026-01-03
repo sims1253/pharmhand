@@ -9,8 +9,7 @@ StudySet(
   endpoint = NULL,
   comparison_type = "direct",
   common_comparator = NULL,
-  characteristics = structure(list(), names = character(0), row.names = integer(0), class
-    = "data.frame"),
+  characteristics = NULL,
   metadata = list()
 )
 }
@@ -23,7 +22,8 @@ StudySet(
 
 \item{common_comparator}{Common comparator for indirect/network comparisons}
 
-\item{characteristics}{Data frame of study-level characteristics}
+\item{characteristics}{Data frame of study-level characteristics (optional,
+NULL by default)}
 
 \item{metadata}{List of additional metadata}
 }

@@ -25,7 +25,8 @@ ancova_adjust_continuous(
 
 \item{covariates}{Character vector. Additional covariates to adjust for}
 
-\item{ref_group}{Character. Reference group for contrast}
+\item{ref_group}{Character. Reference group for contrast. If NULL, the first
+level of the treatment variable is used as reference.}
 
 \item{conf_level}{Numeric. Confidence level (default: 0.95)}
 }
@@ -46,12 +47,23 @@ and other covariates.
 Fits model: outcome ~ baseline + trt + covariates
 Treatment effects are extracted from model coefficients (trt - ref)
 and confidence intervals are computed with confint.
+Missing values are handled by lm() via listwise deletion.
+Specified variables must exist in the data.
 }
 \examples{
-\dontrun{
-# ANCOVA-adjusted treatment comparison
+# Simulated example
+set.seed(123)
+n <- 100
+sim_data <- data.frame(
+  TRT01P = rep(c("Placebo", "Drug A"), each = n/2),
+  BASE = rnorm(n, 50, 10),
+  CHG = rnorm(n, 5, 8),
+  AGEGR1 = sample(c("<65", ">=65"), n, replace = TRUE),
+  SEX = sample(c("F", "M"), n, replace = TRUE)
+)
+
 result <- ancova_adjust_continuous(
-  data = adeff,
+  data = sim_data,
   outcome_var = "CHG",
   trt_var = "TRT01P",
   baseline_var = "BASE",
@@ -59,7 +71,6 @@ result <- ancova_adjust_continuous(
   covariates = c("AGEGR1", "SEX")
 )
 print(result$treatment_effects)
-}
 }
 \references{
 IQWiG Methods v8.0, Section 10.3.6, p. 218-220.
