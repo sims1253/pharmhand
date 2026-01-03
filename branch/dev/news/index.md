@@ -53,17 +53,24 @@
 - Added ANCOVA Adjustment section to efficacy-tables vignette.
 - Added Floor/Ceiling Detection section to efficacy-tables and
   baseline-tables vignettes.
+- Improved documentation for
+  [`test_non_inferiority()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_non_inferiority.md)
+  with clarified conf_level, decision logic, and higher_better
+  parameter.
+- Improved documentation for
+  [`ancova_adjust_continuous()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ancova_adjust_continuous.md)
+  with edge case behavior and runnable simulated example.
+
+### Code Quality
+
+- Added Newcombe-Wilson reference citation for binary difference in
+  proportions CI calculation.
+- Removed unused `comparison_results` stub from AE comparison function.
 
 ### Tests
 
 - Added test for NNH calculation when risk difference is negative
   (treatment beneficial).
-
-### Internal
-
-- Added `comparison_results` stub with
-  `TODO(`[`#196`](https://github.com/sims1253/pharmhand/issues/196)`)`
-  for future Report/Result comparison feature.
 
 ## pharmhand 0.2.0.9000
 
