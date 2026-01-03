@@ -54,7 +54,8 @@ test_non_inferiority(
 
 - method:
 
-  Character. For binary: "wald", "wilson", "exact" (default: "wilson")
+  Character. Method for binary endpoints only: "wald", "wilson", "exact"
+  (default: "wilson"). Ignored for continuous endpoints.
 
 ## Value
 
@@ -91,3 +92,29 @@ preferences.
 ## References
 
 IQWiG Methods v8.0, Section 10.3.5, p. 217-218.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Non-inferiority test for continuous endpoint
+result <- test_non_inferiority(
+  data = adeff,
+  outcome_var = "CHG",
+  trt_var = "TRT01P",
+  ref_group = "Active Control",
+  ni_margin = 0.5,
+  type = "continuous"
+)
+
+# Non-inferiority test for binary endpoint
+result <- test_non_inferiority(
+  data = adrs,
+  outcome_var = "AVALC",
+  trt_var = "TRT01P",
+  ref_group = "Active Control",
+  ni_margin = 0.10,
+  type = "binary"
+)
+} # }
+```

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,8 +98,8 @@
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>Character. For binary: "wald", "wilson", "exact"
-(default: "wilson")</p></dd>
+<dd><p>Character. Method for binary endpoints only: "wald", "wilson",
+"exact" (default: "wilson"). Ignored for continuous endpoints.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -129,6 +129,31 @@ agency preferences.</p>
     <p>IQWiG Methods v8.0, Section 10.3.5, p. 217-218.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Non-inferiority test for continuous endpoint</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">test_non_inferiority</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">adeff</span>,</span></span>
+<span class="r-in"><span>  outcome_var <span class="op">=</span> <span class="st">"CHG"</span>,</span></span>
+<span class="r-in"><span>  trt_var <span class="op">=</span> <span class="st">"TRT01P"</span>,</span></span>
+<span class="r-in"><span>  ref_group <span class="op">=</span> <span class="st">"Active Control"</span>,</span></span>
+<span class="r-in"><span>  ni_margin <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"continuous"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Non-inferiority test for binary endpoint</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">test_non_inferiority</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">adrs</span>,</span></span>
+<span class="r-in"><span>  outcome_var <span class="op">=</span> <span class="st">"AVALC"</span>,</span></span>
+<span class="r-in"><span>  trt_var <span class="op">=</span> <span class="st">"TRT01P"</span>,</span></span>
+<span class="r-in"><span>  ref_group <span class="op">=</span> <span class="st">"Active Control"</span>,</span></span>
+<span class="r-in"><span>  ni_margin <span class="op">=</span> <span class="fl">0.10</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"binary"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

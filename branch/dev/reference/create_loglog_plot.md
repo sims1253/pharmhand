@@ -17,7 +17,8 @@ create_loglog_plot(
   ylab = "Log(-Log(Survival))",
   show_censor = TRUE,
   colors = NULL,
-  base_size = 11
+  base_size = 11,
+  conf_level = 0.95
 )
 ```
 
@@ -65,6 +66,10 @@ create_loglog_plot(
 
   Base font size for plot text elements (default: 11).
 
+- conf_level:
+
+  Confidence level for survival fit (default: 0.95)
+
 ## Value
 
 A ClinicalPlot object containing a ggplot2 log-log survival plot
@@ -83,3 +88,19 @@ keep the diagnostic scale uncluttered.
 ## References
 
 IQWiG Methods v8.0, Section 10.3.12, p. 235-237.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Log-log plot to assess PH assumption
+plot <- create_loglog_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "TRT01P",
+  title = "Log-Log Plot: PH Assumption Check"
+)
+print(plot)
+} # }
+```

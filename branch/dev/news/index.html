@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,41 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1.9000" id="pharmhand-0219000">pharmhand 0.2.1.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0219000"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-2-1-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-1-9000"></a></h3>
+<ul><li>Added <code>conf_level</code> parameter to <code><a href="../reference/create_ae_cumulative_incidence_plot.html">create_ae_cumulative_incidence_plot()</a></code> (was hard-coded at 0.95).</li>
+<li>Exposed <code>subgroup_counts</code> and <code>min_subgroup_size</code> in <code><a href="../reference/create_subgroup_analysis_table.html">create_subgroup_analysis_table()</a></code> metadata for programmatic access.</li>
+<li>Wrapped <code><a href="../reference/test_ph_assumption.html">test_ph_assumption()</a></code> call in <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> with tryCatch for robustness with sparse Cox models.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="plotting-0-2-1-9000">Plotting<a class="anchor" aria-label="anchor" href="#plotting-0-2-1-9000"></a></h3>
+<ul><li>Created <code><a href="../reference/dot-pharmhand_theme.html">.pharmhand_theme()</a></code> internal helper for consistent white backgrounds across all plots.</li>
+<li>Refactored all plotting functions to use <code><a href="../reference/dot-pharmhand_theme.html">.pharmhand_theme()</a></code> with <code>base_size</code> parameter.</li>
+<li>Added <code>conf_level</code> parameter to <code><a href="../reference/create_loglog_plot.html">create_loglog_plot()</a></code>.</li>
+<li>Added <code>base_size</code> parameter to <code><a href="../reference/create_ae_cumulative_incidence_plot.html">create_ae_cumulative_incidence_plot()</a></code> and <code><a href="../reference/create_forest_plot.html">create_forest_plot()</a></code>.</li>
+<li>Updated <code>build_schoenfeld_plot()</code> to use <code><a href="../reference/dot-pharmhand_theme.html">.pharmhand_theme()</a></code> for consistent styling.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-2-1-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-1-9000"></a></h3>
+<ul><li>Clarified that <code>method</code> parameter in <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code> applies only to binary endpoints.</li>
+<li>Added <code>@examples</code> to <code><a href="../reference/detect_floor_ceiling.html">detect_floor_ceiling()</a></code>, <code><a href="../reference/test_non_inferiority.html">test_non_inferiority()</a></code>, <code><a href="../reference/ancova_adjust_continuous.html">ancova_adjust_continuous()</a></code>, <code><a href="../reference/create_loglog_plot.html">create_loglog_plot()</a></code>, and <code><a href="../reference/create_ae_cumulative_incidence_plot.html">create_ae_cumulative_incidence_plot()</a></code>.</li>
+<li>Added Time-to-Event Safety Analysis section to safety-tables vignette.</li>
+<li>Added NNH (Number Needed to Harm) documentation to safety-tables vignette.</li>
+<li>Added Non-Inferiority Testing section to efficacy-tables vignette.</li>
+<li>Added ANCOVA Adjustment section to efficacy-tables vignette.</li>
+<li>Added Floor/Ceiling Detection section to efficacy-tables and baseline-tables vignettes.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-2-1-9000">Tests<a class="anchor" aria-label="anchor" href="#tests-0-2-1-9000"></a></h3>
+<ul><li>Added test for NNH calculation when risk difference is negative (treatment beneficial).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-0-2-1-9000">Internal<a class="anchor" aria-label="anchor" href="#internal-0-2-1-9000"></a></h3>
+<ul><li>Added <code>comparison_results</code> stub with <code>TODO(<a href="https://github.com/sims1253/pharmhand/issues/196" class="external-link">#196</a>)</code> for future Report/Result comparison feature.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0.9000" id="pharmhand-0209000">pharmhand 0.2.0.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0209000"></a></h2>
 <div class="section level3">

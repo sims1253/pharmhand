@@ -1,5 +1,70 @@
 # Changelog
 
+## pharmhand 0.2.1.9000
+
+### Improvements
+
+- Added `conf_level` parameter to
+  [`create_ae_cumulative_incidence_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_cumulative_incidence_plot.md)
+  (was hard-coded at 0.95).
+- Exposed `subgroup_counts` and `min_subgroup_size` in
+  [`create_subgroup_analysis_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_subgroup_analysis_table.md)
+  metadata for programmatic access.
+- Wrapped
+  [`test_ph_assumption()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_ph_assumption.md)
+  call in
+  [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_tte_summary_table.md)
+  with tryCatch for robustness with sparse Cox models.
+
+### Plotting
+
+- Created
+  [`.pharmhand_theme()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-pharmhand_theme.md)
+  internal helper for consistent white backgrounds across all plots.
+- Refactored all plotting functions to use
+  [`.pharmhand_theme()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-pharmhand_theme.md)
+  with `base_size` parameter.
+- Added `conf_level` parameter to
+  [`create_loglog_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_loglog_plot.md).
+- Added `base_size` parameter to
+  [`create_ae_cumulative_incidence_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_cumulative_incidence_plot.md)
+  and
+  [`create_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_forest_plot.md).
+- Updated `build_schoenfeld_plot()` to use
+  [`.pharmhand_theme()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-pharmhand_theme.md)
+  for consistent styling.
+
+### Documentation
+
+- Clarified that `method` parameter in
+  [`test_non_inferiority()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_non_inferiority.md)
+  applies only to binary endpoints.
+- Added `@examples` to
+  [`detect_floor_ceiling()`](https://sims1253.github.io/pharmhand/branch/dev/reference/detect_floor_ceiling.md),
+  [`test_non_inferiority()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_non_inferiority.md),
+  [`ancova_adjust_continuous()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ancova_adjust_continuous.md),
+  [`create_loglog_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_loglog_plot.md),
+  and
+  [`create_ae_cumulative_incidence_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_cumulative_incidence_plot.md).
+- Added Time-to-Event Safety Analysis section to safety-tables vignette.
+- Added NNH (Number Needed to Harm) documentation to safety-tables
+  vignette.
+- Added Non-Inferiority Testing section to efficacy-tables vignette.
+- Added ANCOVA Adjustment section to efficacy-tables vignette.
+- Added Floor/Ceiling Detection section to efficacy-tables and
+  baseline-tables vignettes.
+
+### Tests
+
+- Added test for NNH calculation when risk difference is negative
+  (treatment beneficial).
+
+### Internal
+
+- Added `comparison_results` stub with
+  `TODO(`[`#196`](https://github.com/sims1253/pharmhand/issues/196)`)`
+  for future Report/Result comparison feature.
+
 ## pharmhand 0.2.0.9000
 
 ### Code Quality

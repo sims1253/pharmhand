@@ -66,3 +66,18 @@ A data frame with columns:
 - pct_ceiling: percentage at maximum
 
 - ceiling_flag: TRUE if pct_ceiling \> threshold
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Detect floor/ceiling effects in PRO scores
+result <- detect_floor_ceiling(
+  data = adqs,
+  score_var = "AVAL",
+  min_score = 0,
+  max_score = 100
+)
+print(result)
+} # }
+```
