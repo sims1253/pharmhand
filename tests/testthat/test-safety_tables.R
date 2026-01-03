@@ -70,6 +70,31 @@ describe("calculate_exposure_adjusted_rate()", {
 	})
 })
 
+test_that("calculate_exposure_adjusted_rate handles zero events", {
+	result <- calculate_exposure_adjusted_rate(0, 100)
+	expect_equal(result$rate, 0)
+	expect_equal(result$ci_lower, 0)
+	expect_true(result$ci_upper > 0)
+	expect_equal(result$n_events, 0)
+})
+
+test_that("calculate_exposure_adjusted_rate handles small patient_years", {
+	# With 1 event in 0.1 patient-years = rate of 1000 per 100 PY
+	result <- calculate_exposure_adjusted_rate(1, 0.1)
+	expect_equal(result$rate, 1000)
+	expect_true(result$ci_lower > 0)
+	expect_true(result$ci_upper > result$rate)
+})
+
+test_that("calculate_exposure_adjusted_rate handles large event counts", {
+	result <- calculate_exposure_adjusted_rate(500, 1000)
+	expect_equal(result$rate, 50)
+	expect_true(result$ci_lower < result$rate)
+	expect_true(result$ci_upper > result$rate)
+	# CI should be relatively narrow for large counts
+	expect_true((result$ci_upper - result$ci_lower) < 20)
+})
+
 describe("create_ae_exposure_table()", {
 	it("creates an exposure-adjusted AE table with IDR columns", {
 		adsl <- data.frame(

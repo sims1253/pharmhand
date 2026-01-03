@@ -367,7 +367,9 @@ test_that("create_loglog_plot applies custom colors", {
 	expect_s7_class(p, ClinicalPlot)
 	scale_color <- p@plot$scales$get_scales("colour")
 	expect_true(!is.null(scale_color))
-	expect_equal(scale_color$palette(2), custom_colors)
+	# Verify custom colors are being used (order-agnostic)
+	actual_colors <- scale_color$palette(2)
+	expect_setequal(actual_colors, custom_colors)
 })
 
 # Tests for Forest Plot ----

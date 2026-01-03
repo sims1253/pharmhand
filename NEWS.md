@@ -1,3 +1,19 @@
+# pharmhand 0.2.0.9000
+
+## Code Quality
+
+* Refactored duplicated palette resolution logic into `.resolve_palette()` helper.
+* Added warning when log-log plot drops data points with non-finite values.
+* Expanded PH assumption disable comment with rationale for time-to-first AE.
+* Added clarifying comments in floor/ceiling detection and event conversion.
+* Added documentation note about CI construction methods for non-inferiority binary endpoints.
+* Removed redundant `@keywords internal` from exported `ancova_adjust_continuous()`.
+
+## Tests
+
+* Made color palette test assertions order-agnostic with `expect_setequal()`.
+* Added edge case tests for `calculate_exposure_adjusted_rate()` (zero events, small exposure, large counts).
+
 # pharmhand 0.1.21.9000
 
 ## Bug Fixes

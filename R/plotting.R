@@ -25,6 +25,35 @@ NULL
 	"#000000" # black (least useful for clinical plots)
 )
 
+#' Resolve color palette from parameter or options
+#' @keywords internal
+.resolve_palette <- function(palette = NULL) {
+	if (!is.null(palette)) {
+		return(palette)
+	}
+
+	opt_palette <- getOption("pharmhand.palette", default = NULL)
+	if (is.null(opt_palette)) {
+		return(.PH_DEFAULT_PALETTE)
+	}
+
+	if (is.character(opt_palette) && length(opt_palette) == 1) {
+		tryCatch(
+			grDevices::palette.colors(n = NULL, palette = opt_palette),
+			error = function(e) {
+				ph_warn(
+					paste0("Palette '", opt_palette, "' not found, using default")
+				)
+				.PH_DEFAULT_PALETTE
+			}
+		)
+	} else if (is.character(opt_palette) && length(opt_palette) > 1) {
+		opt_palette
+	} else {
+		.PH_DEFAULT_PALETTE
+	}
+}
+
 #' Create Kaplan-Meier Plot
 #'
 #' Kaplan-Meier plot using ggplot2 and survival.
@@ -292,35 +321,7 @@ create_km_plot <- function(
 	}
 
 	# Resolve color palette
-	# Use grDevices::palette.colors() for named palettes (requires R >= 4.0)
-	resolved_palette <- if (!is.null(palette)) {
-		palette
-	} else {
-		opt_palette <- getOption("pharmhand.palette", default = NULL)
-		if (is.null(opt_palette)) {
-			# No option set, use reordered Okabe-Ito as default
-			.PH_DEFAULT_PALETTE
-		} else if (is.character(opt_palette) && length(opt_palette) == 1) {
-			# Named palette - use palette.colors() from grDevices
-			# Allows explicit "Okabe-Ito" for original order, or other palettes
-			# Available palettes: palette.pals()
-			tryCatch(
-				grDevices::palette.colors(n = NULL, palette = opt_palette),
-				error = function(e) {
-					ph_warn(
-						paste0("Palette '", opt_palette, "' not found, using default")
-					)
-					.PH_DEFAULT_PALETTE
-				}
-			)
-		} else if (is.character(opt_palette) && length(opt_palette) > 1) {
-			# User provided a vector of colors via options
-			opt_palette
-		} else {
-			# Invalid option, fall back to default
-			.PH_DEFAULT_PALETTE
-		}
-	}
+	resolved_palette <- .resolve_palette(palette)
 
 	p <- p + ggplot2::scale_color_manual(values = resolved_palette)
 	if (show_ci) {
@@ -560,6 +561,7 @@ create_ae_cumulative_incidence_plot <- function(
 		event_var_use <- event_var
 	}
 
+	# Multi-step type conversion with warnings helps users understand data issues
 	event_values <- df[[event_var_use]]
 	if (is.logical(event_values)) {
 		event_values_num <- as.integer(event_values)
@@ -664,32 +666,7 @@ create_ae_cumulative_incidence_plot <- function(
 	p <- p + ggplot2::geom_step(linewidth = 0.8)
 
 	# Resolve color palette
-	resolved_colors <- if (!is.null(colors)) {
-		colors
-	} else {
-		opt_palette <- getOption("pharmhand.palette", default = NULL)
-		if (is.null(opt_palette)) {
-			.PH_DEFAULT_PALETTE
-		} else if (is.character(opt_palette) && length(opt_palette) == 1) {
-			tryCatch(
-				grDevices::palette.colors(n = NULL, palette = opt_palette),
-				error = function(e) {
-					ph_warn(
-						paste0(
-							"Palette '",
-							opt_palette,
-							"' not found, using default"
-						)
-					)
-					.PH_DEFAULT_PALETTE
-				}
-			)
-		} else if (is.character(opt_palette) && length(opt_palette) > 1) {
-			opt_palette
-		} else {
-			.PH_DEFAULT_PALETTE
-		}
-	}
+	resolved_colors <- .resolve_palette(colors)
 
 	p <- p + ggplot2::scale_color_manual(values = resolved_colors)
 	if (show_ci) {
@@ -821,6 +798,13 @@ create_loglog_plot <- function(
 	plot_data$log_time <- log(plot_data$time)
 	plot_data$loglog_surv <- log(-log(plot_data$surv))
 	keep <- is.finite(plot_data$log_time) & is.finite(plot_data$loglog_surv)
+	n_dropped <- sum(!keep)
+	if (n_dropped > 0) {
+		ph_warn(sprintf(
+			"Dropped %d data point(s) with non-finite log-log values",
+			n_dropped
+		))
+	}
 	plot_data <- plot_data[keep, , drop = FALSE]
 
 	p <- ggplot2::ggplot(
@@ -849,32 +833,7 @@ create_loglog_plot <- function(
 	}
 
 	# Resolve color palette
-	resolved_colors <- if (!is.null(colors)) {
-		colors
-	} else {
-		opt_palette <- getOption("pharmhand.palette", default = NULL)
-		if (is.null(opt_palette)) {
-			.PH_DEFAULT_PALETTE
-		} else if (is.character(opt_palette) && length(opt_palette) == 1) {
-			tryCatch(
-				grDevices::palette.colors(n = NULL, palette = opt_palette),
-				error = function(e) {
-					ph_warn(
-						paste0(
-							"Palette '",
-							opt_palette,
-							"' not found, using default"
-						)
-					)
-					.PH_DEFAULT_PALETTE
-				}
-			)
-		} else if (is.character(opt_palette) && length(opt_palette) > 1) {
-			opt_palette
-		} else {
-			.PH_DEFAULT_PALETTE
-		}
-	}
+	resolved_colors <- .resolve_palette(colors)
 
 	p <- p + ggplot2::scale_color_manual(values = resolved_colors)
 
