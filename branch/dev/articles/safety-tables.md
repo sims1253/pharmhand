@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[`create_ae_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_table.md)
+[`create_ae_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_summary_table.md)
 makes safety tables for treatment-emergent adverse events (TEAEs).
 
 ## Table Types
@@ -44,7 +44,7 @@ adlb <- pharmaverseadam::adlb
 
 ``` r
 # Create AE overview table
-overview_table <- create_ae_table(
+overview_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "overview",
@@ -73,7 +73,7 @@ discontinuation (`AEACN == "DRUG WITHDRAWN"`) - Deaths
 
 ``` r
 # Create SOC table
-soc_table <- create_ae_table(
+soc_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "soc",
@@ -119,7 +119,7 @@ Click to expand: SOC/PT Hierarchical Table
 
 ``` r
 # Create hierarchical SOC/PT table
-soc_pt_table <- create_ae_table(
+soc_pt_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "soc_pt",
@@ -370,7 +370,7 @@ soc_pt_table@flextable
 
 ``` r
 # Create table of most common AEs (top 10)
-common_table <- create_ae_table(
+common_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "common",
@@ -402,7 +402,7 @@ common_table@flextable
 
 ``` r
 # Create severity table
-severity_table <- create_ae_table(
+severity_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "severity",
@@ -428,7 +428,7 @@ Severity categories order as: MILD → MODERATE → SEVERE.
 
 ``` r
 # Create relationship table
-relationship_table <- create_ae_table(
+relationship_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "relationship",
@@ -454,7 +454,7 @@ relationship_table@flextable
 
 ``` r
 # Create SAE table
-sae_table <- create_ae_table(
+sae_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "sae",
@@ -481,7 +481,7 @@ Shows message if no SAEs reported.
 
 ``` r
 # Create discontinuation table
-disc_table <- create_ae_table(
+disc_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "discontinuation",
@@ -503,7 +503,7 @@ disc_table@flextable
 
 ``` r
 # Create deaths summary table
-deaths_table <- create_ae_table(
+deaths_table <- create_ae_summary_table(
   adae = NULL,  # Not needed for deaths
   adsl = adsl,
   type = "deaths",
@@ -558,7 +558,7 @@ lab_shift_table@flextable
 
 ``` r
 # Use different treatment variable
-overview_trtp <- create_ae_table(
+overview_trtp <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "overview",
@@ -582,7 +582,7 @@ overview_trtp@flextable
 
 ``` r
 # Show top 5 instead of default 15
-common_top5 <- create_ae_table(
+common_top5 <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "common",
@@ -609,7 +609,7 @@ common_top5@flextable
 
 ``` r
 # Analyze only skin and subcutaneous tissue disorders
-rash_table <- create_ae_table(
+rash_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "pt",
@@ -648,7 +648,7 @@ rash_table@flextable
 
 ``` r
 # Create table without autofit (for custom formatting)
-soc_manual <- create_ae_table(
+soc_manual <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "soc",
@@ -697,10 +697,10 @@ soc_ft
 ``` r
 # Create multiple safety tables
 safety_tables <- list(
-  overview = create_ae_table(adae, adsl, type = "overview"),
-  soc = create_ae_table(adae, adsl, type = "soc"),
-  common = create_ae_table(adae, adsl, type = "common", n_top = 10),
-  sae = create_ae_table(adae, adsl, type = "sae")
+  overview = create_ae_summary_table(adae, adsl, type = "overview"),
+  soc = create_ae_summary_table(adae, adsl, type = "soc"),
+  common = create_ae_summary_table(adae, adsl, type = "common", n_top = 10),
+  sae = create_ae_summary_table(adae, adsl, type = "sae")
 )
 
 # Create report sections
@@ -778,7 +778,7 @@ function provides these statistics.
 
 ``` r
 # Create AE comparison table with risk differences
-comparison_table <- create_ae_table(
+comparison_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "comparison",

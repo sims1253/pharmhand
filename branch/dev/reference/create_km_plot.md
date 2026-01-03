@@ -87,7 +87,8 @@ create_km_plot(
 
   Optional color palette for treatment groups. Can be a character vector
   of colors, or NULL to use `getOption("pharmhand.palette")`. Defaults
-  to the CVD-friendly "Okabe-Ito" palette. Other built-in options: "R4",
+  to the CVD-friendly "Okabe-Ito (reordered)" palette (orange, sky blue
+  for first two arms). Other built-in options: "Okabe-Ito", "R4",
   "Tableau 10", "Alphabet", etc. (see
   [`grDevices::palette.pals()`](https://rdrr.io/r/grDevices/palette.html)).
 

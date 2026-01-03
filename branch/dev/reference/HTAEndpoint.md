@@ -9,11 +9,13 @@ with integration to the chef pipeline for AMNOG-style analyses.
 HTAEndpoint(
   name = character(0),
   variable = character(0),
-  type = character(0),
+  type = "continuous",
+  category = "primary",
   description = NULL,
   hypothesis = "superiority",
   margin = NULL,
   alpha = 0.05,
+  priority = 1,
   metadata = list(),
   chef_spec = list(),
   strata = character(0),
@@ -35,6 +37,10 @@ HTAEndpoint(
 
   Character string for endpoint type
 
+- category:
+
+  Character string for endpoint category (inherited from Endpoint)
+
 - description:
 
   Character string for endpoint description
@@ -50,6 +56,10 @@ HTAEndpoint(
 - alpha:
 
   Numeric value for significance level
+
+- priority:
+
+  Numeric value for analysis priority (inherited from Endpoint)
 
 - metadata:
 

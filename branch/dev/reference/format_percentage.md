@@ -1,32 +1,69 @@
-# Format values as percentages
+# Format Percentage
 
-Formats numeric values as percentages with specified decimal places.
+Formats percentages with locale-aware decimal separator.
 
 ## Usage
 
 ``` r
-format_percentage(x, digits = 1)
+format_percentage(
+  x,
+  digits = 1L,
+  locale = get_locale(),
+  trim = FALSE,
+  na_string = getOption("pharmhand.na_string", "NA"),
+  is_proportion = FALSE,
+  symbol = TRUE
+)
 ```
 
 ## Arguments
 
 - x:
 
-  Numeric vector (decimal form, e.g., 0.5 for 50%).
+  Numeric value (proportion 0-1 or percentage 0-100)
 
 - digits:
 
-  Integer specifying the number of decimal places. Default is 1.
+  Integer number of decimal places (default: 1)
+
+- locale:
+
+  Character locale: "en" or "de"
+
+- trim:
+
+  Logical, if TRUE remove trailing zeros (default: FALSE)
+
+- na_string:
+
+  String for missing values (default: getOption("pharmhand.na_string",
+  "NA"))
+
+- is_proportion:
+
+  Logical, if TRUE treats x as proportion (0-1), otherwise as percentage
+  (0-100). Default: FALSE
+
+- symbol:
+
+  Logical, if TRUE appends "%" symbol. Default: TRUE
 
 ## Value
 
-Character vector with formatted percentages.
+Character formatted percentage
 
 ## Examples
 
 ``` r
-format_percentage(0.5, digits = 1) # Returns "50.0%"
-#> [1] "50.0%"
-format_percentage(c(0.123, 0.456, 0.789), digits = 1) # c("12.3%", "45.6%")
-#> [1] "12.3%" "45.6%" "78.9%"
+format_percentage(23.5)
+#> [1] "23.5%"
+# [1] "23.5%"
+
+format_percentage(0.235, is_proportion = TRUE)
+#> [1] "23.5%"
+# [1] "23.5%"
+
+format_percentage(23.5, locale = "de")
+#> [1] "23,5%"
+# [1] "23,5%"
 ```

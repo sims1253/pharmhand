@@ -29,15 +29,22 @@ The pharmhand S7 architecture:
     ├── ClinicalReport
     └── AnalysisMeta
 
-    Study Design Classes
-    ├── OneArmStudy
-    └── TwoArmStudy
+    Study Classes
+    ├── Study (abstract)
+    │   ├── SingleArmStudy
+    │   ├── TwoArmStudy
+    │   └── MultiArmStudy
+    └── StudySet
 
     Endpoint Classes
-    ├── PrimaryEndpoint
-    ├── SecondaryEndpoint
-    ├── SafetyEndpoint
-    └── HTAEndpoint
+    ├── Endpoint (base class with category property)
+    └── HTAEndpoint (HTA-specific extension)
+
+    Result Classes
+    ├── StatResult (abstract)
+    │   ├── ComparisonResult
+    │   └── MetaResult
+    └── EvidenceGrade
 
 ## ADaMData
 
@@ -309,7 +316,7 @@ subgroup_section <- SubgroupSection(
 
 pharmhand provides specialized classes for different study designs.
 
-### OneArmStudy
+### SingleArmStudy
 
 ``` r
 one_arm_data <- data.frame(
@@ -322,7 +329,7 @@ one_arm_data <- data.frame(
   stringsAsFactors = FALSE
 )
 
-one_arm_study <- OneArmStudy(
+one_arm_study <- SingleArmStudy(
   data = one_arm_data,
   study_id = "ONE-ARM-001",
   study_title = "Single-Arm Oncology Study"
@@ -351,7 +358,7 @@ two_arm_data <- data.frame(
 
 two_arm_study <- TwoArmStudy(
   data = two_arm_data,
-  group_var = "TRT01P",
+  treatment_var = "TRT01P",
   study_id = "TWO-ARM-001",
   study_title = "Randomized Controlled Trial"
 )
@@ -394,18 +401,14 @@ analyze(adam_data)           # Uses ADaMData method
 #>  @ type     : chr "baseline"
 #>  @ groupings: list()
 #>  @ metadata : list()
-analyze_study(one_arm_study) # Uses OneArmStudy method
-#> <pharmhand::OneArmStudy>
-#>  @ data       :'data.frame': 50 obs. of  6 variables:
-#>  .. $ USUBJID : chr  "SUBJ1" "SUBJ2" "SUBJ3" "SUBJ4" ...
-#>  .. $ TRT01P  : chr  "Active" "Active" "Active" "Active" ...
-#>  .. $ AGE     : num  51.7 55 48.1 52.5 74.6 ...
-#>  .. $ RESPONSE: chr  "N" "N" "N" "N" ...
-#>  .. $ AEBODSYS: chr  "GI" "CNS" "GI" "CNS" ...
-#>  .. $ AEDECOD : chr  "Nausea" "Nausea" "Nausea" "Headache" ...
-#>  @ study_id   : chr "ONE-ARM-001"
-#>  @ study_title: chr "Single-Arm Oncology Study"
-#>  @ results    :List of 2
+analyze_study(one_arm_study) # Uses SingleArmStudy method
+#> <pharmhand::SingleArmStudy>
+#>  @ study_id    : chr "ONE-ARM-001"
+#>  @ study_title : chr "Single-Arm Oncology Study"
+#>  @ design      : chr "single-arm"
+#>  @ population  : chr "ITT"
+#>  @ endpoints   : list()
+#>  @ results     :List of 2
 #>  .. $ baseline: <pharmhand::AnalysisResults>
 #>  ..  ..@ stats    : tibble [1 × 8] (S3: tbl_df/tbl/data.frame)
 #>  $ variable: chr "AGE"
@@ -437,7 +440,15 @@ analyze_study(one_arm_study) # Uses OneArmStudy method
 #>  ..  ..@ type     : chr "safety_ae"
 #>  ..  ..@ groupings: list()
 #>  ..  ..@ metadata : list()
-#>  @ metadata   : list()
+#>  @ risk_of_bias: NULL
+#>  @ metadata    : list()
+#>  @ data        :'data.frame':    50 obs. of  6 variables:
+#>  .. $ USUBJID : chr  "SUBJ1" "SUBJ2" "SUBJ3" "SUBJ4" ...
+#>  .. $ TRT01P  : chr  "Active" "Active" "Active" "Active" ...
+#>  .. $ AGE     : num  51.7 55 48.1 52.5 74.6 ...
+#>  .. $ RESPONSE: chr  "N" "N" "N" "N" ...
+#>  .. $ AEBODSYS: chr  "GI" "CNS" "GI" "CNS" ...
+#>  .. $ AEDECOD : chr  "Nausea" "Nausea" "Nausea" "Headache" ...
 
 # Multiple dispatch - method selected based on content type
 doc <- officer::read_docx()
@@ -508,50 +519,56 @@ study_result@plot_names
 
 pharmhand provides endpoint classes for different analyses.
 
-### Primary and Secondary Endpoints
+### Using the Endpoint Class
+
+The `Endpoint` class is a unified class for all endpoint types, using
+the `category` property to distinguish between primary, secondary,
+safety, and exploratory endpoints.
 
 ``` r
-# Primary endpoint
-primary_endpoint <- PrimaryEndpoint(
+# Primary endpoint (category = "primary")
+primary_endpoint <- Endpoint(
   name = "Overall Survival",
   variable = "OS",
-  type = "time_to_event",
+  type = "tte",
+  category = "primary",
   description = "Time from randomization to death from any cause",
   hypothesis = "superiority",
   alpha = 0.05
 )
 
-# Secondary endpoint
-secondary_endpoint <- SecondaryEndpoint(
+# Secondary endpoint (category = "secondary")
+secondary_endpoint <- Endpoint(
   name = "Progression-Free Survival",
   variable = "PFS",
-  type = "time_to_event",
+  type = "tte",
+  category = "secondary",
   description = "Time from randomization to disease progression or death",
-  priority = 1,
-  exploratory = FALSE
+  priority = 2
 )
-```
 
-### Safety Endpoints
-
-``` r
-safety_endpoint <- SafetyEndpoint(
+# Safety endpoint (category = "safety")
+safety_endpoint <- Endpoint(
   name = "Serious Adverse Events",
   variable = "AESER",
-  type = "adverse_event",
-  description = "Incidence of serious adverse events",
-  severity = "serious",
-  relatedness = "related"
+  type = "count",
+  category = "safety",
+  description = "Incidence of serious adverse events"
 )
 ```
 
 ### HTA Endpoints
+
+For Health Technology Assessment, use the `HTAEndpoint` class which
+extends `Endpoint` with additional properties for chef pipeline
+integration.
 
 ``` r
 hta_endpoint <- HTAEndpoint(
   name = "Response Rate",
   variable = "AVALC",
   type = "binary",
+  category = "primary",
   description = "Objective response rate per RECIST v1.1",
   strata = c("AGEGR1", "SEX"),
   criteria = list(
@@ -597,11 +614,11 @@ The S7 architecture makes it easy to extend pharmhand.
 ### Custom Classes
 
 ``` r
-# Create a custom endpoint type
+# Create a custom endpoint type extending Endpoint
 custom_endpoint <- S7::new_class(
   "CustomEndpoint",
   package = "myextension",
-  parent = PrimaryEndpoint,
+  parent = Endpoint,
   properties = list(
     custom_param = S7::new_property(
       S7::class_numeric,
@@ -642,8 +659,10 @@ demo_data$CUSTOM_VAR <- rnorm(nrow(demo_data), mean = 100, sd = 15)
 # Custom endpoint works with standard generics
 custom_endpoint_obj <- custom_endpoint(
   name = "Custom Analysis",
+
   variable = "CUSTOM_VAR",
-  type = "custom",
+  type = "continuous",  # Must be a valid endpoint type
+  category = "exploratory",
   custom_param = 42
 )
 
