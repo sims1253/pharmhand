@@ -20,7 +20,8 @@ create_km_plot(
   xlim = NULL,
   palette = NULL,
   conf_level = 0.95,
-  base_size = 11
+  base_size = 11,
+  type = c("km", "loglog")
 )
 }
 \arguments{
@@ -66,6 +67,10 @@ Other built-in options: "Okabe-Ito",
 
 \item{base_size}{Base font size for plot text elements (default: 11).
 Also used for risk table text.}
+
+\item{type}{Character. Plot type: "km" for Kaplan-Meier or "loglog" for
+log(-log(S(t))) vs log(t). When "loglog", median lines, CI bands,
+censor marks, risk tables, and landmarks are not applied.}
 }
 \value{
 A ClinicalPlot object

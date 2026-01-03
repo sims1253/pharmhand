@@ -237,6 +237,61 @@ test_that("create_km_plot risk table uses consistent font size", {
 	expect_true(inherits(p@plot, "patchwork"))
 })
 
+test_that("create_loglog_plot works with valid data", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(123)
+	df <- data.frame(
+		time = rexp(20, 0.1),
+		event = rep(c(1, 0), length.out = 20),
+		trt = rep(c("A", "B"), each = 10)
+	)
+
+	p <- create_loglog_plot(df, "time", "event", "trt")
+
+	expect_s7_class(p, ClinicalPlot)
+	expect_true(ggplot2::is_ggplot(p@plot))
+	expect_equal(p@title, "Log-Log Survival Plot")
+})
+
+test_that("create_loglog_plot supports multiple treatment groups", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(123)
+	df <- data.frame(
+		time = rexp(30, 0.1),
+		event = rep(c(1, 0), length.out = 30),
+		trt = rep(c("A", "B", "C"), each = 10)
+	)
+
+	p <- create_loglog_plot(df, "time", "event", "trt")
+
+	expect_s7_class(p, ClinicalPlot)
+	expect_equal(length(unique(p@plot$data$strata)), 3)
+})
+
+test_that("create_loglog_plot applies custom colors", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(123)
+	df <- data.frame(
+		time = rexp(20, 0.1),
+		event = rep(c(1, 0), length.out = 20),
+		trt = rep(c("Placebo", "Active"), each = 10)
+	)
+
+	custom_colors <- c("Placebo" = "red", "Active" = "blue")
+	p <- create_loglog_plot(df, "time", "event", "trt", colors = custom_colors)
+
+	expect_s7_class(p, ClinicalPlot)
+	scale_color <- p@plot$scales$get_scales("colour")
+	expect_true(!is.null(scale_color))
+	expect_equal(scale_color$palette(2), custom_colors)
+})
+
 # Tests for Forest Plot ----
 
 test_that("create_forest_plot works with TTE data", {
