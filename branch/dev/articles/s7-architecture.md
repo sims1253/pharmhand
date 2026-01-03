@@ -403,12 +403,12 @@ analyze(adam_data)           # Uses ADaMData method
 #>  @ metadata : list()
 analyze_study(one_arm_study) # Uses SingleArmStudy method
 #> <pharmhand::SingleArmStudy>
-#>  @ study_id    : chr "ONE-ARM-001"
-#>  @ study_title : chr "Single-Arm Oncology Study"
-#>  @ design      : chr "single-arm"
-#>  @ population  : chr "ITT"
-#>  @ endpoints   : list()
-#>  @ results     :List of 2
+#>  @ study_id     : chr "ONE-ARM-001"
+#>  @ study_title  : chr "Single-Arm Oncology Study"
+#>  @ design       : chr "single-arm"
+#>  @ population   : chr "ITT"
+#>  @ endpoints    : list()
+#>  @ results      :List of 2
 #>  .. $ baseline: <pharmhand::AnalysisResults>
 #>  ..  ..@ stats    : tibble [1 × 8] (S3: tbl_df/tbl/data.frame)
 #>  $ variable: chr "AGE"
@@ -440,15 +440,16 @@ analyze_study(one_arm_study) # Uses SingleArmStudy method
 #>  ..  ..@ type     : chr "safety_ae"
 #>  ..  ..@ groupings: list()
 #>  ..  ..@ metadata : list()
-#>  @ risk_of_bias: NULL
-#>  @ metadata    : list()
-#>  @ data        :'data.frame':    50 obs. of  6 variables:
+#>  @ risk_of_bias : NULL
+#>  @ metadata     : list()
+#>  @ data         :'data.frame':   50 obs. of  6 variables:
 #>  .. $ USUBJID : chr  "SUBJ1" "SUBJ2" "SUBJ3" "SUBJ4" ...
 #>  .. $ TRT01P  : chr  "Active" "Active" "Active" "Active" ...
 #>  .. $ AGE     : num  51.7 55 48.1 52.5 74.6 ...
 #>  .. $ RESPONSE: chr  "N" "N" "N" "N" ...
 #>  .. $ AEBODSYS: chr  "GI" "CNS" "GI" "CNS" ...
 #>  .. $ AEDECOD : chr  "Nausea" "Nausea" "Nausea" "Headache" ...
+#>  @ treatment_var: chr "TRT01P"
 
 # Multiple dispatch - method selected based on content type
 doc <- officer::read_docx()

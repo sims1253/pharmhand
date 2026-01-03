@@ -54,7 +54,7 @@ A styled flextable object
 
 ## References
 
-G-BA (2023). Dossiervorlage Modul 4.
+G-BA (2024). Dossiervorlage Modul 4. See <https://www.g-ba.de>
 
 ## Examples
 

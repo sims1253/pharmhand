@@ -16,7 +16,8 @@ SingleArmStudy(
   risk_of_bias = NULL,
   metadata = list(),
   data = structure(list(), names = character(0), row.names = integer(0), class =
-    "data.frame")
+    "data.frame"),
+  treatment_var = "TRT01P"
 )
 ```
 
@@ -57,6 +58,10 @@ SingleArmStudy(
 - data:
 
   A data frame containing the study data
+
+- treatment_var:
+
+  Character string for treatment variable name (default: "TRT01P")
 
 ## Value
 

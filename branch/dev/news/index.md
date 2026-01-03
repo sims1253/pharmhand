@@ -1,5 +1,39 @@
 # Changelog
 
+## pharmhand 0.1.1.9000
+
+### Bug Fixes
+
+- Fixed redundant null check in
+  [`check_gba_compliance()`](https://sims1253.github.io/pharmhand/branch/dev/reference/check_gba_compliance.md)
+  title validation.
+- Fixed
+  [`to_gba_template()`](https://sims1253.github.io/pharmhand/branch/dev/reference/to_gba_template.md)
+  list handling that would overwrite same file path.
+- Fixed list handling in
+  [`check_gba_compliance()`](https://sims1253.github.io/pharmhand/branch/dev/reference/check_gba_compliance.md)
+  for unnamed elements.
+
+### Improvements
+
+- [`theme_iqwig()`](https://sims1253.github.io/pharmhand/branch/dev/reference/theme_iqwig.md)
+  and
+  [`theme_gba()`](https://sims1253.github.io/pharmhand/branch/dev/reference/theme_gba.md)
+  now apply the `decimal_separator` parameter to numeric columns (was
+  declared but unused).
+- `SingleArmStudy` now has a `treatment_var` property for consistency
+  with `TwoArmStudy` and `MultiArmStudy`.
+
+### Documentation
+
+- Updated G-BA citation to 2024 reference.
+- Added missing `adae` and `adrs` datasets to README examples.
+
+### Maintenance
+
+- Added `notes/` to `.gitignore`.
+- Fixed lintr line-length violations.
+
 ## pharmhand 0.1.0.9000
 
 ### Breaking Changes
