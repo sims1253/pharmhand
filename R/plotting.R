@@ -516,6 +516,7 @@ create_km_plot <- function(
 #' @param xlab Character. X-axis label
 #' @param ylab Character. Y-axis label
 #' @param show_ci Logical. Show confidence bands (default: TRUE)
+#' @param conf_level Numeric. Confidence level for intervals (default: 0.95)
 #' @param colors Named character vector of colors
 #'
 #' @return ClinicalPlot with cumulative incidence curves
@@ -540,6 +541,7 @@ create_ae_cumulative_incidence_plot <- function(
 	xlab = "Time",
 	ylab = "Cumulative Incidence",
 	show_ci = TRUE,
+	conf_level = 0.95,
 	colors = NULL
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
@@ -547,6 +549,15 @@ create_ae_cumulative_incidence_plot <- function(
 	}
 	if (!requireNamespace("ggplot2", quietly = TRUE)) {
 		ph_abort("Package 'ggplot2' is required for cumulative incidence plots")
+	}
+
+	if (
+		!is.numeric(conf_level) ||
+			length(conf_level) != 1 ||
+			conf_level <= 0 ||
+			conf_level >= 1
+	) {
+		ph_abort("'conf_level' must be a single number between 0 and 1")
 	}
 
 	# Get filtered data if ADaMData
@@ -606,7 +617,7 @@ create_ae_cumulative_incidence_plot <- function(
 	fit <- survival::survfit(
 		as.formula(formula_str),
 		data = df,
-		conf.int = 0.95
+		conf.int = conf_level
 	)
 
 	# Extract data for plotting

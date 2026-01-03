@@ -1392,8 +1392,11 @@ create_ae_comparison_table <- function(
 	# Get treatment groups (excluding reference)
 	trt_groups <- setdiff(trt_levels, ref_group)
 
+	# TODO(#196): This stub will be used for the diff feature
+	# when that post-1.0 feature is implemented. Currently unused but reserved.
+	comparison_results <- list() # nolint: object_usage_linter
+
 	# Calculate risk differences and ratios for each treatment vs reference
-	comparison_results <- list()
 
 	for (trt in trt_groups) {
 		n_trt_col <- paste0("n_", trt)

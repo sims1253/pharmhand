@@ -934,6 +934,52 @@ describe("create_ae_comparison_table()", {
 		expect_false(any(grepl("NNH", names(tbl@data), fixed = TRUE)))
 	})
 
+	it("calculates NNH correctly when RD is negative (treatment beneficial)", {
+		# Create test data where Active has FEWER events than Placebo
+		# This tests that NNH still works when the treatment is actually beneficial
+		adae_beneficial <- data.frame(
+			USUBJID = c(
+				paste0("SUBJ-", sprintf("%03d", 1:30)), # Active with AE
+				paste0("SUBJ-", sprintf("%03d", 101:160)) # Placebo with AE
+			),
+			TRT01P = c(rep("Active", 30), rep("Placebo", 60)),
+			AEDECOD = "Headache",
+			AEBODSYS = "Nervous system disorders",
+			TRTEMFL = "Y",
+			stringsAsFactors = FALSE
+		)
+
+		adsl_beneficial <- data.frame(
+			USUBJID = c(
+				paste0("SUBJ-", sprintf("%03d", 1:100)), # Active arm (100 subjects)
+				paste0("SUBJ-", sprintf("%03d", 101:200)) # Placebo arm (100 subjects)
+			),
+			TRT01P = c(rep("Active", 100), rep("Placebo", 100)),
+			SAFFL = "Y",
+			stringsAsFactors = FALSE
+		)
+
+		tbl <- create_ae_comparison_table(
+			adae = adae_beneficial,
+			adsl = adsl_beneficial,
+			ref_group = "Placebo",
+			by = "pt"
+		)
+
+		# RD = 30/100 - 60/100 = -0.30 (negative = treatment beneficial)
+		# NNH should still be calculated as 1/|RD| = 1/0.30 ≈ 3.3
+		nnh_col <- sprintf("NNH %s vs %s\n(95%% CI)", "Active", "Placebo")
+		nnh_value <- tbl@data[tbl@data$Term == "Headache", nnh_col]
+
+		# Should NOT be "NE" since the CI won't cross zero with this large effect
+		expect_false(nnh_value == "NE")
+
+		# NNH should be approximately 3.3 (1/0.30)
+		# Extract the point estimate from the formatted string
+		nnh_point <- as.numeric(sub(" .*", "", nnh_value))
+		expect_true(nnh_point > 2 && nnh_point < 5)
+	})
+
 	it("works with 'overall' grouping", {
 		tbl <- create_ae_comparison_table(
 			adae = test_data$adae,

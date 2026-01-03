@@ -718,7 +718,15 @@ create_subgroup_analysis_table <- function(
 		data = all_subgroups,
 		flextable = subgroup_ft,
 		type = "subgroup",
-		title = title
+		title = title,
+		metadata = list(
+			subgroup_counts = if (length(subgroup_counts_list) > 0) {
+				dplyr::bind_rows(subgroup_counts_list)
+			} else {
+				NULL
+			},
+			min_subgroup_size = min_subgroup_size
+		)
 	)
 }
 
@@ -921,8 +929,17 @@ create_tte_summary_table <- function(
 		cox_summary <- summary(cox_fit)
 
 		if (isTRUE(check_ph)) {
-			ph_test <- test_ph_assumption(cox_fit, alpha = 0.05, plot = FALSE)
-			if (isTRUE(ph_test$violation)) {
+			ph_test <- tryCatch(
+				test_ph_assumption(cox_fit, alpha = 0.05, plot = FALSE),
+				error = function(e) {
+					ph_warn(sprintf(
+						"PH assumption test could not be performed: %s",
+						conditionMessage(e)
+					))
+					NULL
+				}
+			)
+			if (!is.null(ph_test) && isTRUE(ph_test$violation)) {
 				violations <- ph_test$results[
 					ph_test$results$violation,
 					,
@@ -1518,8 +1535,8 @@ create_responder_table <- function(
 #'   (default: TRUE)
 #' @param conf_level Numeric. One-sided confidence level
 #'   (default: 0.975 for 95% CI)
-#' @param method Character. For binary: "wald", "wilson", "exact"
-#'   (default: "wilson")
+#' @param method Character. Method for binary endpoints only: "wald", "wilson",
+#'   "exact" (default: "wilson"). Ignored for continuous endpoints.
 #'
 #' @return List with:
 #'   - estimate: Point estimate of difference (trt - ref)
