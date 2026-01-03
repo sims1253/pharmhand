@@ -546,6 +546,8 @@ create_lab_shift_table <- function(
 #' @param subgroups Named list of subgroup variables with display labels
 #'   (e.g. list(AGEGR1="Age Group", SEX="Sex")). Variables can come from
 #'   advs or adsl (joined by USUBJID).
+#' @param min_subgroup_size Numeric. Minimum subgroup size required before
+#'   warnings are issued. Use NULL to disable warnings. Default is 20.
 #' @param trt_var Treatment variable name (default: "TRT01P")
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
@@ -557,12 +559,20 @@ create_subgroup_analysis_table <- function(
 	paramcd = "SYSBP",
 	visit = "End of Treatment",
 	subgroups = list(AGEGR1 = "Age Group", SEX = "Sex"),
+	min_subgroup_size = 20,
 	trt_var = "TRT01P",
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
 	assert_data_frame(adsl, "adsl")
 	assert_data_frame(advs, "advs")
+
+	if (!is.null(min_subgroup_size)) {
+		assert_numeric_scalar(min_subgroup_size, "min_subgroup_size")
+		if (min_subgroup_size < 1) {
+			ph_abort("'min_subgroup_size' must be >= 1")
+		}
+	}
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL", "USUBJID")
 	missing_cols <- setdiff(required_cols, names(advs))
@@ -617,6 +627,7 @@ create_subgroup_analysis_table <- function(
 			.data$AVISIT == visit
 		)
 
+	subgroup_counts_list <- list()
 	results_list <- list()
 
 	# Iterate through subgroups
@@ -625,6 +636,19 @@ create_subgroup_analysis_table <- function(
 
 		# Check if subgroup variable exists in data
 		assert_column_exists(subgroup_data_raw, var_name, "subgroup_data_raw")
+
+		if (!is.null(min_subgroup_size)) {
+			subgroup_counts <- subgroup_data_raw |>
+				dplyr::group_by(.data[[var_name]]) |>
+				dplyr::summarise(
+					n = dplyr::n_distinct(.data$USUBJID),
+					.groups = "drop"
+				) |>
+				dplyr::mutate(
+					subgroup = paste0(label, ": ", .data[[var_name]])
+				)
+			subgroup_counts_list[[var_name]] <- subgroup_counts
+		}
 
 		res <- subgroup_data_raw |>
 			dplyr::group_by(
@@ -650,6 +674,25 @@ create_subgroup_analysis_table <- function(
 				)
 			)
 		results_list[[var_name]] <- res
+	}
+
+	if (!is.null(min_subgroup_size) && length(subgroup_counts_list) > 0) {
+		subgroup_counts <- dplyr::bind_rows(subgroup_counts_list)
+		small_subgroups <- subgroup_counts |>
+			dplyr::filter(.data$n < min_subgroup_size)
+
+		if (nrow(small_subgroups) > 0) {
+			ph_warn(sprintf(
+				paste(
+					"Small subgroup warning: %d subgroup(s) have fewer than %d subjects.",
+					"Results may be unreliable for: %s.",
+					"Consider combining small subgroups or interpreting with caution."
+				),
+				nrow(small_subgroups),
+				min_subgroup_size,
+				paste(small_subgroups$subgroup, collapse = ", ")
+			))
+		}
 	}
 
 	all_subgroups <- dplyr::bind_rows(results_list) |>
@@ -1507,6 +1550,8 @@ calculate_proportion_ci <- function(
 #' @param data ADaMData object or data frame
 #' @param subgroups Named list mapping variable names to display labels,
 #'   e.g., `list(AGEGR1 = "Age Group", SEX = "Sex", RACE = "Race")`
+#' @param min_subgroup_size Numeric. Minimum subgroup size required before
+#'   warnings are issued. Use NULL to disable warnings. Default is 20.
 #' @param endpoint_type "tte" for time-to-event (HR) or "binary" for
 #'   binary outcomes (OR)
 #' @param time_var Time variable for TTE endpoints (default: "AVAL")
@@ -1575,6 +1620,7 @@ calculate_proportion_ci <- function(
 create_subgroup_table <- function(
 	data,
 	subgroups,
+	min_subgroup_size = 20,
 	endpoint_type = c("tte", "binary"),
 	time_var = "AVAL",
 	event_var = "CNSR",
@@ -1600,9 +1646,17 @@ create_subgroup_table <- function(
 	adjust_method <- match.arg(adjust_method)
 	endpoint_type <- match.arg(endpoint_type)
 
+	if (!is.null(min_subgroup_size)) {
+		assert_numeric_scalar(min_subgroup_size, "min_subgroup_size")
+		if (min_subgroup_size < 1) {
+			ph_abort("'min_subgroup_size' must be >= 1")
+		}
+	}
+
 	# Get filtered data
 	df <- get_filtered_data(data)
 	trt_var_actual <- get_trt_var(data, default = trt_var)
+	subject_var <- get_subject_var(data, default = "USUBJID")
 
 	# Handle CNSR inversion for TTE
 	if (endpoint_type == "tte" && event_var == "CNSR") {
@@ -1667,6 +1721,8 @@ create_subgroup_table <- function(
 		)
 	)
 
+	subgroup_counts_list <- list()
+
 	# Calculate estimates for each subgroup
 	for (var_name in names(subgroups)) {
 		label <- subgroups[[var_name]]
@@ -1674,6 +1730,30 @@ create_subgroup_table <- function(
 		if (!var_name %in% names(df)) {
 			ph_warn(sprintf("Subgroup variable '%s' not found, skipping", var_name))
 			next
+		}
+
+		if (!is.null(min_subgroup_size)) {
+			subgroup_data <- df |>
+				dplyr::filter(!is.na(.data[[var_name]]))
+			if (subject_var %in% names(df)) {
+				subgroup_counts <- subgroup_data |>
+					dplyr::group_by(.data[[var_name]]) |>
+					dplyr::summarise(
+						n = dplyr::n_distinct(.data[[subject_var]]),
+						.groups = "drop"
+					) |>
+					dplyr::mutate(
+						subgroup = paste0(label, ": ", .data[[var_name]])
+					)
+			} else {
+				subgroup_counts <- subgroup_data |>
+					dplyr::group_by(.data[[var_name]]) |>
+					dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+					dplyr::mutate(
+						subgroup = paste0(label, ": ", .data[[var_name]])
+					)
+			}
+			subgroup_counts_list[[var_name]] <- subgroup_counts
 		}
 
 		levels_var <- unique(df[[var_name]])
@@ -1723,6 +1803,25 @@ create_subgroup_table <- function(
 					stringsAsFactors = FALSE
 				))
 			)
+		}
+	}
+
+	if (!is.null(min_subgroup_size) && length(subgroup_counts_list) > 0) {
+		subgroup_counts <- dplyr::bind_rows(subgroup_counts_list)
+		small_subgroups <- subgroup_counts |>
+			dplyr::filter(.data$n < min_subgroup_size)
+
+		if (nrow(small_subgroups) > 0) {
+			ph_warn(sprintf(
+				paste(
+					"Small subgroup warning: %d subgroup(s) have fewer than %d subjects.",
+					"Results may be unreliable for: %s.",
+					"Consider combining small subgroups or interpreting with caution."
+				),
+				nrow(small_subgroups),
+				min_subgroup_size,
+				paste(small_subgroups$subgroup, collapse = ", ")
+			))
 		}
 	}
 
