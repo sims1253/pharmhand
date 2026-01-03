@@ -53,3 +53,6 @@ rsconnect/
 
 # Claude AI assistant files
 .claude/
+
+# Project notes (not for distribution)
+notes/

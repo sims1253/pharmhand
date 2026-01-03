@@ -832,6 +832,7 @@ Study <- S7::new_class(
 #' @export
 #'
 #' @param data A data frame containing the study data
+#' @param treatment_var Character string for treatment variable name (default: "TRT01P")
 #' @param study_id Character string for study identifier
 #' @param study_title Character string for study title
 #' @param design Character string for study design (default: "single-arm")
@@ -861,6 +862,14 @@ SingleArmStudy <- S7::new_class(
 			default = data.frame(),
 			validator = function(value) {
 				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		treatment_var = S7::new_property(
+			S7::class_character,
+			default = "TRT01P",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
 				NULL
 			}
 		),
