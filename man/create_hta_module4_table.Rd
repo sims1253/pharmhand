@@ -22,12 +22,13 @@ create_hta_module4_table(
 
 \item{footnotes}{Character vector of footnotes}
 
-\item{columns}{Character vector of required column names}
+\item{columns}{Character vector of required column names in display order.
+Missing columns are added with \code{NA}.}
 
 \item{col_widths}{Named numeric vector of column widths (optional)}
 
-\item{allow_extra}{Logical, allow extra columns beyond \code{columns}
-(default: FALSE)}
+\item{allow_extra}{Logical, allow extra columns beyond \code{columns}. When FALSE,
+extra columns are dropped; when TRUE, they are appended after \code{columns}.}
 
 \item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
 }

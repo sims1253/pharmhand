@@ -1,3 +1,9 @@
+# pharmhand 0.1.6.9000
+
+## Documentation
+
+* Documented fixed-column handling for the Module 4 table template.
+
 # pharmhand 0.1.5.9000
 
 ## Documentation
