@@ -27,25 +27,165 @@ test_that("create_ae_summary_table works with type='overview'", {
 	)))
 })
 
-test_that("create_ae_summary_table works with type='soc'", {
-	adae <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		TRTEMFL = c("Y", "Y"),
-		AEBODSYS = c("SOC1", "SOC2")
-	)
-	adsl <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		SAFFL = c("Y", "Y")
-	)
+# ------------------------------------------------------------------------------
+# Tests for exposure-adjusted incidence rates
+# ------------------------------------------------------------------------------
 
-	tbl <- create_ae_summary_table(adae, adsl, type = "soc")
+describe("calculate_exposure_adjusted_rate()", {
+	it("calculates incidence rate per 100 patient-years", {
+		result <- calculate_exposure_adjusted_rate(
+			n_events = 10,
+			patient_years = 2
+		)
 
-	expect_s7_class(tbl, ClinicalTable)
-	expect_equal(tbl@type, "ae_soc")
-	expect_true("System Organ Class" %in% names(tbl@data))
+		expect_equal(result$rate, 500)
+	})
+
+	it("calculates Poisson CI using chi-square bounds", {
+		conf_level <- 0.95
+		n_events <- 5
+		patient_years <- 2
+
+		result <- calculate_exposure_adjusted_rate(
+			n_events = n_events,
+			patient_years = patient_years,
+			conf_level = conf_level,
+			per = 100
+		)
+
+		alpha <- 1 - conf_level
+		lower_count <- stats::qchisq(alpha / 2, 2 * n_events) / 2
+		upper_count <- stats::qchisq(1 - alpha / 2, 2 * (n_events + 1)) / 2
+
+		expect_equal(
+			result$ci_lower,
+			(lower_count / patient_years) * 100,
+			tolerance = 1e-10
+		)
+		expect_equal(
+			result$ci_upper,
+			(upper_count / patient_years) * 100,
+			tolerance = 1e-10
+		)
+	})
 })
+
+describe("create_ae_exposure_table()", {
+	it("creates an exposure-adjusted AE table with IDR columns", {
+		adsl <- data.frame(
+			USUBJID = c("01", "02", "03", "04"),
+			TRT01P = c("A", "A", "B", "B"),
+			SAFFL = rep("Y", 4),
+			TRTDURD = c(365.25, 365.25, 182.625, 182.625),
+			stringsAsFactors = FALSE
+		)
+		adae <- data.frame(
+			USUBJID = c("01", "01", "02", "03"),
+			TRT01P = c("A", "A", "A", "B"),
+			TRTEMFL = rep("Y", 4),
+			AEDECOD = rep("Headache", 4),
+			stringsAsFactors = FALSE
+		)
+
+		tbl <- create_ae_exposure_table(
+			adae = adae,
+			adsl = adsl,
+			by = "pt",
+			exposure_var = "TRTDURD",
+			time_unit = "days"
+		)
+
+		expect_s7_class(tbl, ClinicalTable)
+		expect_equal(tbl@type, "ae_exposure")
+		expect_true("Preferred Term" %in% names(tbl@data))
+
+		events_col <- "A\nEvents (n)"
+		py_col <- "A\nPatient-Years"
+		idr_col <- "A\nIDR per 100 PY (95% CI)"
+
+		term_row <- tbl@data$`Preferred Term` == "Headache"
+		expect_equal(tbl@data[[events_col]][term_row], "3")
+		expect_equal(tbl@data[[py_col]][term_row], "2.00")
+
+		stats <- calculate_exposure_adjusted_rate(
+			3,
+			2,
+			conf_level = 0.95,
+			per = 100
+		)
+		expected_idr <- paste0(
+			format_number(stats$rate, digits = 2),
+			" (",
+			format_number(stats$ci_lower, digits = 2),
+			", ",
+			format_number(stats$ci_upper, digits = 2),
+			")"
+		)
+		expect_equal(tbl@data[[idr_col]][term_row], expected_idr)
+	})
+
+	it("converts exposure time units to patient-years", {
+		adae <- data.frame(
+			USUBJID = "01",
+			TRT01P = "A",
+			TRTEMFL = "Y",
+			AEDECOD = "Headache",
+			stringsAsFactors = FALSE
+		)
+
+		adsl_days <- data.frame(
+			USUBJID = "01",
+			TRT01P = "A",
+			SAFFL = "Y",
+			TRTDURD = 365.25,
+			stringsAsFactors = FALSE
+		)
+		adsl_weeks <- data.frame(
+			USUBJID = "01",
+			TRT01P = "A",
+			SAFFL = "Y",
+			TRTDURD = 365.25 / 7,
+			stringsAsFactors = FALSE
+		)
+		adsl_months <- data.frame(
+			USUBJID = "01",
+			TRT01P = "A",
+			SAFFL = "Y",
+			TRTDURD = 12,
+			stringsAsFactors = FALSE
+		)
+
+		py_col <- "A\nPatient-Years"
+
+		tbl_days <- create_ae_exposure_table(
+			adae = adae,
+			adsl = adsl_days,
+			by = "pt",
+			exposure_var = "TRTDURD",
+			time_unit = "days"
+		)
+		expect_equal(tbl_days@data[[py_col]][1], "1.00")
+
+		tbl_weeks <- create_ae_exposure_table(
+			adae = adae,
+			adsl = adsl_weeks,
+			by = "pt",
+			exposure_var = "TRTDURD",
+			time_unit = "weeks"
+		)
+		expect_equal(tbl_weeks@data[[py_col]][1], "1.00")
+
+		tbl_months <- create_ae_exposure_table(
+			adae = adae,
+			adsl = adsl_months,
+			by = "pt",
+			exposure_var = "TRTDURD",
+			time_unit = "months"
+		)
+		expect_equal(tbl_months@data[[py_col]][1], "1.00")
+	})
+})
+
 
 test_that("create_ae_summary_table works with type='soc_pt'", {
 	adae <- data.frame(
