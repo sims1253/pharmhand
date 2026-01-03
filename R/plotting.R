@@ -56,6 +56,9 @@ NULL
 #' @param conf_level Confidence level for CI bands (default: 0.95)
 #' @param base_size Base font size for plot text elements (default: 11).
 #'   Also used for risk table text.
+#' @param type Character. Plot type: "km" for Kaplan-Meier or "loglog" for
+#'   log(-log(S(t))) vs log(t). When "loglog", median lines, CI bands,
+#'   censor marks, risk tables, and landmarks are not applied.
 #'
 #' @return A ClinicalPlot object
 #' @export
@@ -94,13 +97,46 @@ create_km_plot <- function(
 	xlim = NULL,
 	palette = NULL,
 	conf_level = 0.95,
-	base_size = 11
+	base_size = 11,
+	type = c("km", "loglog")
 ) {
 	if (!requireNamespace("survival", quietly = TRUE)) {
 		ph_abort("Package 'survival' is required for KM plots")
 	}
 	if (!requireNamespace("ggplot2", quietly = TRUE)) {
 		ph_abort("Package 'ggplot2' is required for KM plots")
+	}
+
+	type <- match.arg(type)
+
+	if (type == "loglog") {
+		loglog_title <- if (missing(title)) {
+			"Log-Log Survival Plot"
+		} else {
+			title
+		}
+		loglog_xlab <- if (missing(xlab)) {
+			"Log(Time)"
+		} else {
+			xlab
+		}
+		loglog_ylab <- if (missing(ylab)) {
+			"Log(-Log(Survival))"
+		} else {
+			ylab
+		}
+
+		return(create_loglog_plot(
+			data = data,
+			time_var = time_var,
+			event_var = event_var,
+			trt_var = trt_var,
+			title = loglog_title,
+			xlab = loglog_xlab,
+			ylab = loglog_ylab,
+			colors = palette,
+			base_size = base_size
+		))
 	}
 
 	# Get filtered data if ADaMData
@@ -456,6 +492,163 @@ create_km_plot <- function(
 
 	ClinicalPlot(
 		plot = p,
+		title = title,
+		width = 6,
+		height = 4,
+		dpi = 300
+	)
+}
+
+#' Create Log-Log Survival Plot
+#'
+#' Creates a log(-log(survival)) vs log(time) plot for visual assessment
+#' of the proportional hazards assumption. Parallel curves indicate the
+#' PH assumption is likely satisfied.
+#'
+#' @param data ADaMData object or data frame with time-to-event data
+#' @param time_var Character. Name of the time variable
+#' @param event_var Character. Name of the event variable (1=event, 0=censor).
+#'   If "CNSR" (ADaM censoring flag), it will be inverted (0=event becomes 1).
+#' @param trt_var Character. Name of the treatment variable
+#' @param title Character. Plot title (default: "Log-Log Survival Plot")
+#' @param xlab Character. X-axis label (default: "Log(Time)")
+#' @param ylab Character. Y-axis label (default: "Log(-Log(Survival))")
+#' @param colors Named character vector of colors for each treatment group.
+#'   If NULL, uses `getOption("pharmhand.palette")` or the default palette.
+#' @param base_size Base font size for plot text elements (default: 11).
+#'
+#' @return A ClinicalPlot object containing a ggplot2 log-log survival plot
+#'
+#' @details
+#' Under the Cox proportional hazards assumption, the log-log transformed
+#' survival curves should be approximately parallel. Crossing or diverging
+#' curves suggest the PH assumption may be violated.
+#'
+#' This is a complementary visual diagnostic to the statistical test
+#' provided by test_ph_assumption().
+#'
+#' @references
+#' IQWiG Methods v8.0, Section 10.3.12, p. 235-237.
+#'
+#' @export
+create_loglog_plot <- function(
+	data,
+	time_var,
+	event_var,
+	trt_var,
+	title = "Log-Log Survival Plot",
+	xlab = "Log(Time)",
+	ylab = "Log(-Log(Survival))",
+	colors = NULL,
+	base_size = 11
+) {
+	if (!requireNamespace("survival", quietly = TRUE)) {
+		ph_abort("Package 'survival' is required for log-log plots")
+	}
+	if (!requireNamespace("ggplot2", quietly = TRUE)) {
+		ph_abort("Package 'ggplot2' is required for log-log plots")
+	}
+
+	# Get filtered data if ADaMData
+	df <- get_filtered_data(data)
+	trt_var_actual <- get_trt_var(data, default = trt_var)
+
+	# Handle CNSR inversion (ADaM: 0=event, 1=censor -> survival: 1=event)
+	if (event_var == "CNSR") {
+		df$event <- 1 - df[[event_var]]
+		event_var_use <- "event"
+	} else {
+		event_var_use <- event_var
+	}
+
+	# Create survival object
+	surv_obj <- survival::Surv(df[[time_var]], df[[event_var_use]])
+
+	# Fit model
+	formula_str <- paste("surv_obj ~", trt_var_actual)
+	fit <- survival::survfit(as.formula(formula_str), data = df)
+
+	# Extract data for plotting
+	if (!is.null(fit[["strata"]])) {
+		strata_names <- names(fit[["strata"]])
+		strata_names_clean <- gsub(paste0(trt_var_actual, "="), "", strata_names)
+		plot_strata <- rep(strata_names_clean, fit[["strata"]])
+	} else {
+		strata_names_clean <- "All"
+		plot_strata <- rep("All", length(fit[["time"]]))
+	}
+
+	plot_data <- data.frame(
+		time = fit[["time"]],
+		surv = fit[["surv"]],
+		strata = plot_strata
+	)
+
+	plot_data$log_time <- log(plot_data$time)
+	plot_data$loglog_surv <- log(-log(plot_data$surv))
+	plot_data <- plot_data[
+		is.finite(plot_data$log_time) & is.finite(plot_data$loglog_surv),
+	]
+
+	p <- ggplot2::ggplot(
+		plot_data,
+		ggplot2::aes(
+			x = .data$log_time,
+			y = .data$loglog_surv,
+			color = .data$strata
+		)
+	)
+
+	p <- p + ggplot2::geom_step(linewidth = 0.8)
+
+	# Resolve color palette
+	resolved_colors <- if (!is.null(colors)) {
+		colors
+	} else {
+		opt_palette <- getOption("pharmhand.palette", default = NULL)
+		if (is.null(opt_palette)) {
+			.PH_DEFAULT_PALETTE
+		} else if (is.character(opt_palette) && length(opt_palette) == 1) {
+			tryCatch(
+				grDevices::palette.colors(n = NULL, palette = opt_palette),
+				error = function(e) {
+					ph_warn(
+						paste0(
+							"Palette '",
+							opt_palette,
+							"' not found, using default"
+						)
+					)
+					.PH_DEFAULT_PALETTE
+				}
+			)
+		} else if (is.character(opt_palette) && length(opt_palette) > 1) {
+			opt_palette
+		} else {
+			.PH_DEFAULT_PALETTE
+		}
+	}
+
+	p <- p + ggplot2::scale_color_manual(values = resolved_colors)
+
+	p <- p +
+		ggplot2::labs(
+			title = title,
+			x = xlab,
+			y = ylab,
+			color = "Treatment"
+		) +
+		ggplot2::theme_minimal(base_size = base_size) +
+		ggplot2::theme(
+			legend.position = "bottom",
+			plot.title = ggplot2::element_text(hjust = 0.5),
+			panel.grid.minor = ggplot2::element_blank()
+		)
+
+	ClinicalPlot(
+		plot = p,
+		data = plot_data,
+		type = "loglog",
 		title = title,
 		width = 6,
 		height = 4,

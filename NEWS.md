@@ -1,3 +1,10 @@
+# pharmhand 0.1.12.9000
+
+## Improvements
+
+* Added log-log survival plots for PH diagnostics via `create_loglog_plot()` and
+  `create_km_plot(type = "loglog")`.
+
 # pharmhand 0.1.11.9000
 
 ## Improvements
