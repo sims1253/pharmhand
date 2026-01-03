@@ -82,6 +82,7 @@ reference:
     time-to-event, responder, and subgroup analyses.
   contents:
   - create_tte_summary_table
+  - test_non_inferiority
   - create_responder_table
   - create_subgroup_table
   - create_subgroup_analysis_table
@@ -95,6 +96,8 @@ reference:
   contents:
   - create_ae_summary_table
   - create_ae_comparison_table
+  - create_ae_exposure_table
+  - create_time_to_first_ae
   - create_lab_shift_table
   - create_lab_summary_table
   - create_conmeds_table
@@ -103,6 +106,7 @@ reference:
   - analyze_soc_pt
   - calculate_ae_tte_data
   - calculate_ae_risk_difference
+  - calculate_exposure_adjusted_rate
 
 - title: "Standard Tables"
   desc: >
@@ -248,7 +252,7 @@ reference:
 - title: "Utilities"
   desc: >
     Helper functions for data filtering, treatment information,
-    and other common operations.
+    statistical diagnostics, and other common operations.
   contents:
   - get_filtered_data
   - get_subject_var

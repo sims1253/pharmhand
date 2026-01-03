@@ -1066,6 +1066,7 @@ create_time_to_first_ae <- function(
 		title <- "Time to First Adverse Event"
 	}
 
+	# PH checks are intentionally disabled for time-to-first AE endpoints.
 	tte_table <- create_tte_summary_table(
 		data = tte_data,
 		time_var = "time",

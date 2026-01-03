@@ -57,8 +57,10 @@ NULL
 #' @param base_size Base font size for plot text elements (default: 11).
 #'   Also used for risk table text.
 #' @param type Character. Plot type: "km" for Kaplan-Meier or "loglog" for
-#'   log(-log(S(t))) vs log(t). When "loglog", median lines, CI bands,
-#'   censor marks, risk tables, and landmarks are not applied.
+#'   log(-log(S(t))) vs log(t). For "loglog", median lines, CI bands,
+#'   risk tables, and landmarks are intentionally omitted to keep the
+#'   diagnostic scale uncluttered; censor marks are supported via
+#'   `show_censor`.
 #'
 #' @return A ClinicalPlot object
 #' @export
@@ -134,6 +136,7 @@ create_km_plot <- function(
 			title = loglog_title,
 			xlab = loglog_xlab,
 			ylab = loglog_ylab,
+			show_censor = show_censor,
 			colors = palette,
 			base_size = base_size
 		))
@@ -735,6 +738,7 @@ create_ae_cumulative_incidence_plot <- function(
 #' @param title Character. Plot title (default: "Log-Log Survival Plot")
 #' @param xlab Character. X-axis label (default: "Log(Time)")
 #' @param ylab Character. Y-axis label (default: "Log(-Log(Survival))")
+#' @param show_censor Logical, show censoring marks as crosses (default: TRUE).
 #' @param colors Named character vector of colors for each treatment group.
 #'   If NULL, uses `getOption("pharmhand.palette")` or the default palette.
 #' @param base_size Base font size for plot text elements (default: 11).
@@ -747,7 +751,9 @@ create_ae_cumulative_incidence_plot <- function(
 #' curves suggest the PH assumption may be violated.
 #'
 #' This is a complementary visual diagnostic to the statistical test
-#' provided by test_ph_assumption().
+#' provided by test_ph_assumption(). Censor marks are supported; median
+#' lines, CI bands, risk tables, and landmarks are intentionally omitted
+#' to keep the diagnostic scale uncluttered.
 #'
 #' @references
 #' IQWiG Methods v8.0, Section 10.3.12, p. 235-237.
@@ -761,6 +767,7 @@ create_loglog_plot <- function(
 	title = "Log-Log Survival Plot",
 	xlab = "Log(Time)",
 	ylab = "Log(-Log(Survival))",
+	show_censor = TRUE,
 	colors = NULL,
 	base_size = 11
 ) {
@@ -803,14 +810,18 @@ create_loglog_plot <- function(
 	plot_data <- data.frame(
 		time = fit[["time"]],
 		surv = fit[["surv"]],
+		n_censor = if (!is.null(fit[["n.censor"]])) {
+			fit[["n.censor"]]
+		} else {
+			rep(0, length(fit[["time"]]))
+		},
 		strata = plot_strata
 	)
 
 	plot_data$log_time <- log(plot_data$time)
 	plot_data$loglog_surv <- log(-log(plot_data$surv))
-	plot_data <- plot_data[
-		is.finite(plot_data$log_time) & is.finite(plot_data$loglog_surv),
-	]
+	keep <- is.finite(plot_data$log_time) & is.finite(plot_data$loglog_surv)
+	plot_data <- plot_data[keep, , drop = FALSE]
 
 	p <- ggplot2::ggplot(
 		plot_data,
@@ -822,6 +833,20 @@ create_loglog_plot <- function(
 	)
 
 	p <- p + ggplot2::geom_step(linewidth = 0.8)
+
+	if (show_censor) {
+		censor_data <- plot_data[plot_data[["n_censor"]] > 0, ]
+		if (nrow(censor_data) > 0) {
+			p <- p +
+				ggplot2::geom_point(
+					data = censor_data,
+					ggplot2::aes(x = .data$log_time, y = .data$loglog_surv),
+					shape = 3,
+					size = 1.5,
+					show.legend = FALSE
+				)
+		}
+	}
 
 	# Resolve color palette
 	resolved_colors <- if (!is.null(colors)) {

@@ -1513,16 +1513,20 @@ create_responder_table <- function(
 #' @param ref_group Character. Reference group name
 #' @param ni_margin Numeric. Non-inferiority margin (positive value)
 #' @param type Character. "continuous" or "binary"
-#' @param higher_better Logical. TRUE if higher values are better (default: TRUE)
-#' @param conf_level Numeric. One-sided confidence level (default: 0.975 for 95% CI)
-#' @param method Character. For binary: "wald", "wilson", "exact" (default: "wilson")
+#' @param higher_better Logical. TRUE if higher values are better
+#'   (default: TRUE)
+#' @param conf_level Numeric. One-sided confidence level
+#'   (default: 0.975 for 95% CI)
+#' @param method Character. For binary: "wald", "wilson", "exact"
+#'   (default: "wilson")
 #'
 #' @return List with:
 #'   - estimate: Point estimate of difference (trt - ref)
 #'   - ci_lower: Lower bound of one-sided CI
 #'   - ci_upper: Upper bound (may be Inf for one-sided)
 #'   - ni_margin: The margin used
-#'   - non_inferior: Logical. TRUE if lower CI > -ni_margin (or upper < margin if lower is worse)
+#'   - non_inferior: Logical. TRUE if lower CI > -ni_margin
+#'     (or upper < margin if lower is worse)
 #'   - conclusion: Character summary
 #'   - method: Method used
 #'
@@ -1641,7 +1645,7 @@ test_non_inferiority <- function(
 			ref_vals
 		}
 
-		if (any(!trt_bin %in% c(0, 1)) || any(!ref_bin %in% c(0, 1))) {
+		if (!all(trt_bin %in% c(0, 1)) || !all(ref_bin %in% c(0, 1))) {
 			ph_abort("Binary endpoints must be coded as 0/1 or TRUE/FALSE")
 		}
 

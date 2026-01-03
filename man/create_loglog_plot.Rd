@@ -12,6 +12,7 @@ create_loglog_plot(
   title = "Log-Log Survival Plot",
   xlab = "Log(Time)",
   ylab = "Log(-Log(Survival))",
+  show_censor = TRUE,
   colors = NULL,
   base_size = 11
 )
@@ -32,6 +33,8 @@ If "CNSR" (ADaM censoring flag), it will be inverted (0=event becomes 1).}
 
 \item{ylab}{Character. Y-axis label (default: "Log(-Log(Survival))")}
 
+\item{show_censor}{Logical, show censoring marks as crosses (default: TRUE).}
+
 \item{colors}{Named character vector of colors for each treatment group.
 If NULL, uses \code{getOption("pharmhand.palette")} or the default palette.}
 
@@ -51,7 +54,9 @@ survival curves should be approximately parallel. Crossing or diverging
 curves suggest the PH assumption may be violated.
 
 This is a complementary visual diagnostic to the statistical test
-provided by test_ph_assumption().
+provided by test_ph_assumption(). Censor marks are supported; median
+lines, CI bands, risk tables, and landmarks are intentionally omitted
+to keep the diagnostic scale uncluttered.
 }
 \references{
 IQWiG Methods v8.0, Section 10.3.12, p. 235-237.

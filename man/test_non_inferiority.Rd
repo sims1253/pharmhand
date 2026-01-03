@@ -29,11 +29,14 @@ test_non_inferiority(
 
 \item{type}{Character. "continuous" or "binary"}
 
-\item{higher_better}{Logical. TRUE if higher values are better (default: TRUE)}
+\item{higher_better}{Logical. TRUE if higher values are better
+(default: TRUE)}
 
-\item{conf_level}{Numeric. One-sided confidence level (default: 0.975 for 95\% CI)}
+\item{conf_level}{Numeric. One-sided confidence level
+(default: 0.975 for 95\% CI)}
 
-\item{method}{Character. For binary: "wald", "wilson", "exact" (default: "wilson")}
+\item{method}{Character. For binary: "wald", "wilson", "exact"
+(default: "wilson")}
 }
 \value{
 List with:
@@ -42,7 +45,8 @@ List with:
 \item ci_lower: Lower bound of one-sided CI
 \item ci_upper: Upper bound (may be Inf for one-sided)
 \item ni_margin: The margin used
-\item non_inferior: Logical. TRUE if lower CI > -ni_margin (or upper < margin if lower is worse)
+\item non_inferior: Logical. TRUE if lower CI > -ni_margin
+(or upper < margin if lower is worse)
 \item conclusion: Character summary
 \item method: Method used
 }
