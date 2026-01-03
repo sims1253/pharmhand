@@ -124,6 +124,7 @@ reference:
     forest plots, and other graphics.
   contents:
   - create_km_plot
+  - create_ae_cumulative_incidence_plot
   - create_forest_plot
   - create_ae_km_plot_for_soc
   - create_loglog_plot

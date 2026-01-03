@@ -237,6 +237,65 @@ test_that("create_km_plot risk table uses consistent font size", {
 	expect_true(inherits(p@plot, "patchwork"))
 })
 
+test_that("create_ae_cumulative_incidence_plot works with basic data", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(123)
+	df <- data.frame(
+		time = rexp(20, 0.1),
+		event = sample(0:1, 20, replace = TRUE),
+		trt = rep(c("A", "B"), each = 10)
+	)
+
+	p <- create_ae_cumulative_incidence_plot(df, "time", "event", "trt")
+
+	expect_s7_class(p, ClinicalPlot)
+	expect_true(ggplot2::is_ggplot(p@plot))
+	expect_equal(p@title, "Cumulative Incidence of Adverse Events")
+})
+
+test_that("create_ae_cumulative_incidence_plot supports multiple groups", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(123)
+	df <- data.frame(
+		time = rexp(30, 0.1),
+		event = sample(0:1, 30, replace = TRUE),
+		trt = rep(c("A", "B", "C"), each = 10)
+	)
+
+	p <- create_ae_cumulative_incidence_plot(df, "time", "event", "trt")
+
+	expect_s7_class(p, ClinicalPlot)
+	expect_equal(length(unique(p@plot$data$strata)), 3)
+})
+
+test_that("create_ae_cumulative_incidence_plot shows confidence bands", {
+	skip_if_not_installed("survival")
+	skip_if_not_installed("ggplot2")
+
+	set.seed(123)
+	df <- data.frame(
+		time = rexp(20, 0.1),
+		event = sample(0:1, 20, replace = TRUE),
+		trt = rep(c("A", "B"), each = 10)
+	)
+
+	p <- create_ae_cumulative_incidence_plot(
+		df,
+		time_var = "time",
+		event_var = "event",
+		trt_var = "trt",
+		show_ci = TRUE
+	)
+
+	expect_s7_class(p, ClinicalPlot)
+	layer_classes <- sapply(p@plot$layers, function(l) class(l$geom)[1])
+	expect_true(any(grepl("Ribbon", layer_classes, fixed = TRUE)))
+})
+
 test_that("create_loglog_plot works with valid data", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
