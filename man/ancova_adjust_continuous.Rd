@@ -50,4 +50,3 @@ and confidence intervals are computed with confint.
 \references{
 IQWiG Methods v8.0, Section 10.3.6, p. 218-220.
 }
-\keyword{internal}

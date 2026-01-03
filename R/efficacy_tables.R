@@ -285,6 +285,7 @@ detect_floor_ceiling <- function(
 	grouped |>
 		dplyr::summarise(
 			n = dplyr::n_distinct(.data[[subject_var]]),
+			# Count distinct subjects at floor/ceiling (not observations)
 			n_floor = dplyr::n_distinct(
 				.data[[subject_var]][.data[[score_var]] == min_score]
 			),
@@ -1537,6 +1538,11 @@ create_responder_table <- function(
 #' Non-inferiority is concluded if the lower bound of the one-sided CI
 #' for the treatment difference exceeds -ni_margin.
 #'
+#' For binary endpoints, the Wilson method uses the Newcombe-Wilson
+#' hybrid CI approach. The Wald method provides a simpler alternative.
+#' For regulatory submissions, verify the CI method aligns with
+#' agency preferences.
+#'
 #' @references
 #' IQWiG Methods v8.0, Section 10.3.5, p. 217-218.
 #'
@@ -1751,7 +1757,6 @@ test_non_inferiority <- function(
 #' IQWiG Methods v8.0, Section 10.3.6, p. 218-220.
 #'
 #' @export
-#' @keywords internal
 ancova_adjust_continuous <- function(
 	data,
 	outcome_var,
