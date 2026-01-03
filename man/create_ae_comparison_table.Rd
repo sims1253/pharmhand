@@ -13,6 +13,7 @@ create_ae_comparison_table(
   threshold = 0,
   sort_by = c("incidence", "rd", "rr"),
   conf_level = 0.95,
+  include_nnh = TRUE,
   title = NULL,
   autofit = TRUE
 )
@@ -36,13 +37,15 @@ create_ae_comparison_table(
 
 \item{conf_level}{Confidence level for intervals (default: 0.95)}
 
+\item{include_nnh}{Logical. Include NNH column (default: TRUE)}
+
 \item{title}{Table title (auto-generated if NULL)}
 
 \item{autofit}{Logical (default: TRUE)}
 }
 \value{
-ClinicalTable with columns for each group's n(\%), RD, 95\% CI, RR,
-p-value
+ClinicalTable with columns for each group's n(\%), RD, 95\% CI, NNH,
+RR, p-value
 }
 \description{
 Generate AE table with statistical comparisons (risk difference, risk ratio)

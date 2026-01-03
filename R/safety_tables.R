@@ -40,6 +40,7 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #' @param threshold For type="comparison", minimum incidence pct (default: 0)
 #' @param sort_by For type="comparison", sort by "rd", "rr", or "incidence"
 #' @param conf_level For type="comparison", confidence level (default: 0.95)
+#' @param include_nnh For type="comparison", include NNH column (default: TRUE)
 #' @param soc_order For type="soc" or type="soc_pt", custom ordering of SOCs
 #'   (character vector). If NULL, SOCs are sorted alphabetically (default: NULL)
 #'
@@ -109,6 +110,7 @@ create_ae_summary_table <- function(
 	threshold = 0,
 	sort_by = "incidence",
 	conf_level = 0.95,
+	include_nnh = TRUE,
 	soc_order = NULL
 ) {
 	type <- match.arg(type)
@@ -217,6 +219,7 @@ create_ae_summary_table <- function(
 			threshold = threshold,
 			sort_by = sort_by,
 			conf_level = conf_level,
+			include_nnh = include_nnh,
 			title = title,
 			autofit = autofit
 		)
@@ -1033,11 +1036,12 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 #' @param sort_by Character. Sort by "rd", "rr", or "incidence"
 #'   (default: "incidence")
 #' @param conf_level Confidence level for intervals (default: 0.95)
+#' @param include_nnh Logical. Include NNH column (default: TRUE)
 #' @param title Table title (auto-generated if NULL)
 #' @param autofit Logical (default: TRUE)
 #'
-#' @return ClinicalTable with columns for each group's n(%), RD, 95% CI, RR,
-#'   p-value
+#' @return ClinicalTable with columns for each group's n(%), RD, 95% CI, NNH,
+#'   RR, p-value
 #' @export
 #'
 #' @examples
@@ -1066,6 +1070,7 @@ create_ae_comparison_table <- function(
 	threshold = 0,
 	sort_by = c("incidence", "rd", "rr"),
 	conf_level = 0.95,
+	include_nnh = TRUE,
 	title = NULL,
 	autofit = TRUE
 ) {
@@ -1256,6 +1261,39 @@ create_ae_comparison_table <- function(
 		ae_wide[[paste0("rd_", trt)]] <- sapply(stats_list, `[[`, "rd")
 		ae_wide[[paste0("rd_lower_", trt)]] <- sapply(stats_list, `[[`, "rd_lower")
 		ae_wide[[paste0("rd_upper_", trt)]] <- sapply(stats_list, `[[`, "rd_upper")
+
+		if (include_nnh) {
+			nnh_list <- lapply(stats_list, function(stats) {
+				calculate_nnt(
+					rd = stats$rd,
+					rd_lower = stats$rd_lower,
+					rd_upper = stats$rd_upper,
+					event_type = "harm"
+				)
+			})
+
+			ae_wide[[paste0("nnh_", trt)]] <- vapply(
+				nnh_list,
+				function(stats) abs(stats$nnt),
+				numeric(1)
+			)
+			ae_wide[[paste0("nnh_lower_", trt)]] <- vapply(
+				nnh_list,
+				function(stats) abs(stats$nnt_lower),
+				numeric(1)
+			)
+			ae_wide[[paste0("nnh_upper_", trt)]] <- vapply(
+				nnh_list,
+				function(stats) abs(stats$nnt_upper),
+				numeric(1)
+			)
+			ae_wide[[paste0("nnh_estimable_", trt)]] <- vapply(
+				nnh_list,
+				function(stats) !isTRUE(stats$ci_crosses_zero),
+				logical(1)
+			)
+		}
+
 		ae_wide[[paste0("rr_", trt)]] <- sapply(stats_list, `[[`, "rr")
 		ae_wide[[paste0("rr_lower_", trt)]] <- sapply(stats_list, `[[`, "rr_lower")
 		ae_wide[[paste0("rr_upper_", trt)]] <- sapply(stats_list, `[[`, "rr_upper")
@@ -1336,6 +1374,37 @@ create_ae_comparison_table <- function(
 			ae_wide[[rd_upper_col]] * 100
 		)
 
+		# Number Needed to Harm
+		if (include_nnh) {
+			nnh_col <- paste0("nnh_", trt)
+			nnh_lower_col <- paste0("nnh_lower_", trt)
+			nnh_upper_col <- paste0("nnh_upper_", trt)
+			nnh_estimable_col <- paste0("nnh_estimable_", trt)
+			output_df[[sprintf(
+				"NNH %s vs %s\n(%d%% CI)",
+				trt,
+				ref_group,
+				ci_level_pct
+			)]] <- vapply(
+				seq_len(nrow(ae_wide)),
+				function(i) {
+					if (!isTRUE(ae_wide[[nnh_estimable_col]][i])) {
+						return("NE")
+					}
+
+					paste0(
+						format_number(ae_wide[[nnh_col]][i], digits = 1),
+						" (",
+						format_number(ae_wide[[nnh_lower_col]][i], digits = 1),
+						", ",
+						format_number(ae_wide[[nnh_upper_col]][i], digits = 1),
+						")"
+					)
+				},
+				character(1)
+			)
+		}
+
 		# Risk Ratio
 		rr_col <- paste0("rr_", trt)
 		rr_lower_col <- paste0("rr_lower_", trt)
@@ -1372,15 +1441,34 @@ create_ae_comparison_table <- function(
 	}
 
 	# Create footnotes
-	footnotes <- c(
-		"Safety Population",
+	definition_line <- if (include_nnh) {
+		sprintf(
+			paste0(
+				"RD = Risk Difference, NNH = Number Needed to Harm, ",
+				"RR = Risk Ratio, CI = %d%% Confidence Interval"
+			),
+			ci_level_pct
+		)
+	} else {
 		sprintf(
 			"RD = Risk Difference, RR = Risk Ratio, CI = %d%% Confidence Interval",
 			ci_level_pct
-		),
+		)
+	}
+
+	footnotes <- c(
+		"Safety Population",
+		definition_line,
 		paste0("Reference group: ", ref_group),
 		"P-values from Chi-square (or Fisher's exact when expected count < 5)"
 	)
+
+	if (include_nnh) {
+		footnotes <- c(
+			footnotes,
+			"NNH = 1/|RD|; NE = not estimable when CI crosses zero"
+		)
+	}
 
 	if (threshold > 0) {
 		footnotes <- c(
@@ -1405,7 +1493,8 @@ create_ae_comparison_table <- function(
 			ref_group = ref_group,
 			by = by,
 			threshold = threshold,
-			conf_level = conf_level
+			conf_level = conf_level,
+			include_nnh = include_nnh
 		)
 	)
 }
