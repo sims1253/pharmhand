@@ -589,7 +589,6 @@ demo_data$CUSTOM_VAR <- rnorm(nrow(demo_data), mean = 100, sd = 15)
 # Custom endpoint works with standard generics
 custom_endpoint_obj <- custom_endpoint(
   name = "Custom Analysis",
-
   variable = "CUSTOM_VAR",
   type = "continuous",  # Must be a valid endpoint type
   category = "exploratory",
