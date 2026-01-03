@@ -1032,7 +1032,8 @@ MultiArmStudy <- S7::new_class(
 #' @param endpoint Endpoint object being synthesized
 #' @param comparison_type Type of comparison: "direct", "indirect", "network"
 #' @param common_comparator Common comparator for indirect/network comparisons
-#' @param characteristics Data frame of study-level characteristics
+#' @param characteristics Data frame of study-level characteristics (optional,
+#'   NULL by default)
 #' @param metadata List of additional metadata
 #'
 #' @return A StudySet object
@@ -1085,8 +1086,8 @@ StudySet <- S7::new_class(
 		),
 		common_comparator = S7::new_property(S7::class_any, default = NULL),
 		characteristics = S7::new_property(
-			S7::class_data.frame,
-			default = data.frame()
+			S7::class_any,
+			default = NULL
 		),
 		metadata = S7::new_property(S7::class_list, default = list()),
 		# Computed properties

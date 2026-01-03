@@ -33,7 +33,7 @@ test_non_inferiority(
 (default: TRUE)}
 
 \item{conf_level}{Numeric. One-sided confidence level
-(default: 0.975 for 95\% CI)}
+(default: 0.975, equivalent to two-sided 95\% CI)}
 
 \item{method}{Character. Method for binary endpoints only: "wald", "wilson",
 "exact" (default: "wilson"). Ignored for continuous endpoints.}
@@ -45,8 +45,9 @@ List with:
 \item ci_lower: Lower bound of one-sided CI
 \item ci_upper: Upper bound (may be Inf for one-sided)
 \item ni_margin: The margin used
-\item non_inferior: Logical. TRUE if lower CI > -ni_margin
-(or upper < margin if lower is worse)
+\item non_inferior: Logical. TRUE if non-inferiority is concluded.
+When higher_better=TRUE: ci_lower > -ni_margin.
+When higher_better=FALSE: ci_upper < ni_margin.
 \item conclusion: Character summary
 \item method: Method used
 }
@@ -60,6 +61,12 @@ For binary endpoints: Tests if (prop_trt - prop_ref) + ni_margin > 0
 
 Non-inferiority is concluded if the lower bound of the one-sided CI
 for the treatment difference exceeds -ni_margin.
+
+The direction of the test depends on higher_better:
+\itemize{
+\item If higher_better=TRUE (default): the lower CI bound must exceed -ni_margin
+\item If higher_better=FALSE: the upper CI bound must be below ni_margin
+}
 
 For binary endpoints, the Wilson method uses the Newcombe-Wilson
 hybrid CI approach. The Wald method provides a simpler alternative.
