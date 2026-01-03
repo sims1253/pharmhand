@@ -89,7 +89,7 @@ generate_safety_report <- function(
 
 	# Section 2.9: Time to Event
 	message("Building Time to Event Analysis (KM Plot)")
-	km_section <- build_time_to_event(adsl, adae)
+	km_section <- build_time_to_event(adsl, adae, default_duration = 100)
 
 	# Combine sections
 	sections <- list(
@@ -165,9 +165,11 @@ build_ae_overview <- function(adae, adsl) {
 #'
 #' @param adsl ADSL data frame
 #' @param adae ADAE data frame
+#' @param default_duration Default treatment duration in days when
+#'   TRTDURD is not available
 #' @return ReportSection object
 #' @keywords internal
-build_time_to_event <- function(adsl, adae) {
+build_time_to_event <- function(adsl, adae, default_duration = 100) {
 	# Define event of interest: Time to first Dermatologic event
 	target_soc <- "Skin and subcutaneous tissue disorders"
 
@@ -194,16 +196,18 @@ build_time_to_event <- function(adsl, adae) {
 		if ("TRTEDT" %in% names(adsl) && "TRTSDT" %in% names(adsl)) {
 			tte_data$TRTDURD <- as.numeric(adsl$TRTEDT - adsl$TRTSDT) + 1
 		} else {
-			# Default to 100 days when treatment duration cannot be calculated
-			# This is a conservative estimate for clinical trials
+			# Use configurable default duration when treatment duration cannot be
+			# calculated. This is a conservative estimate for clinical trials
 			warning(
 				paste(
 					"Treatment duration (TRTDURD) not found and cannot be derived.",
-					"Using default duration of 100 days for time-to-event analysis"
+					"Using default duration of",
+					default_duration,
+					"days for time-to-event analysis"
 				),
 				call. = FALSE
 			)
-			tte_data$TRTDURD <- 100
+			tte_data$TRTDURD <- default_duration
 		}
 	}
 

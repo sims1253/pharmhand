@@ -115,36 +115,38 @@ check_gba_compliance <- function(
 				)
 			}
 
-			col_names <- if (!is.null(ft$col_keys)) {
-				ft$col_keys
-			} else if (!is.null(ft$body$dataset)) {
-				names(ft$body$dataset)
-			} else {
-				character()
-			}
-			if (length(col_names) == 0) {
-				errors <- c(errors, sprintf("%s has no columns", label))
-			} else {
-				if (require_nonempty_colnames) {
-					empty <- is.na(col_names) | nchar(col_names) == 0
-					if (any(empty)) {
+			if (is.null(data)) {
+				col_names <- if (!is.null(ft$col_keys)) {
+					ft$col_keys
+				} else if (!is.null(ft$body$dataset)) {
+					names(ft$body$dataset)
+				} else {
+					character()
+				}
+				if (length(col_names) == 0) {
+					errors <- c(errors, sprintf("%s has no columns", label))
+				} else {
+					if (require_nonempty_colnames) {
+						empty <- is.na(col_names) | nchar(col_names) == 0
+						if (any(empty)) {
+							errors <- c(
+								errors,
+								sprintf(
+									"%s has empty column names",
+									label
+								)
+							)
+						}
+					}
+					if (require_unique_colnames && anyDuplicated(col_names)) {
 						errors <- c(
 							errors,
 							sprintf(
-								"%s has empty column names",
+								"%s has duplicate column names",
 								label
 							)
 						)
 					}
-				}
-				if (require_unique_colnames && anyDuplicated(col_names)) {
-					errors <- c(
-						errors,
-						sprintf(
-							"%s has duplicate column names",
-							label
-						)
-					)
 				}
 			}
 

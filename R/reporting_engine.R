@@ -364,16 +364,21 @@ theme_iqwig <- function(
 	# Padding for readability
 	ft <- ft |> flextable::padding(padding = 3, part = "all")
 
-	# Handle NA values
-	ft <- ft |>
-		flextable::colformat_char(na_str = "--") |>
-		flextable::colformat_double(na_str = "--") |>
-		flextable::colformat_int(na_str = "--")
-
-	# Apply decimal separator formatting for numeric columns
+	# Handle NA values and decimal separator
 	if (decimal_separator == ",") {
 		ft <- ft |>
-			flextable::colformat_double(decimal.mark = ",", big.mark = ".")
+			flextable::colformat_char(na_str = "--") |>
+			flextable::colformat_double(
+				na_str = "--",
+				decimal.mark = ",",
+				big.mark = "."
+			) |>
+			flextable::colformat_int(na_str = "--")
+	} else {
+		ft <- ft |>
+			flextable::colformat_char(na_str = "--") |>
+			flextable::colformat_double(na_str = "--") |>
+			flextable::colformat_int(na_str = "--")
 	}
 
 	# Autofit
@@ -464,16 +469,21 @@ theme_gba <- function(
 	# Padding for readability
 	ft <- ft |> flextable::padding(padding = 4, part = "all")
 
-	# Handle NA values
-	ft <- ft |>
-		flextable::colformat_char(na_str = "--") |>
-		flextable::colformat_double(na_str = "--") |>
-		flextable::colformat_int(na_str = "--")
-
-	# Apply decimal separator formatting for numeric columns
+	# Handle NA values and decimal separator
 	if (decimal_separator == ",") {
 		ft <- ft |>
-			flextable::colformat_double(decimal.mark = ",", big.mark = ".")
+			flextable::colformat_char(na_str = "--") |>
+			flextable::colformat_double(
+				na_str = "--",
+				decimal.mark = ",",
+				big.mark = "."
+			) |>
+			flextable::colformat_int(na_str = "--")
+	} else {
+		ft <- ft |>
+			flextable::colformat_char(na_str = "--") |>
+			flextable::colformat_double(na_str = "--") |>
+			flextable::colformat_int(na_str = "--")
 	}
 
 	# Autofit

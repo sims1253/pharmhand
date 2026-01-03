@@ -181,7 +181,8 @@ StatResult <- S7::new_class(
 				if (length(value) != 2) {
 					return("ci must be a numeric vector of length 2: c(lower, upper)")
 				}
-				if (value[1] > value[2]) {
+				# Allow NA bounds, only check order when both are non-NA
+				if (!is.na(value[1]) && !is.na(value[2]) && value[1] > value[2]) {
 					return("ci lower bound must be <= upper bound")
 				}
 				NULL
@@ -1550,7 +1551,24 @@ create_analysis_meta <- function(
 		derivation = derivation,
 		timestamp = Sys.time(),
 		package_version = as.character(utils::packageVersion("pharmhand")),
-		r_version = paste0(R.version$major, ".", R.version$minor)
+		r_version = {
+			# Convert patch to character for safe NA handling
+			patch_char <- as.character(R.version$patch)
+
+			# Use patch if it has length > 0, is not NA, and is not empty (nzchar)
+			if (length(patch_char) > 0 && !is.na(patch_char) && nzchar(patch_char)) {
+				patch <- patch_char
+			} else {
+				# Fall back to parsing from minor version
+				minor_parts <- strsplit(as.character(R.version$minor), "\\.")[[1]]
+				patch <- if (length(minor_parts) > 1) minor_parts[2] else "0"
+			}
+
+			# Get minor version (first part of R.version$minor)
+			minor <- strsplit(as.character(R.version$minor), "\\.")[[1]][1]
+
+			paste0(R.version$major, ".", minor, ".", patch)
+		}
 	)
 }
 
