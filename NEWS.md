@@ -1,3 +1,28 @@
+# pharmhand 0.1.0.9000
+
+## Breaking Changes
+
+* Renamed `create_ae_table()` to `create_ae_summary_table()` for clarity.
+
+## Improvements
+
+* `format_pvalue()` and `format_ci()` now accept `trim` and `na_string` parameters
+  for more flexible output formatting.
+
+## Documentation
+
+* Added README.Rmd with rendered demo table and KM plot figures.
+* Improved pkgdown site with sandstone theme and dark mode support.
+* Simplified Articles dropdown to flat list.
+* Added description to baseline-tables vignette.
+* Fixed dev status badges visibility with `development: mode: unreleased`.
+
+## Maintenance
+
+* Cleaned up `_pkgdown.yml` by removing redundant defaults.
+* Simplified `extra.scss` to only flextable dark mode fixes.
+* Updated example scripts and vignettes for function rename.
+
 # pharmhand 0.0.18.9000
 
 ## New Features

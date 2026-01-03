@@ -1,6 +1,6 @@
-# Tests for the unified create_ae_table() function
+# Tests for the unified create_ae_summary_table() function
 
-test_that("create_ae_table works with type='overview'", {
+test_that("create_ae_summary_table works with type='overview'", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03"),
 		TRT01P = c("A", "A", "B"),
@@ -16,7 +16,7 @@ test_that("create_ae_table works with type='overview'", {
 		SAFFL = c("Y", "Y", "Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "overview")
+	tbl <- create_ae_summary_table(adae, adsl, type = "overview")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_overview")
@@ -27,7 +27,7 @@ test_that("create_ae_table works with type='overview'", {
 	)))
 })
 
-test_that("create_ae_table works with type='soc'", {
+test_that("create_ae_summary_table works with type='soc'", {
 	adae <- data.frame(
 		USUBJID = c("01", "02"),
 		TRT01P = c("A", "B"),
@@ -40,14 +40,14 @@ test_that("create_ae_table works with type='soc'", {
 		SAFFL = c("Y", "Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "soc")
+	tbl <- create_ae_summary_table(adae, adsl, type = "soc")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_soc")
 	expect_true("System Organ Class" %in% names(tbl@data))
 })
 
-test_that("create_ae_table works with type='soc_pt'", {
+test_that("create_ae_summary_table works with type='soc_pt'", {
 	adae <- data.frame(
 		USUBJID = c("01", "02"),
 		TRT01P = c("A", "B"),
@@ -61,7 +61,7 @@ test_that("create_ae_table works with type='soc_pt'", {
 		SAFFL = c("Y", "Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "soc_pt")
+	tbl <- create_ae_summary_table(adae, adsl, type = "soc_pt")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_soc_pt")
@@ -69,7 +69,7 @@ test_that("create_ae_table works with type='soc_pt'", {
 	expect_true("Preferred Term" %in% names(tbl@data))
 })
 
-test_that("create_ae_table works with type='common'", {
+test_that("create_ae_summary_table works with type='common'", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03"),
 		TRT01P = c("A", "A", "B"),
@@ -83,14 +83,14 @@ test_that("create_ae_table works with type='common'", {
 		SAFFL = c("Y", "Y", "Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "common", n_top = 5)
+	tbl <- create_ae_summary_table(adae, adsl, type = "common", n_top = 5)
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_common")
 	expect_true("Preferred Term" %in% names(tbl@data))
 })
 
-test_that("create_ae_table works with type='severity'", {
+test_that("create_ae_summary_table works with type='severity'", {
 	adae <- data.frame(
 		USUBJID = c("01", "01"),
 		TRT01P = c("A", "A"),
@@ -103,7 +103,7 @@ test_that("create_ae_table works with type='severity'", {
 		SAFFL = c("Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "severity")
+	tbl <- create_ae_summary_table(adae, adsl, type = "severity")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_severity")
@@ -111,7 +111,7 @@ test_that("create_ae_table works with type='severity'", {
 	expect_true(any(tbl@data$`Maximum Severity` == "SEVERE"))
 })
 
-test_that("create_ae_table works with type='relationship'", {
+test_that("create_ae_summary_table works with type='relationship'", {
 	adae <- data.frame(
 		USUBJID = c("01", "02"),
 		TRT01P = c("A", "A"),
@@ -124,14 +124,14 @@ test_that("create_ae_table works with type='relationship'", {
 		SAFFL = c("Y", "Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "relationship")
+	tbl <- create_ae_summary_table(adae, adsl, type = "relationship")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_relationship")
 	expect_true("Relationship to Study Drug" %in% names(tbl@data))
 })
 
-test_that("create_ae_table works with type='sae'", {
+test_that("create_ae_summary_table works with type='sae'", {
 	adae <- data.frame(
 		USUBJID = c("01"),
 		TRT01P = c("A"),
@@ -146,13 +146,13 @@ test_that("create_ae_table works with type='sae'", {
 		SAFFL = c("Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "sae")
+	tbl <- create_ae_summary_table(adae, adsl, type = "sae")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_sae")
 })
 
-test_that("create_ae_table works with type='discontinuation'", {
+test_that("create_ae_summary_table works with type='discontinuation'", {
 	adae <- data.frame(
 		USUBJID = c("01"),
 		TRT01P = c("A"),
@@ -167,13 +167,13 @@ test_that("create_ae_table works with type='discontinuation'", {
 		SAFFL = c("Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "discontinuation")
+	tbl <- create_ae_summary_table(adae, adsl, type = "discontinuation")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_discontinuation")
 })
 
-test_that("create_ae_table works with type='deaths'", {
+test_that("create_ae_summary_table works with type='deaths'", {
 	adsl <- data.frame(
 		USUBJID = c("01", "02"),
 		TRT01P = c("A", "B"),
@@ -181,14 +181,14 @@ test_that("create_ae_table works with type='deaths'", {
 		DTHFL = c("Y", "N")
 	)
 
-	tbl <- create_ae_table(adae = NULL, adsl = adsl, type = "deaths")
+	tbl <- create_ae_summary_table(adae = NULL, adsl = adsl, type = "deaths")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_deaths")
 	expect_true(any(tbl@data$Statistic == "Deaths n (%)"))
 })
 
-test_that("create_ae_table works with type='pt' and soc filter", {
+test_that("create_ae_summary_table works with type='pt' and soc filter", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03"),
 		TRT01P = c("A", "A", "B"),
@@ -203,7 +203,7 @@ test_that("create_ae_table works with type='pt' and soc filter", {
 	)
 
 	# Filter to SOC1 only
-	tbl <- create_ae_table(adae, adsl, type = "pt", soc = "SOC1")
+	tbl <- create_ae_summary_table(adae, adsl, type = "pt", soc = "SOC1")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_pt")
@@ -212,7 +212,7 @@ test_that("create_ae_table works with type='pt' and soc filter", {
 	expect_equal(nrow(tbl@data), 2)
 })
 
-test_that("create_ae_table auto-generates titles", {
+test_that("create_ae_summary_table auto-generates titles", {
 	adae <- data.frame(
 		USUBJID = c("01"),
 		TRT01P = c("A"),
@@ -226,14 +226,14 @@ test_that("create_ae_table auto-generates titles", {
 		SAFFL = c("Y")
 	)
 
-	tbl_soc <- create_ae_table(adae, adsl, type = "soc")
+	tbl_soc <- create_ae_summary_table(adae, adsl, type = "soc")
 	expect_equal(tbl_soc@title, "Adverse Events by System Organ Class")
 
-	tbl_common <- create_ae_table(adae, adsl, type = "common", n_top = 10)
+	tbl_common <- create_ae_summary_table(adae, adsl, type = "common", n_top = 10)
 	expect_equal(tbl_common@title, "Most Common Adverse Events (Top 10)")
 })
 
-test_that("create_ae_table respects soc_order for type='soc'", {
+test_that("create_ae_summary_table respects soc_order for type='soc'", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03", "04"),
 		TRT01P = c("A", "A", "A", "A"),
@@ -247,13 +247,13 @@ test_that("create_ae_table respects soc_order for type='soc'", {
 	)
 
 	# Without soc_order, should be alphabetical
-	tbl_alpha <- create_ae_table(adae, adsl, type = "soc")
+	tbl_alpha <- create_ae_summary_table(adae, adsl, type = "soc")
 	socs_alpha <- tbl_alpha@data$`System Organ Class`
 	expect_equal(socs_alpha, c("A-SOC", "B-SOC", "M-SOC", "Z-SOC"))
 
 	# With soc_order, should follow custom order
 	custom_order <- c("M-SOC", "A-SOC", "Z-SOC", "B-SOC")
-	tbl_custom <- create_ae_table(
+	tbl_custom <- create_ae_summary_table(
 		adae,
 		adsl,
 		type = "soc",
@@ -263,7 +263,7 @@ test_that("create_ae_table respects soc_order for type='soc'", {
 	expect_equal(socs_custom, custom_order)
 })
 
-test_that("create_ae_table respects soc_order for type='soc_pt'", {
+test_that("create_ae_summary_table respects soc_order for type='soc_pt'", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03", "04"),
 		TRT01P = c("A", "A", "A", "A"),
@@ -279,7 +279,7 @@ test_that("create_ae_table respects soc_order for type='soc_pt'", {
 
 	# With soc_order, SOC groups should follow custom order
 	custom_order <- c("M-SOC", "A-SOC", "Z-SOC")
-	tbl_custom <- create_ae_table(
+	tbl_custom <- create_ae_summary_table(
 		adae,
 		adsl,
 		type = "soc_pt",
@@ -289,7 +289,7 @@ test_that("create_ae_table respects soc_order for type='soc_pt'", {
 	expect_equal(socs_custom, custom_order)
 })
 
-test_that("create_ae_table respects custom title", {
+test_that("create_ae_summary_table respects custom title", {
 	adae <- data.frame(
 		USUBJID = c("01"),
 		TRT01P = c("A"),
@@ -303,11 +303,16 @@ test_that("create_ae_table respects custom title", {
 		SAFFL = c("Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "soc", title = "Custom Title")
+	tbl <- create_ae_summary_table(
+		adae,
+		adsl,
+		type = "soc",
+		title = "Custom Title"
+	)
 	expect_equal(tbl@title, "Custom Title")
 })
 
-test_that("create_ae_table works without adsl (derives trt_n from adae)", {
+test_that("create_ae_summary_table works without adsl (derives trt_n from adae)", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03"),
 		TRT01P = c("A", "A", "B"),
@@ -317,20 +322,20 @@ test_that("create_ae_table works without adsl (derives trt_n from adae)", {
 	)
 
 	# Should work without adsl
-	tbl <- create_ae_table(adae, type = "soc")
+	tbl <- create_ae_summary_table(adae, type = "soc")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_soc")
 })
 
-test_that("create_ae_table validates input for deaths type", {
+test_that("create_ae_summary_table validates input for deaths type", {
 	expect_error(
-		create_ae_table(adae = NULL, adsl = NULL, type = "deaths"),
+		create_ae_summary_table(adae = NULL, adsl = NULL, type = "deaths"),
 		"'adsl' must be a data frame"
 	)
 })
 
-test_that("create_ae_table handles empty SAE data gracefully", {
+test_that("create_ae_summary_table handles empty SAE data gracefully", {
 	adae <- data.frame(
 		USUBJID = c("01"),
 		TRT01P = c("A"),
@@ -345,7 +350,7 @@ test_that("create_ae_table handles empty SAE data gracefully", {
 		SAFFL = c("Y")
 	)
 
-	tbl <- create_ae_table(adae, adsl, type = "sae")
+	tbl <- create_ae_summary_table(adae, adsl, type = "sae")
 
 	expect_s7_class(tbl, ClinicalTable)
 	# Should have a "no SAE" message
@@ -885,14 +890,14 @@ describe("create_ae_comparison_table() with multiple treatment groups", {
 })
 
 # ------------------------------------------------------------------------------
-# Tests for create_ae_table() integration with type = "comparison"
+# Tests for create_ae_summary_table() integration with type = "comparison"
 # ------------------------------------------------------------------------------
 
-describe("create_ae_table() with type = 'comparison'", {
+describe("create_ae_summary_table() with type = 'comparison'", {
 	test_data <- create_comparison_test_data()
 
 	it("dispatches to create_ae_comparison_table correctly", {
-		tbl <- create_ae_table(
+		tbl <- create_ae_summary_table(
 			adae = test_data$adae,
 			adsl = test_data$adsl,
 			type = "comparison",
@@ -906,7 +911,7 @@ describe("create_ae_table() with type = 'comparison'", {
 
 	it("errors when ref_group is not provided for comparison type", {
 		expect_error(
-			create_ae_table(
+			create_ae_summary_table(
 				adae = test_data$adae,
 				adsl = test_data$adsl,
 				type = "comparison"
@@ -917,7 +922,7 @@ describe("create_ae_table() with type = 'comparison'", {
 
 	it("errors when adsl is not provided for comparison type", {
 		expect_error(
-			create_ae_table(
+			create_ae_summary_table(
 				adae = test_data$adae,
 				adsl = NULL,
 				type = "comparison",
@@ -928,7 +933,7 @@ describe("create_ae_table() with type = 'comparison'", {
 	})
 
 	it("passes through all comparison parameters correctly", {
-		tbl <- create_ae_table(
+		tbl <- create_ae_summary_table(
 			adae = test_data$adae,
 			adsl = test_data$adsl,
 			type = "comparison",
@@ -937,14 +942,14 @@ describe("create_ae_table() with type = 'comparison'", {
 			threshold = 5,
 			sort_by = "rd",
 			conf_level = 0.90,
-			title = "Custom Title from create_ae_table"
+			title = "Custom Title from create_ae_summary_table"
 		)
 
 		expect_equal(tbl@metadata$ref_group, "Placebo")
 		expect_equal(tbl@metadata$by, "soc")
 		expect_equal(tbl@metadata$threshold, 5)
 		expect_equal(tbl@metadata$conf_level, 0.90)
-		expect_equal(tbl@title, "Custom Title from create_ae_table")
+		expect_equal(tbl@title, "Custom Title from create_ae_summary_table")
 	})
 })
 

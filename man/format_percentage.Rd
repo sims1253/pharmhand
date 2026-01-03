@@ -8,6 +8,8 @@ format_percentage(
   x,
   digits = 1L,
   locale = get_locale(),
+  trim = FALSE,
+  na_string = getOption("pharmhand.na_string", "NA"),
   is_proportion = FALSE,
   symbol = TRUE
 )
@@ -18,6 +20,11 @@ format_percentage(
 \item{digits}{Integer number of decimal places (default: 1)}
 
 \item{locale}{Character locale: "en" or "de"}
+
+\item{trim}{Logical, if TRUE remove trailing zeros (default: FALSE)}
+
+\item{na_string}{String for missing values
+(default: getOption("pharmhand.na_string", "NA"))}
 
 \item{is_proportion}{Logical, if TRUE treats x as proportion (0-1),
 otherwise as percentage (0-100). Default: FALSE}

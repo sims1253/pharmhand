@@ -9,9 +9,9 @@ NULL
 # Standard AEACN value for drug discontinuation (CDISC controlled terminology)
 AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 
-#' Create Adverse Event Table
+#' Create Adverse Event Summary Table
 #'
-#' Generate AE tables for clinical study reports.
+#' Generate AE summary tables for clinical study reports.
 #'
 #' @param adae ADAE data frame (ADaM Adverse Events dataset)
 #' @param adsl ADSL data frame (optional, required for some table types
@@ -49,22 +49,22 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #' @examples
 #' \dontrun{
 #' # AE Overview
-#' overview <- create_ae_table(adae, adsl, type = "overview")
+#' overview <- create_ae_summary_table(adae, adsl, type = "overview")
 #'
 #' # SOC table
-#' soc_table <- create_ae_table(adae, adsl, type = "soc")
+#' soc_table <- create_ae_summary_table(adae, adsl, type = "soc")
 #'
 #' # SOC/PT hierarchical table
-#' soc_pt <- create_ae_table(adae, adsl, type = "soc_pt")
+#' soc_pt <- create_ae_summary_table(adae, adsl, type = "soc_pt")
 #'
 #' # Most common AEs (top 20)
-#' common <- create_ae_table(adae, adsl, type = "common", n_top = 20)
+#' common <- create_ae_summary_table(adae, adsl, type = "common", n_top = 20)
 #'
 #' # SAE table
-#' sae <- create_ae_table(adae, adsl, type = "sae")
+#' sae <- create_ae_summary_table(adae, adsl, type = "sae")
 #'
 #' # AE comparison with risk differences
-#' comparison <- create_ae_table(
+#' comparison <- create_ae_summary_table(
 #'   adae, adsl,
 #'   type = "comparison",
 #'   ref_group = "Placebo",
@@ -73,7 +73,7 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #' )
 #'
 #' # SOC table with custom ordering
-#' soc_ordered <- create_ae_table(
+#' soc_ordered <- create_ae_summary_table(
 #'   adae, adsl,
 #'   type = "soc",
 #'   soc_order = c(
@@ -83,7 +83,7 @@ AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 #'   )
 #' )
 #' }
-create_ae_table <- function(
+create_ae_summary_table <- function(
 	adae,
 	adsl = NULL,
 	type = c(
@@ -225,7 +225,7 @@ create_ae_table <- function(
 	result
 }
 
-# Internal handler functions for create_ae_table ----
+# Internal handler functions for create_ae_summary_table ----
 
 #' @keywords internal
 create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {

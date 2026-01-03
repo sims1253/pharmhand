@@ -15,28 +15,41 @@ test_that("format_number handles vector input", {
 })
 
 test_that("format_percentage formats as percentage", {
-	expect_equal(format_percentage(0.5, digits = 1), "50.0%")
-	expect_equal(format_percentage(0.123, digits = 1), "12.3%")
-	expect_equal(format_percentage(0.789, digits = 1), "78.9%")
+	expect_equal(
+		format_percentage(0.5, digits = 1, is_proportion = TRUE),
+		"50.0%"
+	)
+	expect_equal(
+		format_percentage(0.123, digits = 1, is_proportion = TRUE),
+		"12.3%"
+	)
+	expect_equal(
+		format_percentage(0.789, digits = 1, is_proportion = TRUE),
+		"78.9%"
+	)
 })
 
 test_that("format_percentage handles vector input", {
-	result <- format_percentage(c(0.123, 0.456, 0.789), digits = 1)
+	result <- format_percentage(
+		c(0.123, 0.456, 0.789),
+		digits = 1,
+		is_proportion = TRUE
+	)
 	expect_equal(result, c("12.3%", "45.6%", "78.9%"))
 })
 
 test_that("format_ci formats confidence interval", {
-	expect_equal(format_ci(1.23, 4.56, digits = 2), "1.23, 4.56")
-	expect_equal(format_ci(1.23, 4.56, digits = 1), "1.2, 4.6")
+	expect_equal(format_ci(1.23, 4.56, digits = 2), "[1.23; 4.56]")
+	expect_equal(format_ci(1.23, 4.56, digits = 1), "[1.2; 4.6]")
 })
 
-test_that("format_ci with custom separator", {
-	expect_equal(format_ci(1.23, 4.56, separator = " - "), "1.23 - 4.56")
+test_that("format_ci with custom brackets", {
+	expect_equal(format_ci(1.23, 4.56, brackets = c("(", ")")), "(1.23; 4.56)")
 })
 
 test_that("format_ci handles vector input", {
 	result <- format_ci(c(1.23, 5.67), c(4.56, 8.90), digits = 1)
-	expect_equal(result, c("1.2, 4.6", "5.7, 8.9"))
+	expect_equal(result, c("[1.2; 4.6]", "[5.7; 8.9]"))
 })
 
 test_that("format_pvalue formats p-values", {
@@ -50,8 +63,8 @@ test_that("format_pvalue formats small p-values", {
 })
 
 test_that("format_pvalue with custom threshold", {
-	expect_equal(format_pvalue(0.0005, threshold = 0.01), "<0.01")
-	expect_equal(format_pvalue(0.005, threshold = 0.01), "<0.01")
+	expect_equal(format_pvalue(0.0005, threshold = 0.01), "<0.010")
+	expect_equal(format_pvalue(0.005, threshold = 0.01), "<0.010")
 })
 
 test_that("format_pvalue handles vector input", {

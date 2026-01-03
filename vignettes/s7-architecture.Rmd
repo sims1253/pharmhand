@@ -47,13 +47,22 @@ ADaMData
 ├── ClinicalReport
 └── AnalysisMeta
 
-Study Design Classes
-├── SingleArmStudy
-└── TwoArmStudy
+Study Classes
+├── Study (abstract)
+│   ├── SingleArmStudy
+│   ├── TwoArmStudy
+│   └── MultiArmStudy
+└── StudySet
 
 Endpoint Classes
 ├── Endpoint (base class with category property)
 └── HTAEndpoint (HTA-specific extension)
+
+Result Classes
+├── StatResult (abstract)
+│   ├── ComparisonResult
+│   └── MetaResult
+└── EvidenceGrade
 ```
 
 ## ADaMData

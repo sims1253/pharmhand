@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-`create_ae_table()` makes safety tables for treatment-emergent adverse events (TEAEs).
+`create_ae_summary_table()` makes safety tables for treatment-emergent adverse events (TEAEs).
 
 ## Table Types
 
@@ -62,7 +62,7 @@ adlb <- pharmaverseadam::adlb
 
 ```{r overview}
 # Create AE overview table
-overview_table <- create_ae_table(
+overview_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "overview",
@@ -84,7 +84,7 @@ The overview table calculates:
 
 ```{r soc}
 # Create SOC table
-soc_table <- create_ae_table(
+soc_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "soc",
@@ -102,7 +102,7 @@ soc_table@flextable
 
 ```{r soc-pt}
 # Create hierarchical SOC/PT table
-soc_pt_table <- create_ae_table(
+soc_pt_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "soc_pt",
@@ -119,7 +119,7 @@ soc_pt_table@flextable
 
 ```{r common}
 # Create table of most common AEs (top 10)
-common_table <- create_ae_table(
+common_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "common",
@@ -135,7 +135,7 @@ common_table@flextable
 
 ```{r severity}
 # Create severity table
-severity_table <- create_ae_table(
+severity_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "severity",
@@ -152,7 +152,7 @@ Severity categories order as: MILD → MODERATE → SEVERE.
 
 ```{r relationship}
 # Create relationship table
-relationship_table <- create_ae_table(
+relationship_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "relationship",
@@ -167,7 +167,7 @@ relationship_table@flextable
 
 ```{r sae}
 # Create SAE table
-sae_table <- create_ae_table(
+sae_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "sae",
@@ -186,7 +186,7 @@ Shows message if no SAEs reported.
 
 ```{r discontinuation}
 # Create discontinuation table
-disc_table <- create_ae_table(
+disc_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "discontinuation",
@@ -201,7 +201,7 @@ disc_table@flextable
 
 ```{r deaths}
 # Create deaths summary table
-deaths_table <- create_ae_table(
+deaths_table <- create_ae_summary_table(
   adae = NULL,  # Not needed for deaths
   adsl = adsl,
   type = "deaths",
@@ -240,7 +240,7 @@ lab_shift_table@flextable
 
 ```{r custom-trt}
 # Use different treatment variable
-overview_trtp <- create_ae_table(
+overview_trtp <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "overview",
@@ -256,7 +256,7 @@ overview_trtp@flextable
 
 ```{r custom-top}
 # Show top 5 instead of default 15
-common_top5 <- create_ae_table(
+common_top5 <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "common",
@@ -272,7 +272,7 @@ common_top5@flextable
 
 ```{r custom-soc}
 # Analyze only skin and subcutaneous tissue disorders
-rash_table <- create_ae_table(
+rash_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "pt",
@@ -288,7 +288,7 @@ rash_table@flextable
 
 ```{r formatting}
 # Create table without autofit (for custom formatting)
-soc_manual <- create_ae_table(
+soc_manual <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "soc",
@@ -308,10 +308,10 @@ soc_ft
 ```{r word-export}
 # Create multiple safety tables
 safety_tables <- list(
-  overview = create_ae_table(adae, adsl, type = "overview"),
-  soc = create_ae_table(adae, adsl, type = "soc"),
-  common = create_ae_table(adae, adsl, type = "common", n_top = 10),
-  sae = create_ae_table(adae, adsl, type = "sae")
+  overview = create_ae_summary_table(adae, adsl, type = "overview"),
+  soc = create_ae_summary_table(adae, adsl, type = "soc"),
+  common = create_ae_summary_table(adae, adsl, type = "common", n_top = 10),
+  sae = create_ae_summary_table(adae, adsl, type = "sae")
 )
 
 # Create report sections
@@ -369,7 +369,7 @@ For GBA/AMNOG dossiers, comparing adverse event rates between treatment groups w
 
 ```{r comparison-basic}
 # Create AE comparison table with risk differences
-comparison_table <- create_ae_table(
+comparison_table <- create_ae_summary_table(
   adae = adae,
   adsl = adsl,
   type = "comparison",

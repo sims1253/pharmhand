@@ -1,46 +1,58 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # pharmhand <img src="man/figures/logo.png" align="right" height="139" alt="pharmhand logo" />
 
 <!-- badges: start -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg)](https://codecov.io/gh/sims1253/pharmhand)
-[![License: GPL
-v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Codecov test coverage](https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg)](https://codecov.io/gh/sims1253/pharmhand)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pckdown.yaml/badge.svg)](https://sims1253.github.io/pharmhand/)
 <!-- badges: end -->
 
-pharmhand creates clinical study tables and reports from ADaM datasets.
-It uses S7 classes to structure clinical data and outputs formatted
-tables and plots for Word documents.
+pharmhand creates clinical study tables and reports from ADaM datasets. It uses S7 classes to structure clinical data and outputs formatted tables and plots for Word documents.
 
 ## Installation
 
-``` r
+```r
 # install.packages("pak")
 pak::pak("sims1253/pharmhand")
 ```
 
 ## Examples
 
+```{r example-setup, include=FALSE}
+library(pharmhand)
+library(pharmaverseadam)
+
+adsl <- pharmaverseadam::adsl
+adtte <- pharmaverseadam::adtte_onco
+```
+
 ### Demographics Table
 
-``` r
+```{r demo-table, message=FALSE, warning=FALSE}
 adam_data <- ADaMData(data = adsl, trt_var = "TRT01P")
 demo_table <- create_demographics_table(adam_data)
 demo_table@flextable
 ```
 
-<img src="man/figures/README-demo-table-1.png" alt="" width="100%" />
-
 ### Kaplan-Meier Plot
 
-``` r
+```{r km-plot, message=FALSE, warning=FALSE, fig.width=8, fig.height=6}
 km <- create_km_plot(
   data = adtte,
   time_var = "AVAL",
@@ -53,11 +65,9 @@ km <- create_km_plot(
 km@plot
 ```
 
-<img src="man/figures/README-km-plot-1.png" alt="" width="100%" />
-
 ## Quick Start
 
-``` r
+```r
 library(pharmhand)
 
 # Wrap ADaM data with automatic population filtering
@@ -77,7 +87,7 @@ adam_data@trt_n          # Treatment group N's computed automatically
 
 ### Efficacy Tables
 
-``` r
+```r
 # Time-to-event summary with median, HR, and landmarks
 tte_table <- create_tte_summary_table(
   adtte,
@@ -98,7 +108,7 @@ responder_table <- create_responder_table(
 
 ### Safety Tables
 
-``` r
+```r
 # AE Overview, by SOC, most common
 create_ae_summary_table(adae, adsl, type = "overview")
 create_ae_summary_table(adae, adsl, type = "soc")
@@ -107,7 +117,7 @@ create_ae_summary_table(adae, adsl, type = "common", n_top = 15)
 
 ### Report Generation
 
-``` r
+```r
 # Build and export a complete report
 report <- ClinicalReport(
   study_id = "STUDY-001",
@@ -124,7 +134,7 @@ generate_word(report, "study_report.docx")
 
 ### G-BA Module 4 Compliance
 
-``` r
+```r
 # Create and validate G-BA compliant tables
 module4_table <- create_hta_module4_table()
 module4_table <- to_gba_template(module4_table)
@@ -135,36 +145,28 @@ check_gba_compliance(module4_table, strict = FALSE)
 
 - `ADaMData` - ADaM dataset wrapper with population filtering
 - `Endpoint` / `HTAEndpoint` - Endpoint definitions for analyses
-- `Study` - Base class with `SingleArmStudy`, `TwoArmStudy`,
-  `MultiArmStudy`
+- `Study` - Base class with `SingleArmStudy`, `TwoArmStudy`, `MultiArmStudy`
 - `StudySet` - Collection of studies for evidence synthesis
 - `ClinicalTable` - Table with formatting
 - `ClinicalPlot` - Plot with export settings
 - `ClinicalReport` - Report with sections
 - `StudyResult` - Container for single-study results
-- `StatResult` - Statistical result base class (`ComparisonResult`,
-  `MetaResult`)
+- `StatResult` - Statistical result base class (`ComparisonResult`, `MetaResult`)
 - `EvidenceGrade` - IQWiG evidence grading result
 
 ## Related Packages
 
 - [officer](https://davidgohel.github.io/officer/) - Word documents
-- [flextable](https://davidgohel.github.io/flextable/) - Table
-  formatting
+- [flextable](https://davidgohel.github.io/flextable/) - Table formatting
 - [admiral](https://pharmaverse.github.io/admiral/) - ADaM datasets
-- [survival](https://cran.r-project.org/package=survival) - Survival
-  analysis
+- [survival](https://cran.r-project.org/package=survival) - Survival analysis
 - [chef](https://hta-pharma.github.io/chef/) - HTA analyses (optional)
 
 ## Learn More
 
-- [Get
-  Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html)
-- [Safety
-  Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html)
-- [Efficacy
-  Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html)
-- [S7
-  Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html)
+- [Get Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html)
+- [Safety Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html)
+- [Efficacy Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html)
+- [S7 Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html)
 
 Browse the [full documentation](https://sims1253.github.io/pharmhand/).

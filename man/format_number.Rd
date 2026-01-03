@@ -4,7 +4,13 @@
 \alias{format_number}
 \title{Format Number with Locale}
 \usage{
-format_number(x, digits = 2L, locale = get_locale())
+format_number(
+  x,
+  digits = 2L,
+  locale = get_locale(),
+  trim = FALSE,
+  na_string = getOption("pharmhand.na_string", "NA")
+)
 }
 \arguments{
 \item{x}{Numeric value}
@@ -12,6 +18,11 @@ format_number(x, digits = 2L, locale = get_locale())
 \item{digits}{Integer number of decimal places}
 
 \item{locale}{Character locale: "en" (period) or "de" (comma)}
+
+\item{trim}{Logical, if TRUE remove trailing zeros (default: FALSE)}
+
+\item{na_string}{String for missing values
+(default: getOption("pharmhand.na_string", "NA"))}
 }
 \value{
 Character formatted number
