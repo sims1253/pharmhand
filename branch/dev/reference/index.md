@@ -100,6 +100,8 @@ responder, and subgroup analyses.
   : Create Primary Endpoint Summary Table
 - [`create_cfb_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_cfb_summary_table.md)
   : Create Change from Baseline Summary Table
+- [`ancova_adjust_continuous()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ancova_adjust_continuous.md)
+  : ANCOVA Analysis for Continuous Endpoints
 
 ## Safety Tables
 

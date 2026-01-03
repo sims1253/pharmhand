@@ -83,6 +83,11 @@ For continuous endpoints: Tests if (mean_trt - mean_ref) + ni_margin \>
 Non-inferiority is concluded if the lower bound of the one-sided CI for
 the treatment difference exceeds -ni_margin.
 
+For binary endpoints, the Wilson method uses the Newcombe-Wilson hybrid
+CI approach. The Wald method provides a simpler alternative. For
+regulatory submissions, verify the CI method aligns with agency
+preferences.
+
 ## References
 
 IQWiG Methods v8.0, Section 10.3.5, p. 217-218.

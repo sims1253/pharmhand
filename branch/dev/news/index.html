@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.21.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,23 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0.9000" id="pharmhand-0209000">pharmhand 0.2.0.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0209000"></a></h2>
+<div class="section level3">
+<h3 id="code-quality-0-2-0-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-2-0-9000"></a></h3>
+<ul><li>Refactored duplicated palette resolution logic into <code><a href="../reference/dot-resolve_palette.html">.resolve_palette()</a></code> helper.</li>
+<li>Added warning when log-log plot drops data points with non-finite values.</li>
+<li>Expanded PH assumption disable comment with rationale for time-to-first AE.</li>
+<li>Added clarifying comments in floor/ceiling detection and event conversion.</li>
+<li>Added documentation note about CI construction methods for non-inferiority binary endpoints.</li>
+<li>Removed redundant <code>@keywords internal</code> from exported <code><a href="../reference/ancova_adjust_continuous.html">ancova_adjust_continuous()</a></code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-2-0-9000">Tests<a class="anchor" aria-label="anchor" href="#tests-0-2-0-9000"></a></h3>
+<ul><li>Made color palette test assertions order-agnostic with <code>expect_setequal()</code>.</li>
+<li>Added edge case tests for <code><a href="../reference/calculate_exposure_adjusted_rate.html">calculate_exposure_adjusted_rate()</a></code> (zero events, small exposure, large counts).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.21.9000" id="pharmhand-01219000">pharmhand 0.1.21.9000<a class="anchor" aria-label="anchor" href="#pharmhand-01219000"></a></h2>
 <div class="section level3">
