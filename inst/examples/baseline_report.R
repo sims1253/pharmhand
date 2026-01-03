@@ -26,6 +26,7 @@ library(tidyr)
 #' Main function to generate the complete baseline characteristics report.
 #'
 #' @param output_path Path for the output .docx file
+#' @param apply_gba Logical, apply G-BA formatting before export
 #'
 #' @return Invisibly returns the ClinicalReport object
 #' @export
@@ -35,7 +36,8 @@ library(tidyr)
 #' generate_baseline_report()
 #' }
 generate_baseline_report <- function(
-	output_path = "inst/examples/Baseline_Characteristics_Report.docx"
+	output_path = "inst/examples/Baseline_Characteristics_Report.docx",
+	apply_gba = FALSE
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
@@ -164,6 +166,9 @@ generate_baseline_report <- function(
 
 	# Write to file
 	message(paste0("Writing to ", output_path))
+	if (apply_gba) {
+		report <- to_gba_template(report)
+	}
 	generate_word(report, path = output_path)
 
 	message(paste0("Baseline report generated: ", output_path))

@@ -6,6 +6,22 @@
 #' @keywords internal
 NULL
 
+#' @keywords internal
+# Reordered Okabe-Ito palette for clinical plots
+# Skips black (#000000) as first color, prioritizes more visually distinct colors
+# Original order: black, orange, sky blue, bluish green, yellow, blue, vermillion, reddish purple
+# Reordered: orange, sky blue, bluish green, blue, vermillion, reddish purple, yellow, black
+.PH_DEFAULT_PALETTE <- c(
+	"#E69F00", # orange
+	"#56B4E9", # sky blue
+	"#009E73", # bluish green
+	"#0072B2", # blue
+	"#D55E00", # vermillion
+	"#CC79A7", # reddish purple
+	"#F0E442", # yellow
+	"#000000" # black (least useful for clinical plots)
+)
+
 #' Create Kaplan-Meier Plot
 #'
 #' Kaplan-Meier plot using ggplot2 and survival.
@@ -30,9 +46,9 @@ NULL
 #' @param xlim Optional x-axis limits as c(min, max)
 #' @param palette Optional color palette for treatment groups. Can be a
 #'   character vector of colors, or NULL to use
-#'   `getOption("pharmhand.palette")`. Defaults to the CVD-friendly "Okabe-Ito"
-#'   palette. Other built-in options: "R4", "Tableau 10", "Alphabet", etc.
-#'   (see `grDevices::palette.pals()`).
+#'   `getOption("pharmhand.palette")`. Defaults to the CVD-friendly "Okabe-Ito (reordered)"
+#'   palette (orange, sky blue for first two arms). Other built-in options: "Okabe-Ito",
+#'   "R4", "Tableau 10", "Alphabet", etc. (see `grDevices::palette.pals()`).
 #' @param conf_level Confidence level for CI bands (default: 0.95)
 #' @param base_size Base font size for plot text elements (default: 11).
 #'   Also used for risk table text.
@@ -237,25 +253,29 @@ create_km_plot <- function(
 	resolved_palette <- if (!is.null(palette)) {
 		palette
 	} else {
-		opt_palette <- getOption("pharmhand.palette", default = "Okabe-Ito")
-		if (is.character(opt_palette) && length(opt_palette) == 1) {
+		opt_palette <- getOption("pharmhand.palette", default = NULL)
+		if (is.null(opt_palette)) {
+			# No option set, use reordered Okabe-Ito as default
+			.PH_DEFAULT_PALETTE
+		} else if (is.character(opt_palette) && length(opt_palette) == 1) {
 			# Named palette - use palette.colors() from grDevices
+			# Allows explicit "Okabe-Ito" for original order, or other palettes
 			# Available palettes: palette.pals()
 			tryCatch(
 				grDevices::palette.colors(n = NULL, palette = opt_palette),
 				error = function(e) {
 					ph_warn(
-						paste0("Palette '", opt_palette, "' not found, using 'Okabe-Ito'")
+						paste0("Palette '", opt_palette, "' not found, using default")
 					)
-					grDevices::palette.colors(n = NULL, palette = "Okabe-Ito")
+					.PH_DEFAULT_PALETTE
 				}
 			)
 		} else if (is.character(opt_palette) && length(opt_palette) > 1) {
 			# User provided a vector of colors via options
 			opt_palette
 		} else {
-			# Fallback to Okabe-Ito
-			grDevices::palette.colors(n = NULL, palette = "Okabe-Ito")
+			# Invalid option, fall back to default
+			.PH_DEFAULT_PALETTE
 		}
 	}
 

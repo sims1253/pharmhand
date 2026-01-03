@@ -9,6 +9,8 @@ format_ci(
   upper,
   digits = 2L,
   locale = get_locale(),
+  trim = FALSE,
+  na_string = getOption("pharmhand.na_string", "NA"),
   brackets = c("[", "]")
 )
 }
@@ -21,6 +23,11 @@ format_ci(
 
 \item{locale}{Character locale for decimal separator: "en" or "de"
 (default: current pharmhand locale)}
+
+\item{trim}{Logical, if TRUE remove trailing zeros (default: FALSE)}
+
+\item{na_string}{String for missing values
+(default: getOption("pharmhand.na_string", "NA"))}
 
 \item{brackets}{Character vector of length 2 for opening/closing brackets
 (default: \code{c("[", "]")})}

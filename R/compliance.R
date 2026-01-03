@@ -12,10 +12,13 @@
 #' @param strict Logical, if TRUE throws an error on non-compliance
 #' @param require_theme Logical, require G-BA theme marker (default: TRUE)
 #' @param require_title Logical, require a title line (default: FALSE)
-#' @param require_header Logical, require a header row in flextable (default: TRUE)
+#' @param require_header Logical, require a header row in flextable
+#'   (default: TRUE)
 #' @param require_body Logical, require a body row in flextable (default: TRUE)
-#' @param require_unique_colnames Logical, require unique column names (default: TRUE)
-#' @param require_nonempty_colnames Logical, require non-empty column names (default: TRUE)
+#' @param require_unique_colnames Logical, require unique column names
+#'   (default: TRUE)
+#' @param require_nonempty_colnames Logical, require non-empty column names
+#'   (default: TRUE)
 #'
 #' @return A list with `ok`, `errors`, and `warnings`
 #' @export

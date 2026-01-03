@@ -8,15 +8,8 @@ development:
 
 template:
   bootstrap: 5
+  bootswatch: sandstone
   light-switch: true
-  bslib:
-    primary: "#0077B6"
-    danger: "#A6081A"
-    base_font: {google: "Source Sans Pro"}
-    heading_font: {google: "Source Sans Pro"}
-    code_font: {google: "Source Code Pro"}
-  theme: gruvbox-light
-  theme-dark: gruvbox-dark
   math-rendering: katex
   opengraph:
     image:
@@ -44,22 +37,30 @@ reference:
   - ClinicalPlot
   - ClinicalReport
   - ClinicalTable
+  - ComparisonResult
   - CompositeFormat
+  - Endpoint
+  - EvidenceGrade
   - FormatSpec
   - LayeredTable
+  - MetaResult
   - PerformanceReport
   - ReportSection
+  - StatResult
   - StudyResult
 
 - title: "Study Design Classes"
   desc: >
     Classes and methods for defining and analyzing clinical study designs.
-    Supports one-arm and two-arm study configurations.
+    Supports single-arm, two-arm, and multi-arm study configurations.
   contents:
-  - OneArmStudy
+  - SingleArmStudy
   - TwoArmStudy
+  - MultiArmStudy
+  - Study
+  - StudySet
   - analyze_study
-  - analyze_study_OneArmStudy
+  - analyze_study_SingleArmStudy
   - analyze_study_TwoArmStudy
   - analyze
   - analyze_ADaMData
@@ -71,9 +72,6 @@ reference:
   contents:
   - HTAEndpoint
   - HTASection
-  - PrimaryEndpoint
-  - SecondaryEndpoint
-  - SafetyEndpoint
   - PopulationSection
   - SOCPTSection
   - SubgroupSection
@@ -95,7 +93,7 @@ reference:
     Functions for adverse event and safety analysis tables
     including laboratory shifts and AE summaries.
   contents:
-  - create_ae_table
+  - create_ae_summary_table
   - create_ae_comparison_table
   - create_lab_shift_table
   - create_lab_summary_table
@@ -104,6 +102,7 @@ reference:
   - create_vs_by_visit_table
   - analyze_soc_pt
   - calculate_ae_tte_data
+  - calculate_ae_risk_difference
 
 - title: "Standard Tables"
   desc: >
@@ -116,6 +115,7 @@ reference:
   - create_region_table
   - create_clinical_table
   - create_hta_table
+  - create_hta_module4_table
   - calculate_baseline
 
 - title: "Plotting"
@@ -126,7 +126,6 @@ reference:
   - create_km_plot
   - create_forest_plot
   - create_ae_km_plot_for_soc
-  - add_plot
   - save_plot_as
   - save_as_png
 
@@ -141,14 +140,11 @@ reference:
   - format_ci
   - format_content
   - format_spec
+  - format_presets
+  - parse_format_pattern
   - composite_format
   - apply_format
   - apply_composite
-  - fmt_n_pct
-  - fmt_mean_sd
-  - fmt_median_range
-  - fmt_ci
-  - fmt_pvalue
 
 - title: "Reporting Engine"
   desc: >
@@ -160,8 +156,6 @@ reference:
   - to_word
   - add_content
   - add_to_docx
-  - add_section
-  - add_table
   - create_study_report
   - create_analysis_meta
   - apply_clinical_style
@@ -200,6 +194,8 @@ reference:
   - chef_to_analysis_results
   - get_chef_stat
   - list_chef_stats
+  - extract_chef_metadata
+  - flatten_chef_results
 
 - title: "Subgroup Analysis"
   desc: >
@@ -207,6 +203,11 @@ reference:
     in clinical trials.
   contents:
   - apply_subgroups
+  - calculate_subgroup_effect
+  - calculate_subgroup_effect_table
+  - calculate_interaction_pvalue
+  - calculate_interaction_pvalue_table
+  - calculate_response_comparison
 
 - title: "GBA/AMNOG Utilities"
   desc: >
@@ -216,6 +217,7 @@ reference:
   contents:
   - BalanceAssessment
   - assess_baseline_balance
+  - check_gba_compliance
   - add_smd_to_table
   - create_love_plot
   - calculate_smd
@@ -223,6 +225,9 @@ reference:
   - calculate_smd_from_data
   - adjust_pvalues
   - calculate_nnt
+  - theme_gba
+  - theme_iqwig
+  - to_gba_template
 
 - title: "Localization"
   desc: >
@@ -244,7 +249,10 @@ reference:
     and other common operations.
   contents:
   - get_filtered_data
+  - get_subject_var
   - get_trt_n
+  - get_trt_var
+  - calculate_proportion_ci
 
 - title: "Internal"
   desc: >
@@ -259,27 +267,22 @@ reference:
   - layers
   - reporting_engine
   - study_logic
+  - efficacy_tables
+  - safety_tables
+  - standard_tables
+  - gba_utils
+  - localization
+  - plotting
 
 # Articles/vignettes structure
 articles:
-- title: Get started
-  navbar: ~
+- title: Articles
   contents:
   - pharmhand
-
-- title: Tutorials
-  navbar: true
-  contents:
   - baseline-tables
   - safety-tables
   - efficacy-tables
   - s7-architecture
-
-# Footer configuration
-footer:
-  structure:
-    left: developed_by
-    right: built_with
 
 # Home page configuration
 home:
@@ -289,24 +292,6 @@ home:
     Provides S7 classes for structured output with Word document
     generation via officer/flextable. Integrates with the chef package for
     Health Technology Assessment (HTA) analyses.
-  links:
-  - text: Report a bug
-    href: https://github.com/sims1253/pharmhand/issues
-  - text: Browse source code
-    href: https://github.com/sims1253/pharmhand
-
-# Figure settings for vignettes and examples
-figures:
-  dev: ragg::agg_png
-  dpi: 96
-  dev.args: []
-  fig.ext: png
-  fig.width: 7
-  fig.height: ~
-  fig.retina: 2
-  fig.asp: 1.618
-  bg: NA
-  other.parameters: []
 
 # Authors configuration
 authors:

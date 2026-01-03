@@ -24,6 +24,7 @@ library(dplyr)
 #'
 #' @param output_path Path for the output .docx file
 #' @param include_hta Logical, include HTA-specific sections
+#' @param apply_gba Logical, apply G-BA formatting before export
 #'
 #' @return Invisibly returns the ClinicalReport object
 #'
@@ -33,7 +34,8 @@ library(dplyr)
 #' }
 generate_reference_report <- function(
 	output_path = "inst/examples/Reference_Report.docx",
-	include_hta = TRUE
+	include_hta = TRUE,
+	apply_gba = FALSE
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
@@ -108,6 +110,9 @@ generate_reference_report <- function(
 
 	# Write to file
 	message(paste0("Writing to ", output_path))
+	if (apply_gba) {
+		report <- to_gba_template(report)
+	}
 	generate_word(report, path = output_path)
 
 	message(paste0("Reference report generated: ", output_path))

@@ -27,6 +27,7 @@ library(tidyr)
 #' Main function to generate the complete safety report.
 #'
 #' @param output_path Path for the output .docx file
+#' @param apply_gba Logical, apply G-BA formatting before export
 #'
 #' @return Invisibly returns the ClinicalReport object
 #'
@@ -35,7 +36,8 @@ library(tidyr)
 #' generate_safety_report()
 #' }
 generate_safety_report <- function(
-	output_path = "inst/examples/Safety_Report.docx"
+	output_path = "inst/examples/Safety_Report.docx",
+	apply_gba = FALSE
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
@@ -120,6 +122,9 @@ generate_safety_report <- function(
 
 	# Write to file
 	message(paste0("Writing to ", output_path))
+	if (apply_gba) {
+		report <- to_gba_template(report)
+	}
 	generate_word(report, path = output_path)
 
 	message(paste0("Safety report generated: ", output_path))
@@ -134,8 +139,8 @@ generate_safety_report <- function(
 #' @return ReportSection object
 #' @keywords internal
 build_ae_overview <- function(adae, adsl) {
-	# Use unified create_ae_table function
-	overview_content <- pharmhand::create_ae_table(
+	# Use unified create_ae_summary_table function
+	overview_content <- pharmhand::create_ae_summary_table(
 		adae = adae,
 		adsl = adsl,
 		type = "overview",
@@ -246,7 +251,7 @@ build_ae_by_soc <- function(adae, adsl) {
 
 	for (soc in socs) {
 		# Table for SOC using unified function with PT type and SOC filter
-		tbl <- pharmhand::create_ae_table(
+		tbl <- pharmhand::create_ae_summary_table(
 			adae = adae,
 			adsl = adsl,
 			type = "pt",
@@ -283,7 +288,7 @@ build_ae_by_soc <- function(adae, adsl) {
 #' @return ReportSection object
 #' @keywords internal
 build_common_aes <- function(adae, adsl) {
-	common_content <- pharmhand::create_ae_table(
+	common_content <- pharmhand::create_ae_summary_table(
 		adae = adae,
 		adsl = adsl,
 		type = "common",
@@ -304,7 +309,7 @@ build_common_aes <- function(adae, adsl) {
 #' @return ReportSection object
 #' @keywords internal
 build_ae_by_severity <- function(adae, adsl) {
-	severity_content <- pharmhand::create_ae_table(
+	severity_content <- pharmhand::create_ae_summary_table(
 		adae = adae,
 		adsl = adsl,
 		type = "severity",
@@ -325,7 +330,7 @@ build_ae_by_severity <- function(adae, adsl) {
 #' @return ReportSection object
 #' @keywords internal
 build_ae_by_relationship <- function(adae, adsl) {
-	rel_content <- pharmhand::create_ae_table(
+	rel_content <- pharmhand::create_ae_summary_table(
 		adae = adae,
 		adsl = adsl,
 		type = "relationship",
@@ -346,7 +351,7 @@ build_ae_by_relationship <- function(adae, adsl) {
 #' @return ReportSection object
 #' @keywords internal
 build_sae_summary <- function(adae, adsl) {
-	sae_content <- pharmhand::create_ae_table(
+	sae_content <- pharmhand::create_ae_summary_table(
 		adae = adae,
 		adsl = adsl,
 		type = "sae",
@@ -367,7 +372,7 @@ build_sae_summary <- function(adae, adsl) {
 #' @return ReportSection object
 #' @keywords internal
 build_ae_disc <- function(adae, adsl) {
-	disc_content <- pharmhand::create_ae_table(
+	disc_content <- pharmhand::create_ae_summary_table(
 		adae = adae,
 		adsl = adsl,
 		type = "discontinuation",
@@ -387,7 +392,7 @@ build_ae_disc <- function(adae, adsl) {
 #' @return ReportSection object
 #' @keywords internal
 build_deaths_summary <- function(adsl) {
-	death_content <- pharmhand::create_ae_table(
+	death_content <- pharmhand::create_ae_summary_table(
 		adae = NULL,
 		adsl = adsl,
 		type = "deaths",

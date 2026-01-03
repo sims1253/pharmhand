@@ -25,6 +25,7 @@ library(tidyr)
 #' Main function to generate the complete efficacy report.
 #'
 #' @param output_path Path for the output .docx file
+#' @param apply_gba Logical, apply G-BA formatting before export
 #'
 #' @return Invisibly returns the ClinicalReport object
 #'
@@ -33,7 +34,8 @@ library(tidyr)
 #' generate_efficacy_report()
 #' }
 generate_efficacy_report <- function(
-	output_path = "inst/examples/Efficacy_Report.docx"
+	output_path = "inst/examples/Efficacy_Report.docx",
+	apply_gba = FALSE
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
@@ -138,6 +140,9 @@ generate_efficacy_report <- function(
 
 	# Write to file
 	message(paste0("Writing to ", output_path))
+	if (apply_gba) {
+		report <- to_gba_template(report)
+	}
 	generate_word(report, path = output_path)
 
 	message(paste0("Efficacy report generated: ", output_path))

@@ -368,6 +368,9 @@ fmt_ci <- function() {
 #'   (default: 0.001)
 #' @param locale Character locale for decimal separator: "en" or "de"
 #'   (default: current pharmhand locale)
+#' @param trim Logical, if TRUE remove trailing zeros (default: FALSE)
+#' @param na_string String for missing values
+#'   (default: getOption("pharmhand.na_string", "NA"))
 #'
 #' @return Character vector of formatted p-values
 #' @export
@@ -391,7 +394,9 @@ format_pvalue <- function(
 	p,
 	digits = 3L,
 	threshold = 0.001,
-	locale = get_locale()
+	locale = get_locale(),
+	trim = FALSE,
+	na_string = getOption("pharmhand.na_string", "NA")
 ) {
 	# Vectorized implementation
 	vapply(
@@ -399,7 +404,7 @@ format_pvalue <- function(
 		function(pval) {
 			# Handle NA
 			if (is.na(pval)) {
-				return("--")
+				return(na_string)
 			}
 
 			# Validate range
@@ -409,9 +414,12 @@ format_pvalue <- function(
 
 			# Format based on threshold
 			if (pval < threshold) {
-				result <- paste0("<", format_number(threshold, digits, locale))
+				result <- paste0(
+					"<",
+					format_number(threshold, digits, locale, trim, na_string)
+				)
 			} else {
-				result <- format_number(pval, digits, locale)
+				result <- format_number(pval, digits, locale, trim, na_string)
 			}
 
 			result
@@ -431,6 +439,9 @@ format_pvalue <- function(
 #' @param digits Integer number of decimal places (default: 2)
 #' @param locale Character locale for decimal separator: "en" or "de"
 #'   (default: current pharmhand locale)
+#' @param trim Logical, if TRUE remove trailing zeros (default: FALSE)
+#' @param na_string String for missing values
+#'   (default: getOption("pharmhand.na_string", "NA"))
 #' @param brackets Character vector of length 2 for opening/closing brackets
 #'   (default: \code{c("[", "]")})
 #'
@@ -454,6 +465,8 @@ format_ci <- function(
 	upper,
 	digits = 2L,
 	locale = get_locale(),
+	trim = FALSE,
+	na_string = getOption("pharmhand.na_string", "NA"),
 	brackets = c("[", "]")
 ) {
 	# Validate inputs
@@ -465,11 +478,11 @@ format_ci <- function(
 	mapply(
 		function(l, u) {
 			if (is.na(l) || is.na(u)) {
-				return("--")
+				return(na_string)
 			}
 
-			l_fmt <- format_number(l, digits, locale)
-			u_fmt <- format_number(u, digits, locale)
+			l_fmt <- format_number(l, digits, locale, trim, na_string)
+			u_fmt <- format_number(u, digits, locale, trim, na_string)
 
 			paste0(brackets[1], l_fmt, "; ", u_fmt, brackets[2])
 		},
@@ -479,6 +492,12 @@ format_ci <- function(
 	)
 }
 
+#' @keywords internal
+round_half_up <- function(x, digits = 0L) {
+	factor <- 10^digits
+	sign(x) * floor(abs(x) * factor + 0.5) / factor
+}
+
 #' Format Number with Locale
 #'
 #' Helper function to format a number with locale-aware decimal separator.
@@ -486,6 +505,9 @@ format_ci <- function(
 #' @param x Numeric value
 #' @param digits Integer number of decimal places
 #' @param locale Character locale: "en" (period) or "de" (comma)
+#' @param trim Logical, if TRUE remove trailing zeros (default: FALSE)
+#' @param na_string String for missing values
+#'   (default: getOption("pharmhand.na_string", "NA"))
 #'
 #' @return Character formatted number
 #' @export
@@ -496,24 +518,42 @@ format_ci <- function(
 #'
 #' format_number(1234.567, 2, "de")
 #' # [1] "1234,57"
-format_number <- function(x, digits = 2L, locale = get_locale()) {
-	if (is.na(x)) {
-		return("--")
+format_number <- function(
+	x,
+	digits = 2L,
+	locale = get_locale(),
+	trim = FALSE,
+	na_string = getOption("pharmhand.na_string", "NA")
+) {
+	if (length(x) == 0) {
+		return(character())
 	}
 
-	# Add tiny epsilon for proper "round half up" behavior
-	# R uses banker's rounding, which rounds 1.2345 to 1.234
-	# We want 1.2345 to round to 1.235
-	epsilon <- 1e-12
+	vapply(
+		x,
+		function(value) {
+			if (is.na(value)) {
+				return(na_string)
+			}
 
-	result <- sprintf(paste0("%.", digits, "f"), x + epsilon)
+			rounded <- round_half_up(value, digits)
+			result <- sprintf(paste0("%.", digits, "f"), rounded)
 
-	# Replace decimal separator for German locale
-	if (locale == "de") {
-		result <- gsub(".", ",", result, fixed = TRUE)
-	}
+			# Trim trailing zeros and decimal point if requested
+			if (trim) {
+				result <- sub("0+$", "", result)
+				result <- sub("\\.$", "", result)
+			}
 
-	result
+			# Replace decimal separator for German locale
+			if (locale == "de") {
+				result <- gsub(".", ",", result, fixed = TRUE)
+			}
+
+			result
+		},
+		character(1)
+	)
 }
 
 #' Format Percentage
@@ -523,6 +563,9 @@ format_number <- function(x, digits = 2L, locale = get_locale()) {
 #' @param x Numeric value (proportion 0-1 or percentage 0-100)
 #' @param digits Integer number of decimal places (default: 1)
 #' @param locale Character locale: "en" or "de"
+#' @param trim Logical, if TRUE remove trailing zeros (default: FALSE)
+#' @param na_string String for missing values
+#'   (default: getOption("pharmhand.na_string", "NA"))
 #' @param is_proportion Logical, if TRUE treats x as proportion (0-1),
 #'   otherwise as percentage (0-100). Default: FALSE
 #' @param symbol Logical, if TRUE appends "%" symbol. Default: TRUE
@@ -543,11 +586,13 @@ format_percentage <- function(
 	x,
 	digits = 1L,
 	locale = get_locale(),
+	trim = FALSE,
+	na_string = getOption("pharmhand.na_string", "NA"),
 	is_proportion = FALSE,
 	symbol = TRUE
 ) {
-	if (is.na(x)) {
-		return("--")
+	if (length(x) == 0) {
+		return(character())
 	}
 
 	# Convert proportion to percentage if needed
@@ -555,10 +600,10 @@ format_percentage <- function(
 		x <- x * 100
 	}
 
-	result <- format_number(x, digits, locale)
+	result <- format_number(x, digits, locale, trim, na_string)
 
 	if (symbol) {
-		result <- paste0(result, "%")
+		result <- ifelse(result == na_string, result, paste0(result, "%"))
 	}
 
 	result

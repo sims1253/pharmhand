@@ -24,13 +24,16 @@ check_gba_compliance(
 
 \item{require_title}{Logical, require a title line (default: FALSE)}
 
-\item{require_header}{Logical, require a header row in flextable (default: TRUE)}
+\item{require_header}{Logical, require a header row in flextable
+(default: TRUE)}
 
 \item{require_body}{Logical, require a body row in flextable (default: TRUE)}
 
-\item{require_unique_colnames}{Logical, require unique column names (default: TRUE)}
+\item{require_unique_colnames}{Logical, require unique column names
+(default: TRUE)}
 
-\item{require_nonempty_colnames}{Logical, require non-empty column names (default: TRUE)}
+\item{require_nonempty_colnames}{Logical, require non-empty column names
+(default: TRUE)}
 }
 \value{
 A list with \code{ok}, \code{errors}, and \code{warnings}

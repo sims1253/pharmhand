@@ -4,7 +4,14 @@
 \alias{format_pvalue}
 \title{Format P-Value (IQWiG-Compliant)}
 \usage{
-format_pvalue(p, digits = 3L, threshold = 0.001, locale = get_locale())
+format_pvalue(
+  p,
+  digits = 3L,
+  threshold = 0.001,
+  locale = get_locale(),
+  trim = FALSE,
+  na_string = getOption("pharmhand.na_string", "NA")
+)
 }
 \arguments{
 \item{p}{Numeric p-value or vector of p-values}
@@ -16,6 +23,11 @@ format_pvalue(p, digits = 3L, threshold = 0.001, locale = get_locale())
 
 \item{locale}{Character locale for decimal separator: "en" or "de"
 (default: current pharmhand locale)}
+
+\item{trim}{Logical, if TRUE remove trailing zeros (default: FALSE)}
+
+\item{na_string}{String for missing values
+(default: getOption("pharmhand.na_string", "NA"))}
 }
 \value{
 Character vector of formatted p-values

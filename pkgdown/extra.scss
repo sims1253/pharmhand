@@ -1,112 +1,87 @@
-// pharmhand custom styles
-$clinical-accent-bg: rgba(0, 119, 182, 0.05);
+// pharmhand pkgdown custom styles for sandstone theme
+// Only custom overrides - let sandstone handle the rest
 
-/* Enhance code blocks */
+// ================================================
+// Code blocks - minor enhancements
+// ================================================
 pre {
   border-radius: 0.5rem;
 }
 
-/* Clinical table styling hints */
-.table {
-  --bs-table-striped-bg: $clinical-accent-bg;
-}
-
-/* Better reference page layout */
+// ================================================
+// Layout and spacing
+// ================================================
 .contents .section {
   margin-bottom: 2rem;
 }
 
-/* Function reference cards */
 .ref-index .section {
   margin-bottom: 1.5rem;
 }
 
-/* Enhance article headers */
+.contents {
+  max-width: 900px;
+}
+
+// ================================================
+// Typography - article headers
+// ================================================
 article h2 {
   border-bottom: 2px solid var(--bs-primary);
   padding-bottom: 0.5rem;
   margin-top: 2rem;
 }
 
-/* Clinical-themed callouts */
-.callout {
-  border-left: 4px solid var(--bs-primary);
-  padding: 1rem;
-  background: $clinical-accent-bg;
-  margin: 1rem 0;
-  border-radius: 0 0.5rem 0.5rem 0;
-}
+// ================================================
+// Dark mode flextable compatibility
+// ================================================
+// Flextable tables need special handling in dark mode
+// because they embed inline styles that override CSS
 
-/* Better spacing for vignette content */
-.contents {
-  max-width: 900px;
-}
-
-/* 
- * Flextable dark mode compatibility
- * 
- * Flextable embeds <style> blocks with classes like .cl-xxxxx that set
- * color: rgba(0, 0, 0, 1.00). These embedded styles load after our CSS.
- * 
- * Solution: Use html[data-bs-theme="dark"] for highest specificity
- * and target elements with attribute selectors that match ANY class starting with "cl-"
- */
-
-/* Container - light card in dark mode */
-html[data-bs-theme="dark"] .tabwid {
+html[data-bs-theme="dark"] .tabwid,
+html[data-bs-theme="dark"] .flextable-shadow-host {
   background-color: #f8f9fa !important;
   border-radius: 0.5rem;
   padding: 0.5rem;
   margin: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Force white background on table */
-html[data-bs-theme="dark"] .tabwid table {
+html[data-bs-theme="dark"] .tabwid table,
+html[data-bs-theme="dark"] .flextable-shadow-host table {
   background-color: #ffffff !important;
 }
 
 html[data-bs-theme="dark"] .tabwid table th,
-html[data-bs-theme="dark"] .tabwid table td {
+html[data-bs-theme="dark"] .tabwid table td,
+html[data-bs-theme="dark"] .flextable-shadow-host table th,
+html[data-bs-theme="dark"] .flextable-shadow-host table td {
   background-color: #ffffff !important;
 }
 
-/* Header cells - light gray */
 html[data-bs-theme="dark"] .tabwid table thead th,
-html[data-bs-theme="dark"] .tabwid table thead td {
+html[data-bs-theme="dark"] .tabwid table thead td,
+html[data-bs-theme="dark"] .flextable-shadow-host table thead th,
+html[data-bs-theme="dark"] .flextable-shadow-host table thead td {
   background-color: #e9ecef !important;
 }
 
-/* Footer cells */
-html[data-bs-theme="dark"] .tabwid table tfoot td {
+html[data-bs-theme="dark"] .tabwid table tfoot td,
+html[data-bs-theme="dark"] .tabwid table tfoot th,
+html[data-bs-theme="dark"] .flextable-shadow-host table tfoot td,
+html[data-bs-theme="dark"] .flextable-shadow-host table tfoot th {
   background-color: #f8f9fa !important;
 }
 
-/* 
- * Force dark text on ALL elements with classes starting with "cl-"
- * This targets flextable's generated class names
- */
-html[data-bs-theme="dark"] .tabwid [class^="cl-"],
-html[data-bs-theme="dark"] .tabwid [class*=" cl-"] {
+// Force dark text inside flextable containers
+html[data-bs-theme="dark"] .tabwid,
+html[data-bs-theme="dark"] .tabwid *,
+html[data-bs-theme="dark"] .flextable-shadow-host,
+html[data-bs-theme="dark"] .flextable-shadow-host * {
   color: #212529 !important;
 }
 
-/* Also force on span, p, td, th directly */
-html[data-bs-theme="dark"] .tabwid span,
-html[data-bs-theme="dark"] .tabwid p,
-html[data-bs-theme="dark"] .tabwid td,
-html[data-bs-theme="dark"] .tabwid th {
-  color: #212529 !important;
-}
-
-/* Double-specificity for stubborn cases */
-html[data-bs-theme="dark"] .tabwid table span,
-html[data-bs-theme="dark"] .tabwid table p {
-  color: #212529 !important;
-}
-
-html[data-bs-theme="dark"] .tabwid table tbody span,
-html[data-bs-theme="dark"] .tabwid table thead span,
-html[data-bs-theme="dark"] .tabwid table tfoot span {
-  color: #212529 !important;
+// Table footnotes that appear after tables (need light text on dark bg)
+html[data-bs-theme="dark"] .tabwid ~ p,
+html[data-bs-theme="dark"] .flextable-shadow-host ~ p {
+  color: var(--bs-body-color) !important;
 }

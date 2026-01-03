@@ -1,5 +1,8 @@
 ---
 title: "Baseline Characteristics Tables"
+description: >
+  Create demographics, medical history, and baseline characteristic tables
+  for clinical study reports using ADaM datasets.
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Baseline Characteristics Tables}
