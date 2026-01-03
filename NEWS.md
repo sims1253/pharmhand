@@ -1,3 +1,11 @@
+# pharmhand 0.1.14.9000
+
+## Documentation
+
+* Documented the complete proportional hazards assumption testing suite for Cox models:
+  Schoenfeld residual tests via `test_ph_assumption()`, log-log survival plots via
+  `create_loglog_plot()`, and automatic warnings in `create_tte_summary_table()`.
+
 # pharmhand 0.1.13.9000
 
 ## Improvements
