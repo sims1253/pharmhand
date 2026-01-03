@@ -54,5 +54,5 @@ format_pvalue(c(0.05, 0.001, 0.0001))
 # [1] "0.050" "0.001" "<0.001"
 }
 \references{
-IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+IQWiG (2025). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
 }

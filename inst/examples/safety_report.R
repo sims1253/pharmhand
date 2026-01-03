@@ -170,6 +170,20 @@ build_ae_overview <- function(adae, adsl) {
 #' @return ReportSection object
 #' @keywords internal
 build_time_to_event <- function(adsl, adae, default_duration = 100) {
+	# Input validation for default_duration
+	if (!is.numeric(default_duration)) {
+		stop("default_duration must be numeric", call. = FALSE)
+	}
+	if (length(default_duration) != 1) {
+		stop("default_duration must be a single value (length 1)", call. = FALSE)
+	}
+	if (is.na(default_duration)) {
+		stop("default_duration must not be NA", call. = FALSE)
+	}
+	if (default_duration <= 0) {
+		stop("default_duration must be greater than 0", call. = FALSE)
+	}
+
 	# Define event of interest: Time to first Dermatologic event
 	target_soc <- "Skin and subcutaneous tissue disorders"
 

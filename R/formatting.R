@@ -376,7 +376,7 @@ fmt_ci <- function() {
 #' @export
 #'
 #' @references
-#' IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+#' IQWiG (2025). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
 #'
 #' @examples
 #' format_pvalue(0.0234)
@@ -431,7 +431,9 @@ format_pvalue <- function(
 #' Format Confidence Interval (IQWiG-Compliant)
 #'
 #' Formats confidence intervals according to IQWiG Methods v8.0, Chapter 10.3.2:
-#' - Semicolon separator: \code{[lower; upper]}
+#' - Report whether CIs are 1- or 2-sided and the confidence level (e.g., 95%);
+#'   IQWiG does not prescribe punctuation between bounds
+#' - Semicolon separator is a formatting choice: \code{[lower; upper]}
 #' - Locale-aware decimal separator
 #'
 #' @param lower Numeric lower bound (or vector)
@@ -449,7 +451,7 @@ format_pvalue <- function(
 #' @export
 #'
 #' @references
-#' IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+#' IQWiG (2025). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
 #'
 #' @examples
 #' format_ci(0.85, 1.23)
@@ -493,6 +495,7 @@ format_ci <- function(
 }
 
 #' @keywords internal
+# Uses round-half-up because R's round() uses bankers rounding
 round_half_up <- function(x, digits = 0L) {
 	factor <- 10^digits
 	sign(x) * floor(abs(x) * factor + 0.5) / factor

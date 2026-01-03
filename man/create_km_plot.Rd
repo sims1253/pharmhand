@@ -55,12 +55,12 @@ lines (e.g., c(12, 24) for 12 and 24 months). NULL for none.}
 
 \item{xlim}{Optional x-axis limits as c(min, max)}
 
-\item{palette}{Optional color palette for treatment groups. Can be a
-character vector of colors, or NULL to use
-\code{getOption("pharmhand.palette")}. Defaults to the CVD-friendly
-"Okabe-Ito (reordered)" palette (orange, sky blue for first two arms).
-Other built-in options: "Okabe-Ito",
-"R4", "Tableau 10", "Alphabet", etc. (see \code{grDevices::palette.pals()}).}
+\item{palette}{Color palette for treatment groups. Precedence: (1) explicit
+palette argument (character vector of colors or named palette string),
+(2) \code{getOption("pharmhand.palette")}, (3) default Okabe-Ito reordered
+(orange, sky blue for first two arms). Named palette strings from
+\code{grDevices::palette.pals()} can be used (e.g., "Okabe-Ito", "R4",
+"Tableau 10", "Alphabet").}
 
 \item{conf_level}{Confidence level for CI bands (default: 0.95)}
 

@@ -38,7 +38,9 @@ Character vector of formatted confidence intervals
 \description{
 Formats confidence intervals according to IQWiG Methods v8.0, Chapter 10.3.2:
 \itemize{
-\item Semicolon separator: \code{[lower; upper]}
+\item Requires reporting whether CIs are 1- or 2-sided and the confidence
+level (e.g., 95%) but does not prescribe punctuation between bounds
+\item Semicolon separator is a formatting choice: \code{[lower; upper]}
 \item Locale-aware decimal separator
 }
 }
@@ -53,5 +55,5 @@ format_ci(c(0.5, 0.7), c(0.9, 1.1))
 # [1] "[0.50; 0.90]" "[0.70; 1.10]"
 }
 \references{
-IQWiG (2023). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
+IQWiG (2025). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
 }
