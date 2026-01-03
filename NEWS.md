@@ -1,3 +1,10 @@
+# pharmhand 0.1.13.9000
+
+## Improvements
+
+* Added automatic PH violation warnings in `create_tte_summary_table()` with
+  guidance on stratified or alternative survival models.
+
 # pharmhand 0.1.12.9000
 
 ## Improvements

@@ -693,6 +693,8 @@ create_subgroup_analysis_table <- function(
 #' @param ref_group Reference group for HR calculation. If NULL, uses first
 #'   level of treatment variable.
 #' @param conf_level Confidence level for intervals (default: 0.95)
+#' @param check_ph Logical. Whether to test proportional hazards assumption and
+#'   warn on violations (default: TRUE)
 #' @param landmarks Numeric vector of timepoints for landmark survival
 #'   estimates (e.g., c(12, 24) for 12 and 24 month rates). NULL for none.
 #' @param time_unit Character string for time unit display (default: "months")
@@ -727,6 +729,7 @@ create_tte_summary_table <- function(
 	trt_var = "TRT01P",
 	ref_group = NULL,
 	conf_level = 0.95,
+	check_ph = TRUE,
 	landmarks = NULL,
 	time_unit = "months",
 	title = "Time-to-Event Summary",
@@ -750,6 +753,13 @@ create_tte_summary_table <- function(
 	if (is.null(ref_group)) {
 		ref_group <- trt_levels[1]
 	}
+
+	if (!is.logical(check_ph) || length(check_ph) != 1 || is.na(check_ph)) {
+		ph_abort("'check_ph' must be TRUE or FALSE")
+	}
+
+	cox_fit <- NULL
+	ph_test <- NULL
 
 	# Build survival formula
 	surv_formula <- stats::as.formula(
@@ -866,6 +876,29 @@ create_tte_summary_table <- function(
 		cox_fit <- survival::coxph(surv_formula, data = df)
 		cox_summary <- summary(cox_fit)
 
+		if (isTRUE(check_ph)) {
+			ph_test <- test_ph_assumption(cox_fit, alpha = 0.05, plot = FALSE)
+			if (isTRUE(ph_test$violation)) {
+				violations <- ph_test$results[
+					ph_test$results$violation,
+					,
+					drop = FALSE
+				]
+				violated_vars <- violations$variable
+				pvals <- violations$p_value
+				ph_warn(sprintf(
+					paste(
+						"Proportional hazards assumption may be violated for: %s.",
+						"P-value(s): %s.",
+						"Consider stratified analysis, time-varying coefficients,",
+						"or restricted mean survival time (RMST) analysis."
+					),
+					paste(violated_vars, collapse = ", "),
+					paste(format_pvalue(pvals), collapse = ", ")
+				))
+			}
+		}
+
 		# Extract HR and CI
 		hr_table <- cox_summary$conf.int
 		hr_coefs <- cox_summary$coefficients
@@ -956,7 +989,8 @@ create_tte_summary_table <- function(
 		title = title,
 		metadata = list(
 			km_fit = km_fit,
-			cox_fit = if (exists("cox_fit")) cox_fit else NULL,
+			cox_fit = cox_fit,
+			ph_test = ph_test,
 			ref_group = ref_group,
 			landmarks = landmarks,
 			time_unit = time_unit

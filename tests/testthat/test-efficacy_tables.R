@@ -601,6 +601,68 @@ test_that("create_tte_summary_table includes HR for two-arm studies", {
 	expect_true(any(grepl("p-value", tbl@data$Statistic, fixed = TRUE)))
 })
 
+test_that("create_tte_summary_table warns on PH violations", {
+	skip_if_not_installed("survival")
+
+	set.seed(123)
+	n <- 400
+	adtte <- data.frame(
+		USUBJID = sprintf("SUBJ%03d", 1:n),
+		TRT01P = rep(c("A", "B"), each = n / 2),
+		TIME = c(
+			rweibull(n / 2, shape = 1, scale = 10),
+			rweibull(n / 2, shape = 2.5, scale = 10)
+		),
+		EVENT = rep(1, n),
+		stringsAsFactors = FALSE
+	)
+
+	expect_warning(
+		{
+			tbl <- create_tte_summary_table(
+				adtte,
+				time_var = "TIME",
+				event_var = "EVENT",
+				trt_var = "TRT01P"
+			)
+		},
+		"Proportional hazards assumption may be violated"
+	)
+
+	expect_true(is.list(tbl@metadata$ph_test))
+	expect_true("results" %in% names(tbl@metadata$ph_test))
+	expect_true(tbl@metadata$ph_test$violation)
+})
+
+test_that("create_tte_summary_table check_ph can suppress warnings", {
+	skip_if_not_installed("survival")
+
+	set.seed(123)
+	n <- 400
+	adtte <- data.frame(
+		USUBJID = sprintf("SUBJ%03d", 1:n),
+		TRT01P = rep(c("A", "B"), each = n / 2),
+		TIME = c(
+			rweibull(n / 2, shape = 1, scale = 10),
+			rweibull(n / 2, shape = 2.5, scale = 10)
+		),
+		EVENT = rep(1, n),
+		stringsAsFactors = FALSE
+	)
+
+	expect_no_warning({
+		tbl <- create_tte_summary_table(
+			adtte,
+			time_var = "TIME",
+			event_var = "EVENT",
+			trt_var = "TRT01P",
+			check_ph = FALSE
+		)
+	})
+
+	expect_null(tbl@metadata$ph_test)
+})
+
 # Tests for PH Assumption ----
 
 test_that("test_ph_assumption flags PH violations", {

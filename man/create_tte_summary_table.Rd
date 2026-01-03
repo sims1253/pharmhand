@@ -11,6 +11,7 @@ create_tte_summary_table(
   trt_var = "TRT01P",
   ref_group = NULL,
   conf_level = 0.95,
+  check_ph = TRUE,
   landmarks = NULL,
   time_unit = "months",
   title = "Time-to-Event Summary",
@@ -32,6 +33,9 @@ Otherwise expects 1=event, 0=censor. Default: "CNSR"}
 level of treatment variable.}
 
 \item{conf_level}{Confidence level for intervals (default: 0.95)}
+
+\item{check_ph}{Logical. Whether to test proportional hazards assumption and
+warn on violations (default: TRUE)}
 
 \item{landmarks}{Numeric vector of timepoints for landmark survival
 estimates (e.g., c(12, 24) for 12 and 24 month rates). NULL for none.}
