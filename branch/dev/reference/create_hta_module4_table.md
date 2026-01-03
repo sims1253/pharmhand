@@ -33,7 +33,8 @@ create_hta_module4_table(
 
 - columns:
 
-  Character vector of required column names
+  Character vector of required column names in display order. Missing
+  columns are added with `NA`.
 
 - col_widths:
 
@@ -41,7 +42,8 @@ create_hta_module4_table(
 
 - allow_extra:
 
-  Logical, allow extra columns beyond `columns` (default: FALSE)
+  Logical, allow extra columns beyond `columns`. When FALSE, extra
+  columns are dropped; when TRUE, they are appended after `columns`.
 
 - autofit:
 

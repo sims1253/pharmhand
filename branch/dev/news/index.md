@@ -1,5 +1,174 @@
 # Changelog
 
+## pharmhand 0.1.21.9000
+
+### Bug Fixes
+
+- Fixed ComparisonResult defaults from `integer(0)` to `numeric(0)` for
+  consistency with S7 class.
+- Fixed line length lint errors in
+  [`test_non_inferiority()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_non_inferiority.md)
+  documentation.
+
+### Documentation
+
+- Updated pkgdown Utilities section description to include “statistical
+  diagnostics”.
+- Added missing topics to pkgdown reference index:
+  [`calculate_exposure_adjusted_rate()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_exposure_adjusted_rate.md),
+  [`create_ae_exposure_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_exposure_table.md),
+  [`create_time_to_first_ae()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_time_to_first_ae.md),
+  and
+  [`test_non_inferiority()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_non_inferiority.md).
+- Cleaned up duplicate NEWS.md heading.
+- Added explanatory comment for PH assumption check disable in
+  time-to-first AE function.
+
+### Plotting
+
+- Added `show_censor` support to
+  [`create_loglog_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_loglog_plot.md)
+  and passed through from `create_km_plot(type = "loglog")`.
+- Updated documentation to clarify that censor marks are supported on
+  log-log plots while median lines, CI bands, risk tables, and landmarks
+  are intentionally omitted.
+- Added test for log-log plot censor marks.
+
+## pharmhand 0.1.20.9000
+
+### Improvements
+
+- Added AE cumulative incidence plots via
+  [`create_ae_cumulative_incidence_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_cumulative_incidence_plot.md).
+
+## pharmhand 0.1.19.9000
+
+### Improvements
+
+- Added ANCOVA adjustment for continuous endpoints via
+  [`ancova_adjust_continuous()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ancova_adjust_continuous.md).
+
+## pharmhand 0.1.18.9000
+
+### Improvements
+
+- Added non-inferiority testing for continuous and binary endpoints via
+  [`test_non_inferiority()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_non_inferiority.md).
+
+## pharmhand 0.1.17.9000
+
+### Improvements
+
+- Added time-to-first adverse event analysis with KM tables, plots, and
+  Cox HRs via
+  [`create_time_to_first_ae()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_time_to_first_ae.md).
+
+## pharmhand 0.1.16.9000
+
+### Improvements
+
+- Added exposure-adjusted incidence rate tables with Poisson confidence
+  intervals via
+  [`calculate_exposure_adjusted_rate()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_exposure_adjusted_rate.md)
+  and
+  [`create_ae_exposure_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_exposure_table.md).
+
+## pharmhand 0.1.15.9000
+
+### Improvements
+
+- Added configurable warnings for small subgroups in
+  [`create_subgroup_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_subgroup_table.md)
+  and
+  [`create_subgroup_analysis_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_subgroup_analysis_table.md)
+  via `min_subgroup_size` (default: 20).
+
+## pharmhand 0.1.14.9000
+
+### Documentation
+
+- Documented the complete proportional hazards assumption testing suite
+  for Cox models: Schoenfeld residual tests via
+  [`test_ph_assumption()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_ph_assumption.md),
+  log-log survival plots via
+  [`create_loglog_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_loglog_plot.md),
+  and automatic warnings in
+  [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_tte_summary_table.md).
+
+## pharmhand 0.1.13.9000
+
+### Improvements
+
+- Added automatic PH violation warnings in
+  [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_tte_summary_table.md)
+  with guidance on stratified or alternative survival models.
+
+## pharmhand 0.1.12.9000
+
+### Improvements
+
+- Added log-log survival plots for PH diagnostics via
+  [`create_loglog_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_loglog_plot.md)
+  and `create_km_plot(type = "loglog")`.
+
+## pharmhand 0.1.11.9000
+
+### Improvements
+
+- Added
+  [`test_ph_assumption()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_ph_assumption.md)
+  to run Schoenfeld residual tests with optional diagnostic plots.
+
+## pharmhand 0.1.10.9000
+
+### Improvements
+
+- Added
+  [`detect_floor_ceiling()`](https://sims1253.github.io/pharmhand/branch/dev/reference/detect_floor_ceiling.md)
+  to flag floor/ceiling effects in PRO scores by visit and treatment
+  arm.
+
+## pharmhand 0.1.9.9000
+
+### Improvements
+
+- Added NNH (Number Needed to Harm) to AE comparison tables with
+  estimability handling.
+
+## pharmhand 0.1.8.9000
+
+### Breaking Changes
+
+- `build_time_to_event()` in the safety report example no longer assumes
+  a 100-day default duration. Supply `default_duration` when TRTDURD
+  cannot be derived from TRTSDT/TRTEDT.
+
+## pharmhand 0.1.7.9000
+
+### Improvements
+
+- Standardized NA display via `pharmhand.na_string` across reporting
+  themes and clinical table styling.
+
+## pharmhand 0.1.6.9000
+
+### Documentation
+
+- Documented fixed-column handling for the Module 4 table template.
+
+## pharmhand 0.1.5.9000
+
+### Documentation
+
+- Clarified IQWiG flextable theme formatting and decimal separator
+  behavior.
+
+## pharmhand 0.1.4.9000
+
+### Documentation
+
+- Finalized IQWiG-compliant CI formatter documentation.
+
 ## pharmhand 0.1.3.9000
 
 ### Improvements

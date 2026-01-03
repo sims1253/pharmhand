@@ -20,6 +20,7 @@ create_ae_summary_table(
   threshold = 0,
   sort_by = "incidence",
   conf_level = 0.95,
+  include_nnh = TRUE,
   soc_order = NULL
 )
 ```
@@ -100,6 +101,10 @@ create_ae_summary_table(
 - conf_level:
 
   For type="comparison", confidence level (default: 0.95)
+
+- include_nnh:
+
+  For type="comparison", include NNH column (default: TRUE)
 
 - soc_order:
 

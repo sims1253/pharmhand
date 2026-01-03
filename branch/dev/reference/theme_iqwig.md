@@ -1,7 +1,8 @@
 # IQWiG Theme for Flextable
 
 Apply IQWiG-compliant styling to a flextable. Based on formatting
-standards from IQWiG Methods v8.0.
+standards from IQWiG Methods v8.0, with numeric formatting driven by
+`decimal_separator` and missing values shown via `na_string`.
 
 ## Usage
 
@@ -12,6 +13,7 @@ theme_iqwig(
   font_size = 9,
   header_bold = TRUE,
   decimal_separator = ",",
+  na_string = getOption("pharmhand.na_string", "--"),
   autofit = TRUE
 )
 ```
@@ -36,7 +38,13 @@ theme_iqwig(
 
 - decimal_separator:
 
-  Decimal separator: "." or "," (default: ",")
+  Decimal separator: "." or "," (default: ","); applies to numeric
+  columns with "." as the thousands separator when ",".
+
+- na_string:
+
+  String to display for missing values (default:
+  getOption("pharmhand.na_string", "–"))
 
 - autofit:
 

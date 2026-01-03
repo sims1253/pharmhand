@@ -88,6 +88,8 @@ responder, and subgroup analyses.
 
 - [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_tte_summary_table.md)
   : Create Time-to-Event Summary Table
+- [`test_non_inferiority()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_non_inferiority.md)
+  : Non-Inferiority Test
 - [`create_responder_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_responder_table.md)
   : Create Responder Summary Table
 - [`create_subgroup_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_subgroup_table.md)
@@ -108,6 +110,10 @@ laboratory shifts and AE summaries.
   : Create Adverse Event Summary Table
 - [`create_ae_comparison_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_comparison_table.md)
   : Create AE Comparison Table with Risk Differences
+- [`create_ae_exposure_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_exposure_table.md)
+  : Create Exposure-Adjusted AE Table
+- [`create_time_to_first_ae()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_time_to_first_ae.md)
+  : Create Time-to-First AE Analysis
 - [`create_lab_shift_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_lab_shift_table.md)
   : Create Laboratory Shift Table
 - [`create_lab_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_lab_summary_table.md)
@@ -124,6 +130,8 @@ laboratory shifts and AE summaries.
   : Calculate AE TTE Data for a specific SOC
 - [`calculate_ae_risk_difference()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_ae_risk_difference.md)
   : Calculate Risk Difference and Confidence Interval for AE
+- [`calculate_exposure_adjusted_rate()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_exposure_adjusted_rate.md)
+  : Calculate Exposure-Adjusted Incidence Rate
 
 ## Standard Tables
 
@@ -154,10 +162,14 @@ and other graphics.
 
 - [`create_km_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_km_plot.md)
   : Create Kaplan-Meier Plot
+- [`create_ae_cumulative_incidence_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_cumulative_incidence_plot.md)
+  : Create AE Cumulative Incidence Plot
 - [`create_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_forest_plot.md)
   : Create Subgroup Forest Plot
 - [`create_ae_km_plot_for_soc()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_km_plot_for_soc.md)
   : Create AE KM Plot for a specific SOC
+- [`create_loglog_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_loglog_plot.md)
+  : Create Log-Log Survival Plot
 - [`save_plot_as()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_plot_as.md)
   : Save ClinicalPlot to file
 - [`save_as_png()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_as_png.md)
@@ -351,8 +363,8 @@ headers and content.
 
 ## Utilities
 
-Helper functions for data filtering, treatment information, and other
-common operations.
+Helper functions for data filtering, treatment information, statistical
+diagnostics, and other common operations.
 
 - [`get_filtered_data()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_filtered_data.md)
   : Get Filtered Data
@@ -364,6 +376,10 @@ common operations.
   : Get Treatment Variable Name
 - [`calculate_proportion_ci()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_proportion_ci.md)
   : Calculate Proportion Confidence Interval
+- [`detect_floor_ceiling()`](https://sims1253.github.io/pharmhand/branch/dev/reference/detect_floor_ceiling.md)
+  : Detect Floor and Ceiling Effects
+- [`test_ph_assumption()`](https://sims1253.github.io/pharmhand/branch/dev/reference/test_ph_assumption.md)
+  : Test Proportional Hazards Assumption
 
 ## Internal
 

@@ -11,6 +11,7 @@ create_subgroup_analysis_table(
   paramcd = "SYSBP",
   visit = "End of Treatment",
   subgroups = list(AGEGR1 = "Age Group", SEX = "Sex"),
+  min_subgroup_size = 20,
   trt_var = "TRT01P",
   title = "Subgroup Analysis",
   autofit = TRUE
@@ -41,6 +42,11 @@ create_subgroup_analysis_table(
   Named list of subgroup variables with display labels (e.g.
   list(AGEGR1="Age Group", SEX="Sex")). Variables can come from advs or
   adsl (joined by USUBJID).
+
+- min_subgroup_size:
+
+  Numeric. Minimum subgroup size required before warnings are issued.
+  Use NULL to disable warnings. Default is 20.
 
 - trt_var:
 

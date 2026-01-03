@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.21.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
 <span>  threshold <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  sort_by <span class="op">=</span> <span class="st">"incidence"</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  include_nnh <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  soc_order <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -131,6 +132,10 @@ like "deaths", "comparison", or for denominator calculation)</p></dd>
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
 <dd><p>For type="comparison", confidence level (default: 0.95)</p></dd>
+
+
+<dt id="arg-include-nnh">include_nnh<a class="anchor" aria-label="anchor" href="#arg-include-nnh"></a></dt>
+<dd><p>For type="comparison", include NNH column (default: TRUE)</p></dd>
 
 
 <dt id="arg-soc-order">soc_order<a class="anchor" aria-label="anchor" href="#arg-soc-order"></a></dt>

@@ -17,7 +17,7 @@ apply_clinical_style(
   body_bg = "white",
   font_color = "black",
   zebra = FALSE,
-  na_string = "--",
+  na_string = get_na_string(),
   autofit = TRUE
 )
 ```
@@ -66,7 +66,8 @@ apply_clinical_style(
 
 - na_string:
 
-  String to display for NA values (default: "–")
+  String to display for NA values (default:
+  getOption("pharmhand.na_string", "–"))
 
 - autofit:
 

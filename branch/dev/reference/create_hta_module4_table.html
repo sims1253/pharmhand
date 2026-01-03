@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.21.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,8 @@
 
 
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
-<dd><p>Character vector of required column names</p></dd>
+<dd><p>Character vector of required column names in display order.
+Missing columns are added with <code>NA</code>.</p></dd>
 
 
 <dt id="arg-col-widths">col_widths<a class="anchor" aria-label="anchor" href="#arg-col-widths"></a></dt>
@@ -83,8 +84,8 @@
 
 
 <dt id="arg-allow-extra">allow_extra<a class="anchor" aria-label="anchor" href="#arg-allow-extra"></a></dt>
-<dd><p>Logical, allow extra columns beyond <code>columns</code>
-(default: FALSE)</p></dd>
+<dd><p>Logical, allow extra columns beyond <code>columns</code>. When FALSE,
+extra columns are dropped; when TRUE, they are appended after <code>columns</code>.</p></dd>
 
 
 <dt id="arg-autofit">autofit<a class="anchor" aria-label="anchor" href="#arg-autofit"></a></dt>

@@ -3,8 +3,8 @@
 Formats confidence intervals according to IQWiG Methods v8.0, Chapter
 10.3.2:
 
-- Requires reporting whether CIs are 1- or 2-sided and the confidence
-  level (e.g., 95
+- Report whether CIs are 1- or 2-sided and the confidence level (e.g.,
+  95%); IQWiG does not prescribe punctuation between bounds
 
 - Semicolon separator is a formatting choice: `[lower; upper]`
 
