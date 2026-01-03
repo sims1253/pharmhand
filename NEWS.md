@@ -1,3 +1,10 @@
+# pharmhand 0.1.15.9000
+
+## Improvements
+
+* Added configurable warnings for small subgroups in `create_subgroup_table()` and
+  `create_subgroup_analysis_table()` via `min_subgroup_size` (default: 20).
+
 # pharmhand 0.1.14.9000
 
 ## Documentation

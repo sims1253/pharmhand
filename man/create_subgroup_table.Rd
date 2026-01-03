@@ -7,6 +7,7 @@
 create_subgroup_table(
   data,
   subgroups,
+  min_subgroup_size = 20,
   endpoint_type = c("tte", "binary"),
   time_var = "AVAL",
   event_var = "CNSR",
@@ -27,6 +28,9 @@ create_subgroup_table(
 
 \item{subgroups}{Named list mapping variable names to display labels,
 e.g., \code{list(AGEGR1 = "Age Group", SEX = "Sex", RACE = "Race")}}
+
+\item{min_subgroup_size}{Numeric. Minimum subgroup size required before
+warnings are issued. Use NULL to disable warnings. Default is 20.}
 
 \item{endpoint_type}{"tte" for time-to-event (HR) or "binary" for
 binary outcomes (OR)}

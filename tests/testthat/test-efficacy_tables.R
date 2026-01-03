@@ -339,13 +339,44 @@ test_that("create_subgroup_analysis_table works", {
 		SEX = c("M", "F", "M", "F")
 	)
 
-	tbl <- create_subgroup_analysis_table(adsl, advs)
+	tbl <- create_subgroup_analysis_table(adsl, advs, min_subgroup_size = NULL)
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "subgroup")
 	expect_true(all(c("Subgroup", "Category") %in% names(tbl@data)))
 	expect_true(any(tbl@data$Subgroup == "Age Group"))
 	expect_true(any(tbl@data$Subgroup == "Sex"))
+})
+
+test_that("create_subgroup_analysis_table warns for small subgroups", {
+	adsl <- data.frame(USUBJID = sprintf("SUBJ%02d", 1:8))
+	advs <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:8),
+		TRT01P = rep(c("A", "B"), each = 4),
+		PARAMCD = rep("SYSBP", 8),
+		AVISIT = rep("End of Treatment", 8),
+		AVAL = c(120, 122, 118, 130, 125, 128, 135, 140),
+		SEX = rep(c("M", "F"), times = 4),
+		stringsAsFactors = FALSE
+	)
+
+	expect_warning(
+		create_subgroup_analysis_table(
+			adsl,
+			advs,
+			subgroups = list(SEX = "Sex")
+		),
+		"Small subgroup warning"
+	)
+
+	expect_no_warning(
+		create_subgroup_analysis_table(
+			adsl,
+			advs,
+			subgroups = list(SEX = "Sex"),
+			min_subgroup_size = NULL
+		)
+	)
 })
 
 test_that("create_subgroup_analysis_table pulls subgroup vars from adsl", {
@@ -365,7 +396,8 @@ test_that("create_subgroup_analysis_table pulls subgroup vars from adsl", {
 	tbl <- create_subgroup_analysis_table(
 		adsl,
 		advs,
-		subgroups = list(AGEGR1 = "Age Group", SEX = "Sex")
+		subgroups = list(AGEGR1 = "Age Group", SEX = "Sex"),
+		min_subgroup_size = NULL
 	)
 
 	expect_true(any(tbl@data$Subgroup == "Sex"))
@@ -1004,6 +1036,40 @@ test_that("create_subgroup_table can disable interaction p-values", {
 	)
 
 	expect_false("Interaction p" %in% names(tbl@data))
+})
+
+test_that("create_subgroup_table warns for small subgroups", {
+	adrs <- data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:30),
+		TRT01P = rep(c("Placebo", "Active"), each = 15),
+		SEX = c(
+			rep(c("F", "M"), times = c(5, 10)),
+			rep(c("F", "M"), times = c(5, 10))
+		),
+		AVALC = rep(c("CR", "SD", "PR", "PD", "SD", "CR"), length.out = 30),
+		stringsAsFactors = FALSE
+	)
+
+	expect_warning(
+		create_subgroup_table(
+			adrs,
+			subgroups = list(SEX = "Sex"),
+			endpoint_type = "binary",
+			show_interaction = FALSE,
+			min_subgroup_size = 15
+		),
+		"Small subgroup warning"
+	)
+
+	expect_no_warning(
+		create_subgroup_table(
+			adrs,
+			subgroups = list(SEX = "Sex"),
+			endpoint_type = "binary",
+			show_interaction = FALSE,
+			min_subgroup_size = 5
+		)
+	)
 })
 
 test_that("create_subgroup_table warns for missing subgroup variables", {
