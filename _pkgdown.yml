@@ -126,6 +126,7 @@ reference:
   - create_km_plot
   - create_forest_plot
   - create_ae_km_plot_for_soc
+  - create_loglog_plot
   - save_plot_as
   - save_as_png
 
@@ -253,6 +254,8 @@ reference:
   - get_trt_n
   - get_trt_var
   - calculate_proportion_ci
+  - detect_floor_ceiling
+  - test_ph_assumption
 
 - title: "Internal"
   desc: >
