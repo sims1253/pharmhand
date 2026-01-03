@@ -12,7 +12,7 @@ analyze_study(x, ...)
 
 - x:
 
-  Study object (OneArmStudy or TwoArmStudy)
+  Study object (SingleArmStudy, TwoArmStudy, or MultiArmStudy)
 
 - ...:
 

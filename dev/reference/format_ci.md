@@ -1,40 +1,82 @@
-# Format confidence intervals
+# Format Confidence Interval (IQWiG-Compliant)
 
-Formats lower and upper bounds of a confidence interval into a string.
+Formats confidence intervals according to IQWiG Methods v8.0, Chapter
+10.3.2:
+
+- Requires reporting whether CIs are 1- or 2-sided and the confidence
+  level (e.g., 95
+
+- Semicolon separator is a formatting choice: `[lower; upper]`
+
+- Locale-aware decimal separator
 
 ## Usage
 
 ``` r
-format_ci(lower, upper, digits = 2, separator = ", ")
+format_ci(
+  lower,
+  upper,
+  digits = 2L,
+  locale = get_locale(),
+  trim = FALSE,
+  na_string = getOption("pharmhand.na_string", "NA"),
+  brackets = c("[", "]")
+)
 ```
 
 ## Arguments
 
 - lower:
 
-  Numeric vector of lower bounds.
+  Numeric lower bound (or vector)
 
 - upper:
 
-  Numeric vector of upper bounds.
+  Numeric upper bound (or vector)
 
 - digits:
 
-  Integer specifying the number of decimal places. Default is 2.
+  Integer number of decimal places (default: 2)
 
-- separator:
+- locale:
 
-  Character string to use as separator. Default is ", ".
+  Character locale for decimal separator: "en" or "de" (default: current
+  pharmhand locale)
+
+- trim:
+
+  Logical, if TRUE remove trailing zeros (default: FALSE)
+
+- na_string:
+
+  String for missing values (default: getOption("pharmhand.na_string",
+  "NA"))
+
+- brackets:
+
+  Character vector of length 2 for opening/closing brackets (default:
+  `c("[", "]")`)
 
 ## Value
 
-Character vector with formatted confidence intervals.
+Character vector of formatted confidence intervals
+
+## References
+
+IQWiG (2025). Allgemeine Methoden, Version 8.0, Chapter 10.3.2, p. 212.
 
 ## Examples
 
 ``` r
-format_ci(1.23, 4.56, digits = 2) # Returns "1.23, 4.56"
-#> [1] "1.23, 4.56"
-format_ci(c(1.23, 5.67), c(4.56, 8.90), digits = 1) # c("1.2, 4.6")
-#> [1] "1.2, 4.6" "5.7, 8.9"
+format_ci(0.85, 1.23)
+#> [1] "[0.85; 1.23]"
+# [1] "[0.85; 1.23]"
+
+format_ci(0.85, 1.23, locale = "de")
+#> [1] "[0,85; 1,23]"
+# [1] "[0,85; 1,23]"
+
+format_ci(c(0.5, 0.7), c(0.9, 1.1))
+#> [1] "[0.50; 0.90]" "[0.70; 1.10]"
+# [1] "[0.50; 0.90]" "[0.70; 1.10]"
 ```

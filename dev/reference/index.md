@@ -16,32 +16,48 @@ Core S7 classes for clinical data structures and reporting objects.
   : ClinicalReport Class
 - [`ClinicalTable()`](https://sims1253.github.io/pharmhand/dev/reference/ClinicalTable.md)
   : ClinicalTable Class
+- [`ComparisonResult()`](https://sims1253.github.io/pharmhand/dev/reference/ComparisonResult.md)
+  : ComparisonResult Class
 - [`CompositeFormat()`](https://sims1253.github.io/pharmhand/dev/reference/CompositeFormat.md)
   : CompositeFormat S7 Class
+- [`Endpoint()`](https://sims1253.github.io/pharmhand/dev/reference/Endpoint.md)
+  : Endpoint Class
+- [`EvidenceGrade()`](https://sims1253.github.io/pharmhand/dev/reference/EvidenceGrade.md)
+  : EvidenceGrade Class
 - [`FormatSpec()`](https://sims1253.github.io/pharmhand/dev/reference/FormatSpec.md)
   : FormatSpec S7 Class
 - [`LayeredTable()`](https://sims1253.github.io/pharmhand/dev/reference/LayeredTable.md)
   : Layered Table Class
+- [`MetaResult()`](https://sims1253.github.io/pharmhand/dev/reference/MetaResult.md)
+  : MetaResult Class
 - [`PerformanceReport()`](https://sims1253.github.io/pharmhand/dev/reference/PerformanceReport.md)
   : PerformanceReport Class
 - [`ReportSection()`](https://sims1253.github.io/pharmhand/dev/reference/ReportSection.md)
   : ReportSection Class
+- [`StatResult()`](https://sims1253.github.io/pharmhand/dev/reference/StatResult.md)
+  : StatResult Class (Abstract Base)
 - [`StudyResult()`](https://sims1253.github.io/pharmhand/dev/reference/StudyResult.md)
   : StudyResult Class
 
 ## Study Design Classes
 
 Classes and methods for defining and analyzing clinical study designs.
-Supports one-arm and two-arm study configurations.
+Supports single-arm, two-arm, and multi-arm study configurations.
 
-- [`OneArmStudy()`](https://sims1253.github.io/pharmhand/dev/reference/OneArmStudy.md)
-  : OneArmStudy Class
+- [`SingleArmStudy()`](https://sims1253.github.io/pharmhand/dev/reference/SingleArmStudy.md)
+  : SingleArmStudy Class
 - [`TwoArmStudy()`](https://sims1253.github.io/pharmhand/dev/reference/TwoArmStudy.md)
   : TwoArmStudy Class
+- [`MultiArmStudy()`](https://sims1253.github.io/pharmhand/dev/reference/MultiArmStudy.md)
+  : MultiArmStudy Class
+- [`Study()`](https://sims1253.github.io/pharmhand/dev/reference/Study.md)
+  : Study Class (Abstract Base)
+- [`StudySet()`](https://sims1253.github.io/pharmhand/dev/reference/StudySet.md)
+  : StudySet Class
 - [`analyze_study()`](https://sims1253.github.io/pharmhand/dev/reference/analyze_study.md)
   : Analyze Study (S7 Method)
-- [`analyze_study_OneArmStudy()`](https://sims1253.github.io/pharmhand/dev/reference/analyze_study_OneArmStudy.md)
-  : Analyze OneArmStudy
+- [`analyze_study_SingleArmStudy()`](https://sims1253.github.io/pharmhand/dev/reference/analyze_study_SingleArmStudy.md)
+  : Analyze SingleArmStudy
 - [`analyze_study_TwoArmStudy()`](https://sims1253.github.io/pharmhand/dev/reference/analyze_study_TwoArmStudy.md)
   : Analyze TwoArmStudy
 - [`analyze()`](https://sims1253.github.io/pharmhand/dev/reference/analyze.md)
@@ -58,12 +74,6 @@ classes for structured reporting.
   : HTAEndpoint Class
 - [`HTASection()`](https://sims1253.github.io/pharmhand/dev/reference/HTASection.md)
   : HTASection Class
-- [`PrimaryEndpoint()`](https://sims1253.github.io/pharmhand/dev/reference/PrimaryEndpoint.md)
-  : PrimaryEndpoint Class
-- [`SecondaryEndpoint()`](https://sims1253.github.io/pharmhand/dev/reference/SecondaryEndpoint.md)
-  : SecondaryEndpoint Class
-- [`SafetyEndpoint()`](https://sims1253.github.io/pharmhand/dev/reference/SafetyEndpoint.md)
-  : SafetyEndpoint Class
 - [`PopulationSection()`](https://sims1253.github.io/pharmhand/dev/reference/PopulationSection.md)
   : PopulationSection Class
 - [`SOCPTSection()`](https://sims1253.github.io/pharmhand/dev/reference/SOCPTSection.md)
@@ -94,8 +104,8 @@ responder, and subgroup analyses.
 Functions for adverse event and safety analysis tables including
 laboratory shifts and AE summaries.
 
-- [`create_ae_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_table.md)
-  : Create Adverse Event Table
+- [`create_ae_summary_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_summary_table.md)
+  : Create Adverse Event Summary Table
 - [`create_ae_comparison_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_comparison_table.md)
   : Create AE Comparison Table with Risk Differences
 - [`create_lab_shift_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_lab_shift_table.md)
@@ -112,6 +122,8 @@ laboratory shifts and AE summaries.
   : Analyze Adverse Events by SOC and PT
 - [`calculate_ae_tte_data()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_ae_tte_data.md)
   : Calculate AE TTE Data for a specific SOC
+- [`calculate_ae_risk_difference()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_ae_risk_difference.md)
+  : Calculate Risk Difference and Confidence Interval for AE
 
 ## Standard Tables
 
@@ -130,6 +142,8 @@ tables.
   : Helper to create a ClinicalTable from AnalysisResults
 - [`create_hta_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_hta_table.md)
   : Create HTA-Style Table
+- [`create_hta_module4_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_hta_module4_table.md)
+  : Create Module 4 Table Template
 - [`calculate_baseline()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_baseline.md)
   : Calculate Baseline Characteristics
 
@@ -144,11 +158,6 @@ and other graphics.
   : Create Subgroup Forest Plot
 - [`create_ae_km_plot_for_soc()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_km_plot_for_soc.md)
   : Create AE KM Plot for a specific SOC
-- [`add_table()`](https://sims1253.github.io/pharmhand/dev/reference/add_content.md)
-  [`add_plot()`](https://sims1253.github.io/pharmhand/dev/reference/add_content.md)
-  [`add_section()`](https://sims1253.github.io/pharmhand/dev/reference/add_content.md)
-  [`add_content()`](https://sims1253.github.io/pharmhand/dev/reference/add_content.md)
-  : Add a table to a StudyResult
 - [`save_plot_as()`](https://sims1253.github.io/pharmhand/dev/reference/save_plot_as.md)
   : Save ClinicalPlot to file
 - [`save_as_png()`](https://sims1253.github.io/pharmhand/dev/reference/save_as_png.md)
@@ -161,29 +170,30 @@ Number and content formatting utilities for data presentation. Includes
 format specifications and composite formatters.
 
 - [`format_number()`](https://sims1253.github.io/pharmhand/dev/reference/format_number.md)
-  : Format numbers with specified decimal places
+  : Format Number with Locale
 - [`format_percentage()`](https://sims1253.github.io/pharmhand/dev/reference/format_percentage.md)
-  : Format values as percentages
+  : Format Percentage
 - [`format_pvalue()`](https://sims1253.github.io/pharmhand/dev/reference/format_pvalue.md)
-  : Format p-values
+  : Format P-Value (IQWiG-Compliant)
 - [`format_ci()`](https://sims1253.github.io/pharmhand/dev/reference/format_ci.md)
-  : Format confidence intervals
+  : Format Confidence Interval (IQWiG-Compliant)
 - [`format_content()`](https://sims1253.github.io/pharmhand/dev/reference/format_content.md)
   : Format clinical content to different output formats
 - [`format_spec()`](https://sims1253.github.io/pharmhand/dev/reference/format_spec.md)
   : Create Format Specification
+- [`fmt_n_pct()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
+  [`fmt_mean_sd()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
+  [`fmt_median_range()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
+  [`fmt_ci()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
+  : Common Clinical Format Presets
+- [`parse_format_pattern()`](https://sims1253.github.io/pharmhand/dev/reference/parse_format_pattern.md)
+  : Parse a format pattern
 - [`composite_format()`](https://sims1253.github.io/pharmhand/dev/reference/composite_format.md)
   : Composite Format Specification
 - [`apply_format()`](https://sims1253.github.io/pharmhand/dev/reference/apply_format.md)
   : Apply a format specification to values
 - [`apply_composite()`](https://sims1253.github.io/pharmhand/dev/reference/apply_composite.md)
   : Apply a composite format
-- [`fmt_n_pct()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
-  [`fmt_mean_sd()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
-  [`fmt_median_range()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
-  [`fmt_ci()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
-  [`fmt_pvalue()`](https://sims1253.github.io/pharmhand/dev/reference/format_presets.md)
-  : Common Clinical Format Presets
 
 ## Reporting Engine
 
@@ -262,6 +272,10 @@ analyses and statistical pipelines.
   : Register Chef Statistical Functions
 - [`list_chef_stats()`](https://sims1253.github.io/pharmhand/dev/reference/list_chef_stats.md)
   : List Available Chef Statistical Functions
+- [`extract_chef_metadata()`](https://sims1253.github.io/pharmhand/dev/reference/extract_chef_metadata.md)
+  : Extract Metadata from Chef Output
+- [`flatten_chef_results()`](https://sims1253.github.io/pharmhand/dev/reference/flatten_chef_results.md)
+  : Flatten Chef Hierarchical Results
 
 ## Subgroup Analysis
 
@@ -269,6 +283,16 @@ Functions for subgroup and interaction analyses in clinical trials.
 
 - [`apply_subgroups()`](https://sims1253.github.io/pharmhand/dev/reference/apply_subgroups.md)
   : Apply Subgroup Analysis
+- [`calculate_subgroup_effect()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_subgroup_effect.md)
+  : Calculate Subgroup Effect (HR or OR)
+- [`calculate_subgroup_effect_table()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_subgroup_effect_table.md)
+  : Calculate Subgroup Effect for Table (HR or OR)
+- [`calculate_interaction_pvalue()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_interaction_pvalue.md)
+  : Calculate Interaction P-value
+- [`calculate_interaction_pvalue_table()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_interaction_pvalue_table.md)
+  : Calculate Interaction P-value for Table
+- [`calculate_response_comparison()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_response_comparison.md)
+  : Calculate Response Comparison (OR, RR, or RD)
 
 ## GBA/AMNOG Utilities
 
@@ -280,6 +304,8 @@ assessment, and multiplicity adjustment.
   : BalanceAssessment S7 Class
 - [`assess_baseline_balance()`](https://sims1253.github.io/pharmhand/dev/reference/assess_baseline_balance.md)
   : Assess Baseline Balance Between Treatment Groups
+- [`check_gba_compliance()`](https://sims1253.github.io/pharmhand/dev/reference/check_gba_compliance.md)
+  : Check G-BA Compliance for Tables
 - [`add_smd_to_table()`](https://sims1253.github.io/pharmhand/dev/reference/add_smd_to_table.md)
   : Add SMD Column to Demographics/Baseline Table
 - [`create_love_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_love_plot.md)
@@ -294,6 +320,12 @@ assessment, and multiplicity adjustment.
   : Adjust P-values for Multiple Comparisons
 - [`calculate_nnt()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_nnt.md)
   : Calculate Number Needed to Treat (NNT) / Number Needed to Harm (NNH)
+- [`theme_gba()`](https://sims1253.github.io/pharmhand/dev/reference/theme_gba.md)
+  : G-BA Module 4 Theme for Flextable
+- [`theme_iqwig()`](https://sims1253.github.io/pharmhand/dev/reference/theme_iqwig.md)
+  : IQWiG Theme for Flextable
+- [`to_gba_template()`](https://sims1253.github.io/pharmhand/dev/reference/to_gba_template.md)
+  : Convert Clinical Content to G-BA Template
 
 ## Localization
 
@@ -324,8 +356,14 @@ common operations.
 
 - [`get_filtered_data()`](https://sims1253.github.io/pharmhand/dev/reference/get_filtered_data.md)
   : Get Filtered Data
+- [`get_subject_var()`](https://sims1253.github.io/pharmhand/dev/reference/get_subject_var.md)
+  : Get Subject Variable Name
 - [`get_trt_n()`](https://sims1253.github.io/pharmhand/dev/reference/get_trt_n.md)
   : Get Treatment Group Counts
+- [`get_trt_var()`](https://sims1253.github.io/pharmhand/dev/reference/get_trt_var.md)
+  : Get Treatment Variable Name
+- [`calculate_proportion_ci()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_proportion_ci.md)
+  : Calculate Proportion Confidence Interval
 
 ## Internal
 
@@ -349,3 +387,15 @@ Internal package documentation for architecture and modules.
   : Reporting Engine
 - [`study_logic`](https://sims1253.github.io/pharmhand/dev/reference/study_logic.md)
   : Study Logic
+- [`efficacy_tables`](https://sims1253.github.io/pharmhand/dev/reference/efficacy_tables.md)
+  : Efficacy Analysis Tables
+- [`safety_tables`](https://sims1253.github.io/pharmhand/dev/reference/safety_tables.md)
+  : Safety Analysis Tables
+- [`standard_tables`](https://sims1253.github.io/pharmhand/dev/reference/standard_tables.md)
+  : Standard Clinical Tables
+- [`gba_utils`](https://sims1253.github.io/pharmhand/dev/reference/gba_utils.md)
+  : GBA/AMNOG Utilities for Health Technology Assessment
+- [`localization`](https://sims1253.github.io/pharmhand/dev/reference/localization.md)
+  : Internationalization and Localization Support
+- [`plotting`](https://sims1253.github.io/pharmhand/dev/reference/plotting.md)
+  : Clinical Plots

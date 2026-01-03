@@ -79,6 +79,17 @@ report <- add_section(report, efficacy_section)
 generate_word(report, "clinical_study_report.docx")
 ```
 
+### G-BA Module 4 Compliance
+
+``` r
+# Create a Module 4 template table
+module4_table <- create_hta_module4_table()
+
+# Apply G-BA formatting and validate
+module4_table <- to_gba_template(module4_table)
+check_gba_compliance(module4_table, strict = FALSE)
+```
+
 ## More examples
 
 - [`vignette("baseline-tables")`](https://sims1253.github.io/pharmhand/dev/articles/baseline-tables.md) -

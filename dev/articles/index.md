@@ -1,6 +1,6 @@
 # Articles
 
-### Get started
+### Articles
 
 - [Get started with
   pharmhand](https://sims1253.github.io/pharmhand/dev/articles/pharmhand.md):
@@ -8,10 +8,11 @@
   Create clinical study tables and reports from ADaM datasets using S7
   classes.
 
-### Tutorials
-
 - [Baseline Characteristics
   Tables](https://sims1253.github.io/pharmhand/dev/articles/baseline-tables.md):
+
+  Create demographics, medical history, and baseline characteristic
+  tables for clinical study reports using ADaM datasets.
 
 - [Creating Safety
   Tables](https://sims1253.github.io/pharmhand/dev/articles/safety-tables.md):

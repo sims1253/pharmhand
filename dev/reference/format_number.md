@@ -1,32 +1,54 @@
-# Format numbers with specified decimal places
+# Format Number with Locale
 
-Formats numeric values with a specified number of decimal places.
+Helper function to format a number with locale-aware decimal separator.
 
 ## Usage
 
 ``` r
-format_number(x, digits = 2)
+format_number(
+  x,
+  digits = 2L,
+  locale = get_locale(),
+  trim = FALSE,
+  na_string = getOption("pharmhand.na_string", "NA")
+)
 ```
 
 ## Arguments
 
 - x:
 
-  Numeric vector to format.
+  Numeric value
 
 - digits:
 
-  Integer specifying the number of decimal places. Default is 2.
+  Integer number of decimal places
+
+- locale:
+
+  Character locale: "en" (period) or "de" (comma)
+
+- trim:
+
+  Logical, if TRUE remove trailing zeros (default: FALSE)
+
+- na_string:
+
+  String for missing values (default: getOption("pharmhand.na_string",
+  "NA"))
 
 ## Value
 
-Character vector with formatted numbers.
+Character formatted number
 
 ## Examples
 
 ``` r
-format_number(45.2345, digits = 2) # Returns "45.23"
-#> [1] "45.23"
-format_number(c(1.5, 2.345, 3.6789), digits = 1) # c("1.5", "2.3", "3.7")
-#> [1] "1.5" "2.3" "3.7"
+format_number(1234.567, 2, "en")
+#> [1] "1234.57"
+# [1] "1234.57"
+
+format_number(1234.567, 2, "de")
+#> [1] "1234,57"
+# [1] "1234,57"
 ```

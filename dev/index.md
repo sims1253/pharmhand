@@ -11,6 +11,35 @@ tables and plots for Word documents.
 pak::pak("sims1253/pharmhand")
 ```
 
+## Examples
+
+### Demographics Table
+
+``` r
+adam_data <- ADaMData(data = adsl, trt_var = "TRT01P")
+demo_table <- create_demographics_table(adam_data)
+demo_table@flextable
+```
+
+![](reference/figures/README-demo-table-1.png)
+
+### Kaplan-Meier Plot
+
+``` r
+km <- create_km_plot(
+  data = adtte,
+  time_var = "AVAL",
+  event_var = "CNSR",
+  trt_var = "ARM",
+  title = "Kaplan-Meier Plot: Overall Survival",
+  risk_table = TRUE,
+  show_median = TRUE
+)
+km@plot
+```
+
+![](reference/figures/README-km-plot-1.png)
+
 ## Quick Start
 
 ``` r
@@ -20,7 +49,6 @@ library(pharmhand)
 adam_data <- ADaMData(
   data = adsl,
   domain = "ADSL",
-
   population = "SAF",
   trt_var = "TRT01A"
 )
@@ -30,7 +58,7 @@ adam_data@filtered_data  # Auto-filtered to SAFFL == "Y"
 adam_data@trt_n          # Treatment group N's computed automatically
 ```
 
-## Functions
+## Key Features
 
 ### Efficacy Tables
 
@@ -41,7 +69,7 @@ tte_table <- create_tte_summary_table(
   time_var = "AVAL",
   event_var = "CNSR",
   trt_var = "TRT01A",
-  landmarks = c(6, 12)  # Survival rates at 6 and 12 months
+  landmarks = c(6, 12)
 )
 
 # Responder analysis with CI, OR, RR, RD
@@ -51,94 +79,57 @@ responder_table <- create_responder_table(
   trt_var = "TRT01A",
   effect_measure = "OR"
 )
-
-# Subgroup analysis table for Word export
-subgroup_table <- create_subgroup_table(
-  adtte,
-  subgroups = list(
-    "Age" = list(var = "AGEGR1"),
-    "Sex" = list(var = "SEX")
-  ),
-  effect_type = "hr"
-)
 ```
 
 ### Safety Tables
 
 ``` r
-# AE Overview
-create_ae_table(adae, adsl, type = "overview")
-
-# AEs by SOC
-create_ae_table(adae, adsl, type = "soc")
-
-# Most common AEs (top 15)
-create_ae_table(adae, adsl, type = "common", n_top = 15)
-
-# SAEs, discontinuations, deaths
-create_ae_table(adae, adsl, type = "sae")
-create_ae_table(adae, adsl, type = "discontinuation")
-create_ae_table(adae, adsl, type = "deaths")
-
-# By severity or relationship
-create_ae_table(adae, adsl, type = "severity")
-create_ae_table(adae, adsl, type = "relationship")
-```
-
-### Plots
-
-``` r
-# Kaplan-Meier with risk table
-km_plot <- create_km_plot(
-  data = adtte,
-  time_var = "AVAL",
-  event_var = "CNSR",
-  trt_var = "TRT01A",
-  risk_table = TRUE,
-  show_median = TRUE,
-  landmarks = c(12, 24)
-)
-
-# Forest plot for subgroup analysis
-forest_plot <- create_forest_plot(
-  data = adtte,
-  subgroups = list(
-    "Age <65" = list(var = "AGEGR1", level = "<65"),
-    "Age >=65" = list(var = "AGEGR1", level = ">=65")
-  ),
-  effect_type = "hr"
-)
+# AE Overview, by SOC, most common
+create_ae_summary_table(adae, adsl, type = "overview")
+create_ae_summary_table(adae, adsl, type = "soc")
+create_ae_summary_table(adae, adsl, type = "common", n_top = 15)
 ```
 
 ### Report Generation
 
 ``` r
-# Build a complete report
+# Build and export a complete report
 report <- ClinicalReport(
   study_id = "STUDY-001",
   study_title = "Phase III Clinical Trial"
 )
 
-section <- ReportSection(
-  title = "Efficacy Results",
-  section_type = "efficacy"
-)
-
+section <- ReportSection(title = "Efficacy Results", section_type = "efficacy")
 section <- add_content(section, tte_table)
 section <- add_content(section, km_plot)
 report <- add_section(report, section)
 
-# Export to Word
 generate_word(report, "study_report.docx")
+```
+
+### G-BA Module 4 Compliance
+
+``` r
+# Create and validate G-BA compliant tables
+module4_table <- create_hta_module4_table()
+module4_table <- to_gba_template(module4_table)
+check_gba_compliance(module4_table, strict = FALSE)
 ```
 
 ## Classes
 
 - `ADaMData` - ADaM dataset wrapper with population filtering
+- `Endpoint` / `HTAEndpoint` - Endpoint definitions for analyses
+- `Study` - Base class with `SingleArmStudy`, `TwoArmStudy`,
+  `MultiArmStudy`
+- `StudySet` - Collection of studies for evidence synthesis
 - `ClinicalTable` - Table with formatting
-- `ClinicalPlot` - Plot with export settings  
+- `ClinicalPlot` - Plot with export settings
 - `ClinicalReport` - Report with sections
-- `StudyResult` - Container for results
+- `StudyResult` - Container for single-study results
+- `StatResult` - Statistical result base class (`ComparisonResult`,
+  `MetaResult`)
+- `EvidenceGrade` - IQWiG evidence grading result
 
 ## Related Packages
 
@@ -153,16 +144,12 @@ generate_word(report, "study_report.docx")
 ## Learn More
 
 - [Get
-  Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html) -
-  Quick introduction to pharmhand
+  Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html)
 - [Safety
-  Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html) -
-  Creating adverse event tables
+  Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html)
 - [Efficacy
-  Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html) -
-  Time-to-event and responder analyses
+  Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html)
 - [S7
-  Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html) -
-  Understanding the class system
+  Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html)
 
 Browse the [full documentation](https://sims1253.github.io/pharmhand/).

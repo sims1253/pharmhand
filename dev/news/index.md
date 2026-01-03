@@ -1,5 +1,193 @@
 # Changelog
 
+## pharmhand 0.1.3.9000
+
+### Improvements
+
+- Added validation for `default_duration` in the safety report example.
+
+### Documentation
+
+- Clarified palette resolution for
+  [`create_km_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_km_plot.md)
+  and CI formatting guidance.
+- Added a note on comparison-table entry points in the safety tables
+  vignette.
+- Fixed the pkgdown badge URL in the README.
+
+### Maintenance
+
+- Updated compliance tests to use flextable’s public header removal API.
+
+## pharmhand 0.1.1.9000
+
+### Bug Fixes
+
+- Fixed redundant null check in
+  [`check_gba_compliance()`](https://sims1253.github.io/pharmhand/dev/reference/check_gba_compliance.md)
+  title validation.
+- Fixed
+  [`to_gba_template()`](https://sims1253.github.io/pharmhand/dev/reference/to_gba_template.md)
+  list handling that would overwrite same file path.
+- Fixed list handling in
+  [`check_gba_compliance()`](https://sims1253.github.io/pharmhand/dev/reference/check_gba_compliance.md)
+  for unnamed elements.
+
+### Improvements
+
+- [`theme_iqwig()`](https://sims1253.github.io/pharmhand/dev/reference/theme_iqwig.md)
+  and
+  [`theme_gba()`](https://sims1253.github.io/pharmhand/dev/reference/theme_gba.md)
+  now apply the `decimal_separator` parameter to numeric columns (was
+  declared but unused).
+- `SingleArmStudy` now has a `treatment_var` property for consistency
+  with `TwoArmStudy` and `MultiArmStudy`.
+
+### Documentation
+
+- Updated G-BA citation to 2024 reference.
+- Added missing `adae` and `adrs` datasets to README examples.
+
+### Maintenance
+
+- Added `notes/` to `.gitignore`.
+- Fixed lintr line-length violations.
+
+## pharmhand 0.1.0.9000
+
+### Breaking Changes
+
+- Renamed `create_ae_table()` to
+  [`create_ae_summary_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_summary_table.md)
+  for clarity.
+
+### Improvements
+
+- [`format_pvalue()`](https://sims1253.github.io/pharmhand/dev/reference/format_pvalue.md)
+  and
+  [`format_ci()`](https://sims1253.github.io/pharmhand/dev/reference/format_ci.md)
+  now accept `trim` and `na_string` parameters for more flexible output
+  formatting.
+
+### Documentation
+
+- Added README.Rmd with rendered demo table and KM plot figures.
+- Improved pkgdown site with sandstone theme and dark mode support.
+- Simplified Articles dropdown to flat list.
+- Added description to baseline-tables vignette.
+- Fixed dev status badges visibility with
+  `development: mode: unreleased`.
+
+### Maintenance
+
+- Cleaned up `_pkgdown.yml` by removing redundant defaults.
+- Simplified `extra.scss` to only flextable dark mode fixes.
+- Updated example scripts and vignettes for function rename.
+
+## pharmhand 0.0.18.9000
+
+### New Features
+
+- Add
+  [`to_gba_template()`](https://sims1253.github.io/pharmhand/dev/reference/to_gba_template.md)
+  to export ClinicalTable/ClinicalReport objects in G-BA Module 4
+  format.
+
+### Tests
+
+- Add coverage for G-BA template export.
+
+## pharmhand 0.0.17.9000
+
+### New Features
+
+- Add
+  [`create_hta_module4_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_hta_module4_table.md)
+  for standardized G-BA Module 4 tables.
+
+### Tests
+
+- Add coverage for Module 4 table creation.
+
+## pharmhand 0.0.16.9000
+
+### New Features
+
+- Add
+  [`check_gba_compliance()`](https://sims1253.github.io/pharmhand/dev/reference/check_gba_compliance.md)
+  for pre-export validation of G-BA Module 4 tables.
+- Mark IQWiG and G-BA flextable themes with a `pharmhand_theme`
+  attribute.
+
+### Tests
+
+- Add coverage for G-BA compliance checks.
+
+## pharmhand 0.0.15.9000
+
+### Breaking Changes
+
+- Remove `fmt_pvalue()` format preset. Use
+  [`format_pvalue()`](https://sims1253.github.io/pharmhand/dev/reference/format_pvalue.md)
+  for IQWiG-compliant p-value formatting.
+
+### New Features
+
+- IQWiG-compliant formatting functions:
+  [`format_pvalue()`](https://sims1253.github.io/pharmhand/dev/reference/format_pvalue.md)
+  and
+  [`format_ci()`](https://sims1253.github.io/pharmhand/dev/reference/format_ci.md).
+- Locale-aware helpers:
+  [`format_number()`](https://sims1253.github.io/pharmhand/dev/reference/format_number.md)
+  and
+  [`format_percentage()`](https://sims1253.github.io/pharmhand/dev/reference/format_percentage.md).
+- New flextable themes:
+  [`theme_iqwig()`](https://sims1253.github.io/pharmhand/dev/reference/theme_iqwig.md)
+  and
+  [`theme_gba()`](https://sims1253.github.io/pharmhand/dev/reference/theme_gba.md).
+
+### Tests
+
+- Add coverage for IQWiG formatting and theme functions.
+
+### Maintenance
+
+- Remove duplicate formatting helpers to avoid shadowing.
+
+## pharmhand 0.0.14.9000
+
+### Breaking Changes
+
+- **Endpoint classes unified**: `PrimaryEndpoint`, `SecondaryEndpoint`,
+  and `SafetyEndpoint` have been replaced with a single `Endpoint`
+  class. Use the `category` property (“primary”, “secondary”, “safety”,
+  “exploratory”) instead.
+
+- **Study class renamed**: `OneArmStudy` is now `SingleArmStudy` for
+  clarity.
+
+- **New property name**: `TwoArmStudy@group_var` is now
+  `TwoArmStudy@treatment_var`.
+
+### New Features
+
+- **Study base class**: New abstract `Study` class provides common
+  properties for all study types.
+
+- **MultiArmStudy**: New class for studies with 3+ treatment arms.
+
+- **StudySet**: New class for collections of studies (meta-analysis,
+  NMA).
+
+- **Statistical result classes**: New `StatResult` hierarchy with
+  `ComparisonResult`, `MetaResult`, and `EvidenceGrade` for type-safe
+  results.
+
+### Documentation
+
+- Added `notes/ARCHITECTURE_DECISIONS.md` documenting class hierarchy
+  and naming conventions.
+
 ## pharmhand 0.0.13.9000
 
 ### Fixes
@@ -158,9 +346,8 @@
     [`create_cfb_summary_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_cfb_summary_table.md),
     [`create_vs_by_visit_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_vs_by_visit_table.md)
     now accept `trt_var` parameter
-  - Safety tables
-    ([`create_ae_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_table.md))
-    default changed from “TRT01A” to “TRT01P” for consistency
+  - Safety tables (`create_ae_table()`) default changed from “TRT01A” to
+    “TRT01P” for consistency
 - Added
   [`create_ae_comparison_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_comparison_table.md)
   for adverse event comparisons with risk metrics:
@@ -225,8 +412,7 @@
 
 - `ADaMData` wraps ADaM datasets with automatic population filtering
 
-- [`create_ae_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_table.md)
-  generates AE tables with `type` argument
+- `create_ae_table()` generates AE tables with `type` argument
 
 - [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_tte_summary_table.md)
   for time-to-event analysis
