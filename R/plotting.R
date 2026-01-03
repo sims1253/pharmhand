@@ -499,6 +499,228 @@ create_km_plot <- function(
 	)
 }
 
+#' Create AE Cumulative Incidence Plot
+#'
+#' Creates cumulative incidence plot for adverse events using 1 - KM estimator.
+#' For simple analyses without competing risks.
+#'
+#' @param data Data frame with time-to-event data
+#' @param time_var Character. Time variable
+#' @param event_var Character. Event indicator (1=AE occurred, 0=censored)
+#' @param trt_var Character. Treatment variable
+#' @param title Character. Plot title
+#' @param xlab Character. X-axis label
+#' @param ylab Character. Y-axis label
+#' @param show_ci Logical. Show confidence bands (default: TRUE)
+#' @param colors Named character vector of colors
+#'
+#' @return ClinicalPlot with cumulative incidence curves
+#'
+#' @details
+#' Uses 1 - Kaplan-Meier to estimate cumulative incidence. This is appropriate
+#' when there are no competing risks or competing risks are minimal.
+#'
+#' If `event_var` contains values other than 0/1, they are treated as competing
+#' events and coded as censored for this estimator.
+#'
+#' For analyses with significant competing risks (e.g., mortality), consider
+#' using dedicated competing risk packages like cmprsk.
+#'
+#' @export
+create_ae_cumulative_incidence_plot <- function(
+	data,
+	time_var,
+	event_var,
+	trt_var,
+	title = "Cumulative Incidence of Adverse Events",
+	xlab = "Time",
+	ylab = "Cumulative Incidence",
+	show_ci = TRUE,
+	colors = NULL
+) {
+	if (!requireNamespace("survival", quietly = TRUE)) {
+		ph_abort("Package 'survival' is required for cumulative incidence plots")
+	}
+	if (!requireNamespace("ggplot2", quietly = TRUE)) {
+		ph_abort("Package 'ggplot2' is required for cumulative incidence plots")
+	}
+
+	# Get filtered data if ADaMData
+	df <- get_filtered_data(data)
+	trt_var_actual <- get_trt_var(data, default = trt_var)
+
+	# Handle CNSR inversion (ADaM: 0=event, 1=censor -> survival: 1=event)
+	if (event_var == "CNSR") {
+		df$event <- 1 - df[[event_var]]
+		event_var_use <- "event"
+	} else {
+		event_var_use <- event_var
+	}
+
+	event_values <- df[[event_var_use]]
+	if (is.logical(event_values)) {
+		event_values_num <- as.integer(event_values)
+	} else if (is.factor(event_values)) {
+		event_values_num <- suppressWarnings(as.numeric(as.character(event_values)))
+	} else if (is.character(event_values)) {
+		event_values_num <- suppressWarnings(as.numeric(event_values))
+	} else {
+		event_values_num <- event_values
+	}
+
+	if (any(is.na(event_values_num) & !is.na(event_values))) {
+		ph_warn(
+			paste0(
+				"Non-numeric values detected in '",
+				event_var_use,
+				"'. Treating them as censored for 1-KM cumulative incidence."
+			)
+		)
+	}
+
+	unique_events <- unique(stats::na.omit(event_values_num))
+	non_binary_events <- setdiff(unique_events, c(0, 1))
+	if (length(non_binary_events) > 0) {
+		ph_warn(
+			paste0(
+				"Detected event codes other than 0/1 in '",
+				event_var_use,
+				"'. Treating non-1 values as censored for 1-KM cumulative incidence."
+			)
+		)
+	}
+
+	df$event <- ifelse(event_values_num == 1, 1, 0)
+	event_var_use <- "event"
+
+	# Create survival object
+	surv_obj <- survival::Surv(df[[time_var]], df[[event_var_use]])
+
+	# Fit model
+	formula_str <- paste("surv_obj ~", trt_var_actual)
+	fit <- survival::survfit(
+		as.formula(formula_str),
+		data = df,
+		conf.int = 0.95
+	)
+
+	# Extract data for plotting
+	if (!is.null(fit[["strata"]])) {
+		strata_names <- names(fit[["strata"]])
+		strata_names_clean <- gsub(paste0(trt_var_actual, "="), "", strata_names)
+		plot_strata <- rep(strata_names_clean, fit[["strata"]])
+	} else {
+		strata_names_clean <- "All"
+		plot_strata <- rep("All", length(fit[["time"]]))
+	}
+
+	plot_data <- data.frame(
+		time = fit[["time"]],
+		surv = fit[["surv"]],
+		lower_surv = fit[["lower"]],
+		upper_surv = fit[["upper"]],
+		strata = plot_strata
+	)
+
+	plot_data$cum_inc <- 1 - plot_data$surv
+	plot_data$lower <- 1 - plot_data$upper_surv
+	plot_data$upper <- 1 - plot_data$lower_surv
+
+	# Add starting point (time 0, cumulative incidence 0) for each stratum
+	start_data <- data.frame(
+		time = 0,
+		surv = 1,
+		lower_surv = 1,
+		upper_surv = 1,
+		strata = strata_names_clean,
+		cum_inc = 0,
+		lower = 0,
+		upper = 0
+	)
+
+	plot_data <- rbind(start_data, plot_data)
+
+	p <- ggplot2::ggplot(
+		plot_data,
+		ggplot2::aes(x = .data$time, y = .data$cum_inc, color = .data$strata)
+	)
+
+	if (show_ci) {
+		p <- p +
+			ggplot2::geom_ribbon(
+				ggplot2::aes(
+					ymin = .data$lower,
+					ymax = .data$upper,
+					fill = .data$strata
+				),
+				alpha = 0.2,
+				color = NA
+			)
+	}
+
+	p <- p + ggplot2::geom_step(linewidth = 0.8)
+
+	# Resolve color palette
+	resolved_colors <- if (!is.null(colors)) {
+		colors
+	} else {
+		opt_palette <- getOption("pharmhand.palette", default = NULL)
+		if (is.null(opt_palette)) {
+			.PH_DEFAULT_PALETTE
+		} else if (is.character(opt_palette) && length(opt_palette) == 1) {
+			tryCatch(
+				grDevices::palette.colors(n = NULL, palette = opt_palette),
+				error = function(e) {
+					ph_warn(
+						paste0(
+							"Palette '",
+							opt_palette,
+							"' not found, using default"
+						)
+					)
+					.PH_DEFAULT_PALETTE
+				}
+			)
+		} else if (is.character(opt_palette) && length(opt_palette) > 1) {
+			opt_palette
+		} else {
+			.PH_DEFAULT_PALETTE
+		}
+	}
+
+	p <- p + ggplot2::scale_color_manual(values = resolved_colors)
+	if (show_ci) {
+		p <- p + ggplot2::scale_fill_manual(values = resolved_colors)
+	}
+
+	p <- p +
+		ggplot2::scale_y_continuous(
+			labels = function(x) paste0(round(x * 100, 1), "%"),
+			limits = c(0, 1)
+		) +
+		ggplot2::labs(
+			title = title,
+			x = xlab,
+			y = ylab,
+			color = "Treatment",
+			fill = "Treatment"
+		) +
+		ggplot2::theme_minimal() +
+		ggplot2::theme(
+			legend.position = "bottom",
+			plot.title = ggplot2::element_text(hjust = 0.5),
+			panel.grid.minor = ggplot2::element_blank()
+		)
+
+	ClinicalPlot(
+		plot = p,
+		title = title,
+		width = 6,
+		height = 4,
+		dpi = 300
+	)
+}
+
 #' Create Log-Log Survival Plot
 #'
 #' Creates a log(-log(survival)) vs log(time) plot for visual assessment

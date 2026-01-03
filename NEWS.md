@@ -1,5 +1,13 @@
 # pharmhand 0.1.19.9000
 
+# pharmhand 0.1.20.9000
+
+## Improvements
+
+* Added AE cumulative incidence plots via `create_ae_cumulative_incidence_plot()`.
+
+# pharmhand 0.1.19.9000
+
 ## Improvements
 
 * Added ANCOVA adjustment for continuous endpoints via `ancova_adjust_continuous()`.
