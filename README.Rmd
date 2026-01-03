@@ -40,6 +40,8 @@ library(pharmaverseadam)
 
 adsl <- pharmaverseadam::adsl
 adtte <- pharmaverseadam::adtte_onco
+adae <- pharmaverseadam::adae
+adrs <- pharmaverseadam::adrs_onco
 ```
 
 ### Demographics Table

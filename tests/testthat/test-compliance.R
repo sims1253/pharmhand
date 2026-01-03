@@ -1,5 +1,8 @@
 # Tests for G-BA compliance checks
 
+library(testthat)
+library(pharmhand)
+
 test_that("check_gba_compliance passes for valid data.frame", {
 	df <- data.frame(Statistic = "n", Value = 10)
 	res <- check_gba_compliance(df, strict = FALSE, require_theme = FALSE)
@@ -82,4 +85,136 @@ test_that("check_gba_compliance enforces title when required", {
 	)
 	expect_false(res$ok)
 	expect_true(any(grepl("title", res$errors, fixed = TRUE)))
+})
+
+# Tests for flextable header/body requirements ----
+
+test_that("check_gba_compliance flags missing header row in flextable", {
+	# Create a flextable and remove its header
+	df <- data.frame(Statistic = "n", Value = 10)
+	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
+
+	# Remove header part
+	ft$header <- data.frame()
+
+	res <- check_gba_compliance(
+		ft,
+		strict = FALSE,
+		require_theme = FALSE,
+		require_header = TRUE
+	)
+	expect_false(res$ok)
+	expect_true(any(grepl("no header row", res$errors, fixed = TRUE)))
+})
+
+test_that("check_gba_compliance passes when header present", {
+	df <- data.frame(Statistic = "n", Value = 10)
+	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
+
+	res <- check_gba_compliance(
+		ft,
+		strict = FALSE,
+		require_theme = FALSE,
+		require_header = TRUE
+	)
+	expect_true(res$ok)
+})
+
+test_that("check_gba_compliance flags missing body row in flextable", {
+	# Create a flextable with empty data
+	df <- data.frame(Statistic = character(), Value = numeric())
+	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
+
+	res <- check_gba_compliance(
+		ft,
+		strict = FALSE,
+		require_theme = FALSE,
+		require_body = TRUE
+	)
+	expect_false(res$ok)
+	expect_true(any(grepl("no body rows", res$errors, fixed = TRUE)))
+})
+
+test_that("check_gba_compliance passes when body present", {
+	df <- data.frame(Statistic = "n", Value = 10)
+	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
+
+	res <- check_gba_compliance(
+		ft,
+		strict = FALSE,
+		require_theme = FALSE,
+		require_body = TRUE
+	)
+	expect_true(res$ok)
+})
+
+# Tests for empty data handling ----
+
+test_that("check_gba_compliance flags data frame with no columns", {
+	df <- data.frame()
+
+	res <- check_gba_compliance(
+		df,
+		strict = FALSE,
+		require_theme = FALSE
+	)
+	expect_false(res$ok)
+	expect_true(any(grepl("has no columns", res$errors, fixed = TRUE)))
+})
+
+test_that("check_gba_compliance passes data frame with columns but no rows", {
+	df <- data.frame(Statistic = character(), Value = numeric())
+
+	res <- check_gba_compliance(
+		df,
+		strict = FALSE,
+		require_theme = FALSE
+	)
+	expect_true(res$ok)
+})
+
+test_that("check_gba_compliance handles flextable with empty dataset", {
+	# Create flextable from empty data frame
+	df <- data.frame(Statistic = character(), Value = numeric())
+	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
+
+	res <- check_gba_compliance(
+		ft,
+		strict = FALSE,
+		require_theme = FALSE,
+		require_body = FALSE
+	)
+	# Should be OK since we're not requiring body rows
+	expect_true(res$ok)
+})
+
+# Tests for require_header and require_body flexibility ----
+
+test_that("check_gba_compliance can skip header requirement", {
+	# Create flextable without header
+	df <- data.frame(Statistic = "n", Value = 10)
+	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
+	ft$header <- data.frame()
+
+	res <- check_gba_compliance(
+		ft,
+		strict = FALSE,
+		require_theme = FALSE,
+		require_header = FALSE
+	)
+	expect_true(res$ok)
+})
+
+test_that("check_gba_compliance can skip body requirement", {
+	# Create flextable without body
+	df <- data.frame(Statistic = character(), Value = numeric())
+	ft <- theme_gba(flextable::flextable(df), autofit = FALSE)
+
+	res <- check_gba_compliance(
+		ft,
+		strict = FALSE,
+		require_theme = FALSE,
+		require_body = FALSE
+	)
+	expect_true(res$ok)
 })

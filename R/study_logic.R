@@ -31,11 +31,11 @@ analyze_study_SingleArmStudy <- S7::method(
 	...
 ) {
 	# Implementation using ADaMData and core analysis
-	adam <- ADaMData(data = x@data, trt_var = "TRT01P")
+	adam <- ADaMData(data = x@data, trt_var = x@treatment_var)
 
 	# Baseline analysis - exclude ID and treatment columns explicitly
 	all_vars <- names(x@data)
-	baseline_vars <- all_vars[!all_vars %in% c("USUBJID", "TRT01P")]
+	baseline_vars <- all_vars[!all_vars %in% c("USUBJID", x@treatment_var)]
 	baseline <- calculate_baseline(adam, vars = baseline_vars)
 
 	results <- list(baseline = baseline)

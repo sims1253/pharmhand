@@ -165,7 +165,7 @@ check_gba_compliance <- function(
 		# Title checks
 		if (require_title) {
 			if (!is.null(title)) {
-				if (is.null(title) || nchar(title) == 0) {
+				if (nchar(title) == 0) {
 					errors <- c(errors, sprintf("%s has no title", label))
 				}
 			} else if (!is.null(ft)) {
@@ -186,9 +186,19 @@ check_gba_compliance <- function(
 
 	# Handle list input
 	if (is.list(x) && !inherits(x, "flextable") && !is.data.frame(x)) {
-		results <- lapply(names(x), function(name) {
-			obj <- x[[name]]
-			label <- if (nchar(name) == 0) "item" else name
+		item_names <- names(x)
+		if (is.null(item_names)) {
+			item_names <- character(length(x))
+		}
+
+		results <- lapply(seq_along(x), function(i) {
+			name <- item_names[i]
+			obj <- x[[i]]
+			label <- if (is.na(name) || nchar(name) == 0) {
+				sprintf("item[[%d]]", i)
+			} else {
+				name
+			}
 			check_one(obj, label)
 		})
 

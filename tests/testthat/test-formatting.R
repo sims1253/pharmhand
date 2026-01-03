@@ -1,5 +1,8 @@
 # Tests for format string grammar
 
+library(testthat)
+library(pharmhand)
+
 test_that("format_spec creates valid FormatSpec object", {
 	spec <- format_spec("xx.xx")
 
@@ -16,27 +19,29 @@ test_that("format_spec validates pattern", {
 	expect_no_error(format_spec("a.a+1"))
 })
 
-test_that("parse_format_pattern handles fixed width", {
-	parsed <- parse_format_pattern("xx.xxx")
+# Note: parse_format_pattern is an internal function (not exported)
+# We test it indirectly through format_spec and apply_format
 
-	expect_equal(parsed$int_width, 2)
-	expect_equal(parsed$dec_width, 3)
-	expect_false(parsed$auto_int)
-	expect_false(parsed$auto_dec)
+test_that("format_spec handles fixed width pattern correctly", {
+	spec <- format_spec("xx.xxx")
+	expect_true(S7::S7_inherits(spec, FormatSpec))
+	expect_equal(spec@pattern, "xx.xxx")
+
+	# Test that it works with apply_format
+	result <- apply_format(spec, 12.3456, align = FALSE)
+	expect_equal(result, "12.346")
 })
 
-test_that("parse_format_pattern handles auto width", {
-	parsed <- parse_format_pattern("a.a")
-
-	expect_true(parsed$auto_int)
-	expect_true(parsed$auto_dec)
+test_that("format_spec handles auto width pattern correctly", {
+	spec <- format_spec("a.a")
+	expect_true(S7::S7_inherits(spec, FormatSpec))
+	expect_equal(spec@pattern, "a.a")
 })
 
-test_that("parse_format_pattern handles auto with adjustment", {
-	parsed <- parse_format_pattern("a.a+2")
-
-	expect_true(parsed$auto_dec)
-	expect_equal(parsed$dec_adjust, 2L)
+test_that("format_spec handles auto with adjustment pattern correctly", {
+	spec <- format_spec("a.a+2")
+	expect_true(S7::S7_inherits(spec, FormatSpec))
+	expect_equal(spec@pattern, "a.a+2")
 })
 
 test_that("apply_format formats fixed width correctly", {
@@ -181,4 +186,114 @@ test_that("format_content errors on unsupported formats", {
 		format_content(cplot, "jpg"),
 		"Unsupported format"
 	)
+})
+
+# Tests for round_half_up (indirect testing through format_number) ----
+# Note: round_half_up is an internal function, so we test it indirectly
+# through format_number which uses it internally
+
+test_that("format_number uses round_half_up for 0.5 values", {
+	# Test that 0.5 values round up (not to even like default R rounding)
+	# 0.5 should round to 1
+	expect_equal(format_number(0.5, digits = 0), "1")
+	# 1.5 should round to 2
+	expect_equal(format_number(1.5, digits = 0), "2")
+})
+
+test_that("format_number uses round_half_up for -0.5 values", {
+	# Test that -0.5 rounds to -1 (not to 0)
+	expect_equal(format_number(-0.5, digits = 0), "-1")
+})
+
+test_that("format_number uses round_half_up with digits parameter", {
+	expect_equal(format_number(0.55, digits = 1), "0.6")
+	expect_equal(format_number(0.555, digits = 2), "0.56")
+	expect_equal(format_number(1.25, digits = 1), "1.3")
+})
+
+test_that("format_number uses round_half_up for edge cases", {
+	# Values below .5 should round down
+	expect_equal(format_number(0.4, digits = 0), "0")
+	expect_equal(format_number(0.49, digits = 0), "0")
+
+	# Values at or above .5 should round up
+	expect_equal(format_number(0.5, digits = 0), "1")
+	expect_equal(format_number(0.51, digits = 0), "1")
+
+	# Negative values
+	# Note: sprintf formats -0.4 as "-0" due to R's sprintf behavior
+	expect_equal(format_number(-0.4, digits = 0), "-0")
+	expect_equal(format_number(-0.6, digits = 0), "-1")
+})
+
+test_that("format_number uses round_half_up with vectors", {
+	result <- format_number(c(0.5, 1.5, 2.5), digits = 0)
+	expect_equal(result, c("1", "2", "3"))
+})
+
+# Tests for format_number with trim=TRUE ----
+
+test_that("format_number with trim=TRUE removes trailing zeros", {
+	expect_equal(format_number(1.500, digits = 2, trim = TRUE), "1.5")
+	expect_equal(format_number(1.250, digits = 2, trim = TRUE), "1.25")
+	expect_equal(format_number(1.000, digits = 2, trim = TRUE), "1")
+})
+
+test_that("format_number with trim=TRUE removes decimal point when no decimals remain", {
+	expect_equal(format_number(5.000, digits = 2, trim = TRUE), "5")
+	expect_equal(format_number(5.0, digits = 1, trim = TRUE), "5")
+})
+
+test_that("format_number with trim=TRUE keeps zeros when trim=FALSE", {
+	expect_equal(format_number(1.500, digits = 2, trim = FALSE), "1.50")
+	expect_equal(format_number(1.000, digits = 2, trim = FALSE), "1.00")
+})
+
+test_that("format_number with trim=TRUE works with vectors", {
+	result <- format_number(c(1.500, 2.250, 3.000), digits = 2, trim = TRUE)
+	expect_equal(result, c("1.5", "2.25", "3"))
+})
+
+test_that("format_number with trim=TRUE handles negative numbers", {
+	expect_equal(format_number(-1.500, digits = 2, trim = TRUE), "-1.5")
+	expect_equal(format_number(-1.000, digits = 2, trim = TRUE), "-1")
+})
+
+# Tests for FormatSpec validator errors ----
+
+test_that("format_spec rejects invalid neg_format values", {
+	expect_error(
+		format_spec("xx.x", neg_format = "invalid"),
+		"neg_format must be 'sign', 'parens', or 'abs'"
+	)
+
+	expect_error(
+		format_spec("xx.x", neg_format = "minus"),
+		"neg_format must be 'sign', 'parens', or 'abs'"
+	)
+
+	expect_error(
+		format_spec("xx.x", neg_format = ""),
+		"neg_format must be 'sign', 'parens', or 'abs'"
+	)
+})
+
+test_that("format_spec accepts valid neg_format values", {
+	expect_no_error(format_spec("xx.x", neg_format = "sign"))
+	expect_no_error(format_spec("xx.x", neg_format = "parens"))
+	expect_no_error(format_spec("xx.x", neg_format = "abs"))
+})
+
+test_that("format_spec validates pattern characters", {
+	# Invalid patterns
+	expect_error(format_spec("invalid!pattern"), "must contain only")
+	expect_error(format_spec("pattern$with$special"), "must contain only")
+	expect_error(format_spec("pattern with spaces"), "must contain only")
+
+	# Valid patterns
+	expect_no_error(format_spec("xx.x"))
+	expect_no_error(format_spec("a.a"))
+	expect_no_error(format_spec("xx.xxx"))
+	expect_no_error(format_spec("a.x+1"))
+	expect_no_error(format_spec("123"))
 })

@@ -8,9 +8,12 @@ NULL
 
 #' @keywords internal
 # Reordered Okabe-Ito palette for clinical plots
-# Skips black (#000000) as first color, prioritizes more visually distinct colors
-# Original order: black, orange, sky blue, bluish green, yellow, blue, vermillion, reddish purple
-# Reordered: orange, sky blue, bluish green, blue, vermillion, reddish purple, yellow, black
+# Skips black (#000000) as first color, prioritizes
+# more visually distinct colors
+# Original order: black, orange, sky blue, bluish green,
+# yellow, blue, vermillion, reddish purple
+# Reordered: orange, sky blue, bluish green, blue,
+# vermillion, reddish purple, yellow, black
 .PH_DEFAULT_PALETTE <- c(
 	"#E69F00", # orange
 	"#56B4E9", # sky blue
@@ -46,8 +49,9 @@ NULL
 #' @param xlim Optional x-axis limits as c(min, max)
 #' @param palette Optional color palette for treatment groups. Can be a
 #'   character vector of colors, or NULL to use
-#'   `getOption("pharmhand.palette")`. Defaults to the CVD-friendly "Okabe-Ito (reordered)"
-#'   palette (orange, sky blue for first two arms). Other built-in options: "Okabe-Ito",
+#'   `getOption("pharmhand.palette")`. Defaults to the CVD-friendly
+#'   "Okabe-Ito (reordered)" palette (orange, sky blue for first two arms).
+#'   Other built-in options: "Okabe-Ito",
 #'   "R4", "Tableau 10", "Alphabet", etc. (see `grDevices::palette.pals()`).
 #' @param conf_level Confidence level for CI bands (default: 0.95)
 #' @param base_size Base font size for plot text elements (default: 11).

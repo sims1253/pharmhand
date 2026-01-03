@@ -370,6 +370,12 @@ theme_iqwig <- function(
 		flextable::colformat_double(na_str = "--") |>
 		flextable::colformat_int(na_str = "--")
 
+	# Apply decimal separator formatting for numeric columns
+	if (decimal_separator == ",") {
+		ft <- ft |>
+			flextable::colformat_double(decimal.mark = ",", big.mark = ".")
+	}
+
 	# Autofit
 	if (autofit) {
 		ft <- ft |>
@@ -399,7 +405,8 @@ theme_iqwig <- function(
 #' @export
 #'
 #' @references
-#' G-BA (2023). Dossiervorlage Modul 4.
+#' G-BA (2024). Dossiervorlage Modul 4.
+#' \url{https://www.g-ba.de/themen/arzneimittel/arzneimittel-richtlinie-anlagen/nutzenbewertung-35a/}
 #'
 #' @examples
 #' \dontrun{
@@ -463,6 +470,12 @@ theme_gba <- function(
 		flextable::colformat_char(na_str = "--") |>
 		flextable::colformat_double(na_str = "--") |>
 		flextable::colformat_int(na_str = "--")
+
+	# Apply decimal separator formatting for numeric columns
+	if (decimal_separator == ",") {
+		ft <- ft |>
+			flextable::colformat_double(decimal.mark = ",", big.mark = ".")
+	}
 
 	# Autofit
 	if (autofit) {
@@ -588,7 +601,12 @@ to_gba_template <- function(x, path = NULL, autofit = TRUE) {
 	}
 
 	if (is.list(x)) {
-		return(lapply(x, to_gba_template, path = path, autofit = autofit))
+		if (!is.null(path)) {
+			ph_warn(
+				"'path' argument ignored for list input; use write_docx separately for each element"
+			)
+		}
+		return(lapply(x, to_gba_template, autofit = autofit))
 	}
 
 	ph_abort("'x' must be a ClinicalTable, ClinicalReport, or list")
