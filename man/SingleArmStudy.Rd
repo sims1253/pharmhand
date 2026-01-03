@@ -37,7 +37,8 @@ SingleArmStudy(
 
 \item{data}{A data frame containing the study data}
 
-\item{treatment_var}{Character string for treatment variable name (default: "TRT01P")}
+\item{treatment_var}{Character string for treatment variable name
+(default: "TRT01P")}
 }
 \value{
 A SingleArmStudy object

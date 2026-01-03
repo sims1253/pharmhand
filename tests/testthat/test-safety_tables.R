@@ -312,7 +312,7 @@ test_that("create_ae_summary_table respects custom title", {
 	expect_equal(tbl@title, "Custom Title")
 })
 
-test_that("create_ae_summary_table works without adsl (derives trt_n from adae)", {
+test_that("create_ae_summary_table works without adsl (derives trt_n)", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03"),
 		TRT01P = c("A", "A", "B"),

@@ -239,7 +239,7 @@ test_that("format_number with trim=TRUE removes trailing zeros", {
 	expect_equal(format_number(1.000, digits = 2, trim = TRUE), "1")
 })
 
-test_that("format_number with trim=TRUE removes decimal point when no decimals remain", {
+test_that("format_number with trim=TRUE removes trailing decimal point", {
 	expect_equal(format_number(5.000, digits = 2, trim = TRUE), "5")
 	expect_equal(format_number(5.0, digits = 1, trim = TRUE), "5")
 })

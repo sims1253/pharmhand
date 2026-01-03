@@ -405,8 +405,7 @@ theme_iqwig <- function(
 #' @export
 #'
 #' @references
-#' G-BA (2024). Dossiervorlage Modul 4.
-#' \url{https://www.g-ba.de/themen/arzneimittel/arzneimittel-richtlinie-anlagen/nutzenbewertung-35a/}
+#' G-BA (2024). Dossiervorlage Modul 4. See \url{https://www.g-ba.de}
 #'
 #' @examples
 #' \dontrun{
@@ -603,7 +602,7 @@ to_gba_template <- function(x, path = NULL, autofit = TRUE) {
 	if (is.list(x)) {
 		if (!is.null(path)) {
 			ph_warn(
-				"'path' argument ignored for list input; use write_docx separately for each element"
+				"'path' argument ignored for list input; use write_docx separately"
 			)
 		}
 		return(lapply(x, to_gba_template, autofit = autofit))
