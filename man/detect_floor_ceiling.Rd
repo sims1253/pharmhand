@@ -47,3 +47,15 @@ A data frame with columns:
 Identifies floor/ceiling effects in PRO data when >15\% of responses
 are at the minimum or maximum possible scale values.
 }
+\examples{
+\dontrun{
+# Detect floor/ceiling effects in PRO scores
+result <- detect_floor_ceiling(
+  data = adqs,
+  score_var = "AVAL",
+  min_score = 0,
+  max_score = 100
+)
+print(result)
+}
+}

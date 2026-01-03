@@ -1249,7 +1249,11 @@ test_ph_assumption <- function(
 }
 
 #' @keywords internal
-build_schoenfeld_plot <- function(zph, title = "Schoenfeld Residuals") {
+build_schoenfeld_plot <- function(
+	zph,
+	title = "Schoenfeld Residuals",
+	base_size = 11
+) {
 	if (!requireNamespace("ggplot2", quietly = TRUE)) {
 		ph_abort("Package 'ggplot2' is required for Schoenfeld residual plots")
 	}
@@ -1305,7 +1309,7 @@ build_schoenfeld_plot <- function(zph, title = "Schoenfeld Residuals") {
 			x = "Time",
 			y = "Scaled Schoenfeld Residuals"
 		) +
-		ggplot2::theme_minimal(base_size = 11) +
+		.pharmhand_theme(base_size = base_size) +
 		ggplot2::theme(
 			plot.title = ggplot2::element_text(hjust = 0.5),
 			panel.grid.minor = ggplot2::element_blank()

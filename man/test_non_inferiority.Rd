@@ -35,8 +35,8 @@ test_non_inferiority(
 \item{conf_level}{Numeric. One-sided confidence level
 (default: 0.975 for 95\% CI)}
 
-\item{method}{Character. For binary: "wald", "wilson", "exact"
-(default: "wilson")}
+\item{method}{Character. Method for binary endpoints only: "wald", "wilson",
+"exact" (default: "wilson"). Ignored for continuous endpoints.}
 }
 \value{
 List with:
@@ -65,6 +65,29 @@ For binary endpoints, the Wilson method uses the Newcombe-Wilson
 hybrid CI approach. The Wald method provides a simpler alternative.
 For regulatory submissions, verify the CI method aligns with
 agency preferences.
+}
+\examples{
+\dontrun{
+# Non-inferiority test for continuous endpoint
+result <- test_non_inferiority(
+  data = adeff,
+  outcome_var = "CHG",
+  trt_var = "TRT01P",
+  ref_group = "Active Control",
+  ni_margin = 0.5,
+  type = "continuous"
+)
+
+# Non-inferiority test for binary endpoint
+result <- test_non_inferiority(
+  data = adrs,
+  outcome_var = "AVALC",
+  trt_var = "TRT01P",
+  ref_group = "Active Control",
+  ni_margin = 0.10,
+  type = "binary"
+)
+}
 }
 \references{
 IQWiG Methods v8.0, Section 10.3.5, p. 217-218.

@@ -47,6 +47,20 @@ Fits model: outcome ~ baseline + trt + covariates
 Treatment effects are extracted from model coefficients (trt - ref)
 and confidence intervals are computed with confint.
 }
+\examples{
+\dontrun{
+# ANCOVA-adjusted treatment comparison
+result <- ancova_adjust_continuous(
+  data = adeff,
+  outcome_var = "CHG",
+  trt_var = "TRT01P",
+  baseline_var = "BASE",
+  ref_group = "Placebo",
+  covariates = c("AGEGR1", "SEX")
+)
+print(result$treatment_effects)
+}
+}
 \references{
 IQWiG Methods v8.0, Section 10.3.6, p. 218-220.
 }
