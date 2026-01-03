@@ -925,6 +925,181 @@ create_ae_km_plot_for_soc <- function(
 	)
 }
 
+#' Create Time-to-First AE Analysis
+#'
+#' Time-to-event analysis for first occurrence of adverse events.
+#'
+#' @param adae ADAE data frame with time variable (e.g., ASTDY)
+#' @param adsl ADSL data frame for denominators and censoring
+#' @param ae_filter Expression to filter specific AEs
+#'   (e.g., AEBODSYS == "Infections")
+#' @param trt_var Treatment variable (default: "TRT01P")
+#' @param ref_group Reference group for HR calculation
+#' @param time_var Time variable in ADAE (default: "ASTDY")
+#' @param censor_var Censoring variable in ADSL (default: "TRTDURD")
+#' @param conf_level Confidence level (default: 0.95)
+#' @param title Table title
+#' @param autofit Logical (default: TRUE)
+#'
+#' @return List with:
+#'   - table: ClinicalTable with KM estimates
+#'   - plot: ClinicalPlot with KM curves
+#'   - hr: Hazard ratio from Cox model
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' result <- create_time_to_first_ae(
+#'   adae = adae,
+#'   adsl = adsl,
+#'   ae_filter = AEBODSYS == "Infections",
+#'   ref_group = "Placebo"
+#' )
+#' }
+create_time_to_first_ae <- function(
+	adae,
+	adsl,
+	ae_filter = NULL,
+	trt_var = "TRT01P",
+	ref_group = NULL,
+	time_var = "ASTDY",
+	censor_var = "TRTDURD",
+	conf_level = 0.95,
+	title = NULL,
+	autofit = TRUE
+) {
+	assert_data_frame(adae, "adae")
+	assert_data_frame(adsl, "adsl")
+	assert_character_scalar(trt_var, "trt_var")
+	assert_character_scalar(time_var, "time_var")
+	assert_character_scalar(censor_var, "censor_var")
+	assert_numeric_scalar(conf_level, "conf_level")
+	assert_in_range(conf_level, 0, 1, "conf_level")
+
+	adae_cols <- c("USUBJID", "TRTEMFL", time_var)
+	missing_adae <- setdiff(adae_cols, names(adae))
+	if (length(missing_adae) > 0) {
+		ph_abort(
+			paste0(
+				"'adae' is missing required column(s): ",
+				paste(missing_adae, collapse = ", ")
+			),
+			call. = FALSE
+		)
+	}
+
+	adsl_cols <- c("SAFFL", "USUBJID", trt_var)
+	missing_adsl <- setdiff(adsl_cols, names(adsl))
+	if (length(missing_adsl) > 0) {
+		ph_abort(
+			paste0(
+				"'adsl' is missing required column(s): ",
+				paste(missing_adsl, collapse = ", ")
+			),
+			call. = FALSE
+		)
+	}
+
+	ae_filter_quo <- rlang::enquo(ae_filter)
+	adae_filtered <- adae |>
+		dplyr::filter(.data$TRTEMFL == "Y")
+
+	if (!rlang::quo_is_null(ae_filter_quo)) {
+		adae_filtered <- adae_filtered |>
+			dplyr::filter(!!ae_filter_quo)
+	}
+
+	first_event <- adae_filtered |>
+		dplyr::group_by(.data$USUBJID) |>
+		dplyr::arrange(.data[[time_var]]) |>
+		dplyr::slice(1) |>
+		dplyr::transmute(
+			USUBJID = .data$USUBJID,
+			event_time = .data[[time_var]],
+			event = 1
+		)
+
+	tte_data <- adsl |>
+		dplyr::filter(.data$SAFFL == "Y") |>
+		dplyr::left_join(first_event, by = "USUBJID")
+
+	if (!censor_var %in% names(tte_data)) {
+		if (
+			censor_var == "TRTDURD" &&
+				"TRTEDT" %in% names(tte_data) &&
+				"TRTSDT" %in% names(tte_data)
+		) {
+			tte_data[[censor_var]] <- as.numeric(
+				tte_data$TRTEDT - tte_data$TRTSDT
+			) +
+				1
+		} else {
+			ph_abort(
+				paste0(
+					"Cannot calculate censoring time for time-to-event analysis. ",
+					"Column '",
+					censor_var,
+					"' is missing from 'adsl'"
+				),
+				call. = FALSE
+			)
+		}
+	}
+
+	tte_data <- tte_data |>
+		dplyr::mutate(
+			event = ifelse(!is.na(.data$event), 1, 0),
+			time = ifelse(.data$event == 1, .data$event_time, .data[[censor_var]]),
+			time = ifelse(is.na(.data$time), .data[[censor_var]], .data$time)
+		) |>
+		dplyr::filter(!is.na(.data$time), !is.na(.data[[trt_var]]))
+
+	if (nrow(tte_data) == 0) {
+		ph_abort(
+			"No subjects available for time-to-first AE analysis",
+			call. = FALSE
+		)
+	}
+
+	if (is.null(title)) {
+		title <- "Time to First Adverse Event"
+	}
+
+	tte_table <- create_tte_summary_table(
+		data = tte_data,
+		time_var = "time",
+		event_var = "event",
+		trt_var = trt_var,
+		ref_group = ref_group,
+		conf_level = conf_level,
+		check_ph = FALSE,
+		time_unit = "days",
+		title = title,
+		autofit = autofit
+	)
+
+	tte_table@type <- "ae_time_to_first"
+
+	km_plot <- create_km_plot(
+		data = tte_data,
+		time_var = "time",
+		event_var = "event",
+		trt_var = trt_var,
+		title = title,
+		xlab = "Days",
+		ylab = "Probability of No Event",
+		risk_table = TRUE,
+		conf_level = conf_level
+	)
+
+	list(
+		table = tte_table,
+		plot = km_plot,
+		hr = tte_table@metadata$cox_fit
+	)
+}
+
 # Risk Difference/Risk Ratio Functions ----
 
 #' Calculate Risk Difference and Confidence Interval for AE

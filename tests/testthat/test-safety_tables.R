@@ -502,6 +502,68 @@ test_that("create_ae_summary_table handles empty SAE data gracefully", {
 	)
 })
 
+create_time_to_first_ae_test_data <- function() {
+	adsl <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "B", "B"),
+		SAFFL = c("Y", "Y", "Y", "Y"),
+		TRTDURD = c(10, 10, 10, 10),
+		stringsAsFactors = FALSE
+	)
+
+	adae <- data.frame(
+		USUBJID = c("01", "03", "04"),
+		TRTEMFL = c("Y", "Y", "Y"),
+		AEBODSYS = c("Infections", "Infections", "Cardiac"),
+		ASTDY = c(3, 5, 8),
+		stringsAsFactors = FALSE
+	)
+
+	list(adsl = adsl, adae = adae)
+}
+
+test_that("create_time_to_first_ae returns KM summary table", {
+	data <- create_time_to_first_ae_test_data()
+
+	result <- create_time_to_first_ae(
+		adae = data$adae,
+		adsl = data$adsl,
+		ae_filter = AEBODSYS == "Infections",
+		ref_group = "A"
+	)
+
+	expect_s7_class(result$table, ClinicalTable)
+	expect_equal(result$table@type, "ae_time_to_first")
+	expect_true(any(result$table@data$Statistic == "Median (95% CI)"))
+})
+
+test_that("create_time_to_first_ae returns HR from Cox model", {
+	data <- create_time_to_first_ae_test_data()
+
+	result <- create_time_to_first_ae(
+		adae = data$adae,
+		adsl = data$adsl,
+		ae_filter = AEBODSYS == "Infections",
+		ref_group = "A"
+	)
+
+	expect_true(inherits(result$hr, "coxph"))
+	expect_true(any(result$table@data$Statistic == "HR (95% CI)"))
+})
+
+test_that("create_time_to_first_ae returns KM plot", {
+	data <- create_time_to_first_ae_test_data()
+
+	result <- create_time_to_first_ae(
+		adae = data$adae,
+		adsl = data$adsl,
+		ae_filter = AEBODSYS == "Infections",
+		ref_group = "A"
+	)
+
+	expect_s7_class(result$plot, ClinicalPlot)
+})
+
 # ==============================================================================
 # Tests for AE Comparison Functionality
 # ==============================================================================

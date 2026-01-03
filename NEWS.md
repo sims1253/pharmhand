@@ -1,5 +1,12 @@
 # pharmhand 0.1.15.9000
 
+# pharmhand 0.1.17.9000
+
+## Improvements
+
+* Added time-to-first adverse event analysis with KM tables, plots, and Cox HRs
+  via `create_time_to_first_ae()`.
+
 # pharmhand 0.1.16.9000
 
 ## Improvements
