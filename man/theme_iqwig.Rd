@@ -10,6 +10,7 @@ theme_iqwig(
   font_size = 9,
   header_bold = TRUE,
   decimal_separator = ",",
+  na_string = getOption("pharmhand.na_string", "--"),
   autofit = TRUE
 )
 }
@@ -25,6 +26,9 @@ theme_iqwig(
 \item{decimal_separator}{Decimal separator: "." or "," (default: ",");
 applies to numeric columns with "." as the thousands separator when ",".}
 
+\item{na_string}{String to display for missing values
+(default: getOption("pharmhand.na_string", "--"))}
+
 \item{autofit}{Logical, autofit column widths (default: TRUE)}
 }
 \value{
@@ -33,7 +37,7 @@ A styled flextable object
 \description{
 Apply IQWiG-compliant styling to a flextable. Based on formatting standards
 from IQWiG Methods v8.0, with numeric formatting driven by
-\code{decimal_separator} and missing values shown as \verb{--}.
+\code{decimal_separator} and missing values shown via \code{na_string}.
 }
 \examples{
 \dontrun{

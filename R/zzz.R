@@ -62,6 +62,9 @@ NULL
 	set_option_if_null("pharmhand.cache_enabled", TRUE)
 	set_option_if_null("pharmhand.cache_max_size_mb", 500)
 
+	# Formatting settings
+	set_option_if_null("pharmhand.na_string", "--")
+
 	# Image settings
 	set_option_if_null("pharmhand.default_plot_dpi", 300)
 	set_option_if_null("pharmhand.default_plot_width", 6)

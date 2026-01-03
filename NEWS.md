@@ -1,3 +1,10 @@
+# pharmhand 0.1.7.9000
+
+## Improvements
+
+* Standardized NA display via `pharmhand.na_string` across reporting themes and
+  clinical table styling.
+
 # pharmhand 0.1.6.9000
 
 ## Documentation

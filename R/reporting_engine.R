@@ -194,7 +194,8 @@ create_clinical_table <- function(res, title = "") {
 #' @param body_bg Body background color (default: "white")
 #' @param font_color Font color for all text (default: "black")
 #' @param zebra Logical, apply zebra striping (default: FALSE)
-#' @param na_string String to display for NA values (default: "--")
+#' @param na_string String to display for NA values
+#'   (default: getOption("pharmhand.na_string", "--"))
 #' @param autofit Logical, perform expensive layout calculations (default: TRUE)
 #'
 #' @return A styled flextable object
@@ -216,7 +217,7 @@ apply_clinical_style <- function(
 	body_bg = "white",
 	font_color = "black",
 	zebra = FALSE,
-	na_string = "--",
+	na_string = get_na_string(),
 	autofit = TRUE
 ) {
 	style <- match.arg(style)
@@ -298,7 +299,7 @@ apply_clinical_style <- function(
 #'
 #' Apply IQWiG-compliant styling to a flextable. Based on formatting standards
 #' from IQWiG Methods v8.0, with numeric formatting driven by
-#' `decimal_separator` and missing values shown as `--`.
+#' `decimal_separator` and missing values shown via `na_string`.
 #'
 #' @param ft A flextable object
 #' @param font_name Font family (default: "Arial")
@@ -306,6 +307,8 @@ apply_clinical_style <- function(
 #' @param header_bold Logical, bold header text (default: TRUE)
 #' @param decimal_separator Decimal separator: "." or "," (default: ",");
 #'   applies to numeric columns with "." as the thousands separator when ",".
+#' @param na_string String to display for missing values
+#'   (default: getOption("pharmhand.na_string", "--"))
 #' @param autofit Logical, autofit column widths (default: TRUE)
 #'
 #' @return A styled flextable object
@@ -325,6 +328,7 @@ theme_iqwig <- function(
 	font_size = 9,
 	header_bold = TRUE,
 	decimal_separator = ",",
+	na_string = getOption("pharmhand.na_string", "--"),
 	autofit = TRUE
 ) {
 	# Validate input
@@ -369,18 +373,18 @@ theme_iqwig <- function(
 	# Handle NA values and decimal separator
 	if (decimal_separator == ",") {
 		ft <- ft |>
-			flextable::colformat_char(na_str = "--") |>
+			flextable::colformat_char(na_str = na_string) |>
 			flextable::colformat_double(
-				na_str = "--",
+				na_str = na_string,
 				decimal.mark = ",",
 				big.mark = "."
 			) |>
-			flextable::colformat_int(na_str = "--")
+			flextable::colformat_int(na_str = na_string)
 	} else {
 		ft <- ft |>
-			flextable::colformat_char(na_str = "--") |>
-			flextable::colformat_double(na_str = "--") |>
-			flextable::colformat_int(na_str = "--")
+			flextable::colformat_char(na_str = na_string) |>
+			flextable::colformat_double(na_str = na_string) |>
+			flextable::colformat_int(na_str = na_string)
 	}
 
 	# Autofit
@@ -406,6 +410,8 @@ theme_iqwig <- function(
 #' @param header_bold Logical, bold header text (default: TRUE)
 #' @param header_bg Header background color (default: "#E8E8E8" light gray)
 #' @param decimal_separator Decimal separator: "." or "," (default: ",")
+#' @param na_string String to display for missing values
+#'   (default: getOption("pharmhand.na_string", "--"))
 #' @param autofit Logical, autofit column widths (default: TRUE)
 #'
 #' @return A styled flextable object
@@ -426,6 +432,7 @@ theme_gba <- function(
 	header_bold = TRUE,
 	header_bg = "#E8E8E8",
 	decimal_separator = ",",
+	na_string = getOption("pharmhand.na_string", "--"),
 	autofit = TRUE
 ) {
 	# Validate input
@@ -474,18 +481,18 @@ theme_gba <- function(
 	# Handle NA values and decimal separator
 	if (decimal_separator == ",") {
 		ft <- ft |>
-			flextable::colformat_char(na_str = "--") |>
+			flextable::colformat_char(na_str = na_string) |>
 			flextable::colformat_double(
-				na_str = "--",
+				na_str = na_string,
 				decimal.mark = ",",
 				big.mark = "."
 			) |>
-			flextable::colformat_int(na_str = "--")
+			flextable::colformat_int(na_str = na_string)
 	} else {
 		ft <- ft |>
-			flextable::colformat_char(na_str = "--") |>
-			flextable::colformat_double(na_str = "--") |>
-			flextable::colformat_int(na_str = "--")
+			flextable::colformat_char(na_str = na_string) |>
+			flextable::colformat_double(na_str = na_string) |>
+			flextable::colformat_int(na_str = na_string)
 	}
 
 	# Autofit
