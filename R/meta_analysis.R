@@ -1657,7 +1657,7 @@ assess_transitivity <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' # Network meta-analysis of 4 studies
 #' nma_data <- data.frame(
 #'   study = c("S1", "S2", "S3", "S4"),
 #'   treat1 = c("A", "B", "A", "B"),
@@ -1665,9 +1665,9 @@ assess_transitivity <- function(
 #'   effect = log(c(0.75, 0.90, 0.80, 0.85)),
 #'   se = c(0.12, 0.15, 0.18, 0.14)
 #' )
-#'
 #' result <- network_meta(nma_data, effect_measure = "hr")
-#' }
+#' result$comparisons
+#' result$network$treatments
 network_meta <- function(
 	data,
 	study_var = "study",
