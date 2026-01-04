@@ -1,5 +1,137 @@
 # Changelog
 
+## pharmhand 0.2.2.9000
+
+### Phase 2: Evidence Synthesis
+
+#### Meta-Analysis Functions
+
+- Added
+  [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
+  for fixed-effect and random-effects meta-analysis with support for
+  multiple tau² estimators (DerSimonian-Laird, REML, Paule-Mandel, ML)
+  and optional Knapp-Hartung adjustment.
+
+- Added
+  [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)
+  for comprehensive heterogeneity assessment including Q, I², τ², and H²
+  statistics with interpretation.
+
+- Added
+  [`leave_one_out()`](https://sims1253.github.io/pharmhand/branch/dev/reference/leave_one_out.md)
+  for sensitivity analysis identifying influential studies.
+
+- Added
+  [`create_meta_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_meta_forest_plot.md)
+  for meta-analysis forest plots with study weights, heterogeneity
+  statistics, and prediction intervals.
+
+- Added
+  [`create_funnel_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_funnel_plot.md)
+  for publication bias visualization.
+
+- Added
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
+  for statistical assessment of funnel plot asymmetry.
+
+- Added
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
+  for Duval & Tweedie publication bias adjustment.
+
+#### Indirect Comparison
+
+- Added
+  [`indirect_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/indirect_comparison.md)
+  using the Bucher method for anchored indirect treatment comparisons.
+
+- Added
+  [`compare_direct_indirect()`](https://sims1253.github.io/pharmhand/branch/dev/reference/compare_direct_indirect.md)
+  for consistency testing between direct and indirect evidence.
+
+#### Network Meta-Analysis
+
+- Added
+  [`network_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/network_meta.md)
+  for network meta-analysis comparing multiple treatments.
+
+- Added
+  [`create_network_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_network_plot.md)
+  for network geometry visualization.
+
+- Added
+  [`assess_transitivity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_transitivity.md)
+  for evaluating the transitivity assumption.
+
+- Added
+  [`node_splitting()`](https://sims1253.github.io/pharmhand/branch/dev/reference/node_splitting.md)
+  for testing inconsistency between direct and indirect evidence.
+
+- Added
+  [`calculate_sucra()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_sucra.md)
+  for treatment ranking with SUCRA/P-scores.
+
+- Added
+  [`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md)
+  for pairwise comparison tables.
+
+#### Bayesian Analysis
+
+- Added
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)
+  interface for Bayesian meta-analysis using brms when available, with
+  automatic fallback to frequentist methods.
+
+### Phase 1 Completion
+
+#### PRO Analysis
+
+- Added
+  [`calculate_mcid_anchor()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid_anchor.md)
+  for anchor-based MCID calculation.
+
+- Added
+  [`calculate_mcid_distribution()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid_distribution.md)
+  for distribution-based MCID (0.5 SD, 1 SEM, etc.).
+
+- Added
+  [`calculate_mcid()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid.md)
+  wrapper combining both MCID approaches.
+
+- Added
+  [`create_ttd_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ttd_analysis.md)
+  for time-to-deterioration analysis with Kaplan-Meier estimation.
+
+#### Visualization
+
+- Added
+  [`create_mean_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_mean_plot.md)
+  for longitudinal mean plots with confidence intervals.
+
+- Added
+  [`create_spider_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_spider_plot.md)
+  for individual patient trajectory visualization.
+
+#### Safety Analysis
+
+- Added
+  [`create_ae_hierarchy_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_hierarchy_table.md)
+  for full MedDRA hierarchy analysis (SOC → HLGT → HLT → PT).
+
+#### Subgroup Analysis
+
+- Added
+  [`assess_iceman()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_iceman.md)
+  for ICEMAN criteria assessment of subgroup credibility.
+
+### S7 Classes
+
+- Added comprehensive tests for `MultiArmStudy` S7 class.
+
+### Documentation
+
+- Added extensive test coverage for meta-analysis functions.
+- Added tests for PRO analysis functions.
+
 ## pharmhand 0.2.1.9000
 
 ### Improvements

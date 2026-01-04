@@ -28,8 +28,6 @@ Core S7 classes for clinical data structures and reporting objects.
   : FormatSpec S7 Class
 - [`LayeredTable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/LayeredTable.md)
   : Layered Table Class
-- [`MetaResult()`](https://sims1253.github.io/pharmhand/branch/dev/reference/MetaResult.md)
-  : MetaResult Class
 - [`PerformanceReport()`](https://sims1253.github.io/pharmhand/branch/dev/reference/PerformanceReport.md)
   : PerformanceReport Class
 - [`ReportSection()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ReportSection.md)
@@ -102,6 +100,8 @@ responder, and subgroup analyses.
   : Create Change from Baseline Summary Table
 - [`ancova_adjust_continuous()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ancova_adjust_continuous.md)
   : ANCOVA Analysis for Continuous Endpoints
+- [`assess_iceman()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_iceman.md)
+  : Assess Subgroup Credibility Using ICEMAN Criteria
 
 ## Safety Tables
 
@@ -114,6 +114,8 @@ laboratory shifts and AE summaries.
   : Create AE Comparison Table with Risk Differences
 - [`create_ae_exposure_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_exposure_table.md)
   : Create Exposure-Adjusted AE Table
+- [`create_ae_hierarchy_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_hierarchy_table.md)
+  : Create AE Table with Full MedDRA Hierarchy
 - [`create_time_to_first_ae()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_time_to_first_ae.md)
   : Create Time-to-First AE Analysis
 - [`create_lab_shift_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_lab_shift_table.md)
@@ -172,11 +174,15 @@ and other graphics.
   : Create AE KM Plot for a specific SOC
 - [`create_loglog_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_loglog_plot.md)
   : Create Log-Log Survival Plot
+- [`create_mean_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_mean_plot.md)
+  : Create Mean Plot with Confidence Intervals Over Time
 - [`save_plot_as()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_plot_as.md)
   : Save ClinicalPlot to file
 - [`save_as_png()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_as_png.md)
   : Save ClinicalTable as PNG Saves a ClinicalTable's flextable to a PNG
   file.
+- [`create_spider_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_spider_plot.md)
+  : Create Spider Plot for Individual Trajectories
 
 ## Formatting
 
@@ -308,6 +314,66 @@ Functions for subgroup and interaction analyses in clinical trials.
 - [`calculate_response_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_response_comparison.md)
   : Calculate Response Comparison (OR, RR, or RD)
 
+## PRO Analysis
+
+Patient-Reported Outcomes analysis functions including minimal
+clinically important difference (MCID) and time-to-deterioration.
+
+- [`calculate_mcid()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid.md)
+  : Calculate MCID (Combined Approach)
+- [`calculate_mcid_anchor()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid_anchor.md)
+  : Calculate MCID using Anchor-Based Method
+- [`calculate_mcid_distribution()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid_distribution.md)
+  : Calculate MCID using Distribution-Based Methods
+- [`create_ttd_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ttd_analysis.md)
+  : Create Time-to-Deterioration Analysis
+
+## Meta-Analysis
+
+Functions for conducting meta-analyses including heterogeneity
+assessment, sensitivity analysis, and publication bias detection.
+
+- [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
+  : Meta-Analysis Functions
+- [`MetaResult()`](https://sims1253.github.io/pharmhand/branch/dev/reference/MetaResult.md)
+  : MetaResult Class
+- [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)
+  : Calculate Heterogeneity Statistics
+- [`leave_one_out()`](https://sims1253.github.io/pharmhand/branch/dev/reference/leave_one_out.md)
+  : Perform Leave-One-Out Sensitivity Analysis
+- [`create_meta_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_meta_forest_plot.md)
+  : Create Forest Plot for Meta-Analysis
+- [`create_funnel_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_funnel_plot.md)
+  : Create Funnel Plot for Publication Bias Assessment
+- [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
+  : Egger's Test for Funnel Plot Asymmetry
+- [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
+  : Trim-and-Fill Method for Publication Bias
+- [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)
+  : Bayesian Meta-Analysis Interface
+
+## Network Meta-Analysis
+
+Indirect treatment comparison and network meta-analysis functions for
+comparing multiple treatments across studies.
+
+- [`indirect_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/indirect_comparison.md)
+  : Perform Indirect Comparison Using Bucher Method
+- [`compare_direct_indirect()`](https://sims1253.github.io/pharmhand/branch/dev/reference/compare_direct_indirect.md)
+  : Compare Direct and Indirect Evidence
+- [`network_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/network_meta.md)
+  : Perform Network Meta-Analysis
+- [`create_network_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_network_plot.md)
+  : Visualize Network Geometry
+- [`assess_transitivity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_transitivity.md)
+  : Assess Transitivity for Indirect Comparisons
+- [`node_splitting()`](https://sims1253.github.io/pharmhand/branch/dev/reference/node_splitting.md)
+  : Test for Inconsistency Using Node-Splitting
+- [`calculate_sucra()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_sucra.md)
+  : Calculate Treatment Rankings (P-scores/SUCRA)
+- [`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md)
+  : Create League Table for Network Meta-Analysis
+
 ## GBA/AMNOG Utilities
 
 Functions for German Health Technology Assessment (G-BA/AMNOG) including
@@ -417,3 +483,7 @@ Internal package documentation for architecture and modules.
   : Internationalization and Localization Support
 - [`plotting`](https://sims1253.github.io/pharmhand/branch/dev/reference/plotting.md)
   : Clinical Plots
+- [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
+  : Meta-Analysis Functions
+- [`pro_analysis`](https://sims1253.github.io/pharmhand/branch/dev/reference/pro_analysis.md)
+  : PRO Analysis Functions

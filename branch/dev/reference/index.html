@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,13 +131,6 @@
 
         </dt>
         <dd>Layered Table Class</dd>
-
-        <dt>
-
-          <code><a href="MetaResult.html">MetaResult()</a></code>
-
-        </dt>
-        <dd>MetaResult Class</dd>
 
         <dt>
 
@@ -354,6 +347,13 @@
 
         </dt>
         <dd>ANCOVA Analysis for Continuous Endpoints</dd>
+
+        <dt>
+
+          <code><a href="assess_iceman.html">assess_iceman()</a></code>
+
+        </dt>
+        <dd>Assess Subgroup Credibility Using ICEMAN Criteria</dd>
       </dl></div><div class="section level2">
       <h2 id="safety-tables">Safety Tables<a class="anchor" aria-label="anchor" href="#safety-tables"></a></h2>
 
@@ -384,6 +384,13 @@
 
         </dt>
         <dd>Create Exposure-Adjusted AE Table</dd>
+
+        <dt>
+
+          <code><a href="create_ae_hierarchy_table.html">create_ae_hierarchy_table()</a></code>
+
+        </dt>
+        <dd>Create AE Table with Full MedDRA Hierarchy</dd>
 
         <dt>
 
@@ -566,6 +573,13 @@
 
         <dt>
 
+          <code><a href="create_mean_plot.html">create_mean_plot()</a></code>
+
+        </dt>
+        <dd>Create Mean Plot with Confidence Intervals Over Time</dd>
+
+        <dt>
+
           <code><a href="save_plot_as.html">save_plot_as()</a></code>
 
         </dt>
@@ -577,6 +591,13 @@
 
         </dt>
         <dd>Save ClinicalTable as PNG Saves a ClinicalTable's flextable to a PNG file.</dd>
+
+        <dt>
+
+          <code><a href="create_spider_plot.html">create_spider_plot()</a></code>
+
+        </dt>
+        <dd>Create Spider Plot for Individual Trajectories</dd>
       </dl></div><div class="section level2">
       <h2 id="formatting">Formatting<a class="anchor" aria-label="anchor" href="#formatting"></a></h2>
 
@@ -947,6 +968,180 @@
         </dt>
         <dd>Calculate Response Comparison (OR, RR, or RD)</dd>
       </dl></div><div class="section level2">
+      <h2 id="pro-analysis">PRO Analysis<a class="anchor" aria-label="anchor" href="#pro-analysis"></a></h2>
+
+      <div class="section-desc"><p>Patient-Reported Outcomes analysis functions including minimal clinically important difference (MCID) and time-to-deterioration.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="calculate_mcid.html">calculate_mcid()</a></code>
+
+        </dt>
+        <dd>Calculate MCID (Combined Approach)</dd>
+
+        <dt>
+
+          <code><a href="calculate_mcid_anchor.html">calculate_mcid_anchor()</a></code>
+
+        </dt>
+        <dd>Calculate MCID using Anchor-Based Method</dd>
+
+        <dt>
+
+          <code><a href="calculate_mcid_distribution.html">calculate_mcid_distribution()</a></code>
+
+        </dt>
+        <dd>Calculate MCID using Distribution-Based Methods</dd>
+
+        <dt>
+
+          <code><a href="create_ttd_analysis.html">create_ttd_analysis()</a></code>
+
+        </dt>
+        <dd>Create Time-to-Deterioration Analysis</dd>
+      </dl></div><div class="section level2">
+      <h2 id="meta-analysis">Meta-Analysis<a class="anchor" aria-label="anchor" href="#meta-analysis"></a></h2>
+
+      <div class="section-desc"><p>Functions for conducting meta-analyses including heterogeneity assessment, sensitivity analysis, and publication bias detection.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="meta_analysis.html">meta_analysis()</a></code>
+
+        </dt>
+        <dd>Meta-Analysis Functions</dd>
+
+        <dt>
+
+          <code><a href="MetaResult.html">MetaResult()</a></code>
+
+        </dt>
+        <dd>MetaResult Class</dd>
+
+        <dt>
+
+          <code><a href="calculate_heterogeneity.html">calculate_heterogeneity()</a></code>
+
+        </dt>
+        <dd>Calculate Heterogeneity Statistics</dd>
+
+        <dt>
+
+          <code><a href="leave_one_out.html">leave_one_out()</a></code>
+
+        </dt>
+        <dd>Perform Leave-One-Out Sensitivity Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_meta_forest_plot.html">create_meta_forest_plot()</a></code>
+
+        </dt>
+        <dd>Create Forest Plot for Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_funnel_plot.html">create_funnel_plot()</a></code>
+
+        </dt>
+        <dd>Create Funnel Plot for Publication Bias Assessment</dd>
+
+        <dt>
+
+          <code><a href="eggers_test.html">eggers_test()</a></code>
+
+        </dt>
+        <dd>Egger's Test for Funnel Plot Asymmetry</dd>
+
+        <dt>
+
+          <code><a href="trim_and_fill.html">trim_and_fill()</a></code>
+
+        </dt>
+        <dd>Trim-and-Fill Method for Publication Bias</dd>
+
+        <dt>
+
+          <code><a href="bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code>
+
+        </dt>
+        <dd>Bayesian Meta-Analysis Interface</dd>
+      </dl></div><div class="section level2">
+      <h2 id="network-meta-analysis">Network Meta-Analysis<a class="anchor" aria-label="anchor" href="#network-meta-analysis"></a></h2>
+
+      <div class="section-desc"><p>Indirect treatment comparison and network meta-analysis functions for comparing multiple treatments across studies.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="indirect_comparison.html">indirect_comparison()</a></code>
+
+        </dt>
+        <dd>Perform Indirect Comparison Using Bucher Method</dd>
+
+        <dt>
+
+          <code><a href="compare_direct_indirect.html">compare_direct_indirect()</a></code>
+
+        </dt>
+        <dd>Compare Direct and Indirect Evidence</dd>
+
+        <dt>
+
+          <code><a href="network_meta.html">network_meta()</a></code>
+
+        </dt>
+        <dd>Perform Network Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_network_plot.html">create_network_plot()</a></code>
+
+        </dt>
+        <dd>Visualize Network Geometry</dd>
+
+        <dt>
+
+          <code><a href="assess_transitivity.html">assess_transitivity()</a></code>
+
+        </dt>
+        <dd>Assess Transitivity for Indirect Comparisons</dd>
+
+        <dt>
+
+          <code><a href="node_splitting.html">node_splitting()</a></code>
+
+        </dt>
+        <dd>Test for Inconsistency Using Node-Splitting</dd>
+
+        <dt>
+
+          <code><a href="calculate_sucra.html">calculate_sucra()</a></code>
+
+        </dt>
+        <dd>Calculate Treatment Rankings (P-scores/SUCRA)</dd>
+
+        <dt>
+
+          <code><a href="create_league_table.html">create_league_table()</a></code>
+
+        </dt>
+        <dd>Create League Table for Network Meta-Analysis</dd>
+      </dl></div><div class="section level2">
       <h2 id="gba-amnog-utilities">GBA/AMNOG Utilities<a class="anchor" aria-label="anchor" href="#gba-amnog-utilities"></a></h2>
 
       <div class="section-desc"><p>Functions for German Health Technology Assessment (G-BA/AMNOG) including standardized mean difference (SMD) calculation, baseline balance assessment, and multiplicity adjustment.</p></div>
@@ -1283,6 +1478,20 @@
 
         </dt>
         <dd>Clinical Plots</dd>
+
+        <dt>
+
+          <code><a href="meta_analysis.html">meta_analysis()</a></code>
+
+        </dt>
+        <dd>Meta-Analysis Functions</dd>
+
+        <dt>
+
+          <code><a href="pro_analysis.html">pro_analysis</a></code>
+
+        </dt>
+        <dd>PRO Analysis Functions</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,72 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.2.9000" id="pharmhand-0229000">pharmhand 0.2.2.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0229000"></a></h2>
+<div class="section level3">
+<h3 id="phase-evidence-synthesis-0-2-2-9000">Phase 2: Evidence Synthesis<a class="anchor" aria-label="anchor" href="#phase-evidence-synthesis-0-2-2-9000"></a></h3>
+<div class="section level4">
+<h4 id="meta-analysis-functions-0-2-2-9000">Meta-Analysis Functions<a class="anchor" aria-label="anchor" href="#meta-analysis-functions-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code> for fixed-effect and random-effects meta-analysis with support for multiple tau² estimators (DerSimonian-Laird, REML, Paule-Mandel, ML) and optional Knapp-Hartung adjustment.</p></li>
+<li><p>Added <code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code> for comprehensive heterogeneity assessment including Q, I², τ², and H² statistics with interpretation.</p></li>
+<li><p>Added <code><a href="../reference/leave_one_out.html">leave_one_out()</a></code> for sensitivity analysis identifying influential studies.</p></li>
+<li><p>Added <code><a href="../reference/create_meta_forest_plot.html">create_meta_forest_plot()</a></code> for meta-analysis forest plots with study weights, heterogeneity statistics, and prediction intervals.</p></li>
+<li><p>Added <code><a href="../reference/create_funnel_plot.html">create_funnel_plot()</a></code> for publication bias visualization.</p></li>
+<li><p>Added <code><a href="../reference/eggers_test.html">eggers_test()</a></code> for statistical assessment of funnel plot asymmetry.</p></li>
+<li><p>Added <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code> for Duval &amp; Tweedie publication bias adjustment.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="indirect-comparison-0-2-2-9000">Indirect Comparison<a class="anchor" aria-label="anchor" href="#indirect-comparison-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/indirect_comparison.html">indirect_comparison()</a></code> using the Bucher method for anchored indirect treatment comparisons.</p></li>
+<li><p>Added <code><a href="../reference/compare_direct_indirect.html">compare_direct_indirect()</a></code> for consistency testing between direct and indirect evidence.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="network-meta-analysis-0-2-2-9000">Network Meta-Analysis<a class="anchor" aria-label="anchor" href="#network-meta-analysis-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/network_meta.html">network_meta()</a></code> for network meta-analysis comparing multiple treatments.</p></li>
+<li><p>Added <code><a href="../reference/create_network_plot.html">create_network_plot()</a></code> for network geometry visualization.</p></li>
+<li><p>Added <code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code> for evaluating the transitivity assumption.</p></li>
+<li><p>Added <code><a href="../reference/node_splitting.html">node_splitting()</a></code> for testing inconsistency between direct and indirect evidence.</p></li>
+<li><p>Added <code><a href="../reference/calculate_sucra.html">calculate_sucra()</a></code> for treatment ranking with SUCRA/P-scores.</p></li>
+<li><p>Added <code><a href="../reference/create_league_table.html">create_league_table()</a></code> for pairwise comparison tables.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="bayesian-analysis-0-2-2-9000">Bayesian Analysis<a class="anchor" aria-label="anchor" href="#bayesian-analysis-0-2-2-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> interface for Bayesian meta-analysis using brms when available, with automatic fallback to frequentist methods.</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="phase-completion-0-2-2-9000">Phase 1 Completion<a class="anchor" aria-label="anchor" href="#phase-completion-0-2-2-9000"></a></h3>
+<div class="section level4">
+<h4 id="pro-analysis-0-2-2-9000">PRO Analysis<a class="anchor" aria-label="anchor" href="#pro-analysis-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/calculate_mcid_anchor.html">calculate_mcid_anchor()</a></code> for anchor-based MCID calculation.</p></li>
+<li><p>Added <code><a href="../reference/calculate_mcid_distribution.html">calculate_mcid_distribution()</a></code> for distribution-based MCID (0.5 SD, 1 SEM, etc.).</p></li>
+<li><p>Added <code><a href="../reference/calculate_mcid.html">calculate_mcid()</a></code> wrapper combining both MCID approaches.</p></li>
+<li><p>Added <code><a href="../reference/create_ttd_analysis.html">create_ttd_analysis()</a></code> for time-to-deterioration analysis with Kaplan-Meier estimation.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="visualization-0-2-2-9000">Visualization<a class="anchor" aria-label="anchor" href="#visualization-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/create_mean_plot.html">create_mean_plot()</a></code> for longitudinal mean plots with confidence intervals.</p></li>
+<li><p>Added <code><a href="../reference/create_spider_plot.html">create_spider_plot()</a></code> for individual patient trajectory visualization.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="safety-analysis-0-2-2-9000">Safety Analysis<a class="anchor" aria-label="anchor" href="#safety-analysis-0-2-2-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/create_ae_hierarchy_table.html">create_ae_hierarchy_table()</a></code> for full MedDRA hierarchy analysis (SOC → HLGT → HLT → PT).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="subgroup-analysis-0-2-2-9000">Subgroup Analysis<a class="anchor" aria-label="anchor" href="#subgroup-analysis-0-2-2-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/assess_iceman.html">assess_iceman()</a></code> for ICEMAN criteria assessment of subgroup credibility.</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="s7-classes-0-2-2-9000">S7 Classes<a class="anchor" aria-label="anchor" href="#s7-classes-0-2-2-9000"></a></h3>
+<ul><li>Added comprehensive tests for <code>MultiArmStudy</code> S7 class.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-2-2-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-2-9000"></a></h3>
+<ul><li>Added extensive test coverage for meta-analysis functions.</li>
+<li>Added tests for PRO analysis functions.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1.9000" id="pharmhand-0219000">pharmhand 0.2.1.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0219000"></a></h2>
 <div class="section level3">
