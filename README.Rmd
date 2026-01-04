@@ -145,7 +145,7 @@ check_gba_compliance(module4_table, strict = FALSE)
 
 ### Meta-Analysis & Evidence Synthesis
 
-```r
+```{r meta-analysis-example, eval=FALSE}
 # Random-effects meta-analysis
 result <- meta_analysis(
   yi = log(c(0.75, 0.82, 0.68, 0.91, 0.77)),
@@ -159,6 +159,7 @@ result@heterogeneity$I2
 
 # Forest plot
 forest_plot <- create_meta_forest_plot(result, title = "Treatment Effect")
+forest_plot@plot
 
 # Network meta-analysis
 nma_data <- data.frame(
@@ -169,6 +170,7 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
+nma_result$summary
 ```
 
 ## Classes
