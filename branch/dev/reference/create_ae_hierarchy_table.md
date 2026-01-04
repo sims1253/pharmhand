@@ -18,7 +18,9 @@ create_ae_hierarchy_table(
   levels = c("soc", "pt"),
   subject_var = "USUBJID",
   min_pct = 0,
-  sort_by = c("frequency", "alphabetical")
+  sort_by = c("frequency", "alphabetical"),
+  title = NULL,
+  autofit = TRUE
 )
 ```
 
@@ -68,6 +70,14 @@ create_ae_hierarchy_table(
 - sort_by:
 
   Character. Sort by "alphabetical" or "frequency". Default: "frequency"
+
+- title:
+
+  Character. Table title. Default: NULL (auto-generated)
+
+- autofit:
+
+  Logical. Whether to autofit column widths. Default: TRUE
 
 ## Value
 

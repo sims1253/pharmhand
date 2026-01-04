@@ -25,4 +25,24 @@ leave_one_out(meta_result = NULL, yi = NULL, sei = NULL)
 
 ## Value
 
-List with leave-one-out results and influence statistics
+A list with components:
+
+- results:
+
+  Data frame with estimates when each study is excluded
+
+- influential_studies:
+
+  Character vector of influential studies
+
+- n_influential:
+
+  Number of influential studies
+
+- effect_measure:
+
+  Effect measure used
+
+- model:
+
+  Model type (fixed/random)

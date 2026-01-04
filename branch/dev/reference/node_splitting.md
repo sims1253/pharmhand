@@ -26,3 +26,11 @@ node_splitting(nma_result, data = NULL, conf_level = 0.95)
 ## Value
 
 Data frame with direct, indirect, and inconsistency test results
+
+## Note
+
+This is a simplified implementation. Full node-splitting requires
+re-running the network meta-analysis excluding direct evidence for each
+comparison, which is computationally intensive. Consider using
+specialized NMA packages (e.g., gemtc, netmeta) for rigorous
+inconsistency assessment.

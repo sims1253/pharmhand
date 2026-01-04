@@ -41,8 +41,31 @@ assess_transitivity(
 
 ## Value
 
-TransitivityAssessment list with comparison tables and overall
-assessment
+A list with components:
+
+- summaries:
+
+  Summary statistics by treatment
+
+- comparison_tables:
+
+  Pairwise comparison tables
+
+- imbalance_scores:
+
+  SMDs for continuous variables
+
+- overall_assessment:
+
+  Text summary of concerns
+
+- n_treatments:
+
+  Number of unique treatments
+
+- n_characteristics:
+
+  Number of characteristics assessed
 
 ## Examples
 

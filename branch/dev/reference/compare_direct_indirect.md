@@ -34,4 +34,32 @@ compare_direct_indirect(
 
 ## Value
 
-List with test for inconsistency and pooled estimate
+A list with components:
+
+- direct_estimate:
+
+  Direct evidence effect estimate
+
+- indirect_estimate:
+
+  Indirect evidence effect estimate
+
+- pooled_estimate:
+
+  Inverse-variance weighted pooled estimate
+
+- pooled_ci:
+
+  CI for pooled estimate
+
+- inconsistency_p:
+
+  P-value for inconsistency test
+
+- effect_measure:
+
+  Effect measure used
+
+- is_consistent:
+
+  Logical; TRUE if p \> 0.05

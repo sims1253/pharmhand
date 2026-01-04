@@ -25,4 +25,52 @@ calculate_heterogeneity(yi, sei, method = c("REML", "DL", "PM", "ML"))
 
 ## Value
 
-List with Q, I2, tau2, H2, and related statistics
+A list with components:
+
+- Q:
+
+  Cochran's Q statistic
+
+- Q_df:
+
+  Degrees of freedom for Q test
+
+- Q_pvalue:
+
+  P-value for Q test
+
+- I2:
+
+  I-squared heterogeneity percentage (0-100)
+
+- I2_ci:
+
+  95 percent CI for I-squared
+
+- H2:
+
+  H-squared statistic
+
+- H:
+
+  H statistic (sqrt of H2)
+
+- tau2:
+
+  Between-study variance estimate
+
+- tau:
+
+  Between-study standard deviation
+
+- method:
+
+  Estimation method used
+
+- k:
+
+  Number of studies
+
+- interpretation:
+
+  Verbal interpretation of I2 level

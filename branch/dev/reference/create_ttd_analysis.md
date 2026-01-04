@@ -89,4 +89,36 @@ create_ttd_analysis(
 
 ## Value
 
-List with ttd_data, km_fit, summary_table, and plot
+A list with components:
+
+- ttd_data:
+
+  Prepared time-to-deterioration data frame
+
+- km_fit:
+
+  Kaplan-Meier fit object from survfit
+
+- summary_table:
+
+  Summary statistics by treatment group
+
+- threshold:
+
+  MCID threshold used
+
+- direction:
+
+  Direction of deterioration
+
+- definition:
+
+  Deterioration definition used
+
+- n_subjects:
+
+  Total number of subjects
+
+- n_events:
+
+  Total number of deterioration events

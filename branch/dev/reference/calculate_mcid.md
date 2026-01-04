@@ -54,4 +54,34 @@ calculate_mcid(
 
 ## Value
 
-List with MCID results from requested method(s)
+List containing MCID results. Structure depends on method:
+
+- If method = "anchor": anchor-based results with mcid, ci, n, method
+
+- If method = "distribution": distribution-based results (half_sd,
+  one_sem, etc.)
+
+- If method = "both": both anchor and distribution results
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Anchor-based MCID
+anchor_result <- calculate_mcid(
+  data = pro_data,
+  score_var = "AVAL",
+  anchor_var = "PGIC",
+  responder_value = "Much improved",
+  method = "anchor"
+)
+
+# Distribution-based MCID
+dist_result <- calculate_mcid(
+  data = pro_data,
+  score_var = "AVAL",
+  method = "distribution",
+  reliability = 0.85
+)
+} # }
+```

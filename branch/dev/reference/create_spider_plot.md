@@ -93,3 +93,26 @@ create_spider_plot(
 A ClinicalPlot object
 
 ## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Tumor response spider plot
+data <- data.frame(
+  USUBJID = rep(paste0("SUBJ", 1:20), each = 6),
+  AVISITN = rep(0:5, 20),
+  PCHG = c(replicate(20, cumsum(c(0, rnorm(5, mean = -5, sd = 15))))),
+  TRT01P = rep(c("Treatment", "Placebo"), each = 60)
+)
+
+plot <- create_spider_plot(
+  data = data,
+  x_var = "AVISITN",
+  y_var = "PCHG",
+  group_var = "TRT01P",
+  reference_line = 0,
+  threshold_lines = c(-30, 20),
+  title = "Individual Tumor Response Over Time",
+  y_label = "% Change from Baseline"
+)
+} # }
+```

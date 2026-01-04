@@ -35,5 +35,51 @@ trim_and_fill(
 
 ## Value
 
-List with original and adjusted estimates, imputed studies, and
-diagnostics
+A list with components:
+
+- original:
+
+  Original MetaResult object
+
+- adjusted:
+
+  Adjusted MetaResult with imputed studies
+
+- n_missing:
+
+  Estimated number of missing studies
+
+- side:
+
+  Side where studies were imputed
+
+- imputed_studies:
+
+  Data frame with imputed effects
+
+- estimator:
+
+  Estimator method used
+
+- summary:
+
+  Text summary of the adjustment
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Run meta-analysis
+meta_res <- meta_analysis(
+  yi = c(0.2, 0.4, 0.3, 0.5, 0.6),
+  sei = c(0.1, 0.12, 0.08, 0.15, 0.11),
+  study_labels = paste("Study", 1:5)
+)
+
+# Apply trim-and-fill for publication bias
+adjusted <- trim_and_fill(meta_res)
+
+# Check number of imputed studies
+adjusted$n_missing
+} # }
+```
