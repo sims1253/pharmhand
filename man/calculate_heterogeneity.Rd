@@ -33,3 +33,13 @@ A list with components:
 \description{
 Calculates Q, I2, tau2, and H2 statistics for meta-analysis heterogeneity.
 }
+\examples{
+# Calculate heterogeneity for 5 studies
+yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+het <- calculate_heterogeneity(yi, sei, method = "REML")
+het$Q
+het$I2
+het$tau2
+het$interpretation
+}
