@@ -26,6 +26,9 @@
   Learn how to create time-to-event summaries, responder analyses,
   subgroup analyses, and other efficacy tables with pharmhand.
 
+- [Meta-Analysis and Network
+  Meta-Analysis](https://sims1253.github.io/pharmhand/branch/dev/articles/meta-analysis.md):
+
 - [Understanding the S7 Class
   Architecture](https://sims1253.github.io/pharmhand/branch/dev/articles/s7-architecture.md):
 

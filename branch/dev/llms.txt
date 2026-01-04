@@ -116,6 +116,34 @@ module4_table <- to_gba_template(module4_table)
 check_gba_compliance(module4_table, strict = FALSE)
 ```
 
+### Meta-Analysis & Evidence Synthesis
+
+``` r
+# Random-effects meta-analysis
+result <- meta_analysis(
+  yi = log(c(0.75, 0.82, 0.68, 0.91, 0.77)),
+  sei = c(0.12, 0.15, 0.18, 0.14, 0.11),
+  study_labels = paste("Study", 1:5),
+  effect_measure = "hr",
+  model = "random"
+)
+result@estimate
+result@heterogeneity$I2
+
+# Forest plot
+forest_plot <- create_meta_forest_plot(result, title = "Treatment Effect")
+
+# Network meta-analysis
+nma_data <- data.frame(
+  study = c("S1", "S2", "S3"),
+  treat1 = c("A", "B", "A"),
+  treat2 = c("B", "C", "C"),
+  effect = log(c(0.75, 0.90, 0.80)),
+  se = c(0.12, 0.15, 0.18)
+)
+nma_result <- network_meta(nma_data, effect_measure = "hr")
+```
+
 ## Classes
 
 - `ADaMData` - ADaM dataset wrapper with population filtering
@@ -149,6 +177,7 @@ check_gba_compliance(module4_table, strict = FALSE)
   Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html)
 - [Efficacy
   Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html)
+- [Meta-Analysis](https://sims1253.github.io/pharmhand/articles/meta-analysis.html)
 - [S7
   Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html)
 
@@ -671,6 +700,9 @@ Internal package documentation for architecture and modules.
 
   Learn how to create time-to-event summaries, responder analyses,
   subgroup analyses, and other efficacy tables with pharmhand.
+
+- [Meta-Analysis and Network
+  Meta-Analysis](https://sims1253.github.io/pharmhand/branch/dev/articles/meta-analysis.md):
 
 - [Understanding the S7 Class
   Architecture](https://sims1253.github.io/pharmhand/branch/dev/articles/s7-architecture.md):

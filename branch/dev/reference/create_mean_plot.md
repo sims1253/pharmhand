@@ -93,10 +93,6 @@ create_mean_plot(
 
   Numeric. Width of error bar caps. Default: 0.1
 
-- subject_var:
-
-  Character. Subject ID variable. Default: "USUBJID"
-
 ## Value
 
 A ClinicalPlot object containing the ggplot

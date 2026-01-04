@@ -4,10 +4,11 @@ pkgdown_sha: ~
 articles:
   baseline-tables: baseline-tables.html
   efficacy-tables: efficacy-tables.html
+  meta-analysis: meta-analysis.html
   pharmhand: pharmhand.html
   s7-architecture: s7-architecture.html
   safety-tables: safety-tables.html
-last_built: 2026-01-04T16:32Z
+last_built: 2026-01-04T19:27Z
 urls:
   reference: https://sims1253.github.io/pharmhand/branch/dev//reference
   article: https://sims1253.github.io/pharmhand/branch/dev//articles

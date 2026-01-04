@@ -59,7 +59,8 @@ estimates, heterogeneity statistics, and study weights.</p>
 <span>  metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"random"</span>,</span>
 <span>  effect_measure <span class="op">=</span> <span class="st">"hr"</span>,</span>
-<span>  heterogeneity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Q <span class="op">=</span> <span class="cn">NA_real_</span>, I2 <span class="op">=</span> <span class="cn">NA_real_</span>, tau2 <span class="op">=</span> <span class="cn">NA_real_</span>, H2 <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span>,</span>
+<span>  heterogeneity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Q <span class="op">=</span> <span class="cn">NA_real_</span>, Q_df <span class="op">=</span> <span class="cn">NA_integer_</span>, Q_pvalue <span class="op">=</span> <span class="cn">NA_real_</span>, I2 <span class="op">=</span></span>
+<span>    <span class="cn">NA_real_</span>, H2 <span class="op">=</span> <span class="cn">NA_real_</span>, tau2 <span class="op">=</span> <span class="cn">NA_real_</span>, tau <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prediction_interval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  study_results <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -107,7 +108,8 @@ estimates, heterogeneity statistics, and study weights.</p>
 
 
 <dt id="arg-heterogeneity">heterogeneity<a class="anchor" aria-label="anchor" href="#arg-heterogeneity"></a></dt>
-<dd><p>List with Q, I2, tau2, H2 statistics</p></dd>
+<dd><p>List with Q, Q_df, Q_pvalue, I2, H2, tau2, tau
+statistics</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
