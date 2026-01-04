@@ -2758,6 +2758,19 @@ assess_iceman <- function(
 	replication <- match.arg(replication)
 	other_evidence <- match.arg(other_evidence)
 
+	if (!is.logical(is_prespecified) || length(is_prespecified) != 1 || is.na(is_prespecified)) {
+		ph_abort("'is_prespecified' must be TRUE or FALSE")
+	}
+	if (!is.logical(within_study) || length(within_study) != 1 || is.na(within_study)) {
+		ph_abort("'within_study' must be TRUE or FALSE")
+	}
+	if (!is.numeric(n_subgroups) || length(n_subgroups) != 1 || is.na(n_subgroups) || n_subgroups < 1) {
+		ph_abort("'n_subgroups' must be a positive integer")
+	}
+	if (!is.na(interaction_pvalue) && (interaction_pvalue < 0 || interaction_pvalue > 1)) {
+		ph_abort("'interaction_pvalue' must be between 0 and 1")
+	}
+
 	# ICEMAN Criteria scoring (based on published instrument)
 	# Each criterion scored as: definitely yes, probably yes,
 	# probably no, definitely no
@@ -2941,10 +2954,14 @@ assess_iceman <- function(
 		summary = summary_df,
 		overall_score = overall_score,
 		credibility = credibility,
-		interpretation = sprintf(
-			"Subgroup credibility: %s (score: %.1f%%)",
-			credibility,
-			overall_score * 100
-		)
+		interpretation = if (is.na(overall_score)) {
+			sprintf("Subgroup credibility: %s", credibility)
+		} else {
+			sprintf(
+				"Subgroup credibility: %s (score: %.1f%%)",
+				credibility,
+				overall_score * 100
+			)
+		}
 	)
 }

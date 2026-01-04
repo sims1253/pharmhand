@@ -968,7 +968,6 @@ create_mean_plot <- function(
 	x_var,
 	y_var,
 	group_var = NULL,
-	subject_var = "USUBJID",
 	ci_level = 0.95,
 	show_points = FALSE,
 	show_n = TRUE,
