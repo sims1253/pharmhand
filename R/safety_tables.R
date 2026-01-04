@@ -2170,6 +2170,8 @@ create_ae_exposure_table <- function(
 #' @param min_pct Numeric. Minimum percentage to display. Default: 0
 #' @param sort_by Character. Sort by "alphabetical" or
 #'   "frequency". Default: "frequency"
+#' @param title Character. Table title. Default: NULL (auto-generated)
+#' @param autofit Logical. Whether to autofit column widths. Default: TRUE
 #'
 #' @return ClinicalTable with hierarchical AE summary
 #' @export
@@ -2184,7 +2186,9 @@ create_ae_hierarchy_table <- function(
 	levels = c("soc", "pt"),
 	subject_var = "USUBJID",
 	min_pct = 0,
-	sort_by = c("frequency", "alphabetical")
+	sort_by = c("frequency", "alphabetical"),
+	title = NULL,
+	autofit = TRUE
 ) {
 	sort_by <- match.arg(sort_by)
 
@@ -2282,7 +2286,7 @@ create_ae_hierarchy_table <- function(
 
 		if (n_col %in% names(combined)) {
 			combined[[paste0(n_col, "_fmt")]] <- sprintf(
-				"%d (%.1f)",
+				"%d (%.1f%%)",
 				combined[[n_col]],
 				100 * combined[[n_col]] / N_total
 			)
@@ -2325,10 +2329,27 @@ create_ae_hierarchy_table <- function(
 		display_df$Term
 	)
 
+	# Auto-generate title if not provided
+	if (is.null(title)) {
+		title <- "Adverse Events by MedDRA Hierarchy"
+	}
+
+	# Create flextable
+	ft <- create_hta_table(
+		display_df,
+		title = title,
+		footnotes = c(
+			"Safety Population",
+			sprintf("Minimum threshold: %.1f%%", min_pct)
+		),
+		autofit = autofit
+	)
+
 	ClinicalTable(
 		data = display_df,
+		flextable = ft,
 		type = "ae_hierarchy",
-		title = "Adverse Events by MedDRA Hierarchy",
+		title = title,
 		metadata = list(
 			levels = available_levels,
 			trt_n = trt_n,

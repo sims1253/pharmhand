@@ -23,8 +23,30 @@ calculate_mcid_distribution(
 "third_sd", "fifth_sd" (default: all)}
 }
 \value{
-List with MCID estimates for each method
+A list with MCID estimates:
+\describe{
+\item{half_sd}{0.5 * SD of baseline scores}
+\item{third_sd}{0.33 * SD of baseline scores}
+\item{fifth_sd}{0.2 * SD of baseline scores}
+\item{one_sem}{1 * SEM (requires reliability)}
+\item{sd}{Standard deviation of baseline scores}
+\item{n}{Number of observations}
+\item{reliability}{Test-retest reliability if provided}
+}
 }
 \description{
 Calculates MCID estimates using distribution-based approaches.
+}
+\examples{
+\dontrun{
+# Distribution-based MCID for a PRO measure
+result <- calculate_mcid_distribution(
+  data = pro_data,
+  score_var = "AVAL",
+  reliability = 0.85
+)
+
+# Access 0.5 SD MCID
+result$half_sd
+}
 }

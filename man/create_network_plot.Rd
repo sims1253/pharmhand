@@ -45,3 +45,20 @@ A ClinicalPlot object containing the network graph
 Creates a network graph visualization showing the structure of treatment
 comparisons in a network meta-analysis.
 }
+\examples{
+\dontrun{
+# Network meta-analysis data
+nma_data <- data.frame(
+  study = c("S1", "S1", "S2", "S2", "S3", "S3"),
+  treatment = c("A", "B", "A", "C", "B", "C"),
+  responders = c(20, 25, 18, 22, 30, 28),
+  n = c(100, 100, 90, 95, 110, 105)
+)
+
+# Run NMA
+nma_result <- network_meta(nma_data, reference = "A")
+
+# Create network geometry plot
+plot <- create_network_plot(nma_result, title = "Treatment Network")
+}
+}

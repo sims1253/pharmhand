@@ -23,10 +23,34 @@ Default: "auto"}
 \item{maxiter}{Integer. Maximum iterations. Default: 100}
 }
 \value{
-List with original and adjusted estimates,
-imputed studies, and diagnostics
+A list with components:
+\describe{
+\item{original}{Original MetaResult object}
+\item{adjusted}{Adjusted MetaResult with imputed studies}
+\item{n_missing}{Estimated number of missing studies}
+\item{side}{Side where studies were imputed}
+\item{imputed_studies}{Data frame with imputed effects}
+\item{estimator}{Estimator method used}
+\item{summary}{Text summary of the adjustment}
+}
 }
 \description{
 Performs the Duval & Tweedie trim-and-fill method to estimate the number
 of missing studies and adjust the pooled effect for publication bias.
+}
+\examples{
+\dontrun{
+# Run meta-analysis
+meta_res <- meta_analysis(
+  yi = c(0.2, 0.4, 0.3, 0.5, 0.6),
+  sei = c(0.1, 0.12, 0.08, 0.15, 0.11),
+  study_labels = paste("Study", 1:5)
+)
+
+# Apply trim-and-fill for publication bias
+adjusted <- trim_and_fill(meta_res)
+
+# Check number of imputed studies
+adjusted$n_missing
+}
 }

@@ -62,7 +62,17 @@ deterioration. Default: "first"}
 Default: max time in data}
 }
 \value{
-List with ttd_data, km_fit, summary_table, and plot
+A list with components:
+\describe{
+\item{ttd_data}{Prepared time-to-deterioration data frame}
+\item{km_fit}{Kaplan-Meier fit object from survfit}
+\item{summary_table}{Summary statistics by treatment group}
+\item{threshold}{MCID threshold used}
+\item{direction}{Direction of deterioration}
+\item{definition}{Deterioration definition used}
+\item{n_subjects}{Total number of subjects}
+\item{n_events}{Total number of deterioration events}
+}
 }
 \description{
 Performs time-to-deterioration (TTD) analysis for PRO endpoints.

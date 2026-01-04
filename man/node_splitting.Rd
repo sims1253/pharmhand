@@ -20,3 +20,9 @@ Data frame with direct, indirect, and inconsistency test results
 Separates direct and indirect evidence for each comparison and tests
 for inconsistency between them.
 }
+\note{
+This is a simplified implementation. Full node-splitting requires
+re-running the network meta-analysis excluding direct evidence for each
+comparison, which is computationally intensive. Consider using specialized
+NMA packages (e.g., gemtc, netmeta) for rigorous inconsistency assessment.
+}

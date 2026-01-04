@@ -108,7 +108,7 @@ meta_analysis <- function(
 	Q_pvalue <- stats::pchisq(Q, df = df, lower.tail = FALSE)
 
 	# I-squared
-	I2 <- max(0, (Q - df) / Q)
+	I2 <- if (Q > 0) max(0, (Q - df) / Q) * 100 else 0
 
 	# H-squared
 	H2 <- Q / df
@@ -223,12 +223,13 @@ meta_analysis <- function(
 
 	# Prediction interval (for random effects)
 	pred_interval <- NULL
-	if (prediction && model == "random" && tau2 > 0) {
+	if (prediction && model == "random" && tau2 > 0 && k > 2) {
 		se_pred <- sqrt(se^2 + tau2)
 		if (use_t) {
 			crit_pred <- stats::qt(1 - alpha / 2, df = k - 2)
 		} else {
-			crit_pred <- stats::qnorm(1 - alpha / 2)
+			# Even without Knapp-Hartung, use t-distribution for prediction intervals
+			crit_pred <- stats::qt(1 - alpha / 2, df = k - 2)
 		}
 		pred_interval <- c(theta - crit_pred * se_pred, theta + crit_pred * se_pred)
 	}
@@ -315,7 +316,21 @@ meta_analysis <- function(
 #' @param sei Numeric vector of standard errors
 #' @param method Character. tau2 estimation method. Default: "REML"
 #'
-#' @return List with Q, I2, tau2, H2, and related statistics
+#' @return A list with components:
+#' \describe{
+#' \item{Q}{Cochran's Q statistic}
+#' \item{Q_df}{Degrees of freedom for Q test}
+#' \item{Q_pvalue}{P-value for Q test}
+#' \item{I2}{I-squared heterogeneity percentage (0-100)}
+#' \item{I2_ci}{95 percent CI for I-squared}
+#' \item{H2}{H-squared statistic}
+#' \item{H}{H statistic (sqrt of H2)}
+#' \item{tau2}{Between-study variance estimate}
+#' \item{tau}{Between-study standard deviation}
+#' \item{method}{Estimation method used}
+#' \item{k}{Number of studies}
+#' \item{interpretation}{Verbal interpretation of I2 level}
+#' }
 #' @export
 calculate_heterogeneity <- function(
 	yi,
@@ -336,7 +351,7 @@ calculate_heterogeneity <- function(
 	Q_pvalue <- stats::pchisq(Q, df = df, lower.tail = FALSE)
 
 	# I-squared with confidence interval (Higgins & Thompson method)
-	I2 <- max(0, (Q - df) / Q) * 100
+	I2 <- if (Q > 0) max(0, (Q - df) / Q) * 100 else 0
 
 	# I2 confidence interval (using test-based approach)
 	if (Q > df) {
@@ -396,7 +411,8 @@ calculate_heterogeneity <- function(
 			}
 			tau2_reml
 		},
-		"ML" = tau2_dl # Simplified
+		"ML" = tau2_dl # Simplified: uses DL as approximation.
+		# For true ML, use metafor::rma()
 	)
 
 	# Interpretation
@@ -436,7 +452,14 @@ calculate_heterogeneity <- function(
 #' @param yi Numeric vector of effect estimates (optional if in meta_result)
 #' @param sei Numeric vector of standard errors (optional if in meta_result)
 #'
-#' @return List with leave-one-out results and influence statistics
+#' @return A list with components:
+#' \describe{
+#' \item{results}{Data frame with estimates when each study is excluded}
+#' \item{influential_studies}{Character vector of influential studies}
+#' \item{n_influential}{Number of influential studies}
+#' \item{effect_measure}{Effect measure used}
+#' \item{model}{Model type (fixed/random)}
+#' }
 #' @export
 leave_one_out <- function(
 	meta_result = NULL,
@@ -494,7 +517,7 @@ leave_one_out <- function(
 			se <- sqrt(1 / sum(wi))
 		}
 
-		I2 <- max(0, (Q - df) / Q) * 100
+		I2 <- if (Q > 0) max(0, (Q - df) / Q) * 100 else 0
 
 		list(
 			estimate = estimate,
@@ -531,9 +554,14 @@ leave_one_out <- function(
 
 	# Identify influential studies (estimate changes by > 10%)
 	if (!is.na(original_estimate)) {
-		loo_df$pct_change <- 100 *
-			(loo_df$estimate - original_estimate) /
-			abs(original_estimate)
+		if (abs(original_estimate) > 1e-10) {
+			loo_df$pct_change <- 100 *
+				(loo_df$estimate - original_estimate) /
+				abs(original_estimate)
+		} else {
+			# When original estimate is ~0, use absolute change instead
+			loo_df$pct_change <- 100 * (loo_df$estimate - original_estimate)
+		}
 		influential <- abs(loo_df$pct_change) > 10
 	} else {
 		loo_df$pct_change <- NA
@@ -569,6 +597,26 @@ leave_one_out <- function(
 #'
 #' @return A ClinicalPlot object containing the forest plot
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Create sample meta-analysis data
+#' studies <- data.frame(
+#'   study = c("Study A", "Study B", "Study C", "Study D"),
+#'   yi = c(0.3, 0.5, 0.2, 0.4),
+#'   sei = c(0.1, 0.15, 0.12, 0.11)
+#' )
+#'
+#' # Run meta-analysis
+#' result <- meta_analysis(
+#'   yi = studies$yi,
+#'   sei = studies$sei,
+#'   study_labels = studies$study
+#' )
+#'
+#' # Create forest plot
+#' plot <- create_meta_forest_plot(result, title = "Treatment Effect")
+#' }
 create_meta_forest_plot <- function(
 	meta_result,
 	title = NULL,
@@ -700,10 +748,11 @@ create_meta_forest_plot <- function(
 
 	# Error bars
 	p <- p +
-		ggplot2::geom_errorbarh(
+		ggplot2::geom_errorbar(
 			ggplot2::aes(xmin = .data$x_lower, xmax = .data$x_upper),
 			height = 0.2,
-			linewidth = 0.6
+			linewidth = 0.6,
+			orientation = "y"
 		)
 
 	# Points (diamonds for pooled, squares for studies)
@@ -773,7 +822,7 @@ create_meta_forest_plot <- function(
 		het <- meta_result@heterogeneity
 		het_text <- sprintf(
 			"I2 = %.1f%%, tau2 = %.3f, Q = %.1f (p %s)",
-			het$I2 * 100,
+			het$I2,
 			het$tau2,
 			het$Q,
 			format_pvalue(het$Q_pvalue)
@@ -1042,11 +1091,15 @@ eggers_test <- function(
 	if (is.na(p_value)) {
 		interpretation <- "Unable to calculate Egger's test"
 	} else if (p_value < 0.05) {
-		interpretation <- "Significant asymmetry detected (p < 0.05),
-                          suggesting potential publication bias"
+		interpretation <- paste0(
+			"Significant asymmetry detected (p < 0.05), ",
+			"suggesting potential publication bias"
+		)
 	} else if (p_value < 0.10) {
-		interpretation <- "Marginal asymmetry (0.05 <= p < 0.10),
-                          publication bias possible"
+		interpretation <- paste0(
+			"Marginal asymmetry (0.05 <= p < 0.10), ",
+			"publication bias possible"
+		)
 	} else {
 		interpretation <- "No significant asymmetry detected (p >= 0.10)"
 	}
@@ -1187,7 +1240,16 @@ indirect_comparison <- function(
 #' @param effect_measure Character. Effect type (if not in results)
 #' @param conf_level Numeric. Confidence level. Default: 0.95
 #'
-#' @return List with test for inconsistency and pooled estimate
+#' @return A list with components:
+#' \describe{
+#' \item{direct_estimate}{Direct evidence effect estimate}
+#' \item{indirect_estimate}{Indirect evidence effect estimate}
+#' \item{pooled_estimate}{Inverse-variance weighted pooled estimate}
+#' \item{pooled_ci}{CI for pooled estimate}
+#' \item{inconsistency_p}{P-value for inconsistency test}
+#' \item{effect_measure}{Effect measure used}
+#' \item{is_consistent}{Logical; TRUE if p > 0.05}
+#' }
 #' @export
 compare_direct_indirect <- function(
 	direct_result,
@@ -1209,7 +1271,9 @@ compare_direct_indirect <- function(
 		if (is_ratio) {
 			ci <- log(ci)
 		}
-		direct_se <- (ci[2] - ci[1]) / (2 * 1.96)
+		ci_level_direct <- direct_result@ci_level
+		z_direct <- stats::qnorm((1 + ci_level_direct) / 2)
+		direct_se <- (ci[2] - ci[1]) / (2 * z_direct)
 	} else if (is.list(direct_result)) {
 		direct_est <- direct_result$estimate
 		direct_se <- direct_result$se
@@ -1234,7 +1298,9 @@ compare_direct_indirect <- function(
 		if (is_ratio) {
 			ci <- log(ci)
 		}
-		indirect_se <- (ci[2] - ci[1]) / (2 * 1.96)
+		ci_level_indirect <- indirect_result@ci_level
+		z_indirect <- stats::qnorm((1 + ci_level_indirect) / 2)
+		indirect_se <- (ci[2] - ci[1]) / (2 * z_indirect)
 	} else {
 		ph_abort("indirect_result must be ComparisonResult")
 	}
@@ -1271,8 +1337,10 @@ compare_direct_indirect <- function(
 
 	# Interpretation
 	if (p_inconsistency < 0.05) {
-		interpretation <- "Significant inconsistency between direct and
-                          indirect evidence (p < 0.05)"
+		interpretation <- paste0(
+			"Significant inconsistency between direct and ",
+			"indirect evidence (p < 0.05)"
+		)
 		consistency <- "Inconsistent"
 	} else if (p_inconsistency < 0.10) {
 		interpretation <- "Marginal inconsistency (0.05 <= p < 0.10)"
@@ -1320,8 +1388,15 @@ compare_direct_indirect <- function(
 #' @param threshold_smd Numeric. SMD threshold for imbalance.
 #'   Default: 0.1
 #'
-#' @return TransitivityAssessment list with comparison tables and
-#'   overall assessment
+#' @return A list with components:
+#' \describe{
+#' \item{summaries}{Summary statistics by treatment}
+#' \item{comparison_tables}{Pairwise comparison tables}
+#' \item{imbalance_scores}{SMDs for continuous variables}
+#' \item{overall_assessment}{Text summary of concerns}
+#' \item{n_treatments}{Number of unique treatments}
+#' \item{n_characteristics}{Number of characteristics assessed}
+#' }
 #' @export
 #'
 #' @examples
@@ -1463,7 +1538,7 @@ assess_transitivity <- function(
 			if (n_comp >= 2) {
 				pooled_sd <- sqrt(mean(sds^2, na.rm = TRUE))
 				if (!is.na(pooled_sd) && is.finite(pooled_sd) && pooled_sd > 0) {
-					max_diff <- max(abs(diff(means)))
+					max_diff <- max(means, na.rm = TRUE) - min(means, na.rm = TRUE)
 					smd <- max_diff / pooled_sd
 				} else {
 					smd <- 0
@@ -1776,8 +1851,32 @@ network_meta <- function(
 #'   "L0", "R0", "Q0". Default: "L0"
 #' @param maxiter Integer. Maximum iterations. Default: 100
 #'
-#' @return List with original and adjusted estimates,
-#'   imputed studies, and diagnostics
+#' @return A list with components:
+#' \describe{
+#' \item{original}{Original MetaResult object}
+#' \item{adjusted}{Adjusted MetaResult with imputed studies}
+#' \item{n_missing}{Estimated number of missing studies}
+#' \item{side}{Side where studies were imputed}
+#' \item{imputed_studies}{Data frame with imputed effects}
+#' \item{estimator}{Estimator method used}
+#' \item{summary}{Text summary of the adjustment}
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' # Run meta-analysis
+#' meta_res <- meta_analysis(
+#'   yi = c(0.2, 0.4, 0.3, 0.5, 0.6),
+#'   sei = c(0.1, 0.12, 0.08, 0.15, 0.11),
+#'   study_labels = paste("Study", 1:5)
+#' )
+#'
+#' # Apply trim-and-fill for publication bias
+#' adjusted <- trim_and_fill(meta_res)
+#'
+#' # Check number of imputed studies
+#' adjusted$n_missing
+#' }
 #' @export
 trim_and_fill <- function(
 	meta_result,
@@ -1964,8 +2063,10 @@ trim_and_fill <- function(
 		effect_measure = effect_measure,
 		interpretation = if (k0 > 0) {
 			sprintf(
-				"Estimated %d missing studies on %s side. " +
-					"Original estimate: %.3f, Adjusted: %.3f",
+				paste0(
+					"Estimated %d missing studies on %s side. ",
+					"Original estimate: %.3f, Adjusted: %.3f"
+				),
 				k0,
 				side,
 				original_est,
@@ -1997,6 +2098,23 @@ trim_and_fill <- function(
 #'
 #' @return A ClinicalPlot object containing the network graph
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Network meta-analysis data
+#' nma_data <- data.frame(
+#'   study = c("S1", "S1", "S2", "S2", "S3", "S3"),
+#'   treatment = c("A", "B", "A", "C", "B", "C"),
+#'   responders = c(20, 25, 18, 22, 30, 28),
+#'   n = c(100, 100, 90, 95, 110, 105)
+#' )
+#'
+#' # Run NMA
+#' nma_result <- network_meta(nma_data, reference = "A")
+#'
+#' # Create network geometry plot
+#' plot <- create_network_plot(nma_result, title = "Treatment Network")
+#' }
 create_network_plot <- function(
 	nma_result,
 	node_size = c("equal", "n_studies", "n_patients"),
@@ -2215,6 +2333,10 @@ create_network_plot <- function(
 #' @param conf_level Numeric. Confidence level. Default: 0.95
 #'
 #' @return Data frame with direct, indirect, and inconsistency test results
+#' @note This is a simplified implementation. Full node-splitting requires
+#'   re-running the network meta-analysis excluding direct evidence for each
+#'   comparison, which is computationally intensive. Consider using specialized
+#'   NMA packages (e.g., gemtc, netmeta) for rigorous inconsistency assessment.
 #' @export
 node_splitting <- function(
 	nma_result,
@@ -2293,8 +2415,10 @@ node_splitting <- function(
 	list(
 		results = result_df,
 		effect_measure = effect_measure,
-		note = "Full node-splitting requires re-analysis excluding " +
+		note = paste0(
+			"Full node-splitting requires re-analysis excluding ",
 			"direct evidence. Results shown are simplified."
+		)
 	)
 }
 
@@ -2580,8 +2704,10 @@ create_league_table <- function(
 			effect_measure = effect_measure,
 			n_treatments = n_treat,
 			reference = ref,
-			note = "Row treatment vs Column treatment. " +
+			note = paste0(
+				"Row treatment vs Column treatment. ",
 				"* indicates statistical significance."
+			)
 		)
 	)
 }

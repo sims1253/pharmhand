@@ -14,7 +14,21 @@ calculate_heterogeneity(yi, sei, method = c("REML", "DL", "PM", "ML"))
 \item{method}{Character. tau2 estimation method. Default: "REML"}
 }
 \value{
-List with Q, I2, tau2, H2, and related statistics
+A list with components:
+\describe{
+\item{Q}{Cochran's Q statistic}
+\item{Q_df}{Degrees of freedom for Q test}
+\item{Q_pvalue}{P-value for Q test}
+\item{I2}{I-squared heterogeneity percentage (0-100)}
+\item{I2_ci}{95 percent CI for I-squared}
+\item{H2}{H-squared statistic}
+\item{H}{H statistic (sqrt of H2)}
+\item{tau2}{Between-study variance estimate}
+\item{tau}{Between-study standard deviation}
+\item{method}{Estimation method used}
+\item{k}{Number of studies}
+\item{interpretation}{Verbal interpretation of I2 level}
+}
 }
 \description{
 Calculates Q, I2, tau2, and H2 statistics for meta-analysis heterogeneity.

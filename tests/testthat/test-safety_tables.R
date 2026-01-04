@@ -1406,10 +1406,10 @@ describe("create_ae_hierarchy_table", {
 		)
 
 		adae <- data.frame(
-			USUBJID = rep(paste0("SUBJ", 1:10), each = 2),
-			TRT01P = rep("Active", 20),
-			AEBODSYS = rep(c("SOC1", "SOC2"), 10),
-			AEDECOD = paste0("PT", 1:20)
+			USUBJID = c(rep(paste0("SUBJ", 1:10), each = 2), paste0("SUBJ", 11:15)),
+			TRT01P = c(rep("Active", 20), rep("Placebo", 5)),
+			AEBODSYS = c(rep(c("SOC1", "SOC2"), 10), rep("SOC1", 5)),
+			AEDECOD = c(paste0("PT", 1:20), rep("PT1", 5))
 		)
 
 		table <- create_ae_hierarchy_table(adae, adsl)

@@ -46,3 +46,23 @@ A ClinicalPlot object containing the forest plot
 Creates a forest plot displaying individual study effects and pooled estimate
 from a meta-analysis.
 }
+\examples{
+\dontrun{
+# Create sample meta-analysis data
+studies <- data.frame(
+  study = c("Study A", "Study B", "Study C", "Study D"),
+  yi = c(0.3, 0.5, 0.2, 0.4),
+  sei = c(0.1, 0.15, 0.12, 0.11)
+)
+
+# Run meta-analysis
+result <- meta_analysis(
+  yi = studies$yi,
+  sei = studies$sei,
+  study_labels = studies$study
+)
+
+# Create forest plot
+plot <- create_meta_forest_plot(result, title = "Treatment Effect")
+}
+}

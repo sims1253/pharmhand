@@ -68,7 +68,7 @@ commonly used for PRO data, tumor response, or other longitudinal measures.
 data <- data.frame(
   USUBJID = rep(paste0("SUBJ", 1:20), each = 6),
   AVISITN = rep(0:5, 20),
-  PCHG = c(replicate(20, cumsum(c(0, rnorm(5, mean = -5, sd = 15)))),
+  PCHG = c(replicate(20, cumsum(c(0, rnorm(5, mean = -5, sd = 15))))),
   TRT01P = rep(c("Treatment", "Placebo"), each = 60)
 )
 

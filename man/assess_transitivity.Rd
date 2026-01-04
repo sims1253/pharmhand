@@ -30,8 +30,15 @@ continuous (vs categorical)}
 Default: 0.1}
 }
 \value{
-TransitivityAssessment list with comparison tables and
-overall assessment
+A list with components:
+\describe{
+\item{summaries}{Summary statistics by treatment}
+\item{comparison_tables}{Pairwise comparison tables}
+\item{imbalance_scores}{SMDs for continuous variables}
+\item{overall_assessment}{Text summary of concerns}
+\item{n_treatments}{Number of unique treatments}
+\item{n_characteristics}{Number of characteristics assessed}
+}
 }
 \description{
 Evaluates the transitivity assumption by comparing population characteristics
