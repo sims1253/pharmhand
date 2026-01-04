@@ -2132,21 +2132,17 @@ trim_and_fill <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Network meta-analysis data
+#' # Network geometry visualization
 #' nma_data <- data.frame(
-#'   study = c("S1", "S1", "S2", "S2", "S3", "S3"),
-#'   treatment = c("A", "B", "A", "C", "B", "C"),
-#'   responders = c(20, 25, 18, 22, 30, 28),
-#'   n = c(100, 100, 90, 95, 110, 105)
+#'   study = c("S1", "S2", "S3"),
+#'   treat1 = c("A", "B", "A"),
+#'   treat2 = c("B", "C", "C"),
+#'   effect = log(c(0.75, 0.90, 0.80)),
+#'   se = c(0.12, 0.15, 0.18)
 #' )
-#'
-#' # Run NMA
-#' nma_result <- network_meta(nma_data, reference = "A")
-#'
-#' # Create network geometry plot
+#' nma_result <- network_meta(nma_data, effect_measure = "hr")
 #' plot <- create_network_plot(nma_result, title = "Treatment Network")
-#' }
+#' plot@type
 create_network_plot <- function(
 	nma_result,
 	node_size = c("equal", "n_studies", "n_patients"),
@@ -2479,6 +2475,19 @@ node_splitting <- function(
 #'
 #' @return List with rankings, SUCRA/P-scores, and rankogram data
 #' @export
+#' @examples
+#' # Calculate SUCRA rankings
+#' nma_data <- data.frame(
+#'   study = c("S1", "S2", "S3"),
+#'   treat1 = c("A", "B", "A"),
+#'   treat2 = c("B", "C", "C"),
+#'   effect = log(c(0.75, 0.90, 0.80)),
+#'   se = c(0.12, 0.15, 0.18)
+#' )
+#' nma_result <- network_meta(nma_data, effect_measure = "hr")
+#' sucra <- calculate_sucra(nma_result)
+#' sucra$ranking
+#' sucra$interpretation
 calculate_sucra <- function(
 	nma_result,
 	lower_better = NULL,

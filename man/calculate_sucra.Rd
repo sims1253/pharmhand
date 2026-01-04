@@ -21,3 +21,17 @@ List with rankings, SUCRA/P-scores, and rankogram data
 Calculates ranking probabilities and SUCRA (Surface Under Cumulative
 Ranking curve) or P-scores for treatments in network meta-analysis.
 }
+\examples{
+# Calculate SUCRA rankings
+nma_data <- data.frame(
+  study = c("S1", "S2", "S3"),
+  treat1 = c("A", "B", "A"),
+  treat2 = c("B", "C", "C"),
+  effect = log(c(0.75, 0.90, 0.80)),
+  se = c(0.12, 0.15, 0.18)
+)
+nma_result <- network_meta(nma_data, effect_measure = "hr")
+sucra <- calculate_sucra(nma_result)
+sucra$ranking
+sucra$interpretation
+}
