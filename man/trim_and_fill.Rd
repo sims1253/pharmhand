@@ -14,14 +14,17 @@ trim_and_fill(
 \arguments{
 \item{meta_result}{A MetaResult object from meta_analysis()}
 
-\item{side}{Character. Side to impute: "left", "right", or "auto". Default: "auto"}
+\item{side}{Character. Side to impute: "left", "right", or "auto".
+Default: "auto"}
 
-\item{estimator}{Character. Method to estimate missing studies: "L0", "R0", "Q0". Default: "L0"}
+\item{estimator}{Character. Method to estimate missing studies:
+"L0", "R0", "Q0". Default: "L0"}
 
 \item{maxiter}{Integer. Maximum iterations. Default: 100}
 }
 \value{
-List with original and adjusted estimates, imputed studies, and diagnostics
+List with original and adjusted estimates,
+imputed studies, and diagnostics
 }
 \description{
 Performs the Duval & Tweedie trim-and-fill method to estimate the number

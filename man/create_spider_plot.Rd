@@ -35,9 +35,11 @@ create_spider_plot(
 
 \item{reference_line}{Numeric. Y-value for reference line. Default: NULL}
 
-\item{threshold_lines}{Numeric vector. Additional threshold lines. Default: NULL}
+\item{threshold_lines}{Numeric vector. Additional threshold
+lines. Default: NULL}
 
-\item{highlight_subjects}{Character vector. Subject IDs to highlight. Default: NULL}
+\item{highlight_subjects}{Character vector. Subject IDs to
+highlight. Default: NULL}
 
 \item{title}{Character. Plot title. Default: NULL}
 

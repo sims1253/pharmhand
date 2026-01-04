@@ -12,7 +12,8 @@ compare_direct_indirect(
 )
 }
 \arguments{
-\item{direct_result}{ComparisonResult or list with estimate and se for direct evidence}
+\item{direct_result}{ComparisonResult or list with estimate and se
+for direct evidence}
 
 \item{indirect_result}{ComparisonResult from indirect_comparison()}
 

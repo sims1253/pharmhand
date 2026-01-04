@@ -2759,8 +2759,10 @@ assess_iceman <- function(
 	other_evidence <- match.arg(other_evidence)
 
 	# ICEMAN Criteria scoring (based on published instrument)
-	# Each criterion scored as: definitely yes, probably yes, probably no, definitely no
-	# We'll use numeric scores: 3 = definitely yes, 2 = probably yes, 1 = probably no, 0 = definitely no
+	# Each criterion scored as: definitely yes, probably yes,
+	# probably no, definitely no
+	# We'll use numeric scores: 3 = definitely yes, 2 = probably yes,
+	# 1 = probably no, 0 = definitely no
 
 	criteria <- list()
 

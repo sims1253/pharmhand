@@ -12,7 +12,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 coverage](https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg)](https://codecov.io/gh/sims1253/pharmhand)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pckdown.yaml/badge.svg)](https://sims1253.github.io/pharmhand/)
+[![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pkgdown.yaml/badge.svg)](https://sims1253.github.io/pharmhand/)
 <!-- badges: end -->
 
 pharmhand creates clinical study tables and reports from ADaM datasets.

@@ -28,7 +28,8 @@ create_funnel_plot(
 
 \item{ylab}{Character. Y-axis label. Default: "Standard Error"}
 
-\item{contour_levels}{Numeric vector. Contour p-value levels. Default: c(0.1, 0.05, 0.01)}
+\item{contour_levels}{Numeric vector. Contour p-value levels.
+Default: c(0.1, 0.05, 0.01)}
 
 \item{base_size}{Numeric. Base font size. Default: 11}
 }

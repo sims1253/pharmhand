@@ -25,7 +25,8 @@ indirect_comparison(
 
 \item{se_bc}{Standard error for B vs C}
 
-\item{effect_measure}{Character. Effect type: "hr", "or", "rr", "rd", "md", "smd"}
+\item{effect_measure}{Character. Effect type: "hr", "or", "rr",
+"rd", "md", "smd"}
 
 \item{conf_level}{Numeric. Confidence level. Default: 0.95}
 

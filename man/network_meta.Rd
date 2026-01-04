@@ -33,13 +33,16 @@ effect (effect estimate), se (standard error)}
 
 \item{se_var}{Character. Standard error column. Default: "se"}
 
-\item{reference}{Character. Reference treatment. Default: first alphabetically}
+\item{reference}{Character. Reference treatment.
+Default: first alphabetically}
 
-\item{effect_measure}{Character. Effect type: "hr", "or", "rr", "rd", "md", "smd"}
+\item{effect_measure}{Character. Effect type: "hr", "or", "rr",
+"rd", "md", "smd"}
 
 \item{model}{Character. "fixed" or "random". Default: "random"}
 
-\item{method}{Character. NMA method: "bucher" (simple), "graph" (if netmeta available)}
+\item{method}{Character. NMA method: "bucher" (simple),
+"graph" (if netmeta available)}
 
 \item{conf_level}{Numeric. Confidence level. Default: 0.95}
 }

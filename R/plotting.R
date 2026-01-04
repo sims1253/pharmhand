@@ -923,7 +923,8 @@ create_loglog_plot <- function(
 #' @param data Data frame containing the data
 #' @param x_var Character. Variable for x-axis (visit or time)
 #' @param y_var Character. Variable for y-axis (value)
-#' @param group_var Character. Grouping variable (e.g., treatment). Default: NULL
+#' @param group_var Character. Grouping variable (e.g., treatment).
+#'   Default: NULL
 #' @param subject_var Character. Subject ID variable. Default: "USUBJID"
 #' @param ci_level Numeric. Confidence level for intervals. Default: 0.95
 #' @param show_points Logical. Show individual data points. Default: FALSE
@@ -931,11 +932,13 @@ create_loglog_plot <- function(
 #' @param title Character. Plot title. Default: NULL
 #' @param x_label Character. X-axis label. Default: NULL (uses x_var)
 #' @param y_label Character. Y-axis label. Default: NULL (uses y_var)
-#' @param palette Character vector. Colors for groups. Default: NULL (uses default)
+#' @param palette Character vector. Colors for groups. Default:
+#'   NULL (uses default)
 #' @param base_size Numeric. Base font size. Default: 11
 #' @param line_size Numeric. Line width. Default: 1
 #' @param point_size Numeric. Point size for means. Default: 3
-#' @param dodge_width Numeric. Horizontal dodge for overlapping points. Default: 0.2
+#' @param dodge_width Numeric. Horizontal dodge for overlapping
+#'   points. Default: 0.2
 #' @param error_bar_width Numeric. Width of error bar caps. Default: 0.1
 #'
 #' @return A ClinicalPlot object containing the ggplot
@@ -1644,8 +1647,10 @@ calculate_interaction_pvalue <- function(
 #' @param subject_var Character. Subject ID variable. Default: "USUBJID"
 #' @param group_var Character. Grouping variable for coloring. Default: NULL
 #' @param reference_line Numeric. Y-value for reference line. Default: NULL
-#' @param threshold_lines Numeric vector. Additional threshold lines. Default: NULL
-#' @param highlight_subjects Character vector. Subject IDs to highlight. Default: NULL
+#' @param threshold_lines Numeric vector. Additional threshold
+#'   lines. Default: NULL
+#' @param highlight_subjects Character vector. Subject IDs to
+#'   highlight. Default: NULL
 #' @param title Character. Plot title. Default: NULL
 #' @param x_label Character. X-axis label. Default: NULL
 #' @param y_label Character. Y-axis label. Default: NULL

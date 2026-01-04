@@ -162,9 +162,12 @@ calculate_mcid_distribution <- function(
 #'
 #' @param data Data frame with PRO data
 #' @param score_var Character. Name of the score/change variable
-#' @param anchor_var Character. Name of anchor variable (required for anchor method)
-#' @param baseline_var Character. Name of baseline score variable (for distribution method)
-#' @param method Character. "anchor", "distribution", or "both" (default: "both")
+#' @param anchor_var Character. Name of anchor variable (required
+#'   for anchor method)
+#' @param baseline_var Character. Name of baseline score variable
+#'   (for distribution method)
+#' @param method Character. "anchor", "distribution", or "both"
+#'   (default: "both")
 #' @param reliability Numeric. Test-retest reliability for SEM calculation
 #' @param anchor_minimal Character vector. Anchor values for minimal improvement
 #' @param conf_level Numeric. Confidence level (default: 0.95)
@@ -228,17 +231,25 @@ calculate_mcid <- function(
 #' @param subject_var Character. Subject ID variable. Default: "USUBJID"
 #' @param trt_var Character. Treatment variable. Default: "TRT01P"
 #' @param param_var Character. Parameter variable. Default: "PARAMCD"
-#' @param paramcd Character. Parameter code to analyze. Default: NULL (uses first)
+#' @param paramcd Character. Parameter code to analyze.
+#'   Default: NULL (uses first)
 #' @param value_var Character. Value variable. Default: "AVAL"
 #' @param base_var Character. Baseline value variable. Default: "BASE"
-#' @param chg_var Character. Change from baseline variable. Default: "CHG"
+#' @param chg_var Character. Change from baseline variable.
+#'   Default: "CHG"
 #' @param time_var Character. Time/day variable. Default: "ADY"
-#' @param visit_var Character. Visit number variable. Default: "AVISITN"
-#' @param threshold Numeric. MCID threshold for deterioration (positive = improvement)
-#' @param direction Character. "decrease" if lower is worse, "increase" if higher is worse
-#' @param definition Character. "first" or "confirmed" deterioration. Default: "first"
-#' @param confirmation_visits Integer. Visits to confirm (for definition="confirmed")
-#' @param censor_at Numeric. Time to censor if no event. Default: max time in data
+#' @param visit_var Character. Visit number variable.
+#'   Default: "AVISITN"
+#' @param threshold Numeric. MCID threshold for deterioration
+#'   (positive = improvement)
+#' @param direction Character. "decrease" if lower is worse,
+#'   "increase" if higher is worse
+#' @param definition Character. "first" or "confirmed"
+#'   deterioration. Default: "first"
+#' @param confirmation_visits Integer. Visits to confirm
+#'   (for definition="confirmed")
+#' @param censor_at Numeric. Time to censor if no event.
+#'   Default: max time in data
 #'
 #' @return List with ttd_data, km_fit, summary_table, and plot
 #' @export

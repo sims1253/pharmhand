@@ -13,19 +13,25 @@ assess_transitivity(
 )
 }
 \arguments{
-\item{study_characteristics}{Data frame with study-level characteristics.
-Must include 'study_id' and 'treatment' columns, plus characteristics to compare.}
+\item{study_characteristics}{Data frame with study-level
+characteristics. Must include 'study_id' and 'treatment'
+columns, plus characteristics to compare.}
 
-\item{char_vars}{Character vector. Names of characteristic variables to assess.}
+\item{char_vars}{Character vector. Names of characteristic
+variables to assess.}
 
-\item{treatment_var}{Character. Name of treatment variable. Default: "treatment"}
+\item{treatment_var}{Character. Name of treatment variable.
+Default: "treatment"}
 
-\item{continuous_vars}{Character vector. Which char_vars are continuous (vs categorical)}
+\item{continuous_vars}{Character vector. Which char_vars are
+continuous (vs categorical)}
 
-\item{threshold_smd}{Numeric. SMD threshold for imbalance. Default: 0.1}
+\item{threshold_smd}{Numeric. SMD threshold for imbalance.
+Default: 0.1}
 }
 \value{
-TransitivityAssessment list with comparison tables and overall assessment
+TransitivityAssessment list with comparison tables and
+overall assessment
 }
 \description{
 Evaluates the transitivity assumption by comparing population characteristics
