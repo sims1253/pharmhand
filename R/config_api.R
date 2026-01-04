@@ -166,9 +166,9 @@ define_subgroup_config <- function(
 	filter_values = NULL,
 	priority = 100
 ) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
-	checkmate::assert_string(name)
-	checkmate::assert_string(variable)
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	admiraldev::assert_character_scalar(name)
+	admiraldev::assert_character_scalar(variable)
 
 	new_subgroup <- SubgroupConfig(
 		variable = variable,
@@ -216,9 +216,9 @@ define_population_config <- function(
 	flag_value = "Y",
 	priority = 100
 ) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
-	checkmate::assert_string(name)
-	checkmate::assert_string(variable)
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	admiraldev::assert_character_scalar(name)
+	admiraldev::assert_character_scalar(variable)
 
 	new_population <- PopulationConfig(
 		variable = variable,
@@ -250,8 +250,8 @@ define_population_config <- function(
 #' config <- get_subgroup_config(registry, "age_groups")
 #' }
 get_subgroup_config <- function(registry, name) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
-	checkmate::assert_string(name)
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	admiraldev::assert_character_scalar(name)
 
 	registry@subgroups[[name]]
 }
@@ -273,8 +273,8 @@ get_subgroup_config <- function(registry, name) {
 #' config <- get_population_config(registry, "SAF")
 #' }
 get_population_config <- function(registry, name) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
-	checkmate::assert_string(name)
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	admiraldev::assert_character_scalar(name)
 
 	registry@populations[[name]]
 }
@@ -295,7 +295,7 @@ get_population_config <- function(registry, name) {
 #' list_subgroups(registry)
 #' }
 list_subgroups <- function(registry) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
 	names(registry@subgroups)
 }
 
@@ -315,7 +315,7 @@ list_subgroups <- function(registry) {
 #' list_populations(registry)
 #' }
 list_populations <- function(registry) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
 	names(registry@populations)
 }
 
@@ -349,7 +349,7 @@ update_soc_config <- function(
 	min_subjects = NULL,
 	top_n = NULL
 ) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
 
 	current <- registry@soc_config
 	if (is.null(current)) {
@@ -404,7 +404,7 @@ update_pt_config <- function(
 	min_subjects = NULL,
 	top_n_per_soc = NULL
 ) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
 
 	current <- registry@pt_config
 	if (is.null(current)) {
@@ -448,7 +448,7 @@ update_pt_config <- function(
 #' batch_size <- get_performance_setting(registry, "docx.batch_size", 50)
 #' }
 get_performance_setting <- function(registry, name, default = NULL) {
-	checkmate::assert_class(registry, "ConfigurationRegistry")
+	stopifnot(inherits(registry, "ConfigurationRegistry"))
 
 	# Navigate nested structure (e.g., "docx.batch_size")
 	parts <- strsplit(name, "\\.")[[1]]
