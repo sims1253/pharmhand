@@ -44,17 +44,19 @@ Calculates indirect treatment effect comparing A vs C through common
 comparator B using the Bucher method (anchored indirect comparison).
 }
 \examples{
-\dontrun{
-# Drug A vs Placebo: HR = 0.75, SE(log) = 0.12
-# Drug B vs Placebo: HR = 0.85, SE(log) = 0.10
-# What is Drug A vs Drug B indirectly?
+# Bucher indirect comparison: Drug A vs Drug B via Placebo
+# Drug A vs Placebo: HR = 0.75
+# Drug B vs Placebo: HR = 0.85
 result <- indirect_comparison(
-  effect_ab = log(0.75),  # A vs Placebo
+  effect_ab = log(0.75),
   se_ab = 0.12,
-  effect_bc = log(0.85),  # B vs Placebo
+  effect_bc = log(0.85),
   se_bc = 0.10,
-  effect_measure = "hr"
+  effect_measure = "hr",
+  label_a = "Drug A",
+  label_b = "Placebo",
+  label_c = "Drug B"
 )
-# Result: A vs B (through Placebo)
-}
+result@estimate
+result@ci
 }

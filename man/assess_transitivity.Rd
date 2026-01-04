@@ -46,19 +46,17 @@ across studies in a network. Transitivity requires that studies are similar
 enough that indirect comparisons are valid.
 }
 \examples{
-\dontrun{
+# Assess transitivity across treatment comparisons
 chars <- data.frame(
   study_id = c("S1", "S1", "S2", "S2", "S3", "S3"),
   treatment = c("A", "B", "B", "C", "A", "C"),
   mean_age = c(55, 55, 58, 58, 52, 52),
-  pct_male = c(60, 60, 65, 65, 55, 55),
-  disease_stage = c("II", "II", "III", "III", "II", "II")
+  pct_male = c(60, 60, 65, 65, 55, 55)
 )
-
 result <- assess_transitivity(
   study_characteristics = chars,
-  char_vars = c("mean_age", "pct_male", "disease_stage"),
+  char_vars = c("mean_age", "pct_male"),
   continuous_vars = c("mean_age", "pct_male")
 )
-}
+result$overall_assessment
 }
