@@ -21,3 +21,11 @@ p-value, and interpretation
 Performs Egger's linear regression test to assess funnel plot asymmetry,
 which may indicate publication bias.
 }
+\examples{
+# Egger's test for funnel plot asymmetry
+yi <- c(0.5, 0.6, 0.4, 0.3, 0.8, 1.0)
+sei <- c(0.2, 0.15, 0.25, 0.18, 0.12, 0.08)
+result <- eggers_test(yi = yi, sei = sei)
+result$p_value
+result$interpretation
+}

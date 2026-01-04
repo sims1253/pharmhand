@@ -40,3 +40,11 @@ A ClinicalPlot object containing the funnel plot
 Creates a funnel plot to visually assess publication bias in meta-analysis.
 Studies are plotted by effect size vs. precision (1/SE).
 }
+\examples{
+# Funnel plot for publication bias assessment
+yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+plot <- create_funnel_plot(meta_res, title = "Funnel Plot")
+plot@type
+}
