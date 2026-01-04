@@ -1397,3 +1397,24 @@ describe("AE comparison edge cases", {
 		)
 	})
 })
+
+describe("create_ae_hierarchy_table", {
+	it("creates hierarchical AE table with SOC and PT", {
+		adsl <- data.frame(
+			USUBJID = paste0("SUBJ", 1:20),
+			TRT01P = rep(c("Active", "Placebo"), each = 10)
+		)
+
+		adae <- data.frame(
+			USUBJID = rep(paste0("SUBJ", 1:10), each = 2),
+			TRT01P = rep("Active", 20),
+			AEBODSYS = rep(c("SOC1", "SOC2"), 10),
+			AEDECOD = paste0("PT", 1:20)
+		)
+
+		table <- create_ae_hierarchy_table(adae, adsl)
+
+		expect_true(S7::S7_inherits(table, ClinicalTable))
+		expect_equal(table@type, "ae_hierarchy")
+	})
+})
