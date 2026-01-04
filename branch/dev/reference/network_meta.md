@@ -77,7 +77,7 @@ List with relative effects, rankings, and network structure
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# Network meta-analysis of 4 studies
 nma_data <- data.frame(
   study = c("S1", "S2", "S3", "S4"),
   treat1 = c("A", "B", "A", "B"),
@@ -85,7 +85,13 @@ nma_data <- data.frame(
   effect = log(c(0.75, 0.90, 0.80, 0.85)),
   se = c(0.12, 0.15, 0.18, 0.14)
 )
-
 result <- network_meta(nma_data, effect_measure = "hr")
-} # }
+result$comparisons
+#>   treatment vs estimate  ci_lower  ci_upper        se n_studies  evidence rank
+#> 1         A  A   1.0000 1.0000000 1.0000000 0.0000000        NA reference   NA
+#> B         B  A   0.7500 0.5928121 0.9488672 0.1200000         1    direct    2
+#> C         C  A   0.8000 0.5621778 1.1384298 0.1800000         1    direct    3
+#> D         D  A   0.6375 0.4441466 0.9150272 0.1843909         2  indirect    1
+result$network$treatments
+#> [1] "A" "B" "C" "D"
 ```

@@ -55,3 +55,15 @@ create_funnel_plot(
 ## Value
 
 A ClinicalPlot object containing the funnel plot
+
+## Examples
+
+``` r
+# Funnel plot for publication bias assessment
+yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+plot <- create_funnel_plot(meta_res, title = "Funnel Plot")
+plot@type
+#> [1] "funnel"
+```

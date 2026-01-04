@@ -67,22 +67,32 @@ A list with components:
 
   Number of characteristics assessed
 
+## Details
+
+Transitivity is a fundamental assumption in network meta-analysis. When
+treatments A and C have not been directly compared in a randomized
+trial, we may infer their relative effect through a common comparator B
+(A vs B and B vs C). This indirect comparison is valid only if the
+studies comparing A vs B and B vs C are sufficiently similar in terms of
+population characteristics, study design, and clinical setting.
+Violations of transitivity can bias indirect comparisons and undermine
+the credibility of network meta-analysis results.
+
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# Assess transitivity across treatment comparisons
 chars <- data.frame(
   study_id = c("S1", "S1", "S2", "S2", "S3", "S3"),
   treatment = c("A", "B", "B", "C", "A", "C"),
   mean_age = c(55, 55, 58, 58, 52, 52),
-  pct_male = c(60, 60, 65, 65, 55, 55),
-  disease_stage = c("II", "II", "III", "III", "II", "II")
+  pct_male = c(60, 60, 65, 65, 55, 55)
 )
-
 result <- assess_transitivity(
   study_characteristics = chars,
-  char_vars = c("mean_age", "pct_male", "disease_stage"),
+  char_vars = c("mean_age", "pct_male"),
   continuous_vars = c("mean_age", "pct_male")
 )
-} # }
+result$overall_assessment
+#> [1] "Transitivity assumption appears reasonable"
 ```

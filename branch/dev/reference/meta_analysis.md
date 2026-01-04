@@ -78,14 +78,20 @@ A MetaResult S7 object with pooled estimate and heterogeneity stats
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Example with hazard ratios from 5 studies
+# Random-effects meta-analysis of 5 studies with hazard ratios
 result <- meta_analysis(
   yi = log(c(0.75, 0.82, 0.68, 0.91, 0.77)),
   sei = c(0.12, 0.15, 0.18, 0.14, 0.11),
   study_labels = paste("Study", 1:5),
   effect_measure = "hr",
-  model = "random"
+  model = "random",
+  method = "REML",
+  knapp_hartung = TRUE
 )
-} # }
+result@estimate
+#> [1] 0.7823178
+result@ci
+#> [1] 0.6840484 0.8947045
+result@heterogeneity$I2
+#> [1] 0
 ```

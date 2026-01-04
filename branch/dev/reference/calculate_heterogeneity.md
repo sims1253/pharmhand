@@ -74,3 +74,20 @@ A list with components:
 - interpretation:
 
   Verbal interpretation of I2 level
+
+## Examples
+
+``` r
+# Calculate heterogeneity for 5 studies
+yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+het <- calculate_heterogeneity(yi, sei, method = "REML")
+het$Q
+#> [1] 7.3
+het$I2
+#> [1] 45.20548
+het$tau2
+#> [1] 0.0184
+het$interpretation
+#> [1] "Moderate heterogeneity"
+```

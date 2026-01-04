@@ -66,19 +66,16 @@ A ClinicalPlot object containing the network graph
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Network meta-analysis data
+# Network geometry visualization
 nma_data <- data.frame(
-  study = c("S1", "S1", "S2", "S2", "S3", "S3"),
-  treatment = c("A", "B", "A", "C", "B", "C"),
-  responders = c(20, 25, 18, 22, 30, 28),
-  n = c(100, 100, 90, 95, 110, 105)
+  study = c("S1", "S2", "S3"),
+  treat1 = c("A", "B", "A"),
+  treat2 = c("B", "C", "C"),
+  effect = log(c(0.75, 0.90, 0.80)),
+  se = c(0.12, 0.15, 0.18)
 )
-
-# Run NMA
-nma_result <- network_meta(nma_data, reference = "A")
-
-# Create network geometry plot
+nma_result <- network_meta(nma_data, effect_measure = "hr")
 plot <- create_network_plot(nma_result, title = "Treatment Network")
-} # }
+plot@type
+#> [1] "network_geometry"
 ```

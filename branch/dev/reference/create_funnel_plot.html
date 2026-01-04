@@ -9,7 +9,7 @@ Studies are plotted by effect size vs. precision (1/SE)."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,6 +103,17 @@ Default: c(0.1, 0.05, 0.01)</p></dd>
     <p>A ClinicalPlot object containing the funnel plot</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Funnel plot for publication bias assessment</span></span></span>
+<span class="r-in"><span><span class="va">yi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">0.82</span>, <span class="fl">0.68</span>, <span class="fl">0.91</span>, <span class="fl">0.77</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sei</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.12</span>, <span class="fl">0.15</span>, <span class="fl">0.18</span>, <span class="fl">0.14</span>, <span class="fl">0.11</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">meta_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="meta_analysis.html">meta_analysis</a></span><span class="op">(</span>yi <span class="op">=</span> <span class="va">yi</span>, sei <span class="op">=</span> <span class="va">sei</span>, effect_measure <span class="op">=</span> <span class="st">"hr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">create_funnel_plot</span><span class="op">(</span><span class="va">meta_res</span>, title <span class="op">=</span> <span class="st">"Funnel Plot"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">plot</span><span class="op">@</span><span class="va">type</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "funnel"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

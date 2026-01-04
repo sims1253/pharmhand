@@ -27,3 +27,16 @@ eggers_test(yi = NULL, sei = NULL, meta_result = NULL)
 
 List with intercept, slope, standard error, t-value, p-value, and
 interpretation
+
+## Examples
+
+``` r
+# Egger's test for funnel plot asymmetry
+yi <- c(0.5, 0.6, 0.4, 0.3, 0.8, 1.0)
+sei <- c(0.2, 0.15, 0.25, 0.18, 0.12, 0.08)
+result <- eggers_test(yi = yi, sei = sei)
+result$p_value
+#> [1] 0.005798801
+result$interpretation
+#> [1] "Significant asymmetry detected (p < 0.05), suggesting potential publication bias"
+```

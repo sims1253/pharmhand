@@ -1,5 +1,21 @@
 # Changelog
 
+## pharmhand 0.2.3.9000
+
+### Documentation
+
+- Added runnable examples for all meta-analysis and network
+  meta-analysis functions including
+  [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md),
+  [`indirect_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/indirect_comparison.md),
+  [`network_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/network_meta.md),
+  [`create_network_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_network_plot.md),
+  [`assess_transitivity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_transitivity.md),
+  [`node_splitting()`](https://sims1253.github.io/pharmhand/branch/dev/reference/node_splitting.md),
+  [`calculate_sucra()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_sucra.md),
+  and
+  [`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md).
+
 ## pharmhand 0.2.2.9000
 
 ### Phase 2: Evidence Synthesis
