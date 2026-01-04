@@ -43,7 +43,6 @@ reference:
   - EvidenceGrade
   - FormatSpec
   - LayeredTable
-  - MetaResult
   - PerformanceReport
   - ReportSection
   - StatResult
@@ -89,6 +88,7 @@ reference:
   - create_primary_endpoint_table
   - create_cfb_summary_table
   - ancova_adjust_continuous
+  - assess_iceman
 
 - title: "Safety Tables"
   desc: >
@@ -98,6 +98,7 @@ reference:
   - create_ae_summary_table
   - create_ae_comparison_table
   - create_ae_exposure_table
+  - create_ae_hierarchy_table
   - create_time_to_first_ae
   - create_lab_shift_table
   - create_lab_summary_table
@@ -133,8 +134,10 @@ reference:
   - create_forest_plot
   - create_ae_km_plot_for_soc
   - create_loglog_plot
+  - create_mean_plot
   - save_plot_as
   - save_as_png
+  - create_spider_plot
 
 - title: "Formatting"
   desc: >
@@ -216,6 +219,45 @@ reference:
   - calculate_interaction_pvalue_table
   - calculate_response_comparison
 
+- title: "PRO Analysis"
+  desc: >
+    Patient-Reported Outcomes analysis functions including
+    minimal clinically important difference (MCID) and time-to-deterioration.
+  contents:
+  - calculate_mcid
+  - calculate_mcid_anchor
+  - calculate_mcid_distribution
+  - create_ttd_analysis
+
+- title: "Meta-Analysis"
+  desc: >
+    Functions for conducting meta-analyses including heterogeneity
+    assessment, sensitivity analysis, and publication bias detection.
+  contents:
+  - meta_analysis
+  - MetaResult
+  - calculate_heterogeneity
+  - leave_one_out
+  - create_meta_forest_plot
+  - create_funnel_plot
+  - eggers_test
+  - trim_and_fill
+  - bayesian_meta_analysis
+
+- title: "Network Meta-Analysis"
+  desc: >
+    Indirect treatment comparison and network meta-analysis functions
+    for comparing multiple treatments across studies.
+  contents:
+  - indirect_comparison
+  - compare_direct_indirect
+  - network_meta
+  - create_network_plot
+  - assess_transitivity
+  - node_splitting
+  - calculate_sucra
+  - create_league_table
+
 - title: "GBA/AMNOG Utilities"
   desc: >
     Functions for German Health Technology Assessment (G-BA/AMNOG)
@@ -282,6 +324,8 @@ reference:
   - gba_utils
   - localization
   - plotting
+  - meta_analysis
+  - pro_analysis
 
 # Articles/vignettes structure
 articles:

@@ -346,6 +346,86 @@ test_that("Study design defaults correctly", {
 	expect_equal(study@design, "single-arm")
 })
 
+# MultiArmStudy validators ----
+
+test_that("MultiArmStudy accepts valid arms with 3+ elements", {
+	expect_no_error(
+		MultiArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			arms = c("Drug A", "Drug B", "Placebo"),
+			reference_arm = "Placebo"
+		)
+	)
+})
+
+test_that("MultiArmStudy accepts empty arms vector", {
+	expect_no_error(
+		MultiArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			arms = character(),
+			reference_arm = ""
+		)
+	)
+})
+
+test_that("MultiArmStudy rejects arms with fewer than 3 elements", {
+	expect_error(
+		MultiArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			arms = c("Drug A", "Placebo"),
+			reference_arm = "Placebo"
+		),
+		"arms must have at least 3 elements"
+	)
+
+	expect_error(
+		MultiArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			arms = c("Drug A"),
+			reference_arm = "Drug A"
+		),
+		"arms must have at least 3 elements"
+	)
+})
+
+test_that("MultiArmStudy treatment_var defaults correctly", {
+	study <- MultiArmStudy(
+		data = data.frame(),
+		study_id = "TEST",
+		study_title = "Test Study"
+	)
+	expect_equal(study@treatment_var, "TRT01P")
+})
+
+test_that("Can create complete MultiArmStudy with all properties", {
+	study <- MultiArmStudy(
+		data = data.frame(
+			USUBJID = c("01", "02", "03"),
+			TRT01P = c("Drug A", "Drug B", "Placebo")
+		),
+		study_id = "MULTI001",
+		study_title = "Multi-Arm Trial",
+		design = "rct",
+		treatment_var = "TRT01P",
+		arms = c("Drug A", "Drug B", "Placebo"),
+		reference_arm = "Placebo",
+		population = "ITT"
+	)
+
+	expect_true(S7::S7_inherits(study, MultiArmStudy))
+	expect_equal(study@study_id, "MULTI001")
+	expect_equal(length(study@arms), 3)
+	expect_equal(study@reference_arm, "Placebo")
+})
+
 # Endpoint validators ----
 
 test_that("Endpoint accepts valid type", {
