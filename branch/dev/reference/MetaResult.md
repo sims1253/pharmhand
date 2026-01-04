@@ -84,16 +84,22 @@ A MetaResult object
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 result <- MetaResult(
   estimate = 0.80,
   ci = c(0.70, 0.91),
+  ci_level = 0.95,
   p_value = 0.001,
+  n = 5L,
   model = "random",
   effect_measure = "hr",
-  heterogeneity = list(Q = 15.2, I2 = 0.45, tau2 = 0.02),
-  n = 5L,
-  method = "REML with Knapp-Hartung"
+  heterogeneity = list(
+    Q = 15.2, Q_df = 4L, Q_pvalue = 0.004,
+    I2 = 73.7, H2 = 3.8, tau2 = 0.025, tau = 0.158
+  ),
+  method = "REML with Knapp-Hartung adjustment"
 )
-} # }
+result@estimate
+#> [1] 0.8
+result@heterogeneity$I2
+#> [1] 73.7
 ```

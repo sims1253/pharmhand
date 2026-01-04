@@ -12,7 +12,6 @@ create_mean_plot(
   x_var,
   y_var,
   group_var = NULL,
-  subject_var = "USUBJID",
   ci_level = 0.95,
   show_points = FALSE,
   show_n = TRUE,
@@ -45,10 +44,6 @@ create_mean_plot(
 - group_var:
 
   Character. Grouping variable (e.g., treatment). Default: NULL
-
-- subject_var:
-
-  Character. Subject ID variable. Default: "USUBJID"
 
 - ci_level:
 
@@ -97,6 +92,10 @@ create_mean_plot(
 - error_bar_width:
 
   Numeric. Width of error bar caps. Default: 0.1
+
+- subject_var:
+
+  Character. Subject ID variable. Default: "USUBJID"
 
 ## Value
 
