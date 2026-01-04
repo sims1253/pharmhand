@@ -620,24 +620,16 @@ leave_one_out <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Create sample meta-analysis data
-#' studies <- data.frame(
-#'   study = c("Study A", "Study B", "Study C", "Study D"),
-#'   yi = c(0.3, 0.5, 0.2, 0.4),
-#'   sei = c(0.1, 0.15, 0.12, 0.11)
-#' )
-#'
-#' # Run meta-analysis
+#' # Meta-analysis forest plot
+#' yi <- log(c(0.75, 0.82, 0.68, 0.91))
+#' sei <- c(0.12, 0.15, 0.18, 0.14)
 #' result <- meta_analysis(
-#'   yi = studies$yi,
-#'   sei = studies$sei,
-#'   study_labels = studies$study
+#'   yi = yi, sei = sei,
+#'   study_labels = c("Study A", "Study B", "Study C", "Study D"),
+#'   effect_measure = "hr"
 #' )
-#'
-#' # Create forest plot
 #' plot <- create_meta_forest_plot(result, title = "Treatment Effect")
-#' }
+#' plot@type
 create_meta_forest_plot <- function(
 	meta_result,
 	title = NULL,
