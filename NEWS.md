@@ -1,3 +1,12 @@
+# pharmhand 0.2.3.9000
+
+## Documentation
+
+* Added runnable examples for all meta-analysis and network meta-analysis functions
+  including `meta_analysis()`, `indirect_comparison()`, `network_meta()`,
+  `create_network_plot()`, `assess_transitivity()`, `node_splitting()`,
+  `calculate_sucra()`, and `create_league_table()`.
+
 # pharmhand 0.2.2.9000
 
 ## Phase 2: Evidence Synthesis
