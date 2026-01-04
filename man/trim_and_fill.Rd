@@ -39,18 +39,11 @@ Performs the Duval & Tweedie trim-and-fill method to estimate the number
 of missing studies and adjust the pooled effect for publication bias.
 }
 \examples{
-\dontrun{
-# Run meta-analysis
-meta_res <- meta_analysis(
-  yi = c(0.2, 0.4, 0.3, 0.5, 0.6),
-  sei = c(0.1, 0.12, 0.08, 0.15, 0.11),
-  study_labels = paste("Study", 1:5)
-)
-
-# Apply trim-and-fill for publication bias
+# Trim-and-fill for publication bias adjustment
+yi <- c(-0.5, -0.4, -0.3, -0.1, 0.0, 0.5, 0.6)
+sei <- c(0.1, 0.12, 0.15, 0.18, 0.2, 0.1, 0.12)
+meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "md")
 adjusted <- trim_and_fill(meta_res)
-
-# Check number of imputed studies
-adjusted$n_missing
-}
+adjusted$n_imputed
+adjusted$interpretation
 }
