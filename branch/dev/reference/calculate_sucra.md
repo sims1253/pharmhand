@@ -6,7 +6,7 @@ Ranking curve) or P-scores for treatments in network meta-analysis.
 ## Usage
 
 ``` r
-calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000)
+calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000, seed = 42)
 ```
 
 ## Arguments
@@ -22,6 +22,11 @@ calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000)
 - n_sim:
 
   Integer. Number of simulations for ranking. Default: 1000
+
+- seed:
+
+  Integer or NULL. Random seed for reproducibility. Default: 42. Set to
+  NULL for non-deterministic results.
 
 ## Value
 

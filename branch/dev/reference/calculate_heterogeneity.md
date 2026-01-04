@@ -6,7 +6,7 @@ heterogeneity.
 ## Usage
 
 ``` r
-calculate_heterogeneity(yi, sei, method = c("REML", "DL", "PM", "ML"))
+calculate_heterogeneity(yi, sei, method = c("REML", "DL", "PM"))
 ```
 
 ## Arguments
