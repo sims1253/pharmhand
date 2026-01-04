@@ -18,7 +18,7 @@ NULL
 #'   "rd", "md", "smd"
 #' @param model Character. "fixed" or "random". Default: "random"
 #' @param method Character. Estimation method for random effects:
-#'   "DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel), "ML".
+#'   "DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel).
 #'   Default: "REML"
 #' @param knapp_hartung Logical. Apply Knapp-Hartung adjustment. Default: TRUE
 #' @param conf_level Numeric. Confidence level. Default: 0.95
@@ -49,7 +49,7 @@ meta_analysis <- function(
 	study_labels = NULL,
 	effect_measure = c("hr", "or", "rr", "rd", "md", "smd"),
 	model = c("random", "fixed"),
-	method = c("REML", "DL", "PM", "ML"),
+	method = c("REML", "DL", "PM"),
 	knapp_hartung = TRUE,
 	conf_level = 0.95,
 	prediction = TRUE
@@ -160,22 +160,6 @@ meta_analysis <- function(
 					tau2_reml <- max(0, tau2_new)
 				}
 				tau2_reml
-			},
-			"ML" = {
-				# Maximum likelihood
-				tau2_ml <- max(0, (Q - df) / (sum(wi) - sum(wi^2) / sum(wi)))
-				for (iter in 1:50) {
-					wi_star <- 1 / (sei^2 + tau2_ml)
-					theta_star <- sum(wi_star * yi) / sum(wi_star)
-					resid <- yi - theta_star
-					ll_deriv <- -0.5 * sum(wi_star) + 0.5 * sum(wi_star^2 * resid^2)
-					if (abs(ll_deriv) < 1e-8) {
-						break
-					}
-					tau2_ml <- tau2_ml + 0.1 * sign(ll_deriv)
-					tau2_ml <- max(0, tau2_ml)
-				}
-				tau2_ml
 			}
 		)
 
@@ -347,7 +331,7 @@ meta_analysis <- function(
 calculate_heterogeneity <- function(
 	yi,
 	sei,
-	method = c("REML", "DL", "PM", "ML")
+	method = c("REML", "DL", "PM")
 ) {
 	method <- match.arg(method)
 
@@ -422,9 +406,7 @@ calculate_heterogeneity <- function(
 				tau2_reml <- max(0, tau2_new)
 			}
 			tau2_reml
-		},
-		"ML" = tau2_dl # Simplified: uses DL as approximation.
-		# For true ML, use metafor::rma()
+		}
 	)
 
 	# Interpretation
@@ -1984,7 +1966,8 @@ trim_and_fill <- function(
 			# L0: based on rank correlation
 			abs_ranks <- rank(abs(di))
 			Tn <- sum((abs_ranks - (n + 1) / 2) * sign(di))
-			k0_new <- max(0, round((4 * Tn + n * (n + 1)) / (2 * n + 1) - n))
+			# L0 estimator per Duval & Tweedie (2000)
+			k0_new <- max(0, round((4 * Tn - n * (n + 1)) / (2 * n - 1)))
 		} else if (estimator == "R0") {
 			# R0: simpler rank-based estimator
 			if (side == "right") {
@@ -2472,6 +2455,8 @@ node_splitting <- function(
 #' @param lower_better Logical. Is lower estimate better?
 #'   Default: TRUE for ratios
 #' @param n_sim Integer. Number of simulations for ranking. Default: 1000
+#' @param seed Integer or NULL. Random seed for reproducibility. Default: 42.
+#'   Set to NULL for non-deterministic results.
 #'
 #' @return List with rankings, SUCRA/P-scores, and rankogram data
 #' @export
@@ -2491,7 +2476,8 @@ node_splitting <- function(
 calculate_sucra <- function(
 	nma_result,
 	lower_better = NULL,
-	n_sim = 1000
+	n_sim = 1000,
+	seed = 42
 ) {
 	if (!is.list(nma_result) || !"comparisons" %in% names(nma_result)) {
 		ph_abort("nma_result must be from network_meta()")
@@ -2521,7 +2507,9 @@ calculate_sucra <- function(
 	rank_matrix <- matrix(0, nrow = n_sim, ncol = n_treat)
 	colnames(rank_matrix) <- treatments
 
-	set.seed(42) # For reproducibility
+	if (!is.null(seed)) {
+		set.seed(seed)
+	}
 	for (sim in seq_len(n_sim)) {
 		# Sample from normal distribution
 		sampled <- stats::rnorm(n_treat, mean = estimates, sd = ses)

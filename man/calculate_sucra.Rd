@@ -4,7 +4,7 @@
 \alias{calculate_sucra}
 \title{Calculate Treatment Rankings (P-scores/SUCRA)}
 \usage{
-calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000)
+calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000, seed = 42)
 }
 \arguments{
 \item{nma_result}{Result from network_meta()}
@@ -13,6 +13,9 @@ calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000)
 Default: TRUE for ratios}
 
 \item{n_sim}{Integer. Number of simulations for ranking. Default: 1000}
+
+\item{seed}{Integer or NULL. Random seed for reproducibility. Default: 42.
+Set to NULL for non-deterministic results.}
 }
 \value{
 List with rankings, SUCRA/P-scores, and rankogram data

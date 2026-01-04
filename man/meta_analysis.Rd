@@ -12,7 +12,7 @@ meta_analysis(
   study_labels = NULL,
   effect_measure = c("hr", "or", "rr", "rd", "md", "smd"),
   model = c("random", "fixed"),
-  method = c("REML", "DL", "PM", "ML"),
+  method = c("REML", "DL", "PM"),
   knapp_hartung = TRUE,
   conf_level = 0.95,
   prediction = TRUE
@@ -36,7 +36,7 @@ StudySet object}
 \item{model}{Character. "fixed" or "random". Default: "random"}
 
 \item{method}{Character. Estimation method for random effects:
-"DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel), "ML".
+"DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel).
 Default: "REML"}
 
 \item{knapp_hartung}{Logical. Apply Knapp-Hartung adjustment. Default: TRUE}
