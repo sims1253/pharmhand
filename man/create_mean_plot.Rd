@@ -58,8 +58,6 @@ NULL (uses default)}
 points. Default: 0.2}
 
 \item{error_bar_width}{Numeric. Width of error bar caps. Default: 0.1}
-
-\item{subject_var}{Character. Subject ID variable. Default: "USUBJID"}
 }
 \value{
 A ClinicalPlot object containing the ggplot

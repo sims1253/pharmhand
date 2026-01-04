@@ -1,0 +1,190 @@
+---
+title: "Meta-Analysis and Network Meta-Analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meta-Analysis and Network Meta-Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+```{r setup}
+library(pharmhand)
+```
+
+## Introduction
+pharmhand provides comprehensive functions for meta-analysis and network
+meta-analysis (NMA), supporting German HTA requirements (G-BA/IQWiG).
+
+## Pairwise Meta-Analysis
+
+### Basic Meta-Analysis
+
+```{r meta-basic}
+# Five studies with hazard ratios
+yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+result <- meta_analysis(
+  yi = yi,
+  sei = sei,
+  study_labels = paste("Study", 1:5),
+  effect_measure = "hr",
+  model = "random",
+  method = "REML",
+  knapp_hartung = TRUE
+)
+
+result@estimate
+result@ci
+result@heterogeneity$I2
+```
+
+### Heterogeneity Assessment
+
+```{r heterogeneity}
+het <- calculate_heterogeneity(yi, sei, method = "REML")
+het$Q
+het$I2
+het$tau2
+het$interpretation
+```
+
+### Leave-One-Out Sensitivity Analysis
+
+```{r loo}
+loo <- leave_one_out(result)
+loo$results[, c("excluded_study", "estimate_display", "I2")]
+loo$influential_studies
+```
+
+### Forest Plot
+
+```{r forest, fig.alt="Meta-analysis forest plot"}
+plot <- create_meta_forest_plot(result, title = "Treatment Effect (HR)")
+plot@plot
+```
+
+### Funnel Plot and Publication Bias
+
+```{r funnel, fig.alt="Funnel plot"}
+funnel <- create_funnel_plot(result, title = "Funnel Plot")
+funnel@plot
+```
+
+```{r egger}
+egger <- eggers_test(yi = yi, sei = sei)
+egger$p_value
+egger$interpretation
+```
+
+### Trim-and-Fill
+
+```{r trimfill}
+tf <- trim_and_fill(result)
+tf$n_imputed
+tf$interpretation
+```
+
+## Indirect Comparison
+
+```{r indirect}
+# Bucher method: A vs B via common comparator C
+indirect <- indirect_comparison(
+  effect_ab = log(0.75),  # A vs C
+  se_ab = 0.12,
+  effect_bc = log(0.85),  # B vs C
+  se_bc = 0.10,
+  effect_measure = "hr",
+  label_a = "Drug A",
+  label_b = "Placebo",
+  label_c = "Drug B"
+)
+indirect@estimate
+indirect@ci
+```
+
+## Network Meta-Analysis
+
+### Basic NMA
+
+```{r nma}
+nma_data <- data.frame(
+  study = c("S1", "S2", "S3", "S4"),
+  treat1 = c("A", "B", "A", "B"),
+  treat2 = c("B", "C", "C", "D"),
+  effect = log(c(0.75, 0.90, 0.80, 0.85)),
+  se = c(0.12, 0.15, 0.18, 0.14)
+)
+
+nma <- network_meta(nma_data, effect_measure = "hr")
+nma$comparisons
+```
+
+### Network Geometry Plot
+
+```{r network-plot, fig.alt="Network geometry plot"}
+net_plot <- create_network_plot(nma, title = "Treatment Network")
+net_plot@plot
+```
+
+### SUCRA Rankings
+
+```{r sucra}
+sucra <- calculate_sucra(nma)
+sucra$ranking
+sucra$interpretation
+```
+
+### League Table
+
+```{r league}
+league <- create_league_table(nma)
+league@data
+```
+
+### Transitivity Assessment
+
+```{r transitivity}
+chars <- data.frame(
+  study_id = c("S1", "S1", "S2", "S2", "S3", "S3", "S4", "S4"),
+  treatment = c("A", "B", "B", "C", "A", "C", "B", "D"),
+  mean_age = c(55, 55, 58, 58, 52, 52, 60, 60),
+  pct_male = c(60, 60, 65, 65, 55, 55, 70, 70)
+)
+
+transit <- assess_transitivity(
+  study_characteristics = chars,
+  char_vars = c("mean_age", "pct_male"),
+  continuous_vars = c("mean_age", "pct_male")
+)
+transit$overall_assessment
+```
+
+## Summary
+
+pharmhand provides a complete toolkit for evidence synthesis:
+
+| Function | Purpose |
+|----------|---------|
+| `meta_analysis()` | Fixed/random-effects meta-analysis |
+| `calculate_heterogeneity()` | Q, I², τ² statistics |
+| `leave_one_out()` | Sensitivity analysis |
+| `create_meta_forest_plot()` | Forest plot visualization |
+| `create_funnel_plot()` | Publication bias assessment |
+| `eggers_test()` | Funnel asymmetry test |
+| `trim_and_fill()` | Bias adjustment |
+| `indirect_comparison()` | Bucher method |
+| `network_meta()` | Network meta-analysis |
+| `create_network_plot()` | Network geometry |
+| `calculate_sucra()` | Treatment rankings |
+| `create_league_table()` | Pairwise comparisons |
+| `assess_transitivity()` | Transitivity check |

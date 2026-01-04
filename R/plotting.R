@@ -925,7 +925,6 @@ create_loglog_plot <- function(
 #' @param y_var Character. Variable for y-axis (value)
 #' @param group_var Character. Grouping variable (e.g., treatment).
 #'   Default: NULL
-#' @param subject_var Character. Subject ID variable. Default: "USUBJID"
 #' @param ci_level Numeric. Confidence level for intervals. Default: 0.95
 #' @param show_points Logical. Show individual data points. Default: FALSE
 #' @param show_n Logical. Show sample size at each point. Default: TRUE
