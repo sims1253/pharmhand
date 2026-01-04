@@ -2711,3 +2711,233 @@ calculate_response_comparison <- function(
 
 	results
 }
+
+#' Assess Subgroup Credibility Using ICEMAN Criteria
+#'
+#' Evaluates the credibility of subgroup analyses using the ICEMAN criteria.
+#' The 10 criteria assess whether an apparent subgroup effect is likely to
+#' be a true effect modification.
+#'
+#' @param subgroup_result Subgroup analysis result (from create_subgroup_table)
+#' @param is_prespecified Logical. Was the subgroup prespecified?
+#' @param hypothesis_direction Character. Was direction prespecified?
+#'   Options: "correct", "opposite", "none"
+#' @param n_subgroups Integer. Total number of subgroups analyzed
+#' @param biological_rationale Character. Strength of biological rationale:
+#'   "strong", "moderate", "weak", "none"
+#' @param effect_measure Character. Consistent with overall effect?
+#'   "consistent", "opposite", "uncertain"
+#' @param within_study Logical. Is this within-study comparison?
+#' @param statistical_test Character. Type of interaction test used:
+#'   "formal", "informal", "none"
+#' @param interaction_pvalue Numeric. P-value for interaction (if tested)
+#' @param replication Character. Has finding been replicated?
+#'   "yes", "no", "not_applicable"
+#' @param other_evidence Character. Supporting evidence from other sources:
+#'   "strong", "moderate", "weak", "none"
+#'
+#' @return ICEMANResult object with criteria assessments and overall credibility
+#' @export
+assess_iceman <- function(
+	subgroup_result = NULL,
+	is_prespecified = FALSE,
+	hypothesis_direction = c("none", "correct", "opposite"),
+	n_subgroups = 1,
+	biological_rationale = c("none", "weak", "moderate", "strong"),
+	effect_measure = c("uncertain", "consistent", "opposite"),
+	within_study = TRUE,
+	statistical_test = c("none", "informal", "formal"),
+	interaction_pvalue = NA_real_,
+	replication = c("not_applicable", "no", "yes"),
+	other_evidence = c("none", "weak", "moderate", "strong")
+) {
+	hypothesis_direction <- match.arg(hypothesis_direction)
+	biological_rationale <- match.arg(biological_rationale)
+	effect_measure <- match.arg(effect_measure)
+	statistical_test <- match.arg(statistical_test)
+	replication <- match.arg(replication)
+	other_evidence <- match.arg(other_evidence)
+
+	# ICEMAN Criteria scoring (based on published instrument)
+	# Each criterion scored as: definitely yes, probably yes, probably no, definitely no
+	# We'll use numeric scores: 3 = definitely yes, 2 = probably yes, 1 = probably no, 0 = definitely no
+
+	criteria <- list()
+
+	# Criterion 1: Was the subgroup variable prespecified?
+	criteria$prespecified <- list(
+		name = "Subgroup prespecified",
+		score = if (is_prespecified) 3 else 0,
+		assessment = if (is_prespecified) "Yes" else "No",
+		weight = 1
+	)
+
+	# Criterion 2: Was the direction of subgroup effect prespecified?
+	dir_score <- switch(
+		hypothesis_direction,
+		"correct" = 3,
+		"opposite" = 0,
+		"none" = 1
+	)
+	criteria$direction <- list(
+		name = "Direction prespecified",
+		score = dir_score,
+		assessment = hypothesis_direction,
+		weight = 1
+	)
+
+	# Criterion 3: Was the subgroup effect one of a small number tested?
+	subgroup_score <- if (n_subgroups <= 3) {
+		3
+	} else if (n_subgroups <= 5) {
+		2
+	} else if (n_subgroups <= 10) {
+		1
+	} else {
+		0
+	}
+	criteria$n_subgroups <- list(
+		name = "Limited number of subgroups",
+		score = subgroup_score,
+		assessment = sprintf("%d subgroups analyzed", n_subgroups),
+		weight = 1
+	)
+
+	# Criterion 4: Is there biological rationale?
+	bio_score <- switch(
+		biological_rationale,
+		"strong" = 3,
+		"moderate" = 2,
+		"weak" = 1,
+		"none" = 0
+	)
+	criteria$biological <- list(
+		name = "Biological plausibility",
+		score = bio_score,
+		assessment = biological_rationale,
+		weight = 1
+	)
+
+	# Criterion 5: Is the subgroup effect consistent in direction with overall?
+	effect_score <- switch(
+		effect_measure,
+		"consistent" = 3,
+		"uncertain" = 1,
+		"opposite" = 0
+	)
+	criteria$consistent <- list(
+		name = "Consistent with overall effect",
+		score = effect_score,
+		assessment = effect_measure,
+		weight = 1
+	)
+
+	# Criterion 6: Is this a within-study comparison?
+	criteria$within_study <- list(
+		name = "Within-study comparison",
+		score = if (within_study) 3 else 1,
+		assessment = if (within_study) "Yes" else "No (across-study)",
+		weight = 0.5
+	)
+
+	# Criterion 7: Was a formal statistical test performed?
+	test_score <- switch(
+		statistical_test,
+		"formal" = 3,
+		"informal" = 1,
+		"none" = 0
+	)
+	criteria$statistical <- list(
+		name = "Formal interaction test",
+		score = test_score,
+		assessment = statistical_test,
+		weight = 1
+	)
+
+	# Criterion 8: Is the interaction p-value convincing? (p < 0.005 suggested)
+	if (!is.na(interaction_pvalue)) {
+		p_score <- if (interaction_pvalue < 0.005) {
+			3
+		} else if (interaction_pvalue < 0.05) {
+			2
+		} else {
+			0
+		}
+		p_assess <- sprintf("p = %s", format_pvalue(interaction_pvalue))
+	} else {
+		p_score <- NA
+		p_assess <- "Not tested"
+	}
+	criteria$pvalue <- list(
+		name = "Interaction p-value",
+		score = p_score,
+		assessment = p_assess,
+		weight = 1
+	)
+
+	# Criterion 9: Has the finding been replicated?
+	rep_score <- switch(replication, "yes" = 3, "no" = 0, "not_applicable" = NA)
+	criteria$replication <- list(
+		name = "Replication",
+		score = rep_score,
+		assessment = replication,
+		weight = 1
+	)
+
+	# Criterion 10: Is there other supporting evidence?
+	other_score <- switch(
+		other_evidence,
+		"strong" = 3,
+		"moderate" = 2,
+		"weak" = 1,
+		"none" = 0
+	)
+	criteria$other <- list(
+		name = "Other supporting evidence",
+		score = other_score,
+		assessment = other_evidence,
+		weight = 0.5
+	)
+
+	# Calculate overall credibility
+	scores <- sapply(criteria, function(x) x$score)
+	weights <- sapply(criteria, function(x) x$weight)
+	valid_idx <- !is.na(scores)
+
+	weighted_sum <- sum(scores[valid_idx] * weights[valid_idx])
+	max_possible <- sum(3 * weights[valid_idx])
+	overall_score <- weighted_sum / max_possible
+
+	# Determine credibility level
+	credibility <- if (overall_score >= 0.75) {
+		"High"
+	} else if (overall_score >= 0.50) {
+		"Moderate"
+	} else if (overall_score >= 0.25) {
+		"Low"
+	} else {
+		"Very Low"
+	}
+
+	# Create summary table
+	summary_df <- data.frame(
+		Criterion = sapply(criteria, function(x) x$name),
+		Assessment = sapply(criteria, function(x) x$assessment),
+		Score = sapply(criteria, function(x) {
+			if (is.na(x$score)) "N/A" else as.character(x$score)
+		}),
+		stringsAsFactors = FALSE
+	)
+
+	list(
+		criteria = criteria,
+		summary = summary_df,
+		overall_score = overall_score,
+		credibility = credibility,
+		interpretation = sprintf(
+			"Subgroup credibility: %s (score: %.1f%%)",
+			credibility,
+			overall_score * 100
+		)
+	)
+}

@@ -1291,3 +1291,47 @@ test_that("calculate_proportion_ci wald method works", {
 	expect_true(ci$lower < 0.42)
 	expect_true(ci$upper > 0.42)
 })
+
+describe("assess_iceman", {
+	it("calculates ICEMAN credibility scores", {
+		result <- assess_iceman(
+			is_prespecified = TRUE,
+			hypothesis_direction = "correct",
+			n_subgroups = 3,
+			biological_rationale = "strong",
+			statistical_test = "formal",
+			interaction_pvalue = 0.003
+		)
+
+		expect_true(is.list(result))
+		expect_true("criteria" %in% names(result))
+		expect_true("overall_score" %in% names(result))
+		expect_true("credibility" %in% names(result))
+	})
+
+	it("returns High credibility for strong evidence", {
+		result <- assess_iceman(
+			is_prespecified = TRUE,
+			hypothesis_direction = "correct",
+			n_subgroups = 2,
+			biological_rationale = "strong",
+			effect_measure = "consistent",
+			statistical_test = "formal",
+			interaction_pvalue = 0.001
+		)
+
+		expect_equal(result$credibility, "High")
+	})
+
+	it("returns Low credibility for weak evidence", {
+		result <- assess_iceman(
+			is_prespecified = FALSE,
+			hypothesis_direction = "none",
+			n_subgroups = 20,
+			biological_rationale = "none",
+			statistical_test = "none"
+		)
+
+		expect_true(result$credibility %in% c("Low", "Very Low"))
+	})
+})
