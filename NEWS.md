@@ -1,3 +1,92 @@
+# pharmhand 0.2.2.9000
+
+## Phase 2: Evidence Synthesis
+
+### Meta-Analysis Functions
+
+* Added `meta_analysis()` for fixed-effect and random-effects meta-analysis with
+  support for multiple tau² estimators (DerSimonian-Laird, REML, Paule-Mandel, ML)
+  and optional Knapp-Hartung adjustment.
+
+* Added `calculate_heterogeneity()` for comprehensive heterogeneity assessment
+  including Q, I², τ², and H² statistics with interpretation.
+
+* Added `leave_one_out()` for sensitivity analysis identifying influential studies.
+
+* Added `create_meta_forest_plot()` for meta-analysis forest plots with study
+  weights, heterogeneity statistics, and prediction intervals.
+
+* Added `create_funnel_plot()` for publication bias visualization.
+
+* Added `eggers_test()` for statistical assessment of funnel plot asymmetry.
+
+* Added `trim_and_fill()` for Duval & Tweedie publication bias adjustment.
+
+### Indirect Comparison
+
+* Added `indirect_comparison()` using the Bucher method for anchored indirect
+  treatment comparisons.
+
+* Added `compare_direct_indirect()` for consistency testing between direct
+  and indirect evidence.
+
+### Network Meta-Analysis
+
+* Added `network_meta()` for network meta-analysis comparing multiple treatments.
+
+* Added `create_network_plot()` for network geometry visualization.
+
+* Added `assess_transitivity()` for evaluating the transitivity assumption.
+
+* Added `node_splitting()` for testing inconsistency between direct and indirect evidence.
+
+* Added `calculate_sucra()` for treatment ranking with SUCRA/P-scores.
+
+* Added `create_league_table()` for pairwise comparison tables.
+
+### Bayesian Analysis
+
+* Added `bayesian_meta_analysis()` interface for Bayesian meta-analysis using
+  brms when available, with automatic fallback to frequentist methods.
+
+## Phase 1 Completion
+
+### PRO Analysis
+
+* Added `calculate_mcid_anchor()` for anchor-based MCID calculation.
+
+* Added `calculate_mcid_distribution()` for distribution-based MCID (0.5 SD,
+  1 SEM, etc.).
+
+* Added `calculate_mcid()` wrapper combining both MCID approaches.
+
+* Added `create_ttd_analysis()` for time-to-deterioration analysis with
+  Kaplan-Meier estimation.
+
+### Visualization
+
+* Added `create_mean_plot()` for longitudinal mean plots with confidence intervals.
+
+* Added `create_spider_plot()` for individual patient trajectory visualization.
+
+### Safety Analysis
+
+* Added `create_ae_hierarchy_table()` for full MedDRA hierarchy analysis
+  (SOC → HLGT → HLT → PT).
+
+### Subgroup Analysis
+
+* Added `assess_iceman()` for ICEMAN criteria assessment of subgroup credibility.
+
+## S7 Classes
+
+* Added comprehensive tests for `MultiArmStudy` S7 class.
+
+## Documentation
+
+* Added extensive test coverage for meta-analysis functions.
+* Added tests for PRO analysis functions.
+
 # pharmhand 0.2.1.9000
 
 ## Improvements
