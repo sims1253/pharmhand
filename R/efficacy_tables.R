@@ -2908,17 +2908,22 @@ assess_iceman <- function(
 
 	weighted_sum <- sum(scores[valid_idx] * weights[valid_idx])
 	max_possible <- sum(3 * weights[valid_idx])
-	overall_score <- weighted_sum / max_possible
 
 	# Determine credibility level
-	credibility <- if (overall_score >= 0.75) {
-		"High"
-	} else if (overall_score >= 0.50) {
-		"Moderate"
-	} else if (overall_score >= 0.25) {
-		"Low"
+	if (is.na(max_possible) || max_possible == 0) {
+		overall_score <- NA_real_
+		credibility <- "Not assessable"
 	} else {
-		"Very Low"
+		overall_score <- weighted_sum / max_possible
+		credibility <- if (overall_score >= 0.75) {
+			"High"
+		} else if (overall_score >= 0.50) {
+			"Moderate"
+		} else if (overall_score >= 0.25) {
+			"Low"
+		} else {
+			"Very Low"
+		}
 	}
 
 	# Create summary table

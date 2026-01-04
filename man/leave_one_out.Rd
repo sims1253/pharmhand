@@ -14,7 +14,14 @@ leave_one_out(meta_result = NULL, yi = NULL, sei = NULL)
 \item{sei}{Numeric vector of standard errors (optional if in meta_result)}
 }
 \value{
-List with leave-one-out results and influence statistics
+A list with components:
+\describe{
+\item{results}{Data frame with estimates when each study is excluded}
+\item{influential_studies}{Character vector of influential studies}
+\item{n_influential}{Number of influential studies}
+\item{effect_measure}{Effect measure used}
+\item{model}{Model type (fixed/random)}
+}
 }
 \description{
 Recalculates meta-analysis results leaving out each study one at a time

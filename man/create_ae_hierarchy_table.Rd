@@ -15,7 +15,9 @@ create_ae_hierarchy_table(
   levels = c("soc", "pt"),
   subject_var = "USUBJID",
   min_pct = 0,
-  sort_by = c("frequency", "alphabetical")
+  sort_by = c("frequency", "alphabetical"),
+  title = NULL,
+  autofit = TRUE
 )
 }
 \arguments{
@@ -40,7 +42,12 @@ Options: "soc", "hlgt", "hlt", "pt". Default: c("soc", "pt")}
 
 \item{min_pct}{Numeric. Minimum percentage to display. Default: 0}
 
-\item{sort_by}{Character. Sort by "alphabetical" or "frequency". Default: "frequency"}
+\item{sort_by}{Character. Sort by "alphabetical" or
+"frequency". Default: "frequency"}
+
+\item{title}{Character. Table title. Default: NULL (auto-generated)}
+
+\item{autofit}{Logical. Whether to autofit column widths. Default: TRUE}
 }
 \value{
 ClinicalTable with hierarchical AE summary

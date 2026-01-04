@@ -97,7 +97,28 @@ calculate_mcid_anchor <- function(
 #' @param methods Character vector. Methods to use: "half_sd", "one_sem",
 #'   "third_sd", "fifth_sd" (default: all)
 #'
-#' @return List with MCID estimates for each method
+#' @return A list with MCID estimates:
+#' \describe{
+#' \item{half_sd}{0.5 * SD of baseline scores}
+#' \item{third_sd}{0.33 * SD of baseline scores}
+#' \item{fifth_sd}{0.2 * SD of baseline scores}
+#' \item{one_sem}{1 * SEM (requires reliability)}
+#' \item{sd}{Standard deviation of baseline scores}
+#' \item{n}{Number of observations}
+#' \item{reliability}{Test-retest reliability if provided}
+#' }
+#' @examples
+#' \dontrun{
+#' # Distribution-based MCID for a PRO measure
+#' result <- calculate_mcid_distribution(
+#'   data = pro_data,
+#'   score_var = "AVAL",
+#'   reliability = 0.85
+#' )
+#'
+#' # Access 0.5 SD MCID
+#' result$half_sd
+#' }
 #' @export
 calculate_mcid_distribution <- function(
 	data,
@@ -172,7 +193,33 @@ calculate_mcid_distribution <- function(
 #' @param anchor_minimal Character vector. Anchor values for minimal improvement
 #' @param conf_level Numeric. Confidence level (default: 0.95)
 #'
-#' @return List with MCID results from requested method(s)
+#' @return List containing MCID results. Structure depends on method:
+#'   \itemize{
+#'     \item If method = "anchor": anchor-based results with mcid, ci, n, method
+#'     \item If method = "distribution": distribution-based results
+#'       (half_sd, one_sem, etc.)
+#'     \item If method = "both": both anchor and distribution results
+#'   }
+#'
+#' @examples
+#' \dontrun{
+#' # Anchor-based MCID
+#' anchor_result <- calculate_mcid(
+#'   data = pro_data,
+#'   score_var = "AVAL",
+#'   anchor_var = "PGIC",
+#'   responder_value = "Much improved",
+#'   method = "anchor"
+#' )
+#'
+#' # Distribution-based MCID
+#' dist_result <- calculate_mcid(
+#'   data = pro_data,
+#'   score_var = "AVAL",
+#'   method = "distribution",
+#'   reliability = 0.85
+#' )
+#' }
 #' @export
 calculate_mcid <- function(
 	data,
@@ -251,7 +298,17 @@ calculate_mcid <- function(
 #' @param censor_at Numeric. Time to censor if no event.
 #'   Default: max time in data
 #'
-#' @return List with ttd_data, km_fit, summary_table, and plot
+#' @return A list with components:
+#' \describe{
+#' \item{ttd_data}{Prepared time-to-deterioration data frame}
+#' \item{km_fit}{Kaplan-Meier fit object from survfit}
+#' \item{summary_table}{Summary statistics by treatment group}
+#' \item{threshold}{MCID threshold used}
+#' \item{direction}{Direction of deterioration}
+#' \item{definition}{Deterioration definition used}
+#' \item{n_subjects}{Total number of subjects}
+#' \item{n_events}{Total number of deterioration events}
+#' }
 #' @export
 create_ttd_analysis <- function(
 	data,
@@ -322,7 +379,6 @@ create_ttd_analysis <- function(
 		ttd_events <- data |>
 			dplyr::group_by(dplyr::across(dplyr::all_of(subject_var))) |>
 			dplyr::mutate(
-				consec = cumsum(!.data$deteriorated) * .data$deteriorated,
 				run_length = sequence(rle(.data$deteriorated)$lengths)
 			) |>
 			dplyr::filter(
@@ -384,7 +440,7 @@ create_ttd_analysis <- function(
 			`Median TTD` = {
 				km_sub <- survival::survfit(
 					survival::Surv(time, event) ~ 1,
-					data = dplyr::cur_data()
+					data = dplyr::pick(dplyr::everything())
 				)
 				med <- summary(km_sub)$table["median"]
 				if (is.na(med)) "NR" else sprintf("%.0f", med)

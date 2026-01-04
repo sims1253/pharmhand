@@ -36,9 +36,35 @@ for anchor method)}
 \item{conf_level}{Numeric. Confidence level (default: 0.95)}
 }
 \value{
-List with MCID results from requested method(s)
+List containing MCID results. Structure depends on method:
+\itemize{
+\item If method = "anchor": anchor-based results with mcid, ci, n, method
+\item If method = "distribution": distribution-based results
+(half_sd, one_sem, etc.)
+\item If method = "both": both anchor and distribution results
+}
 }
 \description{
 Wrapper function to calculate MCID using anchor-based, distribution-based,
 or both approaches.
+}
+\examples{
+\dontrun{
+# Anchor-based MCID
+anchor_result <- calculate_mcid(
+  data = pro_data,
+  score_var = "AVAL",
+  anchor_var = "PGIC",
+  responder_value = "Much improved",
+  method = "anchor"
+)
+
+# Distribution-based MCID
+dist_result <- calculate_mcid(
+  data = pro_data,
+  score_var = "AVAL",
+  method = "distribution",
+  reliability = 0.85
+)
+}
 }

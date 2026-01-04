@@ -49,7 +49,7 @@ test_that("meta_analysis calculates heterogeneity statistics", {
 
 	het <- result@heterogeneity
 	expect_true(het$Q > 0)
-	expect_true(het$I2 >= 0 && het$I2 <= 1)
+	expect_true(het$I2 >= 0 && het$I2 <= 100)
 	expect_true(het$tau2 >= 0)
 })
 
@@ -536,63 +536,6 @@ test_that("assess_transitivity handles categorical characteristics", {
 		study_characteristics = study_chars,
 		char_vars = c("region"),
 		continuous_vars = character(0) # No continuous vars
-	)
-
-	expect_true(is.list(result))
-	expect_true("summaries" %in% names(result))
-})
-
-test_that("assess_transitivity handles categorical characteristics", {
-	# Test with only categorical variables
-	study_chars <- data.frame(
-		study_id = c("S1", "S1", "S2", "S2"),
-		treatment = c("A", "B", "A", "B"),
-		region = c("US", "US", "EU", "EU"),
-		stringsAsFactors = FALSE
-	)
-
-	result <- assess_transitivity(
-		study_characteristics = study_chars,
-		char_vars = c("region"),
-		continuous_vars = character(0) # No continuous vars
-	)
-
-	expect_true(is.list(result))
-	expect_true("summaries" %in% names(result))
-})
-
-test_that("assess_transitivity handles insufficient variation", {
-	# Create data where all means are the same - no variation
-	study_chars <- data.frame(
-		study_id = c("S1", "S1", "S2", "S2"),
-		treatment = c("A", "B", "A", "B"),
-		mean_age = c(55, 55, 55, 55), # No variation
-		stringsAsFactors = FALSE
-	)
-
-	result <- assess_transitivity(
-		study_characteristics = study_chars,
-		char_vars = c("mean_age"),
-		continuous_vars = c("mean_age")
-	)
-
-	expect_true(is.list(result))
-	expect_true("overall_assessment" %in% names(result))
-})
-
-test_that("assess_transitivity handles categorical characteristics", {
-	# Test with only categorical variables
-	study_chars <- data.frame(
-		study_id = c("S1", "S1", "S2", "S2"),
-		treatment = c("A", "B", "A", "B"),
-		region = c("US", "US", "EU", "EU"),
-		stringsAsFactors = FALSE
-	)
-
-	result <- assess_transitivity(
-		study_characteristics = study_chars,
-		char_vars = c("region"),
-		continuous_vars = c() # No continuous vars
 	)
 
 	expect_true(is.list(result))

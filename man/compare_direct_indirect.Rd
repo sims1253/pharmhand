@@ -22,7 +22,16 @@ for direct evidence}
 \item{conf_level}{Numeric. Confidence level. Default: 0.95}
 }
 \value{
-List with test for inconsistency and pooled estimate
+A list with components:
+\describe{
+\item{direct_estimate}{Direct evidence effect estimate}
+\item{indirect_estimate}{Indirect evidence effect estimate}
+\item{pooled_estimate}{Inverse-variance weighted pooled estimate}
+\item{pooled_ci}{CI for pooled estimate}
+\item{inconsistency_p}{P-value for inconsistency test}
+\item{effect_measure}{Effect measure used}
+\item{is_consistent}{Logical; TRUE if p > 0.05}
+}
 }
 \description{
 Compares direct evidence (from head-to-head trials) with indirect evidence

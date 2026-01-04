@@ -84,7 +84,7 @@ test_that("create_ttd_analysis creates time-to-deterioration analysis", {
 	data$TRT01P <- rep(c("Treatment", "Placebo"), each = n_subj * n_visits / 2)
 	data$BASE <- rep(rnorm(n_subj, 50, 10), each = n_visits)
 	data$AVAL <- data$BASE +
-		cumsum(rep(c(0, -2, -1, 0, 1, 2), n_subj)) +
+		rep(c(0, -2, -1, 0, 1, 2), n_subj) +
 		rnorm(nrow(data), 0, 5)
 	data$CHG <- data$AVAL - data$BASE
 	data$ADY <- data$AVISITN * 30 # Monthly visits
