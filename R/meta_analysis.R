@@ -1407,6 +1407,16 @@ compare_direct_indirect <- function(
 #' across studies in a network. Transitivity requires that studies are similar
 #' enough that indirect comparisons are valid.
 #'
+#' @details
+#' Transitivity is a fundamental assumption in network meta-analysis. When
+#' treatments A and C have not been directly compared in a randomized trial,
+#' we may infer their relative effect through a common comparator B (A vs B and
+#' B vs C). This indirect comparison is valid only if the studies comparing
+#' A vs B and B vs C are sufficiently similar in terms of population
+#' characteristics, study design, and clinical setting. Violations of
+#' transitivity can bias indirect comparisons and undermine the credibility
+#' of network meta-analysis results.
+#'
 #' @param study_characteristics Data frame with study-level
 #'   characteristics. Must include 'study_id' and 'treatment'
 #'   columns, plus characteristics to compare.
