@@ -874,6 +874,14 @@ create_meta_forest_plot <- function(
 #'
 #' @return A ClinicalPlot object containing the funnel plot
 #' @export
+#'
+#' @examples
+#' # Funnel plot for publication bias assessment
+#' yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+#' sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+#' meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+#' plot <- create_funnel_plot(meta_res, title = "Funnel Plot")
+#' plot@type
 create_funnel_plot <- function(
 	meta_result,
 	show_ci = TRUE,
@@ -1043,6 +1051,14 @@ create_funnel_plot <- function(
 #' @return List with intercept, slope, standard error, t-value,
 #'   p-value, and interpretation
 #' @export
+#'
+#' @examples
+#' # Egger's test for funnel plot asymmetry
+#' yi <- c(0.5, 0.6, 0.4, 0.3, 0.8, 1.0)
+#' sei <- c(0.2, 0.15, 0.25, 0.18, 0.12, 0.08)
+#' result <- eggers_test(yi = yi, sei = sei)
+#' result$p_value
+#' result$interpretation
 eggers_test <- function(
 	yi = NULL,
 	sei = NULL,
