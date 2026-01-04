@@ -2758,16 +2758,32 @@ assess_iceman <- function(
 	replication <- match.arg(replication)
 	other_evidence <- match.arg(other_evidence)
 
-	if (!is.logical(is_prespecified) || length(is_prespecified) != 1 || is.na(is_prespecified)) {
+	if (
+		!is.logical(is_prespecified) ||
+			length(is_prespecified) != 1 ||
+			is.na(is_prespecified)
+	) {
 		ph_abort("'is_prespecified' must be TRUE or FALSE")
 	}
-	if (!is.logical(within_study) || length(within_study) != 1 || is.na(within_study)) {
+	if (
+		!is.logical(within_study) ||
+			length(within_study) != 1 ||
+			is.na(within_study)
+	) {
 		ph_abort("'within_study' must be TRUE or FALSE")
 	}
-	if (!is.numeric(n_subgroups) || length(n_subgroups) != 1 || is.na(n_subgroups) || n_subgroups < 1) {
+	if (
+		!is.numeric(n_subgroups) ||
+			length(n_subgroups) != 1 ||
+			is.na(n_subgroups) ||
+			n_subgroups < 1
+	) {
 		ph_abort("'n_subgroups' must be a positive integer")
 	}
-	if (!is.na(interaction_pvalue) && (interaction_pvalue < 0 || interaction_pvalue > 1)) {
+	if (
+		!is.na(interaction_pvalue) &&
+			(interaction_pvalue < 0 || interaction_pvalue > 1)
+	) {
 		ph_abort("'interaction_pvalue' must be between 0 and 1")
 	}
 

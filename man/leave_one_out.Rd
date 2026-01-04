@@ -27,3 +27,12 @@ A list with components:
 Recalculates meta-analysis results leaving out each study one at a time
 to assess the influence of individual studies.
 }
+\examples{
+# Leave-one-out sensitivity analysis
+yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+loo <- leave_one_out(meta_res)
+loo$results
+loo$influential_studies
+}
