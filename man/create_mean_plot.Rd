@@ -31,7 +31,8 @@ create_mean_plot(
 
 \item{y_var}{Character. Variable for y-axis (value)}
 
-\item{group_var}{Character. Grouping variable (e.g., treatment). Default: NULL}
+\item{group_var}{Character. Grouping variable (e.g., treatment).
+Default: NULL}
 
 \item{subject_var}{Character. Subject ID variable. Default: "USUBJID"}
 
@@ -47,7 +48,8 @@ create_mean_plot(
 
 \item{y_label}{Character. Y-axis label. Default: NULL (uses y_var)}
 
-\item{palette}{Character vector. Colors for groups. Default: NULL (uses default)}
+\item{palette}{Character vector. Colors for groups. Default:
+NULL (uses default)}
 
 \item{base_size}{Numeric. Base font size. Default: 11}
 
@@ -55,7 +57,8 @@ create_mean_plot(
 
 \item{point_size}{Numeric. Point size for means. Default: 3}
 
-\item{dodge_width}{Numeric. Horizontal dodge for overlapping points. Default: 0.2}
+\item{dodge_width}{Numeric. Horizontal dodge for overlapping
+points. Default: 0.2}
 
 \item{error_bar_width}{Numeric. Width of error bar caps. Default: 0.1}
 }

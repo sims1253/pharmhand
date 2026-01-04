@@ -20,11 +20,14 @@ calculate_mcid(
 
 \item{score_var}{Character. Name of the score/change variable}
 
-\item{anchor_var}{Character. Name of anchor variable (required for anchor method)}
+\item{anchor_var}{Character. Name of anchor variable (required
+for anchor method)}
 
-\item{baseline_var}{Character. Name of baseline score variable (for distribution method)}
+\item{baseline_var}{Character. Name of baseline score variable
+(for distribution method)}
 
-\item{method}{Character. "anchor", "distribution", or "both" (default: "both")}
+\item{method}{Character. "anchor", "distribution", or "both"
+(default: "both")}
 
 \item{reliability}{Numeric. Test-retest reliability for SEM calculation}
 

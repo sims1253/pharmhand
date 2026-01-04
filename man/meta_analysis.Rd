@@ -19,7 +19,8 @@ meta_analysis(
 )
 }
 \arguments{
-\item{data}{Data frame with study-level summary statistics OR a StudySet object}
+\item{data}{Data frame with study-level summary statistics OR a
+StudySet object}
 
 \item{yi}{Numeric vector of effect estimates (log scale for ratios)}
 
@@ -29,12 +30,14 @@ meta_analysis(
 
 \item{study_labels}{Character vector of study names}
 
-\item{effect_measure}{Character. Type of effect: "hr", "or", "rr", "rd", "md", "smd"}
+\item{effect_measure}{Character. Type of effect: "hr", "or", "rr",
+"rd", "md", "smd"}
 
 \item{model}{Character. "fixed" or "random". Default: "random"}
 
 \item{method}{Character. Estimation method for random effects:
-"DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel), "ML". Default: "REML"}
+"DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel), "ML".
+Default: "REML"}
 
 \item{knapp_hartung}{Logical. Apply Knapp-Hartung adjustment. Default: TRUE}
 

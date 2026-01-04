@@ -9,7 +9,8 @@ calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000)
 \arguments{
 \item{nma_result}{Result from network_meta()}
 
-\item{lower_better}{Logical. Is lower estimate better? Default: TRUE for ratios}
+\item{lower_better}{Logical. Is lower estimate better?
+Default: TRUE for ratios}
 
 \item{n_sim}{Integer. Number of simulations for ranking. Default: 1000}
 }

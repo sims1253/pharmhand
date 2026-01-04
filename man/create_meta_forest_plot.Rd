@@ -30,7 +30,8 @@ create_meta_forest_plot(
 
 \item{show_prediction}{Logical. Show prediction interval. Default: TRUE}
 
-\item{null_value}{Numeric. Reference line value. Default: 1 for ratios, 0 for differences}
+\item{null_value}{Numeric. Reference line value. Default: 1 for ratios,
+0 for differences}
 
 \item{xlim}{Numeric vector. X-axis limits. Default: NULL (auto)}
 

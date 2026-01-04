@@ -18,7 +18,8 @@ create_league_table(
 
 \item{show_ci}{Logical. Show confidence intervals. Default: TRUE}
 
-\item{highlight_sig}{Logical. Highlight significant comparisons. Default: TRUE}
+\item{highlight_sig}{Logical. Highlight significant comparisons.
+Default: TRUE}
 }
 \value{
 ClinicalTable with league table matrix

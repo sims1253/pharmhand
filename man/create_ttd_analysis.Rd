@@ -31,27 +31,35 @@ create_ttd_analysis(
 
 \item{param_var}{Character. Parameter variable. Default: "PARAMCD"}
 
-\item{paramcd}{Character. Parameter code to analyze. Default: NULL (uses first)}
+\item{paramcd}{Character. Parameter code to analyze.
+Default: NULL (uses first)}
 
 \item{value_var}{Character. Value variable. Default: "AVAL"}
 
 \item{base_var}{Character. Baseline value variable. Default: "BASE"}
 
-\item{chg_var}{Character. Change from baseline variable. Default: "CHG"}
+\item{chg_var}{Character. Change from baseline variable.
+Default: "CHG"}
 
 \item{time_var}{Character. Time/day variable. Default: "ADY"}
 
-\item{visit_var}{Character. Visit number variable. Default: "AVISITN"}
+\item{visit_var}{Character. Visit number variable.
+Default: "AVISITN"}
 
-\item{threshold}{Numeric. MCID threshold for deterioration (positive = improvement)}
+\item{threshold}{Numeric. MCID threshold for deterioration
+(positive = improvement)}
 
-\item{direction}{Character. "decrease" if lower is worse, "increase" if higher is worse}
+\item{direction}{Character. "decrease" if lower is worse,
+"increase" if higher is worse}
 
-\item{definition}{Character. "first" or "confirmed" deterioration. Default: "first"}
+\item{definition}{Character. "first" or "confirmed"
+deterioration. Default: "first"}
 
-\item{confirmation_visits}{Integer. Visits to confirm (for definition="confirmed")}
+\item{confirmation_visits}{Integer. Visits to confirm
+(for definition="confirmed")}
 
-\item{censor_at}{Numeric. Time to censor if no event. Default: max time in data}
+\item{censor_at}{Numeric. Time to censor if no event.
+Default: max time in data}
 }
 \value{
 List with ttd_data, km_fit, summary_table, and plot

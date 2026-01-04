@@ -8,15 +8,18 @@ NULL
 #' Conducts fixed-effect or random-effects meta-analysis on a set of studies.
 #' Supports binary, continuous, and time-to-event outcomes.
 #'
-#' @param data Data frame with study-level summary statistics OR a StudySet object
+#' @param data Data frame with study-level summary statistics OR a
+#'   StudySet object
 #' @param yi Numeric vector of effect estimates (log scale for ratios)
 #' @param sei Numeric vector of standard errors
 #' @param ni Numeric vector of sample sizes (optional)
 #' @param study_labels Character vector of study names
-#' @param effect_measure Character. Type of effect: "hr", "or", "rr", "rd", "md", "smd"
+#' @param effect_measure Character. Type of effect: "hr", "or", "rr",
+#'   "rd", "md", "smd"
 #' @param model Character. "fixed" or "random". Default: "random"
 #' @param method Character. Estimation method for random effects:
-#'   "DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel), "ML". Default: "REML"
+#'   "DL" (DerSimonian-Laird), "REML", "PM" (Paule-Mandel), "ML".
+#'   Default: "REML"
 #' @param knapp_hartung Logical. Apply Knapp-Hartung adjustment. Default: TRUE
 #' @param conf_level Numeric. Confidence level. Default: 0.95
 #' @param prediction Logical. Calculate prediction interval. Default: TRUE
@@ -558,7 +561,8 @@ leave_one_out <- function(
 #' @param show_weights Logical. Show study weights. Default: TRUE
 #' @param show_heterogeneity Logical. Show heterogeneity stats. Default: TRUE
 #' @param show_prediction Logical. Show prediction interval. Default: TRUE
-#' @param null_value Numeric. Reference line value. Default: 1 for ratios, 0 for differences
+#' @param null_value Numeric. Reference line value. Default: 1 for ratios,
+#'   0 for differences
 #' @param xlim Numeric vector. X-axis limits. Default: NULL (auto)
 #' @param palette Character vector. Colors. Default: NULL
 #' @param base_size Numeric. Base font size. Default: 11
@@ -802,7 +806,8 @@ create_meta_forest_plot <- function(
 #' @param title Character. Plot title. Default: "Funnel Plot"
 #' @param xlab Character. X-axis label. Default: based on effect_measure
 #' @param ylab Character. Y-axis label. Default: "Standard Error"
-#' @param contour_levels Numeric vector. Contour p-value levels. Default: c(0.1, 0.05, 0.01)
+#' @param contour_levels Numeric vector. Contour p-value levels.
+#'   Default: c(0.1, 0.05, 0.01)
 #' @param base_size Numeric. Base font size. Default: 11
 #'
 #' @return A ClinicalPlot object containing the funnel plot
@@ -973,7 +978,8 @@ create_funnel_plot <- function(
 #' @param sei Numeric vector of standard errors
 #' @param meta_result A MetaResult object (alternative to yi/sei)
 #'
-#' @return List with intercept, slope, standard error, t-value, p-value, and interpretation
+#' @return List with intercept, slope, standard error, t-value,
+#'   p-value, and interpretation
 #' @export
 eggers_test <- function(
 	yi = NULL,
@@ -1036,9 +1042,11 @@ eggers_test <- function(
 	if (is.na(p_value)) {
 		interpretation <- "Unable to calculate Egger's test"
 	} else if (p_value < 0.05) {
-		interpretation <- "Significant asymmetry detected (p < 0.05), suggesting potential publication bias"
+		interpretation <- "Significant asymmetry detected (p < 0.05),
+                          suggesting potential publication bias"
 	} else if (p_value < 0.10) {
-		interpretation <- "Marginal asymmetry (0.05 <= p < 0.10), publication bias possible"
+		interpretation <- "Marginal asymmetry (0.05 <= p < 0.10),
+                          publication bias possible"
 	} else {
 		interpretation <- "No significant asymmetry detected (p >= 0.10)"
 	}
@@ -1064,7 +1072,8 @@ eggers_test <- function(
 #' @param se_ab Standard error for A vs B
 #' @param effect_bc Effect estimate for B vs C comparison
 #' @param se_bc Standard error for B vs C
-#' @param effect_measure Character. Effect type: "hr", "or", "rr", "rd", "md", "smd"
+#' @param effect_measure Character. Effect type: "hr", "or", "rr",
+#'   "rd", "md", "smd"
 #' @param conf_level Numeric. Confidence level. Default: 0.95
 #' @param label_a Character. Label for treatment A. Default: "A"
 #' @param label_b Character. Label for treatment B (comparator). Default: "B"
@@ -1172,7 +1181,8 @@ indirect_comparison <- function(
 #' Compares direct evidence (from head-to-head trials) with indirect evidence
 #' (from anchored comparison) to assess consistency.
 #'
-#' @param direct_result ComparisonResult or list with estimate and se for direct evidence
+#' @param direct_result ComparisonResult or list with estimate and se
+#'   for direct evidence
 #' @param indirect_result ComparisonResult from indirect_comparison()
 #' @param effect_measure Character. Effect type (if not in results)
 #' @param conf_level Numeric. Confidence level. Default: 0.95
@@ -1261,7 +1271,8 @@ compare_direct_indirect <- function(
 
 	# Interpretation
 	if (p_inconsistency < 0.05) {
-		interpretation <- "Significant inconsistency between direct and indirect evidence (p < 0.05)"
+		interpretation <- "Significant inconsistency between direct and
+                          indirect evidence (p < 0.05)"
 		consistency <- "Inconsistent"
 	} else if (p_inconsistency < 0.10) {
 		interpretation <- "Marginal inconsistency (0.05 <= p < 0.10)"
@@ -1297,14 +1308,20 @@ compare_direct_indirect <- function(
 #' across studies in a network. Transitivity requires that studies are similar
 #' enough that indirect comparisons are valid.
 #'
-#' @param study_characteristics Data frame with study-level characteristics.
-#'   Must include 'study_id' and 'treatment' columns, plus characteristics to compare.
-#' @param char_vars Character vector. Names of characteristic variables to assess.
-#' @param treatment_var Character. Name of treatment variable. Default: "treatment"
-#' @param continuous_vars Character vector. Which char_vars are continuous (vs categorical)
-#' @param threshold_smd Numeric. SMD threshold for imbalance. Default: 0.1
+#' @param study_characteristics Data frame with study-level
+#'   characteristics. Must include 'study_id' and 'treatment'
+#'   columns, plus characteristics to compare.
+#' @param char_vars Character vector. Names of characteristic
+#'   variables to assess.
+#' @param treatment_var Character. Name of treatment variable.
+#'   Default: "treatment"
+#' @param continuous_vars Character vector. Which char_vars are
+#'   continuous (vs categorical)
+#' @param threshold_smd Numeric. SMD threshold for imbalance.
+#'   Default: 0.1
 #'
-#' @return TransitivityAssessment list with comparison tables and overall assessment
+#' @return TransitivityAssessment list with comparison tables and
+#'   overall assessment
 #' @export
 #'
 #' @examples
@@ -1513,10 +1530,13 @@ assess_transitivity <- function(
 #' @param treat2_var Character. Treatment 2 column. Default: "treat2"
 #' @param effect_var Character. Effect estimate column. Default: "effect"
 #' @param se_var Character. Standard error column. Default: "se"
-#' @param reference Character. Reference treatment. Default: first alphabetically
-#' @param effect_measure Character. Effect type: "hr", "or", "rr", "rd", "md", "smd"
+#' @param reference Character. Reference treatment.
+#'   Default: first alphabetically
+#' @param effect_measure Character. Effect type: "hr", "or", "rr",
+#'   "rd", "md", "smd"
 #' @param model Character. "fixed" or "random". Default: "random"
-#' @param method Character. NMA method: "bucher" (simple), "graph" (if netmeta available)
+#' @param method Character. NMA method: "bucher" (simple),
+#'   "graph" (if netmeta available)
 #' @param conf_level Numeric. Confidence level. Default: 0.95
 #'
 #' @return List with relative effects, rankings, and network structure
@@ -1750,11 +1770,14 @@ network_meta <- function(
 #' of missing studies and adjust the pooled effect for publication bias.
 #'
 #' @param meta_result A MetaResult object from meta_analysis()
-#' @param side Character. Side to impute: "left", "right", or "auto". Default: "auto"
-#' @param estimator Character. Method to estimate missing studies: "L0", "R0", "Q0". Default: "L0"
+#' @param side Character. Side to impute: "left", "right", or "auto".
+#'   Default: "auto"
+#' @param estimator Character. Method to estimate missing studies:
+#'   "L0", "R0", "Q0". Default: "L0"
 #' @param maxiter Integer. Maximum iterations. Default: 100
 #'
-#' @return List with original and adjusted estimates, imputed studies, and diagnostics
+#' @return List with original and adjusted estimates,
+#'   imputed studies, and diagnostics
 #' @export
 trim_and_fill <- function(
 	meta_result,
@@ -1941,7 +1964,8 @@ trim_and_fill <- function(
 		effect_measure = effect_measure,
 		interpretation = if (k0 > 0) {
 			sprintf(
-				"Estimated %d missing studies on %s side. Original estimate: %.3f, Adjusted: %.3f",
+				"Estimated %d missing studies on %s side. " +
+					"Original estimate: %.3f, Adjusted: %.3f",
 				k0,
 				side,
 				original_est,
@@ -1959,12 +1983,15 @@ trim_and_fill <- function(
 #' comparisons in a network meta-analysis.
 #'
 #' @param nma_result Result from network_meta() or data with network structure
-#' @param node_size Character. Size nodes by "equal", "n_studies", or "n_patients". Default: "equal"
-#' @param edge_width Character. Width edges by "equal" or "n_studies". Default: "n_studies"
+#' @param node_size Character. Size nodes by "equal", "n_studies", or
+#'   "n_patients". Default: "equal"
+#' @param edge_width Character. Width edges by "equal" or "n_studies".
+#'   Default: "n_studies"
 #' @param show_labels Logical. Show edge labels with study counts. Default: TRUE
 #' @param highlight_ref Logical. Highlight reference treatment. Default: TRUE
 #' @param title Character. Plot title. Default: "Network Geometry"
-#' @param layout Character. Layout algorithm: "circle", "star", "auto". Default: "circle"
+#' @param layout Character. Layout algorithm: "circle", "star",
+#'   "auto". Default: "circle"
 #' @param palette Character vector. Node colors. Default: NULL
 #' @param base_size Numeric. Base font size. Default: 11
 #'
@@ -2266,7 +2293,8 @@ node_splitting <- function(
 	list(
 		results = result_df,
 		effect_measure = effect_measure,
-		note = "Full node-splitting requires re-analysis excluding direct evidence. Results shown are simplified."
+		note = "Full node-splitting requires re-analysis excluding " +
+			"direct evidence. Results shown are simplified."
 	)
 }
 
@@ -2277,7 +2305,8 @@ node_splitting <- function(
 #' Ranking curve) or P-scores for treatments in network meta-analysis.
 #'
 #' @param nma_result Result from network_meta()
-#' @param lower_better Logical. Is lower estimate better? Default: TRUE for ratios
+#' @param lower_better Logical. Is lower estimate better?
+#'   Default: TRUE for ratios
 #' @param n_sim Integer. Number of simulations for ranking. Default: 1000
 #'
 #' @return List with rankings, SUCRA/P-scores, and rankogram data
@@ -2395,7 +2424,8 @@ calculate_sucra <- function(
 #' @param nma_result Result from network_meta()
 #' @param digits Integer. Decimal places for estimates. Default: 2
 #' @param show_ci Logical. Show confidence intervals. Default: TRUE
-#' @param highlight_sig Logical. Highlight significant comparisons. Default: TRUE
+#' @param highlight_sig Logical. Highlight significant comparisons.
+#'   Default: TRUE
 #'
 #' @return ClinicalTable with league table matrix
 #' @export
@@ -2550,7 +2580,8 @@ create_league_table <- function(
 			effect_measure = effect_measure,
 			n_treatments = n_treat,
 			reference = ref,
-			note = "Row treatment vs Column treatment. * indicates statistical significance."
+			note = "Row treatment vs Column treatment. " +
+				"* indicates statistical significance."
 		)
 	)
 }

@@ -2168,7 +2168,8 @@ create_ae_exposure_table <- function(
 #'   Options: "soc", "hlgt", "hlt", "pt". Default: c("soc", "pt")
 #' @param subject_var Subject ID variable. Default: "USUBJID"
 #' @param min_pct Numeric. Minimum percentage to display. Default: 0
-#' @param sort_by Character. Sort by "alphabetical" or "frequency". Default: "frequency"
+#' @param sort_by Character. Sort by "alphabetical" or
+#'   "frequency". Default: "frequency"
 #'
 #' @return ClinicalTable with hierarchical AE summary
 #' @export

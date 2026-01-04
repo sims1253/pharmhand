@@ -706,7 +706,8 @@ test_that("meta_analysis stores study weights", {
 	expect_true(!is.null(result@weights))
 	expect_length(result@weights, 3)
 	expect_true(all(result@weights > 0))
-	expect_equal(sum(result@weights), 1, tolerance = 0.001) # Weights should sum to 1
+	expect_equal(sum(result@weights), 1, tolerance = 0.001)
+	# Weights should sum to 1
 })
 
 test_that("calculate_heterogeneity supports different methods", {

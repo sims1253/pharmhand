@@ -19,9 +19,11 @@ create_network_plot(
 \arguments{
 \item{nma_result}{Result from network_meta() or data with network structure}
 
-\item{node_size}{Character. Size nodes by "equal", "n_studies", or "n_patients". Default: "equal"}
+\item{node_size}{Character. Size nodes by "equal", "n_studies", or
+"n_patients". Default: "equal"}
 
-\item{edge_width}{Character. Width edges by "equal" or "n_studies". Default: "n_studies"}
+\item{edge_width}{Character. Width edges by "equal" or "n_studies".
+Default: "n_studies"}
 
 \item{show_labels}{Logical. Show edge labels with study counts. Default: TRUE}
 
@@ -29,7 +31,8 @@ create_network_plot(
 
 \item{title}{Character. Plot title. Default: "Network Geometry"}
 
-\item{layout}{Character. Layout algorithm: "circle", "star", "auto". Default: "circle"}
+\item{layout}{Character. Layout algorithm: "circle", "star",
+"auto". Default: "circle"}
 
 \item{palette}{Character vector. Node colors. Default: NULL}
 
