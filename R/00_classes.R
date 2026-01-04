@@ -299,7 +299,7 @@ ComparisonResult <- S7::new_class(
 #' @param n Integer number of studies
 #' @param model Character string: "fixed" or "random"
 #' @param effect_measure Character string: "hr", "or", "rr", "rd", "md", "smd"
-#' @param heterogeneity List with Q, I2, tau2, H2 statistics
+#' @param heterogeneity List with Q, Q_df, Q_pvalue, I2, H2, tau2, tau statistics
 #' @param weights Numeric vector of study weights
 #' @param prediction_interval Numeric vector c(lower, upper)
 #'   for prediction interval
@@ -360,9 +360,12 @@ MetaResult <- S7::new_class(
 			S7::class_list,
 			default = list(
 				Q = NA_real_,
+				Q_df = NA_integer_,
+				Q_pvalue = NA_real_,
 				I2 = NA_real_,
+				H2 = NA_real_,
 				tau2 = NA_real_,
-				H2 = NA_real_
+				tau = NA_real_
 			)
 		),
 		weights = S7::new_property(S7::class_any, default = NULL),
