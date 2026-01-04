@@ -14,7 +14,8 @@ MetaResult(
   metadata = list(),
   model = "random",
   effect_measure = "hr",
-  heterogeneity = list(Q = NA_real_, I2 = NA_real_, tau2 = NA_real_, H2 = NA_real_),
+  heterogeneity = list(Q = NA_real_, Q_df = NA_integer_, Q_pvalue = NA_real_, I2 =
+    NA_real_, H2 = NA_real_, tau2 = NA_real_, tau = NA_real_),
   weights = NULL,
   prediction_interval = NULL,
   study_results = list()
@@ -39,7 +40,8 @@ MetaResult(
 
 \item{effect_measure}{Character string: "hr", "or", "rr", "rd", "md", "smd"}
 
-\item{heterogeneity}{List with Q, I2, tau2, H2 statistics}
+\item{heterogeneity}{List with Q, Q_df, Q_pvalue, I2, H2, tau2, tau
+statistics}
 
 \item{weights}{Numeric vector of study weights}
 
