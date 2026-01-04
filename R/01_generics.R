@@ -406,8 +406,10 @@ add_table <- S7::new_generic(
 #' @describeIn add_table Method for StudyResult
 #' @noRd
 S7::method(add_table, StudyResult) <- function(obj, table, name = NULL) {
-	checkmate::assertTRUE(S7::S7_inherits(table, ClinicalTable))
-	checkmate::assert_string(name, null.ok = TRUE)
+	stopifnot(S7::S7_inherits(table, ClinicalTable))
+	if (!is.null(name)) {
+		admiraldev::assert_character_scalar(name)
+	}
 
 	if (is.null(name)) {
 		name <- paste0("table_", obj@n_tables + 1)
@@ -438,8 +440,10 @@ add_plot <- S7::new_generic(
 #' @describeIn add_plot Method for StudyResult
 #' @noRd
 S7::method(add_plot, StudyResult) <- function(obj, plot, name = NULL) {
-	checkmate::assertTRUE(S7::S7_inherits(plot, ClinicalPlot))
-	checkmate::assert_string(name, null.ok = TRUE)
+	stopifnot(S7::S7_inherits(plot, ClinicalPlot))
+	if (!is.null(name)) {
+		admiraldev::assert_character_scalar(name)
+	}
 
 	if (is.null(name)) {
 		name <- paste0("plot_", obj@n_plots + 1)
@@ -470,8 +474,10 @@ add_section <- S7::new_generic(
 #' @describeIn add_section Method for ClinicalReport
 #' @noRd
 S7::method(add_section, ClinicalReport) <- function(obj, section, name = NULL) {
-	checkmate::assert_class(section, "ReportSection")
-	checkmate::assert_string(name, null.ok = TRUE)
+	stopifnot(inherits(section, "ReportSection"))
+	if (!is.null(name)) {
+		admiraldev::assert_character_scalar(name)
+	}
 
 	if (is.null(name)) {
 		name <- paste0("section_", obj@n_sections + 1)
@@ -502,11 +508,10 @@ add_content <- S7::new_generic(
 #' @describeIn add_content Method for ReportSection
 #' @noRd
 S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
-	checkmate::assert_true(
-		S7::S7_inherits(content, ClinicalContent),
-		.var.name = "content"
-	)
-	checkmate::assert_string(name, null.ok = TRUE)
+	stopifnot(S7::S7_inherits(content, ClinicalContent))
+	if (!is.null(name)) {
+		admiraldev::assert_character_scalar(name)
+	}
 
 	if (is.null(name)) {
 		name <- paste0("content_", obj@n_content + 1)
@@ -542,9 +547,9 @@ S7::method(generate_word, ClinicalReport) <- function(
 	include_title = TRUE,
 	include_toc = TRUE
 ) {
-	checkmate::assert_string(path)
-	checkmate::assert_flag(include_title)
-	checkmate::assert_flag(include_toc)
+	admiraldev::assert_character_scalar(path)
+	admiraldev::assert_logical_scalar(include_title)
+	admiraldev::assert_logical_scalar(include_toc)
 
 	# Create new Word document
 	doc <- officer::read_docx()

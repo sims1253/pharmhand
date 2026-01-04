@@ -1,6 +1,8 @@
 Package: pharmhand
 Title: Clinical Study Tables and Reports from ADaM Data
 Version: 0.2.3.9000
+Author: Maximilian Scholz
+Maintainer: Maximilian Scholz <dev.scholz@mailbox.org>
 Authors@R:
     person("Maximilian", "Scholz", , "dev.scholz@mailbox.org", role = c("aut", "cre"))
 Description: Create clinical study tables and reports from ADaM datasets.
@@ -21,6 +23,7 @@ Imports:
     tidyr,
     rlang,
     admiraldev,
+    yaml,
     gt,
     ggplot2,
     survival
