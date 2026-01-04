@@ -739,7 +739,7 @@ test_that("leave_one_out identifies influential studies", {
 	expect_true("n_influential" %in% names(loo))
 
 	# The 4th study (Study 4) should be identified as influential
-	expect_true(any(grepl("4", loo$influential_studies)))
+	expect_true(any(grepl("4", loo$influential_studies, fixed = TRUE)))
 })
 
 test_that("leave_one_out works with direct yi/sei input", {
