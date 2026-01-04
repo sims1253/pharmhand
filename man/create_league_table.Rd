@@ -28,3 +28,16 @@ ClinicalTable with league table matrix
 Generates a league table showing all pairwise treatment comparisons
 from a network meta-analysis.
 }
+\examples{
+# Create league table for NMA
+nma_data <- data.frame(
+  study = c("S1", "S2", "S3"),
+  treat1 = c("A", "B", "A"),
+  treat2 = c("B", "C", "A"),
+  effect = log(c(0.75, 0.90, 0.80)),
+  se = c(0.12, 0.15, 0.18)
+)
+nma_result <- network_meta(nma_data, effect_measure = "hr")
+table <- create_league_table(nma_result)
+table@type
+}
