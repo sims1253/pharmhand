@@ -4,7 +4,7 @@
 \alias{calculate_heterogeneity}
 \title{Calculate Heterogeneity Statistics}
 \usage{
-calculate_heterogeneity(yi, sei, method = c("REML", "DL", "PM", "ML"))
+calculate_heterogeneity(yi, sei, method = c("REML", "DL", "PM"))
 }
 \arguments{
 \item{yi}{Numeric vector of effect estimates}
