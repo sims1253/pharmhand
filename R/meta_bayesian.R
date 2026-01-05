@@ -66,8 +66,12 @@ bayesian_meta_analysis <- function(
 		study_labels <- paste("Study", seq_len(k))
 	}
 
-	assert_numeric(yi, "yi")
-	assert_numeric(sei, "sei")
+	if (!is.numeric(yi)) {
+		ph_abort("'yi' must be numeric", call. = FALSE)
+	}
+	if (!is.numeric(sei)) {
+		ph_abort("'sei' must be numeric", call. = FALSE)
+	}
 	if (length(yi) != length(sei)) {
 		ph_abort("'yi' and 'sei' must have the same length", call. = FALSE)
 	}
