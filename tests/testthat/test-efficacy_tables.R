@@ -38,7 +38,7 @@ test_that("create_cfb_summary_table works", {
 	)
 	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
 
-	tbl <- create_cfb_summary_table(advs, trt_n, params = "SYSBP")
+	tbl <- create_cfb_summary_table(advs, params = "SYSBP")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "cfb")
@@ -57,7 +57,6 @@ test_that("create_vs_by_visit_table works", {
 
 	tbl <- create_vs_by_visit_table(
 		advs,
-		trt_n,
 		visits = c("Baseline", "Week 2")
 	)
 
@@ -77,7 +76,7 @@ test_that("create_lab_summary_table works", {
 	)
 	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
 
-	tbl <- create_lab_summary_table(adlb, trt_n, params = "ALT")
+	tbl <- create_lab_summary_table(adlb, params = "ALT")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "lab_summary")
@@ -94,7 +93,7 @@ test_that("create_lab_shift_table works", {
 	)
 	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(2, 1))
 
-	tbl <- create_lab_shift_table(adlb, trt_n)
+	tbl <- create_lab_shift_table(adlb)
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "lab_shift")
@@ -444,7 +443,14 @@ test_that("create_subgroup_analysis_table errors on missing subgroup vars", {
 })
 
 test_that("create_primary_endpoint_table validates inputs", {
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(2, 2))
+	advs <- data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("End of Treatment", "End of Treatment"),
+		AVAL = c(120, 130)
+	)
+	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
 
 	# Non-data-frame input
 	expect_error(
@@ -457,13 +463,6 @@ test_that("create_primary_endpoint_table validates inputs", {
 	)
 
 	# trt_n must be a data frame
-	advs <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAMCD = c("SYSBP", "SYSBP"),
-		AVISIT = c("End of Treatment", "End of Treatment"),
-		AVAL = c(120, 130)
-	)
 	expect_error(
 		create_primary_endpoint_table(advs, NULL),
 		"must be a data frame"
@@ -477,14 +476,8 @@ test_that("create_primary_endpoint_table validates inputs", {
 })
 
 test_that("create_cfb_summary_table validates inputs", {
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
-
 	expect_error(
-		create_cfb_summary_table(NULL, trt_n, params = "SYSBP"),
-		"must be a data frame"
-	)
-	expect_error(
-		create_cfb_summary_table(data.frame(), NULL, params = "SYSBP"),
+		create_cfb_summary_table(NULL, params = "SYSBP"),
 		"must be a data frame"
 	)
 
@@ -496,7 +489,7 @@ test_that("create_cfb_summary_table validates inputs", {
 		PARAM = c("SYSBP", "SYSBP")
 	)
 	expect_error(
-		create_cfb_summary_table(advs_missing, trt_n, params = "SYSBP"),
+		create_cfb_summary_table(advs_missing, params = "SYSBP"),
 		"missing required columns"
 	)
 })
@@ -505,34 +498,30 @@ test_that("create_lab_shift_table validates inputs", {
 	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(2, 1))
 
 	expect_error(
-		create_lab_shift_table(NULL, trt_n),
+		create_lab_shift_table(NULL),
 		"must be a data frame"
 	)
 })
 
 test_that("create_vs_by_visit_table validates inputs", {
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
-
 	expect_error(
-		create_vs_by_visit_table(NULL, trt_n),
+		create_vs_by_visit_table(NULL),
 		"must be a data frame"
 	)
 	expect_error(
-		create_vs_by_visit_table(data.frame(), NULL),
-		"must be a data frame"
+		create_vs_by_visit_table(data.frame()),
+		"missing required columns"
 	)
 })
 
 test_that("create_lab_summary_table validates inputs", {
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
-
 	expect_error(
-		create_lab_summary_table(NULL, trt_n),
+		create_lab_summary_table(NULL),
 		"must be a data frame"
 	)
 	expect_error(
-		create_lab_summary_table(data.frame(), NULL),
-		"must be a data frame"
+		create_lab_summary_table(data.frame()),
+		"missing required columns"
 	)
 })
 

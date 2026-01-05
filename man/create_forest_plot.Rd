@@ -20,7 +20,6 @@ create_forest_plot(
   title = "Subgroup Analysis",
   xlab = NULL,
   log_scale = TRUE,
-  colors = NULL,
   base_size = 11
 )
 }
@@ -59,8 +58,6 @@ inverted automatically. Default: "CNSR"}
 \item{xlab}{X-axis label. If NULL, auto-generated based on endpoint_type.}
 
 \item{log_scale}{Logical, use log scale for x-axis (default: TRUE)}
-
-\item{colors}{Optional named vector of colors for estimate types}
 
 \item{base_size}{Base font size for plot text elements (default: 11)}
 }

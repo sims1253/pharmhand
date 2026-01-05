@@ -157,7 +157,8 @@ create_ae_summary_table <- function(
 	} else {
 		ph_warn(
 			"adsl not provided; deriving trt_n from subjects with TEAEs in adae. ",
-			"This may underestimate the safety population (excludes subjects without TEAEs). ",
+			"This may underestimate the safety population ",
+			"(excludes subjects without TEAEs). ",
 			"Provide adsl for accurate safety population counts.",
 			call. = FALSE
 		)

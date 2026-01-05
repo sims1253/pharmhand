@@ -62,7 +62,7 @@ generate_efficacy_report <- function(
 
 	# Section 3.1: Primary Endpoint Summary
 	message("Building Primary Endpoint Summary (Table 3.1)")
-	primary_content <- create_primary_endpoint_table(advs)
+	primary_content <- create_primary_endpoint_table(advs, trt_n)
 	primary_section <- ReportSection(
 		title = "Primary Endpoint Analysis",
 		section_type = "efficacy",
