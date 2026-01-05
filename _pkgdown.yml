@@ -48,6 +48,29 @@ reference:
   - StatResult
   - StudyResult
 
+- title: "Configuration"
+  desc: >
+    Configuration classes and functions for managing clinical report settings,
+    populations, subgroups, and SOC/PT configurations from YAML files or runtime.
+  contents:
+  - ConfigurationRegistry
+  - PTConfig
+  - PopulationConfig
+  - SOCConfig
+  - SubgroupConfig
+  - config_api
+  - config_classes
+  - define_population_config
+  - define_subgroup_config
+  - get_performance_setting
+  - get_population_config
+  - get_subgroup_config
+  - list_populations
+  - list_subgroups
+  - load_config
+  - update_pt_config
+  - update_soc_config
+
 - title: "Study Design Classes"
   desc: >
     Classes and methods for defining and analyzing clinical study designs.
