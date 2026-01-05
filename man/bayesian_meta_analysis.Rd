@@ -30,7 +30,7 @@ bayesian_meta_analysis(
 
 \item{prior_mu}{Prior for overall effect: list(mean, sd)}
 
-\item{prior_tau}{Prior for heterogeneity: list(type, params)}
+\item{prior_tau}{Prior for heterogeneity: list(type, scale)}
 
 \item{chains}{Integer. Number of MCMC chains. Default: 4}
 

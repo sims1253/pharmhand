@@ -15,7 +15,8 @@ trim_and_fill(
 \arguments{
 \item{meta_result}{A MetaResult object from meta_analysis()}
 
-\item{side}{Character. Side to impute: "left", "right", or "auto".
+\item{side}{Character. Side where excess studies are trimmed: "left",
+"right", or "auto". Missing studies are imputed on opposite side.
 Default: "auto"}
 
 \item{estimator}{Character. Method to estimate missing studies:

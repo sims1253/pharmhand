@@ -20,7 +20,8 @@ create_ae_summary_table(
   sort_by = "incidence",
   conf_level = 0.95,
   include_nnh = TRUE,
-  soc_order = NULL
+  soc_order = NULL,
+  severity_levels = c("MILD", "MODERATE", "SEVERE")
 )
 }
 \arguments{
@@ -68,6 +69,9 @@ like "deaths", "comparison", or for denominator calculation)}
 
 \item{soc_order}{For type="soc" or type="soc_pt", custom ordering of SOCs
 (character vector). If NULL, SOCs are sorted alphabetically (default: NULL)}
+
+\item{severity_levels}{For type="severity", severity levels ordering
+(character vector). Default: c("MILD", "MODERATE", "SEVERE")}
 }
 \value{
 A ClinicalTable object
