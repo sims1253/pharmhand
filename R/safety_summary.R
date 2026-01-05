@@ -48,6 +48,8 @@ AEREL_RELATED_VALUES <- c(
 #' @param include_nnh For type="comparison", include NNH column (default: TRUE)
 #' @param soc_order For type="soc" or type="soc_pt", custom ordering of SOCs
 #'   (character vector). If NULL, SOCs are sorted alphabetically (default: NULL)
+#' @param severity_levels For type="severity", severity levels ordering
+#'   (character vector). Default: c("MILD", "MODERATE", "SEVERE")
 #'
 #' @return A ClinicalTable object
 #' @export
@@ -116,7 +118,8 @@ create_ae_summary_table <- function(
 	sort_by = "incidence",
 	conf_level = 0.95,
 	include_nnh = TRUE,
-	soc_order = NULL
+	soc_order = NULL,
+	severity_levels = c("MILD", "MODERATE", "SEVERE")
 ) {
 	type <- match.arg(type)
 
@@ -152,6 +155,12 @@ create_ae_summary_table <- function(
 	trt_n <- if (!is.null(adsl) && is.data.frame(adsl)) {
 		get_trt_n(adsl, trt_var = trt_var, population = "SAF")
 	} else {
+		ph_warn(
+			"adsl not provided; deriving trt_n from subjects with TEAEs in adae. ",
+			"This may underestimate the safety population (excludes subjects without TEAEs). ",
+			"Provide adsl for accurate safety population counts.",
+			call. = FALSE
+		)
 		adae |>
 			dplyr::filter(.data$TRTEMFL == "Y") |>
 			dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
@@ -198,7 +207,14 @@ create_ae_summary_table <- function(
 			title,
 			autofit
 		),
-		severity = create_ae_table_severity(adae, trt_n, trt_var, title, autofit),
+		severity = create_ae_table_severity(
+			adae,
+			trt_n,
+			trt_var,
+			title,
+			autofit,
+			severity_levels
+		),
 		relationship = create_ae_table_relationship(
 			adae,
 			trt_n,
@@ -317,7 +333,12 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 	}
 
 	overview_formatted <- overview_combined |>
-		dplyr::mutate(value = sprintf("%d (%.1f%%)", n, pct)) |>
+		dplyr::mutate(
+			value = dplyr::case_when(
+				is.na(pct) ~ "--",
+				TRUE ~ sprintf("%d (%.1f%%)", n, pct)
+			)
+		) |>
 		dplyr::select("Category", dplyr::all_of(trt_var), "value") |>
 		tidyr::pivot_wider(
 			names_from = dplyr::all_of(trt_var),
@@ -438,11 +459,16 @@ create_ae_table_soc_pt <- function(
 
 	# Apply custom SOC ordering if provided
 	if (!is.null(soc_order)) {
+		observed_socs <- unique(soc_pt_summary$`System Organ Class`)
+		soc_levels <- c(
+			soc_order[soc_order %in% observed_socs],
+			setdiff(observed_socs, soc_order)
+		)
 		soc_pt_summary <- soc_pt_summary |>
 			dplyr::mutate(
 				`System Organ Class` = factor(
 					.data$`System Organ Class`,
-					levels = soc_order
+					levels = soc_levels
 				)
 			) |>
 			dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`) |>
@@ -573,13 +599,20 @@ create_ae_table_common <- function(
 }
 
 #' @keywords internal
-create_ae_table_severity <- function(adae, trt_n, trt_var, title, autofit) {
+create_ae_table_severity <- function(
+	adae,
+	trt_n,
+	trt_var,
+	title,
+	autofit,
+	severity_levels = c("MILD", "MODERATE", "SEVERE")
+) {
 	severity_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::mutate(
 			AESEV_ord = factor(
 				.data$AESEV,
-				levels = c("MILD", "MODERATE", "SEVERE"),
+				levels = severity_levels,
 				ordered = TRUE
 			)
 		) |>

@@ -106,17 +106,10 @@ create_meta_forest_plot <- function(
 	plot_data$y_pos <- rev(seq_len(nrow(plot_data)))
 
 	# Transform to log scale for ratios
-	if (is_ratio) {
-		plot_data$x_plot <- plot_data$estimate
-		plot_data$x_lower <- plot_data$ci_lower
-		plot_data$x_upper <- plot_data$ci_upper
-		x_trans <- "log10"
-	} else {
-		plot_data$x_plot <- plot_data$estimate
-		plot_data$x_lower <- plot_data$ci_lower
-		plot_data$x_upper <- plot_data$ci_upper
-		x_trans <- "identity"
-	}
+	plot_data$x_plot <- plot_data$estimate
+	plot_data$x_lower <- plot_data$ci_lower
+	plot_data$x_upper <- plot_data$ci_upper
+	x_trans <- if (is_ratio) "log10" else "identity"
 
 	# Calculate plot limits
 	if (is.null(xlim)) {
@@ -646,20 +639,18 @@ create_network_plot <- function(
 	}
 
 	# Node labels (treatment names)
-	# Offset labels based on position
-	node_data$label_x <- node_data$x * 1.15
-	node_data$label_y <- node_data$y * 1.15
-
 	p <- p +
 		ggplot2::geom_text(
 			data = node_data,
 			ggplot2::aes(
-				x = .data$label_x,
-				y = .data$label_y,
+				x = .data$x,
+				y = .data$y,
 				label = .data$treatment
 			),
 			size = base_size / 3,
-			fontface = "bold"
+			fontface = "bold",
+			nudge_x = 0.15,
+			nudge_y = 0.15
 		)
 
 	# Remove axes and apply theme

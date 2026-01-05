@@ -28,7 +28,6 @@ NULL
 #' @param title Plot title
 #' @param xlab X-axis label. If NULL, auto-generated based on endpoint_type.
 #' @param log_scale Logical, use log scale for x-axis (default: TRUE)
-#' @param colors Optional named vector of colors for estimate types
 #' @param base_size Base font size for plot text elements (default: 11)
 #'
 #' @return A ClinicalPlot object
@@ -73,7 +72,6 @@ create_forest_plot <- function(
 	title = "Subgroup Analysis",
 	xlab = NULL,
 	log_scale = TRUE,
-	colors = NULL,
 	base_size = 11
 ) {
 	endpoint_type <- match.arg(endpoint_type)
@@ -105,10 +103,11 @@ create_forest_plot <- function(
 
 	# Set default x-axis label
 	if (is.null(xlab)) {
+		conf_pct <- round(conf_level * 100)
 		xlab <- if (endpoint_type == "tte") {
-			"Hazard Ratio (95% CI)"
+			sprintf("Hazard Ratio (%d%% CI)", conf_pct)
 		} else {
-			"Odds Ratio (95% CI)"
+			sprintf("Odds Ratio (%d%% CI)", conf_pct)
 		}
 	}
 
@@ -265,12 +264,6 @@ create_forest_plot <- function(
 	if (log_scale) {
 		p <- p + ggplot2::scale_x_log10()
 	}
-
-	# Note: colors parameter currently unused - no color aesthetic is mapped
-	# To enable colors, add color mapping to geom_point/geom_errorbarh
-	# if (!is.null(colors)) {
-	#     p <- p + ggplot2::scale_color_manual(values = colors)
-	# }
 
 	# Calculate dimensions based on number of rows
 	n_rows <- nrow(plot_df)

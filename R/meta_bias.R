@@ -59,8 +59,8 @@ eggers_test <- function(
 		))
 	}
 
-	# Egger's regression: yi/sei ~ 1/sei
-	# Equivalent to: yi = intercept * sei + slope + error
+	# Egger's regression: (yi/sei) ~ (1/sei)
+	# Model: zi ~ precision, where zi = yi/sei and precision = 1/sei
 	# Under no bias, intercept should be 0
 
 	zi <- yi / sei # standardized effect
@@ -121,7 +121,8 @@ eggers_test <- function(
 #' of missing studies and adjust the pooled effect for publication bias.
 #'
 #' @param meta_result A MetaResult object from meta_analysis()
-#' @param side Character. Side to impute: "left", "right", or "auto".
+#' @param side Character. Side where excess studies are trimmed: "left",
+#'   "right", or "auto". Missing studies are imputed on opposite side.
 #'   Default: "auto"
 #' @param estimator Character. Method to estimate missing studies:
 #'   "L0", "R0", "Q0". Default: "L0"
@@ -237,9 +238,17 @@ trim_and_fill <- function(
 				)
 			}
 		} else {
-			# Q0: based on Q statistic (Duval & Tweedie, 2000)
-			Q <- sum(wi_work * (yi_work - theta)^2)
-			k0_new <- max(0, round(Q - (n - 1)))
+			# Q0: based on Wilcoxon rank statistic (Duval & Tweedie, 2000)
+			# Calculate Wilcoxon rank statistic from signed ranks
+			abs_dev <- abs(di)
+			sign_dev <- sign(di)
+			# Rank absolute deviations (ties handled by rank() default)
+			abs_ranks <- rank(abs_dev)
+			signed_ranks <- sign_dev * abs_ranks
+			# Wilcoxon statistic: sum of positive signed ranks
+			Tn <- sum(signed_ranks[signed_ranks > 0])
+			# Q0 estimator per Duval & Tweedie (2000)
+			k0_new <- floor(n - 1 / 2 - sqrt(2 * n^2 - 4 * Tn + 1 / 4))
 		}
 
 		k0_new <- min(k0_new, n - 1) # Can't impute more than n-1 studies
