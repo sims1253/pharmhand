@@ -2,6 +2,12 @@
 #' @name meta_bias
 #' @description Functions for assessing and adjusting for publication bias in
 #'   meta-analysis.
+#' @seealso
+#'   \code{\link[=eggers_test]{eggers_test}} for Egger's regression test
+#'   of funnel plot asymmetry.
+#'
+#'   \code{\link[=trim_and_fill]{trim_and_fill}} for Duval & Tweedie
+#'   trim-and-fill method.
 NULL
 
 
@@ -231,9 +237,9 @@ trim_and_fill <- function(
 				)
 			}
 		} else {
-			# Q0: based on Q statistic
+			# Q0: based on Q statistic (Duval & Tweedie, 2000)
 			Q <- sum(wi_work * (yi_work - theta)^2)
-			k0_new <- max(0, round(Q / (n - 1) - 1))
+			k0_new <- max(0, round(Q - (n - 1)))
 		}
 
 		k0_new <- min(k0_new, n - 1) # Can't impute more than n-1 studies

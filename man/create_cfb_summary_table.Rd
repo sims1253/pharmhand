@@ -6,7 +6,6 @@
 \usage{
 create_cfb_summary_table(
   advs,
-  trt_n,
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
   trt_var = "TRT01P",
@@ -19,10 +18,6 @@ create_cfb_summary_table(
 columns include: USUBJID, PARAMCD (parameter code), PARAM (parameter name),
 AVISIT (analysis visit), CHG (change from baseline), and the treatment
 variable (typically TRT01P).}
-
-\item{trt_n}{A data frame or named vector containing treatment group counts.
-If a data frame, should contain treatment variable column and N column.
-Used for displaying "N=X" in column headers.}
 
 \item{params}{Character vector of PARAMCD values identifying which vital sign
 parameters to include in the table (e.g., c("SYSBP", "DIABP", "PULSE")).

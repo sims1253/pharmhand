@@ -15,9 +15,6 @@ NULL
 #'   columns include: USUBJID, PARAMCD (parameter code), PARAM (parameter name),
 #'   AVISIT (analysis visit), CHG (change from baseline), and the treatment
 #'   variable (typically TRT01P).
-#' @param trt_n A data frame or named vector containing treatment group counts.
-#'   If a data frame, should contain treatment variable column and N column.
-#'   Used for displaying "N=X" in column headers.
 #' @param params Character vector of PARAMCD values identifying which vital sign
 #'   parameters to include in the table (e.g., c("SYSBP", "DIABP", "PULSE")).
 #'   Must match values in the PARAMCD column of advs.
@@ -36,7 +33,6 @@ NULL
 #' @export
 create_cfb_summary_table <- function(
 	advs,
-	trt_n,
 	params = c("SYSBP", "DIABP", "PULSE"),
 	visit = "End of Treatment",
 	trt_var = "TRT01P",
@@ -44,7 +40,6 @@ create_cfb_summary_table <- function(
 	autofit = TRUE
 ) {
 	assert_data_frame(advs, "advs")
-	assert_data_frame(trt_n, "trt_n")
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "PARAM", "CHG")
 	missing_cols <- setdiff(required_cols, names(advs))
@@ -223,7 +218,6 @@ detect_floor_ceiling <- function(
 #' Create Vital Signs by Visit Table
 #'
 #' @param advs ADVS data frame
-#' @param trt_n Treatment group counts
 #' @param paramcd Parameter code to analyze
 #' @param visits Vector of visits to include
 #' @param trt_var Treatment variable name (default: "TRT01P")
@@ -233,7 +227,6 @@ detect_floor_ceiling <- function(
 #' @export
 create_vs_by_visit_table <- function(
 	advs,
-	trt_n,
 	paramcd = "SYSBP",
 	visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
 	trt_var = "TRT01P",
@@ -241,7 +234,6 @@ create_vs_by_visit_table <- function(
 	autofit = TRUE
 ) {
 	assert_data_frame(advs, "advs")
-	assert_data_frame(trt_n, "trt_n")
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
 	missing_cols <- setdiff(required_cols, names(advs))
