@@ -388,11 +388,16 @@ create_ae_table_soc <- function(
 
 	# Apply custom SOC ordering if provided
 	if (!is.null(soc_order)) {
+		observed_socs <- unique(soc_summary$`System Organ Class`)
+		soc_levels <- c(
+			soc_order[soc_order %in% observed_socs],
+			setdiff(observed_socs, soc_order)
+		)
 		soc_summary <- soc_summary |>
 			dplyr::mutate(
 				`System Organ Class` = factor(
 					.data$`System Organ Class`,
-					levels = soc_order
+					levels = soc_levels
 				)
 			) |>
 			dplyr::arrange(.data$`System Organ Class`) |>
@@ -608,6 +613,18 @@ create_ae_table_severity <- function(
 	autofit,
 	severity_levels = c("MILD", "MODERATE", "SEVERE")
 ) {
+	# Validate AESEV values match expected levels
+	observed_sev <- unique(adae$AESEV[adae$TRTEMFL == "Y"])
+	unmatched <- setdiff(observed_sev, c(severity_levels, NA))
+	if (length(unmatched) > 0) {
+		ph_warn(
+			sprintf(
+				"AESEV values %s not in severity_levels and will be treated as NA",
+				paste(unmatched, collapse = ", ")
+			)
+		)
+	}
+
 	severity_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
 		dplyr::mutate(
