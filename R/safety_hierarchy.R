@@ -68,6 +68,12 @@ create_ae_hierarchy_table <- function(
 				lvl,
 				var
 			))
+		} else {
+			ph_warn(sprintf(
+				"Required variable for '%s' level (%s) not found in data",
+				lvl,
+				var
+			))
 		}
 	}
 

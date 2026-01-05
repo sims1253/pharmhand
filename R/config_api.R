@@ -166,7 +166,9 @@ define_subgroup_config <- function(
 	filter_values = NULL,
 	priority = 100
 ) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	if (!inherits(registry, "ConfigurationRegistry")) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 	admiraldev::assert_character_scalar(name)
 	admiraldev::assert_character_scalar(variable)
 

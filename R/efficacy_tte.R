@@ -1,6 +1,7 @@
 #' @title Time-to-Event Tables
 #' @name efficacy_tte
-#' @description Functions for time-to-event analysis tables including Kaplan-Meier summaries.
+#' @description Functions for time-to-event analysis tables including
+#'   Kaplan-Meier summaries.
 NULL
 
 #' Create Time-to-Event Summary Table
@@ -128,21 +129,11 @@ create_tte_summary_table <- function(
 	} else {
 		"*rmean"
 	}
-	ci_lower_name <- paste0(
-		"0.",
-		gsub("0\\.", "", as.character(conf_level)),
-		"LCL"
-	)
-	ci_upper_name <- paste0(
-		"0.",
-		gsub("0\\.", "", as.character(conf_level)),
-		"UCL"
-	)
-
-	# Handle different column naming conventions
-	if (!ci_lower_name %in% colnames(km_summary)) {
-		ci_lower_name <- grep("LCL$", colnames(km_summary), value = TRUE)[1]
-		ci_upper_name <- grep("UCL$", colnames(km_summary), value = TRUE)[1]
+	# Find CI columns by pattern - more robust across survival versions
+	ci_lower_name <- grep("LCL$", colnames(km_summary), value = TRUE)[1]
+	ci_upper_name <- grep("UCL$", colnames(km_summary), value = TRUE)[1]
+	if (is.na(ci_lower_name) || is.na(ci_upper_name)) {
+		ph_abort("Could not find confidence interval columns in survfit output")
 	}
 
 	results$Median <- sprintf("%.1f", km_summary[, median_col])

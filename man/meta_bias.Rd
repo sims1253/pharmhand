@@ -4,5 +4,6 @@
 \alias{meta_bias}
 \title{Publication Bias Assessment Functions}
 \description{
-Functions for assessing and adjusting for publication bias in meta-analysis.
+Functions for assessing and adjusting for publication bias in
+meta-analysis.
 }

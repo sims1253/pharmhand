@@ -53,6 +53,7 @@ calculate_ae_tte_data <- function(
 		dplyr::group_by(.data$USUBJID) |>
 		dplyr::arrange(.data$ASTDY) |>
 		dplyr::slice(1) |>
+		dplyr::ungroup() |>
 		dplyr::select("USUBJID", "ASTDY") |>
 		dplyr::mutate(event = 1)
 
@@ -210,6 +211,7 @@ create_time_to_first_ae <- function(
 		dplyr::group_by(.data$USUBJID) |>
 		dplyr::arrange(.data[[time_var]]) |>
 		dplyr::slice(1) |>
+		dplyr::ungroup() |>
 		dplyr::transmute(
 			USUBJID = .data$USUBJID,
 			event_time = .data[[time_var]],

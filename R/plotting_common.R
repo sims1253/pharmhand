@@ -35,7 +35,7 @@ NULL
 	}
 
 	if (is.character(opt_palette) && length(opt_palette) == 1) {
-		tryCatch(
+		return(tryCatch(
 			grDevices::palette.colors(n = NULL, palette = opt_palette),
 			error = function(e) {
 				ph_warn(
@@ -43,7 +43,7 @@ NULL
 				)
 				.PH_DEFAULT_PALETTE
 			}
-		)
+		))
 	} else if (is.character(opt_palette) && length(opt_palette) > 1) {
 		opt_palette
 	} else {

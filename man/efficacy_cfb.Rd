@@ -4,5 +4,6 @@
 \alias{efficacy_cfb}
 \title{Change from Baseline Tables}
 \description{
-Functions for change from baseline summaries and vital signs tables.
+Functions for change from baseline summaries and
+vital signs tables.
 }

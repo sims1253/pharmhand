@@ -28,7 +28,7 @@ A list with components:
 \describe{
 \item{original}{Original MetaResult object}
 \item{adjusted}{Adjusted MetaResult with imputed studies}
-\item{n_missing}{Estimated number of missing studies}
+\item{n_imputed}{Estimated number of missing studies}
 \item{side}{Side where studies were imputed}
 \item{imputed_studies}{Data frame with imputed effects}
 \item{estimator}{Estimator method used}

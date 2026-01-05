@@ -1,6 +1,7 @@
 #' @title Publication Bias Assessment Functions
 #' @name meta_bias
-#' @description Functions for assessing and adjusting for publication bias in meta-analysis.
+#' @description Functions for assessing and adjusting for publication bias in
+#'   meta-analysis.
 NULL
 
 
@@ -124,7 +125,7 @@ eggers_test <- function(
 #' \describe{
 #' \item{original}{Original MetaResult object}
 #' \item{adjusted}{Adjusted MetaResult with imputed studies}
-#' \item{n_missing}{Estimated number of missing studies}
+#' \item{n_imputed}{Estimated number of missing studies}
 #' \item{side}{Side where studies were imputed}
 #' \item{imputed_studies}{Data frame with imputed effects}
 #' \item{estimator}{Estimator method used}
@@ -277,7 +278,7 @@ trim_and_fill <- function(
 			sei = sei_work,
 			effect_measure = effect_measure,
 			model = meta_result@model,
-			method = "DL" # Use DL for simplicity
+			method = meta_result@metadata$method %||% "DL" # Preserve original method
 		)
 
 		# Imputed study data

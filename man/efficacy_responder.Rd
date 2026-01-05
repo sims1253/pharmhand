@@ -4,5 +4,6 @@
 \alias{efficacy_responder}
 \title{Responder Analysis Tables}
 \description{
-Functions for responder/binary endpoint analysis and non-inferiority testing.
+Functions for responder/binary endpoint analysis and
+non-inferiority testing.
 }

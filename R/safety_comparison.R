@@ -41,7 +41,7 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 		rr_lower <- NA_real_
 		rr_upper <- NA_real_
 	} else if (p2 == 0) {
-		p2_adj <- 0.5 / N2
+		p2_adj <- 0.5 / (N2 + 1)
 		p1_adj <- (n1 + 0.5) / (N1 + 1)
 		rr <- p1_adj / p2_adj
 		log_rr <- log(rr)
@@ -51,7 +51,7 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 		rr_lower <- exp(log_rr - z * se_log_rr)
 		rr_upper <- exp(log_rr + z * se_log_rr)
 	} else if (p1 == 0) {
-		p1_adj <- 0.5 / N1
+		p1_adj <- 0.5 / (N1 + 1)
 		p2_adj <- (n2 + 0.5) / (N2 + 1)
 		rr <- p1_adj / p2_adj
 		log_rr <- log(rr)
