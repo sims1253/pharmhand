@@ -88,7 +88,7 @@ bayesian_meta_analysis <- function(
 		),
 		brms::prior_string(
 			sprintf(
-				"%s(0, %f)",
+				"%s(0, %f, lb = 0)",
 				if (prior_tau$type == "half_cauchy") "cauchy" else "normal",
 				prior_tau$scale
 			),

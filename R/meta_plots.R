@@ -544,7 +544,8 @@ create_network_plot <- function(
 		node_data$n_studies <- sapply(treatments, function(t) {
 			sum(edges$treat1 == t | edges$treat2 == t)
 		})
-		node_data$size <- 3 + 5 * (node_data$n_studies / max(node_data$n_studies))
+		node_data$size <- 3 +
+			5 * (node_data$n_studies / max(1, max(node_data$n_studies)))
 	} else {
 		node_data$size <- 5
 	}
@@ -569,8 +570,12 @@ create_network_plot <- function(
 
 	# Edge widths
 	if (edge_width == "n_studies") {
-		edge_data$width <- 0.5 +
-			2 * (edge_data$n_studies / max(edge_data$n_studies))
+		max_n <- max(edge_data$n_studies)
+		if (max_n == 0) {
+			edge_data$width <- 0.5
+		} else {
+			edge_data$width <- 0.5 + 2 * (edge_data$n_studies / max_n)
+		}
 	} else {
 		edge_data$width <- 1
 	}

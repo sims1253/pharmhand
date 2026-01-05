@@ -6,7 +6,6 @@
 \usage{
 create_lab_summary_table(
   adlb,
-  trt_n,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -16,8 +15,6 @@ create_lab_summary_table(
 }
 \arguments{
 \item{adlb}{ADLB data frame}
-
-\item{trt_n}{Treatment group counts}
 
 \item{params}{Vector of parameter codes to analyze}
 

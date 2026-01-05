@@ -6,7 +6,6 @@ NULL
 #' Create Laboratory Summary Table
 #'
 #' @param adlb ADLB data frame
-#' @param trt_n Treatment group counts
 #' @param params Vector of parameter codes to analyze
 #' @param visit Visit to analyze
 #' @param trt_var Treatment variable name (default: "TRT01P")
@@ -16,7 +15,6 @@ NULL
 #' @export
 create_lab_summary_table <- function(
 	adlb,
-	trt_n,
 	params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
 	visit = "Week 24",
 	trt_var = "TRT01P",
@@ -24,7 +22,6 @@ create_lab_summary_table <- function(
 	autofit = TRUE
 ) {
 	assert_data_frame(adlb, "adlb")
-	assert_data_frame(trt_n, "trt_n")
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "PARAM", "AVAL")
 	missing_cols <- setdiff(required_cols, names(adlb))
@@ -83,7 +80,6 @@ create_lab_summary_table <- function(
 #' Create Laboratory Shift Table
 #'
 #' @param adlb ADLB data frame
-#' @param trt_n Treatment group counts
 #' @param paramcd Parameter code to analyze
 #' @param visit Visit to analyze
 #' @param trt_var Treatment variable name (default: "TRT01P")
@@ -93,7 +89,6 @@ create_lab_summary_table <- function(
 #' @export
 create_lab_shift_table <- function(
 	adlb,
-	trt_n,
 	paramcd = "ALT",
 	visit = "Week 24",
 	trt_var = "TRT01P",
@@ -101,7 +96,6 @@ create_lab_shift_table <- function(
 	autofit = TRUE
 ) {
 	assert_data_frame(adlb, "adlb")
-	assert_data_frame(trt_n, "trt_n")
 
 	required_cols <- c("PARAMCD", "BNRIND", "ANRIND", "AVISIT", trt_var)
 	missing_cols <- setdiff(required_cols, names(adlb))

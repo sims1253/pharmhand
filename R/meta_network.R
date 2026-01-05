@@ -407,7 +407,12 @@ calculate_sucra <- function(
 	# Handle reference (no SE)
 	ref_idx <- which(ses == 0 | is.na(ses))
 	if (length(ref_idx) > 0) {
-		ses[ref_idx] <- min(ses[ses > 0], na.rm = TRUE) / 2
+		pos_ses <- ses[ses > 0 & !is.na(ses)]
+		if (length(pos_ses) > 0) {
+			ses[ref_idx] <- min(pos_ses, na.rm = TRUE) / 2
+		} else {
+			ses[ref_idx] <- 0.001
+		}
 	}
 
 	# Simulate rankings

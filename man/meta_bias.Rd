@@ -7,3 +7,10 @@
 Functions for assessing and adjusting for publication bias in
 meta-analysis.
 }
+\seealso{
+\code{\link[=eggers_test]{eggers_test}} for Egger's regression test
+of funnel plot asymmetry.
+
+\code{\link[=trim_and_fill]{trim_and_fill}} for Duval & Tweedie
+trim-and-fill method.
+}

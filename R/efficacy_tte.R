@@ -163,6 +163,21 @@ create_tte_summary_table <- function(
 			# Extract survival estimates for this timepoint
 			if (length(trt_levels) > 1) {
 				idx <- which(landmark_summary$time == time_pt)
+				if (length(idx) != 1) {
+					if (length(idx) == 0) {
+						ph_warn(sprintf(
+							"No exact match for landmark timepoint %.1f, finding nearest",
+							time_pt
+						))
+						idx <- which.min(abs(landmark_summary$time - time_pt))
+					} else {
+						ph_warn(sprintf(
+							"Multiple matches for landmark timepoint %.1f, using first",
+							time_pt
+						))
+						idx <- idx[1]
+					}
+				}
 				surv_vals <- landmark_summary$surv[idx]
 				lower_vals <- landmark_summary$lower[idx]
 				upper_vals <- landmark_summary$upper[idx]

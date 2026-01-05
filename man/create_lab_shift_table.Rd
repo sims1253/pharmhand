@@ -6,7 +6,6 @@
 \usage{
 create_lab_shift_table(
   adlb,
-  trt_n,
   paramcd = "ALT",
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -16,8 +15,6 @@ create_lab_shift_table(
 }
 \arguments{
 \item{adlb}{ADLB data frame}
-
-\item{trt_n}{Treatment group counts}
 
 \item{paramcd}{Parameter code to analyze}
 
