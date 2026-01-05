@@ -103,6 +103,18 @@ create_lab_shift_table <- function(
 	assert_data_frame(adlb, "adlb")
 	assert_data_frame(trt_n, "trt_n")
 
+	required_cols <- c("PARAMCD", "BNRIND", "ANRIND", "AVISIT", trt_var)
+	missing_cols <- setdiff(required_cols, names(adlb))
+	if (length(missing_cols) > 0) {
+		ph_abort(
+			sprintf(
+				"'adlb' is missing required columns: %s. Required: %s",
+				paste(missing_cols, collapse = ", "),
+				paste(required_cols, collapse = ", ")
+			)
+		)
+	}
+
 	shift_data <- adlb |>
 		dplyr::filter(
 			.data$PARAMCD == paramcd,

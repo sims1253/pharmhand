@@ -73,11 +73,6 @@ bayesian_meta_analysis <- function(
 		study = study_labels
 	)
 
-	# Set seed if provided
-	if (!is.null(seed)) {
-		set.seed(seed)
-	}
-
 	# Build brms formula
 	# Random-effects meta-analysis: yi ~ 1 + (1|study), with known SE
 	# This is equivalent to a Bayesian random-effects model
@@ -158,7 +153,7 @@ bayesian_meta_analysis <- function(
 			if (is_ratio) stats::median(mu_display) else mean(mu_display),
 			stats::quantile(mu_display, 0.025),
 			stats::quantile(mu_display, 0.975),
-			if (is_ratio) "effect" else "effect",
+			"effect",
 			if (is_ratio) "1" else "0",
 			100 * if (is_ratio) mean(mu_display < 1) else mean(mu_display < 0)
 		)

@@ -4,5 +4,6 @@
 \alias{meta_core}
 \title{Meta-Analysis Core Functions}
 \description{
-Core functions for performing meta-analyses including pooled estimates and heterogeneity assessment.
+Core functions for performing meta-analyses including pooled
+estimates and heterogeneity assessment.
 }

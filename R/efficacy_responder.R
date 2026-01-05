@@ -1,6 +1,7 @@
 #' @title Responder Analysis Tables
 #' @name efficacy_responder
-#' @description Functions for responder/binary endpoint analysis and non-inferiority testing.
+#' @description Functions for responder/binary endpoint analysis and
+#'   non-inferiority testing.
 NULL
 
 #' Create Responder Summary Table
@@ -80,9 +81,12 @@ create_responder_table <- function(
 		dplyr::summarise(
 			N = dplyr::n(),
 			responders = sum(.data$responder, na.rm = TRUE),
-			rate = .data$responders / .data$N,
+			rate = ifelse(.data$N > 0, .data$responders / .data$N, NA_real_),
 			.groups = "drop"
 		)
+
+	# Filter out empty groups
+	response_summary <- response_summary[response_summary$N > 0, , drop = FALSE]
 
 	# Add confidence intervals
 	response_summary$ci_lower <- NA_real_
@@ -106,7 +110,8 @@ create_responder_table <- function(
 		response_summary$N
 	)
 	response_summary$`Rate (%)` <- sprintf("%.1f", response_summary$rate * 100)
-	response_summary$`95% CI` <- sprintf(
+	ci_col_name <- paste0(round(conf_level * 100), "% CI")
+	response_summary[[ci_col_name]] <- sprintf(
 		"(%.1f, %.1f)",
 		response_summary$ci_lower * 100,
 		response_summary$ci_upper * 100
@@ -159,7 +164,7 @@ create_responder_table <- function(
 	}
 
 	# Select and rename columns for display
-	display_cols <- c(trt_var_actual, "n/N", "Rate (%)", "95% CI")
+	display_cols <- c(trt_var_actual, "n/N", "Rate (%)", ci_col_name)
 	if (paste0(comparison_type, " (95% CI)") %in% names(response_summary)) {
 		display_cols <- c(
 			display_cols,
@@ -377,8 +382,14 @@ test_non_inferiority <- function(
 			ref_vals
 		}
 
-		if (!all(trt_bin %in% c(0, 1)) || !all(ref_bin %in% c(0, 1))) {
-			ph_abort("Binary endpoints must be coded as 0/1 or TRUE/FALSE")
+		# Check for valid binary values (must be exactly 0 or 1, not values like 0.5)
+		valid_trt <- all(trt_bin %in% c(0, 1)) && all(trt_bin == floor(trt_bin))
+		valid_ref <- all(ref_bin %in% c(0, 1)) && all(ref_bin == floor(ref_bin))
+
+		if (!valid_trt || !valid_ref) {
+			ph_abort(
+				"Binary endpoints must be coded as integers 0/1 or logical TRUE/FALSE"
+			)
 		}
 
 		n_trt <- length(trt_bin)
@@ -531,7 +542,8 @@ ancova_adjust_continuous <- function(
 		ph_abort("'covariates' must be a character vector")
 	}
 	if (
-		length(covariates) > 0 && any(is.na(covariates) | nchar(covariates) == 0)
+		length(covariates) > 0 &&
+			any(is.na(covariates) | nchar(trimws(covariates)) == 0)
 	) {
 		ph_abort("'covariates' must be a non-empty character vector")
 	}
@@ -711,10 +723,13 @@ calculate_response_comparison <- function(
 
 			rr <- p_trt_calc / p_ref_calc
 			log_rr <- log(rr)
+			# Use adjusted sample sizes when continuity correction was applied
+			n_trt_use <- if (continuity_applied) n_trt_adj else n_trt
+			n_ref_use <- if (continuity_applied) n_ref_adj else n_ref
 			se_log_rr <- sqrt(
 				(1 - p_trt_calc) /
-					(n_trt * p_trt_calc) +
-					(1 - p_ref_calc) / (n_ref * p_ref_calc)
+					(n_trt_use * p_trt_calc) +
+					(1 - p_ref_calc) / (n_ref_use * p_ref_calc)
 			)
 			rr_ci <- exp(log_rr + c(-1, 1) * z * se_log_rr)
 
@@ -742,9 +757,14 @@ calculate_response_comparison <- function(
 			se_rd <- sqrt(p_trt * (1 - p_trt) / n_trt + p_ref * (1 - p_ref) / n_ref)
 			rd_ci <- rd + c(-1, 1) * z * se_rd
 
-			# Z-test for p-value
-			z_stat <- rd / se_rd
-			pval <- 2 * stats::pnorm(-abs(z_stat))
+			# Handle zero SE case to avoid NaN/Inf
+			if (se_rd < 1e-10) {
+				z_stat <- if (abs(rd) < 1e-10) 0 else sign(rd) * Inf
+				pval <- if (abs(rd) < 1e-10) 1 else 0
+			} else {
+				z_stat <- rd / se_rd
+				pval <- 2 * stats::pnorm(-abs(z_stat))
+			}
 
 			results[[trt]] <- list(
 				estimate = rd,

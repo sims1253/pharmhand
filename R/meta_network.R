@@ -1,6 +1,7 @@
 #' @title Network Meta-Analysis Functions
 #' @name meta_network
-#' @description Functions for performing network meta-analysis, including rankings and league tables.
+#' @description Functions for performing network meta-analysis, including
+#'   rankings and league tables.
 NULL
 
 #'
@@ -209,14 +210,9 @@ network_meta <- function(
 		stringsAsFactors = FALSE
 	)
 
-	# Simple ranking based on point estimates
-	if (is_ratio) {
-		# Lower is better for HR/OR/RR
-		comparison_table$rank <- rank(comparison_table$estimate)
-	} else {
-		# Direction depends on outcome (assume lower is better)
-		comparison_table$rank <- rank(comparison_table$estimate)
-	}
+	# Lower is typically better (HR/OR/RR < 1, or negative differences)
+	# For outcomes where higher is better, users should interpret accordingly
+	comparison_table$rank <- rank(comparison_table$estimate)
 
 	# Add reference
 	ref_row <- data.frame(
@@ -582,6 +578,10 @@ create_league_table <- function(
 		c(ref, comparisons$treatment[comparisons$treatment != ref])
 	)
 
+	# Calculate dynamic SE floor based on data
+	min_se <- min(se_vs_ref[se_vs_ref > 0], na.rm = TRUE)
+	se_floor <- if (is.finite(min_se)) min_se / 100 else 0.001
+
 	# Calculate all pairwise
 	for (i in seq_len(n_treat)) {
 		for (j in seq_len(n_treat)) {
@@ -609,8 +609,8 @@ create_league_table <- function(
 				se_row <- se_vs_ref[t_row]
 				se_col <- se_vs_ref[t_col]
 				# Handle zero SEs
-				se_row <- if (is.na(se_row) || se_row == 0) 0.001 else se_row
-				se_col <- if (is.na(se_col) || se_col == 0) 0.001 else se_col
+				se_row <- if (is.na(se_row) || se_row == 0) se_floor else se_row
+				se_col <- if (is.na(se_col) || se_col == 0) se_floor else se_col
 				se_diff <- sqrt(se_row^2 + se_col^2)
 
 				ci_lower <- exp(log_diff - 1.96 * se_diff)
@@ -622,8 +622,8 @@ create_league_table <- function(
 
 				se_row <- se_vs_ref[t_row]
 				se_col <- se_vs_ref[t_col]
-				se_row <- if (is.na(se_row) || se_row == 0) 0.001 else se_row
-				se_col <- if (is.na(se_col) || se_col == 0) 0.001 else se_col
+				se_row <- if (is.na(se_row) || se_row == 0) se_floor else se_row
+				se_col <- if (is.na(se_col) || se_col == 0) se_floor else se_col
 				se_diff <- sqrt(se_row^2 + se_col^2)
 
 				ci_lower <- estimate - 1.96 * se_diff

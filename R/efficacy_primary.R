@@ -85,7 +85,7 @@ create_primary_endpoint_table <- function(
 		title = title,
 		footnotes = c(
 			"Safety Population",
-			paste(paramcd, "=", paramcd, "(analyzed at", visit, ")")
+			paste("Parameter:", paramcd, "at", visit)
 		),
 		autofit = autofit
 	)

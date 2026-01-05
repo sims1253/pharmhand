@@ -1,6 +1,7 @@
 #' @title Change from Baseline Tables
 #' @name efficacy_cfb
-#' @description Functions for change from baseline summaries and vital signs tables.
+#' @description Functions for change from baseline summaries and
+#'   vital signs tables.
 NULL
 
 #' Create Change from Baseline Summary Table

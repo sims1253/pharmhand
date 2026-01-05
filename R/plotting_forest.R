@@ -266,10 +266,11 @@ create_forest_plot <- function(
 		p <- p + ggplot2::scale_x_log10()
 	}
 
-	# Apply colors if provided
-	if (!is.null(colors)) {
-		p <- p + ggplot2::scale_color_manual(values = colors)
-	}
+	# Note: colors parameter currently unused - no color aesthetic is mapped
+	# To enable colors, add color mapping to geom_point/geom_errorbarh
+	# if (!is.null(colors)) {
+	#     p <- p + ggplot2::scale_color_manual(values = colors)
+	# }
 
 	# Calculate dimensions based on number of rows
 	n_rows <- nrow(plot_df)
@@ -358,11 +359,14 @@ calculate_subgroup_effect <- function(
 					stats::as.formula(paste("surv_obj ~", trt_var)),
 					data = df
 				)
-				cox_summary <- summary(cox_fit)
-
+				cox_summary <- summary(cox_fit, conf.int = conf_level)
 				estimate <- cox_summary$conf.int[1, "exp(coef)"]
-				lcl <- cox_summary$conf.int[1, "lower .95"]
-				ucl <- cox_summary$conf.int[1, "upper .95"]
+				# Build column names from conf_level
+				conf_pct <- sub("^0", "", as.character(conf_level))
+				lower_col <- paste0("lower ", conf_pct)
+				upper_col <- paste0("upper ", conf_pct)
+				lcl <- cox_summary$conf.int[1, lower_col]
+				ucl <- cox_summary$conf.int[1, upper_col]
 				pvalue <- cox_summary$coefficients[1, "Pr(>|z|)"]
 			},
 			error = function(e) NULL

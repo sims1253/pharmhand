@@ -1,6 +1,7 @@
 #' @title Meta-Analysis Visualization Functions
 #' @name meta_plots
-#' @description Functions for creating forest plots, funnel plots, and network plots for meta-analysis.
+#' @description Functions for creating forest plots, funnel plots, and
+#'   network plots for meta-analysis.
 NULL
 
 #' Create Forest Plot for Meta-Analysis
@@ -522,7 +523,7 @@ create_network_plot <- function(
 		node_x[other_idx] <- cos(angles)
 		node_y[other_idx] <- sin(angles)
 	} else {
-		# Auto: try to minimize edge crossings (simplified)
+		# Auto: place nodes on a circle (circular layout)
 		angles <- seq(0, 2 * pi, length.out = n_nodes + 1)[1:n_nodes]
 		node_x <- cos(angles)
 		node_y <- sin(angles)

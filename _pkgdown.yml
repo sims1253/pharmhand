@@ -318,13 +318,30 @@ reference:
   - layers
   - reporting_engine
   - study_logic
-  - efficacy_tables
-  - safety_tables
+  - efficacy_primary
+  - efficacy_cfb
+  - efficacy_lab
+  - efficacy_tte
+  - efficacy_responder
+  - efficacy_subgroup
+  - safety_summary
+  - safety_tte
+  - safety_comparison
+  - safety_exposure
+  - safety_hierarchy
   - standard_tables
   - gba_utils
   - localization
-  - plotting
-  - meta_analysis
+  - plotting_common
+  - plotting_survival
+  - plotting_efficacy
+  - plotting_forest
+  - meta_core
+  - meta_plots
+  - meta_indirect
+  - meta_network
+  - meta_bias
+  - meta_bayesian
   - pro_analysis
 
 # Articles/vignettes structure

@@ -1,6 +1,7 @@
 #' @title Subgroup Analysis Tables
 #' @name efficacy_subgroup
-#' @description Functions for subgroup analysis tables and credibility assessment.
+#' @description Functions for subgroup analysis tables and
+#'   credibility assessment.
 NULL
 
 #' Create Subgroup Analysis Table
@@ -668,11 +669,15 @@ calculate_subgroup_effect_table <- function(
 					stats::as.formula(paste("surv_obj ~", trt_var)),
 					data = df
 				)
-				cox_summary <- summary(cox_fit)
+				cox_summary <- summary(cox_fit, conf.int = conf_level)
 
 				result$estimate <- cox_summary$conf.int[1, "exp(coef)"]
-				result$lcl <- cox_summary$conf.int[1, "lower .95"]
-				result$ucl <- cox_summary$conf.int[1, "upper .95"]
+				# Build column names from conf_level
+				conf_pct <- sub("^0", "", as.character(conf_level))
+				lower_col <- paste0("lower ", conf_pct)
+				upper_col <- paste0("upper ", conf_pct)
+				result$lcl <- cox_summary$conf.int[1, lower_col]
+				result$ucl <- cox_summary$conf.int[1, upper_col]
 			},
 			error = function(e) {
 				# Keep NA values
@@ -822,6 +827,9 @@ assess_iceman <- function(
 	statistical_test <- match.arg(statistical_test)
 	replication <- match.arg(replication)
 	other_evidence <- match.arg(other_evidence)
+
+	# Note: subgroup_result parameter reserved for future automatic extraction
+	# of subgroup analysis metrics. Currently requires manual input of criteria.
 
 	if (
 		!is.logical(is_prespecified) ||

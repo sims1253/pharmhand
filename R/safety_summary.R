@@ -6,6 +6,14 @@ NULL
 # Standard AEACN value for drug discontinuation (CDISC controlled terminology)
 AEACN_DRUG_WITHDRAWN <- "DRUG WITHDRAWN"
 
+# Standard AEREL values indicating relationship to study drug
+AEREL_RELATED_VALUES <- c(
+	"PROBABLE",
+	"POSSIBLE",
+	"RELATED",
+	"DEFINITELY RELATED"
+)
+
 #' Create Adverse Event Summary Table
 #'
 #' Generate AE summary tables for clinical study reports.
@@ -260,7 +268,7 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 		rel_teae <- adae |>
 			dplyr::filter(
 				.data$TRTEMFL == "Y",
-				.data$AEREL %in% c("PROBABLE", "POSSIBLE", "RELATED")
+				.data$AEREL %in% AEREL_RELATED_VALUES
 			)
 		categories[[2]] <- summarize_category(
 			rel_teae,

@@ -1,6 +1,7 @@
 #' @title Meta-Analysis Core Functions
 #' @name meta_core
-#' @description Core functions for performing meta-analyses including pooled estimates and heterogeneity assessment.
+#' @description Core functions for performing meta-analyses including pooled
+#'   estimates and heterogeneity assessment.
 NULL
 
 #' Perform Meta-Analysis
@@ -144,6 +145,7 @@ meta_analysis <- function(
 			"REML" = {
 				# REML via Newton-Raphson iteration
 				tau2_reml <- max(0, (Q - df) / (sum(wi) - sum(wi^2) / sum(wi)))
+				converged <- FALSE
 				for (iter in 1:50) {
 					wi_star <- 1 / (sei^2 + tau2_reml)
 					theta_star <- sum(wi_star * yi) / sum(wi_star)
@@ -151,13 +153,18 @@ meta_analysis <- function(
 					ll_deriv <- -0.5 * sum(wi_star) + 0.5 * sum(wi_star^2 * resid^2)
 					ll_deriv2 <- 0.5 * sum(wi_star^2) - sum(wi_star^3 * resid^2)
 					if (abs(ll_deriv2) < 1e-10) {
+						converged <- TRUE
 						break
 					}
 					tau2_new <- tau2_reml - ll_deriv / ll_deriv2
 					if (abs(tau2_new - tau2_reml) < 1e-8) {
+						converged <- TRUE
 						break
 					}
 					tau2_reml <- max(0, tau2_new)
+				}
+				if (!converged) {
+					ph_warn("REML estimation did not converge within 50 iterations")
 				}
 				tau2_reml
 			}
@@ -212,12 +219,8 @@ meta_analysis <- function(
 	pred_interval <- NULL
 	if (prediction && model == "random" && tau2 > 0 && k > 2) {
 		se_pred <- sqrt(se^2 + tau2)
-		if (use_t) {
-			crit_pred <- stats::qt(1 - alpha / 2, df = k - 2)
-		} else {
-			# Even without Knapp-Hartung, use t-distribution for prediction intervals
-			crit_pred <- stats::qt(1 - alpha / 2, df = k - 2)
-		}
+		# Always use t-distribution for prediction intervals
+		crit_pred <- stats::qt(1 - alpha / 2, df = k - 2)
 		pred_interval <- c(theta - crit_pred * se_pred, theta + crit_pred * se_pred)
 	}
 
@@ -498,6 +501,16 @@ leave_one_out <- function(
 
 	k <- length(yi)
 
+	# Extract confidence level from meta_result if available
+	conf_level <- if (
+		!is.null(meta_result) && !is.null(meta_result@metadata$conf_level)
+	) {
+		meta_result@metadata$conf_level
+	} else {
+		0.95
+	}
+	z_crit <- stats::qnorm(1 - (1 - conf_level) / 2)
+
 	# Leave-one-out analysis
 	loo_results <- lapply(seq_len(k), function(i) {
 		yi_loo <- yi[-i]
@@ -525,8 +538,8 @@ leave_one_out <- function(
 		list(
 			estimate = estimate,
 			se = se,
-			ci_lower = estimate - 1.96 * se,
-			ci_upper = estimate + 1.96 * se,
+			ci_lower = estimate - z_crit * se,
+			ci_upper = estimate + z_crit * se,
 			I2 = I2,
 			tau2 = tau2,
 			excluded = study_labels[i]

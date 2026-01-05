@@ -1,6 +1,7 @@
 #' @title Indirect Comparison Functions
 #' @name meta_indirect
-#' @description Functions for performing indirect treatment comparisons using the Bucher method and assessing transitivity.
+#' @description Functions for performing indirect treatment comparisons
+#'   using the Bucher method and assessing transitivity.
 NULL
 
 

@@ -4,5 +4,6 @@
 \alias{meta_plots}
 \title{Meta-Analysis Visualization Functions}
 \description{
-Functions for creating forest plots, funnel plots, and network plots for meta-analysis.
+Functions for creating forest plots, funnel plots, and
+network plots for meta-analysis.
 }

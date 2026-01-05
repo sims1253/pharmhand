@@ -4,5 +4,6 @@
 \alias{efficacy_subgroup}
 \title{Subgroup Analysis Tables}
 \description{
-Functions for subgroup analysis tables and credibility assessment.
+Functions for subgroup analysis tables and
+credibility assessment.
 }
