@@ -7,7 +7,6 @@ Create Laboratory Shift Table
 ``` r
 create_lab_shift_table(
   adlb,
-  trt_n,
   paramcd = "ALT",
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -21,10 +20,6 @@ create_lab_shift_table(
 - adlb:
 
   ADLB data frame
-
-- trt_n:
-
-  Treatment group counts
 
 - paramcd:
 

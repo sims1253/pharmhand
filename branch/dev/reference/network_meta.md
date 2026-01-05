@@ -1,4 +1,4 @@
-# Perform Network Meta-Analysis
+# Conducts network meta-analysis (NMA) to compare multiple treatments simultaneously using direct and indirect evidence.
 
 Conducts network meta-analysis (NMA) to compare multiple treatments
 simultaneously using direct and indirect evidence.

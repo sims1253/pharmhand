@@ -1,4 +1,4 @@
-# Calculate Treatment Rankings (P-scores/SUCRA)
+# Calculates ranking probabilities and SUCRA (Surface Under Cumulative Ranking curve) or P-scores for treatments in network meta-analysis.
 
 Calculates ranking probabilities and SUCRA (Surface Under Cumulative
 Ranking curve) or P-scores for treatments in network meta-analysis.

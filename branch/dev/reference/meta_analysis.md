@@ -1,6 +1,4 @@
-# Meta-Analysis Functions
-
-Functions for performing meta-analyses and evidence synthesis.
+# Perform Meta-Analysis
 
 Conducts fixed-effect or random-effects meta-analysis on a set of
 studies. Supports binary, continuous, and time-to-event outcomes.

@@ -35,6 +35,12 @@ adtte <- pharmaverseadam::adtte_onco  # Time-to-event data (oncology)
 adrs <- pharmaverseadam::adrs_onco    # Response data (oncology)
 
 # Note: adtte_onco and adrs_onco use ARM as treatment variable (not TRT01P)
+
+# Get treatment counts for tables that require denominators
+trt_n <- adsl |>
+  dplyr::filter(.data$SAFFL == "Y") |>
+  dplyr::group_by(.data$TRT01P) |>
+  dplyr::summarise(N = dplyr::n(), .groups = "drop")
 ```
 
 ## Time-to-Event Analysis
@@ -90,19 +96,19 @@ tte_landmark <- create_tte_summary_table(
 tte_landmark@flextable
 ```
 
-| Progression-Free Survival with Landmark Analysis |                    |                      |                      |
-|--------------------------------------------------|--------------------|----------------------|----------------------|
-| Statistic                                        | Placebo            | Xanomeline High Dose | Xanomeline Low Dose  |
-| N                                                | 174                | 169                  | 169                  |
-| Events n (%)                                     | 5 (2.9)            | 3 (1.8)              | 2 (1.2)              |
-| Median (95% CI)                                  | NE                 | NE                   | NE                   |
-| 12-months Rate (95% CI)                          | 97.8 (94.8, 100.0) | 100.0 (100.0, 100.0) | 100.0 (100.0, 100.0) |
-| 24-months Rate (95% CI)                          | 97.8 (94.8, 100.0) | 100.0 (100.0, 100.0) | 100.0 (100.0, 100.0) |
-| HR (95% CI)                                      | Reference          | 0.84 (0.20, 3.53)    | 0.56 (0.11, 2.92)    |
-| p-value                                          | -                  | 0.809                | 0.492                |
-| Time unit: months                                |                    |                      |                      |
-| HR reference group: Placebo                      |                    |                      |                      |
-| NE = Not Estimable                               |                    |                      |                      |
+| Progression-Free Survival with Landmark Analysis |                    |                      |                     |
+|--------------------------------------------------|--------------------|----------------------|---------------------|
+| Statistic                                        | Placebo            | Xanomeline High Dose | Xanomeline Low Dose |
+| N                                                | 174                | 169                  | 169                 |
+| Events n (%)                                     | 5 (2.9)            | 3 (1.8)              | 2 (1.2)             |
+| Median (95% CI)                                  | NE                 | NE                   | NE                  |
+| 12-months Rate (95% CI)                          | 97.8 (94.8, 100.0) | 97.8 (94.8, 100.0)   | 97.8 (94.8, 100.0)  |
+| 24-months Rate (95% CI)                          | 97.8 (94.8, 100.0) | 97.8 (94.8, 100.0)   | 97.8 (94.8, 100.0)  |
+| HR (95% CI)                                      | Reference          | 0.84 (0.20, 3.53)    | 0.56 (0.11, 2.92)   |
+| p-value                                          | -                  | 0.809                | 0.492               |
+| Time unit: months                                |                    |                      |                     |
+| HR reference group: Placebo                      |                    |                      |                     |
+| NE = Not Estimable                               |                    |                      |                     |
 
 ### Kaplan-Meier Plots
 
@@ -356,7 +362,6 @@ analyzes change from baseline values for continuous endpoints.
 # Create change from baseline table for vital signs
 cfb_table <- create_cfb_summary_table(
   advs = advs,
-  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
   title = "Change from Baseline in Vital Signs"
@@ -381,7 +386,6 @@ cfb_table@flextable
 # Change from baseline for specific parameters
 cfb_custom <- create_cfb_summary_table(
   advs = advs,
-  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
   params = c("SYSBP"),  # Only systolic blood pressure
   visit = "Week 8",
   title = "Systolic Blood Pressure Change from Baseline at Week 8"
@@ -409,7 +413,7 @@ secondary endpoints.
 # Create primary endpoint summary table
 primary_table <- create_primary_endpoint_table(
   advs = advs,
-  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  trt_n = trt_n,
   paramcd = "SYSBP",
   visit = "End of Treatment",
   title = "Primary Endpoint Summary: Systolic Blood Pressure"
@@ -427,7 +431,7 @@ primary_table@flextable
 | Median                                            | 131           | 131                  | 130                 |
 | Min, Max                                          | 78, 172       | 100, 177             | 92, 178             |
 | Safety Population                                 |               |                      |                     |
-| SYSBP = SYSBP (analyzed at End of Treatment )     |               |                      |                     |
+| Parameter: SYSBP at End of Treatment              |               |                      |                     |
 
 ### Secondary Endpoint
 
@@ -435,7 +439,7 @@ primary_table@flextable
 # Secondary endpoint analysis
 secondary_table <- create_primary_endpoint_table(
   advs = advs,
-  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
+  trt_n = trt_n,
   paramcd = "DIABP",
   visit = "Week 8",
   title = "Secondary Endpoint: Diastolic Blood Pressure at Week 8"
@@ -453,7 +457,7 @@ secondary_table@flextable
 | Median                                                 | 76          | 78.3                 | 74                  |
 | Min, Max                                               | 49, 101     | 54, 98               | 52, 100             |
 | Safety Population                                      |             |                      |                     |
-| DIABP = DIABP (analyzed at Week 8 )                    |             |                      |                     |
+| Parameter: DIABP at Week 8                             |             |                      |                     |
 
 ## Laboratory Analysis
 
@@ -467,7 +471,6 @@ Click to expand: Laboratory Parameters Summary
 # Create laboratory parameters summary
 lab_summary <- create_lab_summary_table(
   adlb = adlb,
-  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
   params = c("HGB", "WBC", "PLAT", "ALT", "AST"),
   visit = "Week 24",
   title = "Laboratory Parameters Summary at Week 24"
@@ -496,7 +499,6 @@ Click to expand: Lab Shift Table
 # Create laboratory shift table for liver function test
 shift_table <- create_lab_shift_table(
   adlb = adlb,
-  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
   paramcd = "ALT",
   visit = "Week 24",
   title = "ALT Shift from Baseline to Week 24"
@@ -527,7 +529,6 @@ Click to expand: Vital Signs by Visit Table
 # Vital signs by visit table
 vs_visit_table <- create_vs_by_visit_table(
   advs = advs,
-  trt_n = adsl |> group_by(TRT01P) |> summarise(N = n(), .groups = "drop"),
   paramcd = "SYSBP",
   visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
   title = "Systolic Blood Pressure by Study Visit"
@@ -652,7 +653,6 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
   # Section 1: Primary Endpoint Summary
   primary_content <- create_primary_endpoint_table(
     advs = advs,
-    trt_n = trt_n,
     paramcd = "SYSBP",
     visit = "End of Treatment",
     title = "Table 3.1: Primary Endpoint Summary (Systolic BP)"
@@ -661,7 +661,6 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
   # Section 2: Change from Baseline
   cfb_content <- create_cfb_summary_table(
     advs = advs,
-    trt_n = trt_n,
     params = c("SYSBP", "DIABP", "PULSE"),
     visit = "End of Treatment",
     title = "Table 3.2: Change from Baseline Summary"
@@ -670,7 +669,6 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
   # Section 3: Vital Signs by Visit
   vs_content <- create_vs_by_visit_table(
     advs = advs,
-    trt_n = trt_n,
     paramcd = "SYSBP",
     title = "Table 3.3: Vital Signs by Visit"
   )
@@ -678,14 +676,12 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
   # Section 4: Laboratory Parameters
   lab_content <- create_lab_summary_table(
     adlb = adlb,
-    trt_n = trt_n,
     title = "Table 3.4: Laboratory Parameters Summary"
   )
 
   # Section 5: Laboratory Shift Table
   shift_content <- create_lab_shift_table(
     adlb = adlb,
-    trt_n = trt_n,
     paramcd = "ALT",
     title = "Table 3.5: ALT Shift from Baseline"
   )

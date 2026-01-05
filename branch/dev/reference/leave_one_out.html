@@ -38,7 +38,7 @@ to assess the influence of individual studies."><meta property="og:image" conten
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform Leave-One-Out Sensitivity Analysis</h1>
-      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/R/meta_analysis.R" class="external-link"><code>R/meta_analysis.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/R/meta_core.R" class="external-link"><code>R/meta_core.R</code></a></small>
       <div class="d-none name"><code>leave_one_out.Rd</code></div>
     </div>
 
@@ -97,17 +97,17 @@ to assess the influence of individual studies.</p>
 <span class="r-in"><span><span class="va">loo</span> <span class="op">&lt;-</span> <span class="fu">leave_one_out</span><span class="op">(</span><span class="va">meta_res</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">loo</span><span class="op">$</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   excluded_study   estimate         se   ci_lower    ci_upper I2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        Study 1 -0.2255565 0.06917580 -0.3611411 -0.08997191  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        Study 2 -0.2491445 0.06537572 -0.3772809 -0.12100805  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Study 3 -0.2230226 0.06355725 -0.3475948 -0.09845042  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        Study 4 -0.2739760 0.06631426 -0.4039520 -0.14400006  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        Study 5 -0.2324773 0.07146988 -0.3725583 -0.09239635  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        Study 1 -0.2255565 0.06917580 -0.3611386 -0.08997440  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        Study 2 -0.2491445 0.06537572 -0.3772785 -0.12101041  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Study 3 -0.2230226 0.06355725 -0.3475925 -0.09845271  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        Study 4 -0.2739760 0.06631426 -0.4039496 -0.14400245  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        Study 5 -0.2324773 0.07146988 -0.3725557 -0.09239892  0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   estimate_display ci_lower_display ci_upper_display pct_change</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.7980720        0.6968807        0.9139569   8.121456</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.7794674        0.6857234        0.8860268  -1.486912</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.8000967        0.7063850        0.9062406   9.153602</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.7603503        0.6676762        0.8658877 -11.601835</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.7925677        0.6889695        0.9117437   5.302315</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.7980720        0.6968824        0.9139546   8.121456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.7794674        0.6857251        0.8860247  -1.486912</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.8000967        0.7063866        0.9062386   9.153602</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.7603503        0.6676778        0.8658856 -11.601835</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.7925677        0.6889713        0.9117414   5.302315</span>
 <span class="r-in"><span><span class="va">loo</span><span class="op">$</span><span class="va">influential_studies</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Study 4"</span>
 </code></pre></div>

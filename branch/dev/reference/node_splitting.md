@@ -1,4 +1,4 @@
-# Test for Inconsistency Using Node-Splitting
+# Separates direct and indirect evidence for each comparison and tests for inconsistency between them.
 
 Separates direct and indirect evidence for each comparison and tests for
 inconsistency between them.

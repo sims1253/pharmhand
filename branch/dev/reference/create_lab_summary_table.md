@@ -7,7 +7,6 @@ Create Laboratory Summary Table
 ``` r
 create_lab_summary_table(
   adlb,
-  trt_n,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -21,10 +20,6 @@ create_lab_summary_table(
 - adlb:
 
   ADLB data frame
-
-- trt_n:
-
-  Treatment group counts
 
 - params:
 

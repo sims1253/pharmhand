@@ -1,4 +1,4 @@
-# Egger's Test for Funnel Plot Asymmetry
+# Performs Egger's linear regression test to assess funnel plot asymmetry, which may indicate publication bias.
 
 Performs Egger's linear regression test to assess funnel plot asymmetry,
 which may indicate publication bias.

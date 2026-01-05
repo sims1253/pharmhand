@@ -533,7 +533,6 @@ trt_n <- adsl |>
   dplyr::summarise(N = dplyr::n(), .groups = "drop")
 lab_shift_table <- create_lab_shift_table(
   adlb = adlb,
-  trt_n = trt_n,
   title = "Table 10: Lab Shift from Baseline to Max Post-Baseline"
 )
 

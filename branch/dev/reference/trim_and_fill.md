@@ -1,4 +1,4 @@
-# Trim-and-Fill Method for Publication Bias
+# Performs the Duval & Tweedie trim-and-fill method to estimate the number of missing studies and adjust the pooled effect for publication bias.
 
 Performs the Duval & Tweedie trim-and-fill method to estimate the number
 of missing studies and adjust the pooled effect for publication bias.
@@ -22,7 +22,8 @@ trim_and_fill(
 
 - side:
 
-  Character. Side to impute: "left", "right", or "auto". Default: "auto"
+  Character. Side where excess studies are trimmed: "left", "right", or
+  "auto". Missing studies are imputed on opposite side. Default: "auto"
 
 - estimator:
 
@@ -45,7 +46,7 @@ A list with components:
 
   Adjusted MetaResult with imputed studies
 
-- n_missing:
+- n_imputed:
 
   Estimated number of missing studies
 

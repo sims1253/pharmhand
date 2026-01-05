@@ -1,4 +1,4 @@
-# Bayesian Meta-Analysis Interface
+# Interface for Bayesian meta-analysis using brms/rstan when available. Provides guidance when dependencies are not installed.
 
 Interface for Bayesian meta-analysis using brms/rstan when available.
 Provides guidance when dependencies are not installed.
@@ -45,7 +45,7 @@ bayesian_meta_analysis(
 
 - prior_tau:
 
-  Prior for heterogeneity: list(type, params)
+  Prior for heterogeneity: list(type, scale)
 
 - chains:
 

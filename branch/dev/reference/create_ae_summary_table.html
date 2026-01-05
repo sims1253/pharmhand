@@ -36,7 +36,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Create Adverse Event Summary Table</h1>
-      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/R/safety_tables.R" class="external-link"><code>R/safety_tables.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/R/safety_summary.R" class="external-link"><code>R/safety_summary.R</code></a></small>
       <div class="d-none name"><code>create_ae_summary_table.Rd</code></div>
     </div>
 
@@ -62,7 +62,8 @@
 <span>  sort_by <span class="op">=</span> <span class="st">"incidence"</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  include_nnh <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  soc_order <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  soc_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  severity_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MILD"</span>, <span class="st">"MODERATE"</span>, <span class="st">"SEVERE"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -141,6 +142,11 @@ like "deaths", "comparison", or for denominator calculation)</p></dd>
 <dt id="arg-soc-order">soc_order<a class="anchor" aria-label="anchor" href="#arg-soc-order"></a></dt>
 <dd><p>For type="soc" or type="soc_pt", custom ordering of SOCs
 (character vector). If NULL, SOCs are sorted alphabetically (default: NULL)</p></dd>
+
+
+<dt id="arg-severity-levels">severity_levels<a class="anchor" aria-label="anchor" href="#arg-severity-levels"></a></dt>
+<dd><p>For type="severity", severity levels ordering
+(character vector). Default: c("MILD", "MODERATE", "SEVERE")</p></dd>
 
 </dl></div>
     <div class="section level2">

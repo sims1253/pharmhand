@@ -1,4 +1,4 @@
-# Create League Table for Network Meta-Analysis
+# Generates a league table showing all pairwise treatment comparisons from a network meta-analysis.
 
 Generates a league table showing all pairwise treatment comparisons from
 a network meta-analysis.

@@ -21,7 +21,8 @@ create_ae_summary_table(
   sort_by = "incidence",
   conf_level = 0.95,
   include_nnh = TRUE,
-  soc_order = NULL
+  soc_order = NULL,
+  severity_levels = c("MILD", "MODERATE", "SEVERE")
 )
 ```
 
@@ -110,6 +111,11 @@ create_ae_summary_table(
 
   For type="soc" or type="soc_pt", custom ordering of SOCs (character
   vector). If NULL, SOCs are sorted alphabetically (default: NULL)
+
+- severity_levels:
+
+  For type="severity", severity levels ordering (character vector).
+  Default: c("MILD", "MODERATE", "SEVERE")
 
 ## Value
 

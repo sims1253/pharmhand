@@ -1,4 +1,4 @@
-# Perform Indirect Comparison Using Bucher Method
+# Calculates indirect treatment effect comparing A vs C through common comparator B using the Bucher method (anchored indirect comparison).
 
 Calculates indirect treatment effect comparing A vs C through common
 comparator B using the Bucher method (anchored indirect comparison).
