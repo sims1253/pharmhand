@@ -62,7 +62,7 @@ generate_efficacy_report <- function(
 
 	# Section 3.1: Primary Endpoint Summary
 	message("Building Primary Endpoint Summary (Table 3.1)")
-	primary_content <- create_primary_endpoint_table(advs, trt_n)
+	primary_content <- create_primary_endpoint_table(advs)
 	primary_section <- ReportSection(
 		title = "Primary Endpoint Analysis",
 		section_type = "efficacy",
@@ -71,7 +71,7 @@ generate_efficacy_report <- function(
 
 	# Section 3.2: Change from Baseline
 	message("Building Change from Baseline (Table 3.2)")
-	cfb_content <- create_cfb_summary_table(advs, trt_n)
+	cfb_content <- create_cfb_summary_table(advs)
 	cfb_section <- ReportSection(
 		title = "Change from Baseline Analysis",
 		section_type = "efficacy",
@@ -80,7 +80,7 @@ generate_efficacy_report <- function(
 
 	# Section 3.3: Vital Signs by Visit
 	message("Building Vital Signs by Visit (Table 3.3)")
-	vs_content <- create_vs_by_visit_table(advs, trt_n)
+	vs_content <- create_vs_by_visit_table(advs)
 	vs_section <- ReportSection(
 		title = "Vital Signs by Study Visit",
 		section_type = "efficacy",
@@ -89,7 +89,7 @@ generate_efficacy_report <- function(
 
 	# Section 3.4: Laboratory Parameters
 	message("Building Laboratory Parameters (Table 3.4)")
-	lab_content <- create_lab_summary_table(adlb, trt_n)
+	lab_content <- create_lab_summary_table(adlb)
 	lab_section <- ReportSection(
 		title = "Laboratory Parameters",
 		section_type = "efficacy",
@@ -98,7 +98,7 @@ generate_efficacy_report <- function(
 
 	# Section 3.5: Laboratory Shift Table
 	message("Building Laboratory Shift Table (Table 3.5)")
-	shift_content <- create_lab_shift_table(adlb, trt_n)
+	shift_content <- create_lab_shift_table(adlb)
 	shift_section <- ReportSection(
 		title = "Laboratory Shift Analysis",
 		section_type = "efficacy",

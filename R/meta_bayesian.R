@@ -12,7 +12,7 @@ NULL
 #' @param study_labels Character vector of study names
 #' @param effect_measure Character. Effect type
 #' @param prior_mu Prior for overall effect: list(mean, sd)
-#' @param prior_tau Prior for heterogeneity: list(type, params)
+#' @param prior_tau Prior for heterogeneity: list(type, scale)
 #' @param chains Integer. Number of MCMC chains. Default: 4
 #' @param iter Integer. Total iterations per chain. Default: 4000
 #' @param warmup Integer. Warmup iterations. Default: 2000
@@ -66,6 +66,21 @@ bayesian_meta_analysis <- function(
 		study_labels <- paste("Study", seq_len(k))
 	}
 
+	assert_numeric(yi, "yi")
+	assert_numeric(sei, "sei")
+	if (length(yi) != length(sei)) {
+		ph_abort("'yi' and 'sei' must have the same length", call. = FALSE)
+	}
+	if (any(sei <= 0, na.rm = TRUE)) {
+		ph_abort("'sei' must contain only positive values", call. = FALSE)
+	}
+	if (!is.null(study_labels) && length(study_labels) != k) {
+		ph_abort(
+			sprintf("'study_labels' must have length %d to match 'yi'", k),
+			call. = FALSE
+		)
+	}
+
 	# Prepare data for brms
 	data <- data.frame(
 		yi = yi,
@@ -88,11 +103,12 @@ bayesian_meta_analysis <- function(
 		),
 		brms::prior_string(
 			sprintf(
-				"%s(0, %f, lb = 0)",
+				"%s(0, %f)",
 				if (prior_tau$type == "half_cauchy") "cauchy" else "normal",
 				prior_tau$scale
 			),
-			class = "sd"
+			class = "sd",
+			lb = if (prior_tau$type == "half_cauchy") 0 else NULL
 		)
 	)
 
