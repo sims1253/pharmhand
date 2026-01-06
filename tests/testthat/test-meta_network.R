@@ -346,13 +346,13 @@ test_that("network_meta creates proper comparison structure", {
 })
 
 test_that("create_network_plot handles disconnected components", {
-	# Network with disconnected treatments
+	# Network with disconnected treatments (two separate components: A-B and X-Y)
 	disconnected_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "X", "Y"),
-		treat2 = c("B", "X", "Y"), # X-Y only connected to each other
-		effect = log(c(0.75, 0.85, 0.90)),
-		se = c(0.12, 0.15, 0.18)
+		study = c("S1", "S2"),
+		treat1 = c("A", "X"),
+		treat2 = c("B", "Y"), # X-Y comparison forms disconnected component
+		effect = log(c(0.75, 0.85)),
+		se = c(0.12, 0.15)
 	)
 
 	nma_res <- network_meta(disconnected_data, effect_measure = "hr")

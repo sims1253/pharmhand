@@ -62,6 +62,22 @@ network_meta <- function(
 
 	admiraldev::assert_data_frame(data)
 
+	# Validate required columns
+	required_cols <- c("study", "treat1", "treat2", effect_var, se_var)
+	missing_cols <- setdiff(required_cols, names(data))
+	if (length(missing_cols) > 0) {
+		ph_abort(sprintf(
+			"Missing required columns: %s",
+			paste(missing_cols, collapse = ", ")
+		))
+	}
+
+	# Check for self-comparisons
+	self_comp <- data$treat1 == data$treat2
+	if (any(self_comp, na.rm = TRUE)) {
+		ph_abort("Self-comparisons (treat1 == treat2) are not allowed")
+	}
+
 	# Rename columns for internal use
 	df <- data.frame(
 		study = data[[study_var]],
@@ -124,6 +140,12 @@ network_meta <- function(
 				est <- effects
 				se <- ses
 			} else {
+				# Check for zero or negative standard errors
+				if (any(ses <= 0, na.rm = TRUE)) {
+					ph_abort(
+						"Standard errors must be positive (got zero or negative values)"
+					)
+				}
 				# Simple inverse-variance pooling
 				wi <- 1 / ses^2
 				est <- sum(wi * effects) / sum(wi)
@@ -160,6 +182,12 @@ network_meta <- function(
 				ses <- bridge_studies$se
 
 				if (length(effects) > 1) {
+					# Check for zero or negative standard errors
+					if (any(ses <= 0, na.rm = TRUE)) {
+						ph_abort(
+							"Standard errors must be positive (got zero or negative values)"
+						)
+					}
 					wi <- 1 / ses^2
 					bridge_est <- sum(wi * effects) / sum(wi)
 					bridge_se <- sqrt(1 / sum(wi))
