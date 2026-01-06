@@ -65,7 +65,7 @@ parse_config_registry <- function(config) {
 				order = sg_config$order,
 				filter_values = sg_config$filter_values,
 				source = "yaml",
-				priority = 0
+				priority = 0L
 			)
 		}
 	}
@@ -81,7 +81,7 @@ parse_config_registry <- function(config) {
 				description = pop_config$description,
 				flag_value = pop_config$flag_value %||% "Y",
 				source = "yaml",
-				priority = 0
+				priority = 0L
 			)
 		}
 	}
@@ -97,7 +97,7 @@ parse_config_registry <- function(config) {
 			min_subjects = config$soc_config$min_subjects %||% 1,
 			top_n = config$soc_config$top_n,
 			source = "yaml",
-			priority = 0
+			priority = 0L
 		)
 	}
 
@@ -112,7 +112,7 @@ parse_config_registry <- function(config) {
 			top_n_per_soc = config$pt_config$top_n_per_soc,
 			show_pt_codes = config$pt_config$show_pt_codes %||% FALSE,
 			source = "yaml",
-			priority = 0
+			priority = 0L
 		)
 	}
 
@@ -164,9 +164,9 @@ define_subgroup_config <- function(
 	labels = NULL,
 	order = NULL,
 	filter_values = NULL,
-	priority = 100
+	priority = 100L
 ) {
-	if (!inherits(registry, "ConfigurationRegistry")) {
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
 		ph_abort("registry must be a ConfigurationRegistry object")
 	}
 	admiraldev::assert_character_scalar(name)
@@ -216,9 +216,9 @@ define_population_config <- function(
 	label = NULL,
 	description = NULL,
 	flag_value = "Y",
-	priority = 100
+	priority = 100L
 ) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 	admiraldev::assert_character_scalar(name)
 	admiraldev::assert_character_scalar(variable)
 
@@ -252,7 +252,7 @@ define_population_config <- function(
 #' config <- get_subgroup_config(registry, "age_groups")
 #' }
 get_subgroup_config <- function(registry, name) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 	admiraldev::assert_character_scalar(name)
 
 	registry@subgroups[[name]]
@@ -275,7 +275,7 @@ get_subgroup_config <- function(registry, name) {
 #' config <- get_population_config(registry, "SAF")
 #' }
 get_population_config <- function(registry, name) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 	admiraldev::assert_character_scalar(name)
 
 	registry@populations[[name]]
@@ -297,7 +297,7 @@ get_population_config <- function(registry, name) {
 #' list_subgroups(registry)
 #' }
 list_subgroups <- function(registry) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 	names(registry@subgroups)
 }
 
@@ -317,7 +317,7 @@ list_subgroups <- function(registry) {
 #' list_populations(registry)
 #' }
 list_populations <- function(registry) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 	names(registry@populations)
 }
 
@@ -351,7 +351,7 @@ update_soc_config <- function(
 	min_subjects = NULL,
 	top_n = NULL
 ) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 
 	current <- registry@soc_config
 	if (is.null(current)) {
@@ -371,7 +371,7 @@ update_soc_config <- function(
 		current@top_n <- top_n
 	}
 	current@source <- "r_api"
-	current@priority <- 100
+	current@priority <- 100L
 
 	registry@soc_config <- current
 	registry
@@ -406,7 +406,7 @@ update_pt_config <- function(
 	min_subjects = NULL,
 	top_n_per_soc = NULL
 ) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 
 	current <- registry@pt_config
 	if (is.null(current)) {
@@ -426,7 +426,7 @@ update_pt_config <- function(
 		current@top_n_per_soc <- top_n_per_soc
 	}
 	current@source <- "r_api"
-	current@priority <- 100
+	current@priority <- 100L
 
 	registry@pt_config <- current
 	registry
@@ -450,7 +450,7 @@ update_pt_config <- function(
 #' batch_size <- get_performance_setting(registry, "docx.batch_size", 50)
 #' }
 get_performance_setting <- function(registry, name, default = NULL) {
-	stopifnot(inherits(registry, "ConfigurationRegistry"))
+	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
 
 	# Navigate nested structure (e.g., "docx.batch_size")
 	parts <- strsplit(name, "\\.")[[1]]

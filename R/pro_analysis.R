@@ -370,7 +370,13 @@ create_ttd_analysis <- function(
 			dplyr::filter(.data$deteriorated) |>
 			dplyr::group_by(dplyr::across(dplyr::all_of(c(subject_var, trt_var)))) |>
 			dplyr::summarise(
-				event_time = min(.data[[time_var]], na.rm = TRUE),
+				event_time = if (
+					length(.data[[time_var]][!is.na(.data[[time_var]])]) == 0
+				) {
+					NA_real_
+				} else {
+					min(.data[[time_var]], na.rm = TRUE)
+				},
 				event = 1L,
 				.groups = "drop"
 			)
@@ -386,7 +392,13 @@ create_ttd_analysis <- function(
 			) |>
 			dplyr::group_by(dplyr::across(dplyr::all_of(c(subject_var, trt_var)))) |>
 			dplyr::summarise(
-				event_time = min(.data[[time_var]], na.rm = TRUE),
+				event_time = if (
+					length(.data[[time_var]][!is.na(.data[[time_var]])]) == 0
+				) {
+					NA_real_
+				} else {
+					min(.data[[time_var]], na.rm = TRUE)
+				},
 				event = 1L,
 				.groups = "drop"
 			)

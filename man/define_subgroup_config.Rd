@@ -11,7 +11,7 @@ define_subgroup_config(
   labels = NULL,
   order = NULL,
   filter_values = NULL,
-  priority = 100
+  priority = 100L
 )
 }
 \arguments{

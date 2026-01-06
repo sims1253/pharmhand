@@ -1,7 +1,6 @@
 # Test S7 architecture and high-performance reporting
 library(testthat)
 library(pharmhand)
-source("fixtures.R")
 
 test_that("ADaMData and Analysis Core works", {
 	adsl <- create_mock_adsl(n = 20)

@@ -3,7 +3,6 @@
 
 library(testthat)
 library(pharmhand)
-source("fixtures.R")
 
 # =============================================================================
 # Tests for calculate_smd() - Continuous Variables

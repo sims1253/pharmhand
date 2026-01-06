@@ -264,22 +264,14 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 				n = dplyr::n_distinct(.data$USUBJID),
 				.groups = "drop"
 			) |>
-			dplyr::left_join(trt_n, by = trt_var)
-
-		trt_col <- as.character(result[[trt_var]])
-		for (i in seq_len(nrow(result))) {
-			trt <- trt_col[i]
-			N_total <- trt_n$N[trt_n[[trt_var]] == trt]
-			if (length(N_total) == 0 || N_total == 0) {
-				ph_warn(sprintf(
-					"No subjects found for treatment '%s', skipping percentage calculation",
-					trt
-				))
-				result$pct[i] <- NA_real_
-			} else {
-				result$pct[i] <- round(result$n[i] / N_total * 100, 1)
-			}
-		}
+			dplyr::left_join(trt_n, by = trt_var) |>
+			dplyr::mutate(
+				pct = dplyr::if_else(
+					.data$N == 0,
+					NA_real_,
+					round(.data$n / .data$N * 100, 1)
+				)
+			)
 
 		result |>
 			dplyr::mutate(Category = category_label)
@@ -336,8 +328,8 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 	overview_formatted <- overview_combined |>
 		dplyr::mutate(
 			value = dplyr::case_when(
-				is.na(pct) ~ "--",
-				TRUE ~ sprintf("%d (%.1f%%)", n, pct)
+				is.na(.data$pct) ~ "--",
+				TRUE ~ sprintf("%d (%.1f%%)", .data$n, .data$pct)
 			)
 		) |>
 		dplyr::select("Category", dplyr::all_of(trt_var), "value") |>
