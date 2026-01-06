@@ -524,8 +524,8 @@ test_that("create_ae_exposure_table: custom conf_level", {
 })
 
 test_that(
-		"create_ae_exposure_table: returns ClinicalTable with correct structure",
-		{
+	"create_ae_exposure_table: returns ClinicalTable with correct structure",
+	{
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 

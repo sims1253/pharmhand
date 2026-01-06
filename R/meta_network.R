@@ -25,7 +25,7 @@ NULL
 #'   "rd", "md", "smd"
 #' @param model Character. "fixed" or "random". Default: "random"
 #' @param method Character. NMA method: "bucher" (simple),
-#'   "graph" (if netmeta available)
+#'   "graph" (not yet implemented, defaults to bucher)
 #' @param conf_level Numeric. Confidence level. Default: 0.95
 #'
 #' @return List with relative effects, rankings, and network structure
@@ -88,6 +88,14 @@ network_meta <- function(
 		stringsAsFactors = FALSE
 	)
 
+	# Validate numeric columns
+	if (!is.numeric(df$effect)) {
+		ph_abort(sprintf("Column '%s' must be numeric", effect_var))
+	}
+	if (!is.numeric(df$se)) {
+		ph_abort(sprintf("Column '%s' must be numeric", se_var))
+	}
+
 	# Get all treatments
 	treatments <- sort(unique(c(df$treat1, df$treat2)))
 	n_treatments <- length(treatments)
@@ -135,6 +143,15 @@ network_meta <- function(
 				-studies$effect
 			)
 			ses <- studies$se
+
+			# Warn if NAs detected
+			if (anyNA(effects) || anyNA(ses)) {
+				ph_warn(sprintf(
+					"NA values detected in comparison %s vs %s",
+					reference,
+					trt
+				))
+			}
 
 			if (length(effects) == 1) {
 				est <- effects
@@ -502,6 +519,9 @@ calculate_sucra <- function(
 	mean_rank <- colMeans(rank_matrix)
 
 	# Create ranking summary
+	# Note: ranking is ordinal based on estimate magnitude.
+	# For ratio measures (HR/OR/RR), lower is typically better.
+	# For difference measures, interpretation depends on outcome direction.
 	ranking_summary <- data.frame(
 		treatment = treatments,
 		mean_rank = mean_rank,
@@ -552,7 +572,7 @@ calculate_sucra <- function(
 #' nma_data <- data.frame(
 #'   study = c("S1", "S2", "S3"),
 #'   treat1 = c("A", "B", "A"),
-#'   treat2 = c("B", "C", "A"),
+#'   treat2 = c("B", "C", "C"),
 #'   effect = log(c(0.75, 0.90, 0.80)),
 #'   se = c(0.12, 0.15, 0.18)
 #' )

@@ -128,20 +128,30 @@ bayesian_meta_analysis <- function(
 	formula <- brms::bf(yi | se(sei) ~ 1 + (1 | study))
 
 	# Build priors
+	# Validate prior_tau$type
+	valid_tau_types <- c("half_cauchy", "half_normal", "exponential")
+	if (!prior_tau$type %in% valid_tau_types) {
+		ph_abort(sprintf(
+			"prior_tau$type must be one of: %s",
+			paste(valid_tau_types, collapse = ", ")
+		))
+	}
+
+	# Build tau prior string based on type
+	# Note: brms uses lb (lower bound) to enforce non-negative constraints
+	tau_prior_str <- switch(
+		prior_tau$type,
+		"half_cauchy" = sprintf("cauchy(0, %f)", prior_tau$scale),
+		"half_normal" = sprintf("normal(0, %f)", prior_tau$scale),
+		"exponential" = sprintf("exponential(%f)", 1 / prior_tau$scale)
+	)
+
 	priors <- c(
 		brms::prior_string(
 			sprintf("normal(%f, %f)", prior_mu$mean, prior_mu$sd),
 			class = "Intercept"
 		),
-		brms::prior_string(
-			sprintf(
-				"%s(0, %f)",
-				if (prior_tau$type == "half_cauchy") "cauchy" else "normal",
-				prior_tau$scale
-			),
-			class = "sd",
-			lb = if (prior_tau$type == "half_cauchy") 0 else NULL
-		)
+		brms::prior_string(tau_prior_str, class = "sd", lb = 0)
 	)
 
 	# Fit model

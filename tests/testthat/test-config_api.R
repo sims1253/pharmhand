@@ -813,7 +813,9 @@ test_that("get_performance_setting() returns default for missing setting", {
 	expect_equal(value, "default_value")
 })
 
-test_that("get_performance_setting() returns default for completely missing path", {
+test_that(
+	"get_performance_setting() returns default for completely missing path",
+	{
 	config_list <- create_test_config()
 	registry <- pharmhand:::parse_config_registry(config_list)
 
@@ -847,7 +849,9 @@ test_that("get_performance_setting() works with deeply nested settings", {
 	expect_equal(value, 24)
 })
 
-test_that("get_performance_setting() returns NULL for missing setting without default", {
+test_that(
+	"get_performance_setting() returns NULL for missing setting without default",
+	{
 	config_list <- create_test_config()
 	registry <- pharmhand:::parse_config_registry(config_list)
 
@@ -1103,7 +1107,9 @@ test_that("load_config() throws error for non-existent file", {
 	)
 })
 
-test_that("load_config() returns registry with expected structure from minimal YAML", {
+test_that(
+	"load_config() returns registry with expected structure from minimal YAML",
+	{
 	# Create a minimal temporary config file
 	temp_file <- tempfile(fileext = ".yaml")
 	writeLines("subgroups: {}", temp_file)

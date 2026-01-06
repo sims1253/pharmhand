@@ -108,10 +108,8 @@ test_that("calculate_ae_tte_data errors with missing ADSL columns", {
 	)
 })
 
-test_that(
-		"calculate_ae_tte_data errors when neither TRTDURD nor
-		TRTEDT/TRTSDT available",
-		{
+test_that("calculate_ae_tte_data errors when neither TRTDURD nor
+		TRTEDT/TRTSDT available", {
 	adsl <- data.frame(
 		USUBJID = c("SUBJ001", "SUBJ002"),
 		SAFFL = c("Y", "Y"),
@@ -219,8 +217,8 @@ test_that("calculate_ae_tte_data filters to SAFFL == 'Y'", {
 })
 
 test_that(
-		"calculate_ae_tte_data handles multiple events per subject (takes first)",
-		{
+	"calculate_ae_tte_data handles multiple events per subject (takes first)",
+	{
 	adsl <- data.frame(
 		USUBJID = c("SUBJ001"),
 		SAFFL = c("Y"),
