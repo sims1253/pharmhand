@@ -48,7 +48,9 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
+#> Error: Self-comparisons (treat1 == treat2) are not allowed
 table <- create_league_table(nma_result)
+#> Error: object 'nma_result' not found
 table@type
-#> [1] "league_table"
+#> Error in table@type: no applicable method for `@` applied to an object of class "function"
 ```
