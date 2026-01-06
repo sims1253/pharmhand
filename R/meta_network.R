@@ -419,6 +419,10 @@ node_splitting <- function(
 #'   Set to NULL for non-deterministic results.
 #'
 #' @return List with rankings, SUCRA/P-scores, and rankogram data
+#' @note When `seed` is not NULL, the global random number generator state is
+#'   modified via `set.seed()`. If you need to preserve the RNG state, either
+#'   set `seed = NULL` and manage seeding externally, or save/restore
+#'   `.Random.seed` before and after calling this function.
 #' @export
 #' @examples
 #' # Calculate SUCRA rankings

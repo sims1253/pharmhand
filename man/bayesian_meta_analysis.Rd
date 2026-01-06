@@ -77,3 +77,24 @@ Install dependencies with:
 Note: rstan may require additional setup. See
 \url{https://mc-stan.org/users/interfaces/rstan} for details.
 }
+\examples{
+\dontrun{
+# Basic Bayesian random-effects meta-analysis of hazard ratios
+# Effect estimates must be on log scale for ratio measures
+yi <- log(c(0.75, 0.82, 0.68, 0.91))  # log(HR) from 4 studies
+sei <- c(0.12, 0.15, 0.18, 0.14)       # standard errors
+
+result <- bayesian_meta_analysis(
+  yi = yi,
+  sei = sei,
+  effect_measure = "hr",  # Hazard ratio (requires log-transformed yi)
+  chains = 2,
+  iter = 2000
+)
+
+# View posterior summary
+result$posterior_mean
+result$ci_95
+result$interpretation
+}
+}
