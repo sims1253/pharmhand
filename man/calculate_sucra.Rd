@@ -25,6 +25,12 @@ List with rankings, SUCRA/P-scores, and rankogram data
 Calculates ranking probabilities and SUCRA (Surface Under Cumulative
 Ranking curve) or P-scores for treatments in network meta-analysis.
 }
+\note{
+When \code{seed} is not NULL, the global random number generator state is
+modified via \code{set.seed()}. If you need to preserve the RNG state, either
+set \code{seed = NULL} and manage seeding externally, or save/restore
+\code{.Random.seed} before and after calling this function.
+}
 \examples{
 # Calculate SUCRA rankings
 nma_data <- data.frame(
