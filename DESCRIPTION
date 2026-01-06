@@ -19,7 +19,7 @@ Imports:
     S7,
     officer,
     flextable,
-    dplyr,
+    dplyr (>= 1.1.0),
     tidyr,
     rlang,
     admiraldev,

@@ -218,7 +218,9 @@ define_population_config <- function(
 	flag_value = "Y",
 	priority = 100L
 ) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 	admiraldev::assert_character_scalar(name)
 	admiraldev::assert_character_scalar(variable)
 
@@ -252,7 +254,9 @@ define_population_config <- function(
 #' config <- get_subgroup_config(registry, "age_groups")
 #' }
 get_subgroup_config <- function(registry, name) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 	admiraldev::assert_character_scalar(name)
 
 	registry@subgroups[[name]]
@@ -275,7 +279,9 @@ get_subgroup_config <- function(registry, name) {
 #' config <- get_population_config(registry, "SAF")
 #' }
 get_population_config <- function(registry, name) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 	admiraldev::assert_character_scalar(name)
 
 	registry@populations[[name]]
@@ -297,7 +303,9 @@ get_population_config <- function(registry, name) {
 #' list_subgroups(registry)
 #' }
 list_subgroups <- function(registry) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 	names(registry@subgroups)
 }
 
@@ -317,7 +325,9 @@ list_subgroups <- function(registry) {
 #' list_populations(registry)
 #' }
 list_populations <- function(registry) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 	names(registry@populations)
 }
 
@@ -351,7 +361,9 @@ update_soc_config <- function(
 	min_subjects = NULL,
 	top_n = NULL
 ) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 
 	current <- registry@soc_config
 	if (is.null(current)) {
@@ -406,7 +418,9 @@ update_pt_config <- function(
 	min_subjects = NULL,
 	top_n_per_soc = NULL
 ) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 
 	current <- registry@pt_config
 	if (is.null(current)) {
@@ -450,7 +464,9 @@ update_pt_config <- function(
 #' batch_size <- get_performance_setting(registry, "docx.batch_size", 50)
 #' }
 get_performance_setting <- function(registry, name, default = NULL) {
-	stopifnot(S7::S7_inherits(registry, ConfigurationRegistry))
+	if (!S7::S7_inherits(registry, ConfigurationRegistry)) {
+		ph_abort("registry must be a ConfigurationRegistry object")
+	}
 
 	# Navigate nested structure (e.g., "docx.batch_size")
 	parts <- strsplit(name, "\\.")[[1]]

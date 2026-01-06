@@ -15,6 +15,9 @@ NULL
 #' @param treat1_var Character. Treatment 1 column. Default: "treat1"
 #' @param treat2_var Character. Treatment 2 column. Default: "treat2"
 #' @param effect_var Character. Effect estimate column. Default: "effect"
+#' @details For ratio measures ("hr", "or", "rr"), effect estimates must be on
+#'   the **log scale**. For difference measures ("rd", "md", "smd"), effect
+#'   estimates must be on the **raw scale**.
 #' @param se_var Character. Standard error column. Default: "se"
 #' @param reference Character. Reference treatment.
 #'   Default: first alphabetically

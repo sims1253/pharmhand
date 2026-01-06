@@ -424,7 +424,7 @@ test_that("define_population_config() throws error for invalid registry", {
 			"name",
 			"variable"
 		),
-		"S7::S7_inherits"
+		"registry must be a ConfigurationRegistry object"
 	)
 })
 
@@ -700,7 +700,7 @@ test_that("update_soc_config() preserves existing values when updating some", {
 test_that("update_soc_config() throws error for invalid registry", {
 	expect_error(
 		update_soc_config("not_a_registry", sort_by = "alphabetical"),
-		"S7::S7_inherits"
+		"registry must be a ConfigurationRegistry object"
 	)
 })
 
@@ -783,7 +783,7 @@ test_that("update_pt_config() preserves existing values when updating some", {
 test_that("update_pt_config() throws error for invalid registry", {
 	expect_error(
 		update_pt_config(NULL, sort_by = "alphabetical"),
-		"S7::S7_inherits"
+		"registry must be a ConfigurationRegistry object"
 	)
 })
 
@@ -914,7 +914,7 @@ test_that("get_performance_setting() handles single-level setting", {
 test_that("get_performance_setting() throws error for invalid registry", {
 	expect_error(
 		get_performance_setting("not_a_registry", "setting.name"),
-		"S7::S7_inherits"
+		"registry must be a ConfigurationRegistry object"
 	)
 })
 
