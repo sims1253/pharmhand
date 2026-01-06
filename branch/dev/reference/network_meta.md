@@ -74,6 +74,12 @@ network_meta(
 
 List with relative effects, rankings, and network structure
 
+## Details
+
+For ratio measures ("hr", "or", "rr"), effect estimates must be on the
+**log scale**. For difference measures ("rd", "md", "smd"), effect
+estimates must be on the **raw scale**.
+
 ## Examples
 
 ``` r
