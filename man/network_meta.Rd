@@ -54,6 +54,11 @@ List with relative effects, rankings, and network structure
 Conducts network meta-analysis (NMA) to compare multiple treatments
 simultaneously using direct and indirect evidence.
 }
+\details{
+For ratio measures ("hr", "or", "rr"), effect estimates must be on
+the \strong{log scale}. For difference measures ("rd", "md", "smd"), effect
+estimates must be on the \strong{raw scale}.
+}
 \examples{
 # Network meta-analysis of 4 studies
 nma_data <- data.frame(
