@@ -10,7 +10,8 @@ create_league_table(
   nma_result,
   digits = 2,
   show_ci = TRUE,
-  highlight_sig = TRUE
+  highlight_sig = TRUE,
+  conf_level = 0.95
 )
 ```
 
@@ -32,6 +33,10 @@ create_league_table(
 
   Logical. Highlight significant comparisons. Default: TRUE
 
+- conf_level:
+
+  Numeric. Confidence level. Default: 0.95
+
 ## Value
 
 ClinicalTable with league table matrix
@@ -43,14 +48,12 @@ ClinicalTable with league table matrix
 nma_data <- data.frame(
   study = c("S1", "S2", "S3"),
   treat1 = c("A", "B", "A"),
-  treat2 = c("B", "C", "A"),
+  treat2 = c("B", "C", "C"),
   effect = log(c(0.75, 0.90, 0.80)),
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
-#> Error: Self-comparisons (treat1 == treat2) are not allowed
 table <- create_league_table(nma_result)
-#> Error: object 'nma_result' not found
 table@type
-#> Error in table@type: no applicable method for `@` applied to an object of class "function"
+#> [1] "league_table"
 ```

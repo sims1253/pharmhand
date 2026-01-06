@@ -63,8 +63,8 @@ network_meta(
 
 - method:
 
-  Character. NMA method: "bucher" (simple), "graph" (if netmeta
-  available)
+  Character. NMA method: "bucher" (simple), "graph" (not yet
+  implemented, defaults to bucher)
 
 - conf_level:
 
