@@ -32,6 +32,14 @@ calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000, seed = 42)
 
 List with rankings, SUCRA/P-scores, and rankogram data
 
+## Note
+
+When `seed` is not NULL, the global random number generator state is
+modified via [`set.seed()`](https://rdrr.io/r/base/Random.html). If you
+need to preserve the RNG state, either set `seed = NULL` and manage
+seeding externally, or save/restore `.Random.seed` before and after
+calling this function.
+
 ## Examples
 
 ``` r

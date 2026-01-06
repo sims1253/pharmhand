@@ -78,6 +78,13 @@ Set to NULL for non-deterministic results.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>List with rankings, SUCRA/P-scores, and rankogram data</p>
     </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>When <code>seed</code> is not NULL, the global random number generator state is
+modified via <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code>. If you need to preserve the RNG state, either
+set <code>seed = NULL</code> and manage seeding externally, or save/restore
+<code>.Random.seed</code> before and after calling this function.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
