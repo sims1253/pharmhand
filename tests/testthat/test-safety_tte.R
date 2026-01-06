@@ -216,9 +216,7 @@ test_that("calculate_ae_tte_data filters to SAFFL == 'Y'", {
 	expect_false("SUBJ002" %in% result$USUBJID)
 })
 
-test_that(
-	"calculate_ae_tte_data handles multiple events per subject (takes first)",
-	{
+test_that("calculate_ae_tte_data takes first of multiple events/subject", {
 	adsl <- data.frame(
 		USUBJID = c("SUBJ001"),
 		SAFFL = c("Y"),

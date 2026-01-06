@@ -549,9 +549,7 @@ test_that("calculate_mcid requires anchor_var for anchor method", {
 	)
 })
 
-test_that(
-	"calculate_mcid distribution uses score_var if baseline_var missing",
-	{
+test_that("calculate_mcid uses score_var if baseline_var missing", {
 	data <- data.frame(
 		CHG = c(-5, -3, -4, -6, -2, 0, 2, 5, 3, 4)
 	)

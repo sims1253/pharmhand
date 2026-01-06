@@ -523,9 +523,7 @@ test_that("create_ae_exposure_table: custom conf_level", {
 	expect_true(S7::S7_inherits(result, ClinicalTable))
 })
 
-test_that(
-	"create_ae_exposure_table: returns ClinicalTable with correct structure",
-	{
+test_that("create_ae_exposure_table returns correct ClinicalTable", {
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 
