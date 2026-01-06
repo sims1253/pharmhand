@@ -348,6 +348,16 @@ create_km_plot <- function(
 		# Get cumulative censored counts for each strata
 		full_summary <- summary(fit)
 		n_full <- length(full_summary[["time"]])
+		# Handle n.censor which can be a matrix when there are multiple strata
+		n_censor_vals <- if (
+			"n.censor" %in%
+				names(full_summary) &&
+				!is.null(full_summary[["n.censor"]])
+		) {
+			as.vector(full_summary[["n.censor"]])
+		} else {
+			rep(0, n_full)
+		}
 		full_risk_df <- data.frame(
 			time = full_summary[["time"]],
 			strata = if ("strata" %in% names(full_summary)) {
@@ -355,11 +365,7 @@ create_km_plot <- function(
 			} else {
 				rep("All", n_full)
 			},
-			n_censor = if ("n.censor" %in% names(full_summary)) {
-				full_summary[["n.censor"]]
-			} else {
-				rep(0, n_full)
-			}
+			n_censor = n_censor_vals
 		) |>
 			dplyr::group_by(.data$strata) |>
 			dplyr::mutate(cum_censor = cumsum(.data$n_censor)) |>

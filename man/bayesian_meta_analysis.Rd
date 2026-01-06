@@ -24,13 +24,19 @@ bayesian_meta_analysis(
 
 \item{sei}{Numeric vector of standard errors}
 
-\item{study_labels}{Character vector of study names}
+\item{study_labels}{Character vector of study names (optional, defaults to
+"Study 1", "Study 2", etc.)}
 
-\item{effect_measure}{Character. Effect type}
+\item{effect_measure}{Character. Effect type: "hr" (hazard ratio),
+"or" (odds ratio), "rr" (risk ratio), "rd" (risk difference),
+"md" (mean difference), "smd" (standardized mean difference)}
 
-\item{prior_mu}{Prior for overall effect: list(mean, sd)}
+\item{prior_mu}{Prior for overall effect: list(mean, sd). Controls the
+normal prior on the overall pooled effect. Default: list(mean = 0, sd = 10)}
 
-\item{prior_tau}{Prior for heterogeneity: list(type, scale)}
+\item{prior_tau}{Prior for heterogeneity: list(type, scale). Valid types:
+"half_cauchy", "half_normal", "exponential". Scale controls expected
+heterogeneity magnitude. Default: list(type = "half_cauchy", scale = 0.5)}
 
 \item{chains}{Integer. Number of MCMC chains. Default: 4}
 
@@ -43,9 +49,31 @@ bayesian_meta_analysis(
 \item{...}{Additional arguments passed to brms::brm}
 }
 \value{
-List with posterior summaries or guidance for installation
+A list containing:
+\item{estimate}{Posterior mean of overall effect}
+\item{ci}{Credible interval (2.5\%, 97.5\%)}
+\item{tau}{Posterior mean of heterogeneity SD}
+\item{tau_ci}{Credible interval for tau}
+\item{k}{Number of studies}
+\item{effect_measure}{Effect measure used}
+\item{model}{Model type ("bayesian")}
+\item{fit}{Full brms fit object (when brms available)}
+
+If brms is not installed, returns a list with installation guidance.
 }
 \description{
 Interface for Bayesian meta-analysis using brms/rstan when available.
 Provides guidance when dependencies are not installed.
+}
+\details{
+This function requires the brms and rstan packages for full Bayesian
+inference. If these are not installed, the function returns guidance
+on installation and falls back to frequentist meta-analysis via
+\code{\link{meta_analysis}}.
+
+Install dependencies with:
+\code{install.packages(c("brms", "rstan"))}
+
+Note: rstan may require additional setup. See
+\url{https://mc-stan.org/users/interfaces/rstan} for details.
 }

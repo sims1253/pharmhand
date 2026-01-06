@@ -334,9 +334,13 @@ node_splitting <- function(
 	}
 
 	if (length(results) == 0) {
-		return(data.frame(
-			comparison = character(0),
-			direct_estimate = numeric(0),
+		return(list(
+			results = data.frame(
+				comparison = character(0),
+				direct_estimate = numeric(0),
+				stringsAsFactors = FALSE
+			),
+			effect_measure = effect_measure,
 			note = "No comparisons with both direct and indirect evidence"
 		))
 	}

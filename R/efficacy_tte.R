@@ -98,8 +98,10 @@ create_tte_summary_table <- function(
 	# Extract median and CI from survfit
 	km_summary <- summary(km_fit)$table
 	if (is.null(dim(km_summary))) {
-		# Single treatment arm
+		# Single treatment arm - convert to matrix and preserve column names
+		col_names <- names(km_summary)
 		km_summary <- matrix(km_summary, nrow = 1)
+		colnames(km_summary) <- col_names
 		rownames(km_summary) <- trt_levels[1]
 	}
 
@@ -163,20 +165,20 @@ create_tte_summary_table <- function(
 			# Extract survival estimates for this timepoint
 			if (length(trt_levels) > 1) {
 				idx <- which(landmark_summary$time == time_pt)
-				if (length(idx) != 1) {
-					if (length(idx) == 0) {
-						ph_warn(sprintf(
-							"No exact match for landmark timepoint %.1f, finding nearest",
-							time_pt
-						))
-						idx <- which.min(abs(landmark_summary$time - time_pt))
-					} else {
-						ph_warn(sprintf(
-							"Multiple matches for landmark timepoint %.1f, using first",
-							time_pt
-						))
-						idx <- idx[1]
-					}
+				if (length(idx) == 0) {
+					# No exact match - find nearest time point
+					ph_warn(sprintf(
+						"No exact match for landmark timepoint %.1f, finding nearest",
+						time_pt
+					))
+					idx <- which.min(abs(landmark_summary$time - time_pt))
+				}
+				# For multiple matches (common with multi-strata),
+				# use first without warning
+				# This is expected behavior when summary returns multiple
+				# entries at same time
+				if (length(idx) > 1) {
+					idx <- idx[1]
 				}
 				surv_vals <- landmark_summary$surv[idx]
 				lower_vals <- landmark_summary$lower[idx]
