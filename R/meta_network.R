@@ -242,6 +242,7 @@ network_meta <- function(
 		),
 		model = model,
 		effect_measure = effect_measure,
+		conf_level = conf_level,
 		method = "bucher_chain",
 		n_studies = nrow(df)
 	)
