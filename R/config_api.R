@@ -39,7 +39,12 @@ load_config <- function(path = NULL) {
 		ph_abort(sprintf("Configuration file not found: %s", path))
 	}
 
-	config <- yaml::read_yaml(path)
+	config <- tryCatch(
+		yaml::read_yaml(path),
+		error = function(e) {
+			ph_abort(sprintf("Failed to parse YAML file '%s': %s", path, e$message))
+		}
+	)
 	parse_config_registry(config)
 }
 
@@ -59,6 +64,12 @@ parse_config_registry <- function(config) {
 	if (!is.null(config$subgroups)) {
 		for (name in names(config$subgroups)) {
 			sg_config <- config$subgroups[[name]]
+			if (is.null(sg_config$variable)) {
+				ph_abort(sprintf(
+					"Subgroup '%s' missing required field 'variable'",
+					name
+				))
+			}
 			subgroups[[name]] <- SubgroupConfig(
 				variable = sg_config$variable,
 				labels = sg_config$labels %||% list(),
@@ -75,6 +86,12 @@ parse_config_registry <- function(config) {
 	if (!is.null(config$populations)) {
 		for (name in names(config$populations)) {
 			pop_config <- config$populations[[name]]
+			if (is.null(pop_config$variable)) {
+				ph_abort(sprintf(
+					"Population '%s' missing required field 'variable'",
+					name
+				))
+			}
 			populations[[name]] <- PopulationConfig(
 				variable = pop_config$variable,
 				label = pop_config$label,
@@ -89,6 +106,9 @@ parse_config_registry <- function(config) {
 	# Parse SOC config
 	soc_config <- NULL
 	if (!is.null(config$soc_config)) {
+		if (is.null(config$soc_config$variable)) {
+			ph_abort("soc_config missing required field 'variable'")
+		}
 		soc_config <- SOCConfig(
 			variable = config$soc_config$variable,
 			include_all = config$soc_config$include_all %||% TRUE,
@@ -104,6 +124,9 @@ parse_config_registry <- function(config) {
 	# Parse PT config
 	pt_config <- NULL
 	if (!is.null(config$pt_config)) {
+		if (is.null(config$pt_config$variable)) {
+			ph_abort("pt_config missing required field 'variable'")
+		}
 		pt_config <- PTConfig(
 			variable = config$pt_config$variable,
 			include_all = config$pt_config$include_all %||% TRUE,

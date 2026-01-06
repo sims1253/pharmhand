@@ -124,7 +124,7 @@ create_ae_summary_table <- function(
 	type <- match.arg(type)
 
 	# Input validation
-	if (!type %in% c("deaths") && !is.data.frame(adae)) {
+	if (type != "deaths" && !is.data.frame(adae)) {
 		assert_data_frame(adae, "adae")
 	}
 	if (type == "deaths" && !is.data.frame(adsl)) {
@@ -631,6 +631,14 @@ create_ae_table_severity <- function(
 			max_sev = as.character(max(.data$AESEV_ord, na.rm = TRUE)),
 			.groups = "drop"
 		) |>
+		dplyr::mutate(
+			max_sev = dplyr::if_else(
+				.data$max_sev == "-Inf",
+				NA_character_,
+				.data$max_sev
+			)
+		) |>
+		dplyr::filter(!is.na(.data$max_sev)) |>
 		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$max_sev) |>
 		dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
 		dplyr::left_join(trt_n, by = trt_var) |>

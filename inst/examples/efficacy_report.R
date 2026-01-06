@@ -57,7 +57,7 @@ generate_efficacy_report <- function(
 	# Section 3.1: Primary Endpoint Summary
 	message("Building Primary Endpoint Summary (Table 3.1)")
 
-	# Get treatment counts for denominators
+	# Get treatment counts for denominators (primary endpoint table only)
 	trt_n <- adsl |>
 		dplyr::filter(.data$SAFFL == "Y") |>
 		dplyr::group_by(.data$TRT01P) |>

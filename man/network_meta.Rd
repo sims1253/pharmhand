@@ -43,7 +43,7 @@ Default: first alphabetically}
 \item{model}{Character. "fixed" or "random". Default: "random"}
 
 \item{method}{Character. NMA method: "bucher" (simple),
-"graph" (if netmeta available)}
+"graph" (not yet implemented, defaults to bucher)}
 
 \item{conf_level}{Numeric. Confidence level. Default: 0.95}
 }

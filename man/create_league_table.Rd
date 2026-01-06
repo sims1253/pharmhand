@@ -9,7 +9,8 @@ create_league_table(
   nma_result,
   digits = 2,
   show_ci = TRUE,
-  highlight_sig = TRUE
+  highlight_sig = TRUE,
+  conf_level = 0.95
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ create_league_table(
 
 \item{highlight_sig}{Logical. Highlight significant comparisons.
 Default: TRUE}
+
+\item{conf_level}{Numeric. Confidence level. Default: 0.95}
 }
 \value{
 ClinicalTable with league table matrix
@@ -34,7 +37,7 @@ from a network meta-analysis.
 nma_data <- data.frame(
   study = c("S1", "S2", "S3"),
   treat1 = c("A", "B", "A"),
-  treat2 = c("B", "C", "A"),
+  treat2 = c("B", "C", "C"),
   effect = log(c(0.75, 0.90, 0.80)),
   se = c(0.12, 0.15, 0.18)
 )
