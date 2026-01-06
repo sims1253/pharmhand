@@ -1,5 +1,78 @@
 # Changelog
 
+## pharmhand 0.3.0.9000
+
+### Major Changes
+
+#### Test Suite Reorganization
+
+- **One-test-file-per-source-file convention**: Reorganized test files
+  to follow R testing best practices.
+  - Split `test-efficacy_tables.R` into `test-efficacy_cfb.R`,
+    `test-efficacy_lab.R`, `test-efficacy_primary.R`,
+    `test-efficacy_responder.R`, `test-efficacy_subgroup.R`, and
+    `test-efficacy_tte.R`
+  - Split `test-meta-analysis.R` into `test-meta_core.R`,
+    `test-meta_bayesian.R`, `test-meta_bias.R`, `test-meta_indirect.R`,
+    `test-meta_network.R`, and `test-meta_plots.R`
+  - Split `test-plotting.R` into `test-plotting_survival.R`,
+    `test-plotting_efficacy.R`, and `test-plotting_forest.R`
+  - Renamed `test-safety_tables.R` to `test-safety_summary.R` and
+    extracted `test-safety_comparison.R` and `test-safety_hierarchy.R`
+
+#### New Test Coverage
+
+- Added comprehensive tests for Configuration API (`test-config_api.R`)
+- Added comprehensive tests for Configuration Classes
+  (`test-config_classes.R`)
+
+### Bug Fixes
+
+#### Test Data Improvements
+
+- Fixed test data in safety TTE tests to use larger sample sizes (20+
+  subjects per arm) to avoid Cox model convergence issues
+- Fixed test data to avoid duplicate landmark timepoints in TTE summary
+  tests
+- Fixed test data for subgroup analysis to have adequate subjects per
+  subgroup (25+)
+- Fixed S7 class checks from `expect_s3_class()` to
+  [`S7::S7_inherits()`](https://rconsortium.github.io/S7/reference/S7_inherits.html)
+  for proper S7 class validation
+- Fixed error message regex patterns to match actual function outputs
+
+#### Source Code Fixes
+
+- Fixed `km_summary` matrix conversion in `efficacy_tte.R` to preserve
+  column names for single treatment arms
+- Fixed `pct` column warning in `safety_summary.R` by using proper
+  [`dplyr::mutate()`](https://dplyr.tidyverse.org/reference/mutate.html)
+  instead of for-loop assignment
+- Fixed `survfit` `n.censor` matrix handling in `plotting_survival.R` by
+  converting to vector
+- Fixed [`min()`](https://rdrr.io/r/base/Extremes.html) returning `-Inf`
+  in `pro_analysis.R` when no events present
+- Fixed S7 class checking in `config_api.R` to use
+  [`S7::S7_inherits()`](https://rconsortium.github.io/S7/reference/S7_inherits.html)
+  instead of [`inherits()`](https://rdrr.io/r/base/class.html)
+
+#### Test Cleanup
+
+- Removed tests for unimplemented `maic()` and `stc()` functions
+- Fixed missing `registry` variable in config API tests
+- Changed REML tests to use DerSimonian-Laird method to avoid
+  convergence warnings
+- Replaced `any(is.na())` with
+  [`anyNA()`](https://rdrr.io/r/base/NA.html) per jarl recommendations
+
+### Code Quality
+
+- All tests pass (1874 tests)
+- No warnings or skipped tests
+- lintr clean (line length compliance)
+- jarl check clean
+- devtools::check() passes with 0 errors, 0 warnings, 0 notes
+
 ## pharmhand 0.2.3.9000
 
 ### Documentation

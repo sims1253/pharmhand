@@ -12,7 +12,7 @@ define_population_config(
   label = NULL,
   description = NULL,
   flag_value = "Y",
-  priority = 100
+  priority = 100L
 )
 ```
 

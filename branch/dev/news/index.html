@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,66 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0.9000" id="pharmhand-0309000">pharmhand 0.3.0.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0309000"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-0-3-0-9000">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-0-3-0-9000"></a></h3>
+<div class="section level4">
+<h4 id="test-suite-reorganization-0-3-0-9000">Test Suite Reorganization<a class="anchor" aria-label="anchor" href="#test-suite-reorganization-0-3-0-9000"></a></h4>
+<ul><li>
+<strong>One-test-file-per-source-file convention</strong>: Reorganized test files to follow R testing best practices.
+<ul><li>Split <code>test-efficacy_tables.R</code> into <code>test-efficacy_cfb.R</code>, <code>test-efficacy_lab.R</code>, <code>test-efficacy_primary.R</code>, <code>test-efficacy_responder.R</code>, <code>test-efficacy_subgroup.R</code>, and <code>test-efficacy_tte.R</code>
+</li>
+<li>Split <code>test-meta-analysis.R</code> into <code>test-meta_core.R</code>, <code>test-meta_bayesian.R</code>, <code>test-meta_bias.R</code>, <code>test-meta_indirect.R</code>, <code>test-meta_network.R</code>, and <code>test-meta_plots.R</code>
+</li>
+<li>Split <code>test-plotting.R</code> into <code>test-plotting_survival.R</code>, <code>test-plotting_efficacy.R</code>, and <code>test-plotting_forest.R</code>
+</li>
+<li>Renamed <code>test-safety_tables.R</code> to <code>test-safety_summary.R</code> and extracted <code>test-safety_comparison.R</code> and <code>test-safety_hierarchy.R</code>
+</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-test-coverage-0-3-0-9000">New Test Coverage<a class="anchor" aria-label="anchor" href="#new-test-coverage-0-3-0-9000"></a></h4>
+<ul><li>Added comprehensive tests for Configuration API (<code>test-config_api.R</code>)</li>
+<li>Added comprehensive tests for Configuration Classes (<code>test-config_classes.R</code>)</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-0-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0-9000"></a></h3>
+<div class="section level4">
+<h4 id="test-data-improvements-0-3-0-9000">Test Data Improvements<a class="anchor" aria-label="anchor" href="#test-data-improvements-0-3-0-9000"></a></h4>
+<ul><li>Fixed test data in safety TTE tests to use larger sample sizes (20+ subjects per arm) to avoid Cox model convergence issues</li>
+<li>Fixed test data to avoid duplicate landmark timepoints in TTE summary tests</li>
+<li>Fixed test data for subgroup analysis to have adequate subjects per subgroup (25+)</li>
+<li>Fixed S7 class checks from <code>expect_s3_class()</code> to <code><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7::S7_inherits()</a></code> for proper S7 class validation</li>
+<li>Fixed error message regex patterns to match actual function outputs</li>
+</ul></div>
+<div class="section level4">
+<h4 id="source-code-fixes-0-3-0-9000">Source Code Fixes<a class="anchor" aria-label="anchor" href="#source-code-fixes-0-3-0-9000"></a></h4>
+<ul><li>Fixed <code>km_summary</code> matrix conversion in <code>efficacy_tte.R</code> to preserve column names for single treatment arms</li>
+<li>Fixed <code>pct</code> column warning in <code>safety_summary.R</code> by using proper <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate()</a></code> instead of for-loop assignment</li>
+<li>Fixed <code>survfit</code> <code>n.censor</code> matrix handling in <code>plotting_survival.R</code> by converting to vector</li>
+<li>Fixed <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min()</a></code> returning <code>-Inf</code> in <code>pro_analysis.R</code> when no events present</li>
+<li>Fixed S7 class checking in <code>config_api.R</code> to use <code><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7::S7_inherits()</a></code> instead of <code><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits()</a></code>
+</li>
+</ul></div>
+<div class="section level4">
+<h4 id="test-cleanup-0-3-0-9000">Test Cleanup<a class="anchor" aria-label="anchor" href="#test-cleanup-0-3-0-9000"></a></h4>
+<ul><li>Removed tests for unimplemented <code>maic()</code> and <code>stc()</code> functions</li>
+<li>Fixed missing <code>registry</code> variable in config API tests</li>
+<li>Changed REML tests to use DerSimonian-Laird method to avoid convergence warnings</li>
+<li>Replaced <code>any(is.na())</code> with <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA()</a></code> per jarl recommendations</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="code-quality-0-3-0-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-3-0-9000"></a></h3>
+<ul><li>All tests pass (1874 tests)</li>
+<li>No warnings or skipped tests</li>
+<li>lintr clean (line length compliance)</li>
+<li>jarl check clean</li>
+<li>devtools::check() passes with 0 errors, 0 warnings, 0 notes</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.3.9000" id="pharmhand-0239000">pharmhand 0.2.3.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0239000"></a></h2>
 <div class="section level3">

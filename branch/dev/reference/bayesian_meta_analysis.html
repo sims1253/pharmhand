@@ -9,7 +9,7 @@ Provides guidance when dependencies are not installed."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,19 +77,25 @@ Provides guidance when dependencies are not installed.</p>
 
 
 <dt id="arg-study-labels">study_labels<a class="anchor" aria-label="anchor" href="#arg-study-labels"></a></dt>
-<dd><p>Character vector of study names</p></dd>
+<dd><p>Character vector of study names (optional, defaults to
+"Study 1", "Study 2", etc.)</p></dd>
 
 
 <dt id="arg-effect-measure">effect_measure<a class="anchor" aria-label="anchor" href="#arg-effect-measure"></a></dt>
-<dd><p>Character. Effect type</p></dd>
+<dd><p>Character. Effect type: "hr" (hazard ratio),
+"or" (odds ratio), "rr" (risk ratio), "rd" (risk difference),
+"md" (mean difference), "smd" (standardized mean difference)</p></dd>
 
 
 <dt id="arg-prior-mu">prior_mu<a class="anchor" aria-label="anchor" href="#arg-prior-mu"></a></dt>
-<dd><p>Prior for overall effect: list(mean, sd)</p></dd>
+<dd><p>Prior for overall effect: list(mean, sd). Controls the
+normal prior on the overall pooled effect. Default: list(mean = 0, sd = 10)</p></dd>
 
 
 <dt id="arg-prior-tau">prior_tau<a class="anchor" aria-label="anchor" href="#arg-prior-tau"></a></dt>
-<dd><p>Prior for heterogeneity: list(type, scale)</p></dd>
+<dd><p>Prior for heterogeneity: list(type, scale). Valid types:
+"half_cauchy", "half_normal", "exponential". Scale controls expected
+heterogeneity magnitude. Default: list(type = "half_cauchy", scale = 0.5)</p></dd>
 
 
 <dt id="arg-chains">chains<a class="anchor" aria-label="anchor" href="#arg-chains"></a></dt>
@@ -114,7 +120,44 @@ Provides guidance when dependencies are not installed.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>List with posterior summaries or guidance for installation</p>
+    <p>A list containing:</p>
+<dl><dt>estimate</dt>
+<dd><p>Posterior mean of overall effect</p></dd>
+
+<dt>ci</dt>
+<dd><p>Credible interval (2.5%, 97.5%)</p></dd>
+
+<dt>tau</dt>
+<dd><p>Posterior mean of heterogeneity SD</p></dd>
+
+<dt>tau_ci</dt>
+<dd><p>Credible interval for tau</p></dd>
+
+<dt>k</dt>
+<dd><p>Number of studies</p></dd>
+
+<dt>effect_measure</dt>
+<dd><p>Effect measure used</p></dd>
+
+<dt>model</dt>
+<dd><p>Model type ("bayesian")</p></dd>
+
+<dt>fit</dt>
+<dd><p>Full brms fit object (when brms available)</p></dd>
+
+
+</dl><p>If brms is not installed, returns a list with installation guidance.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>This function requires the brms and rstan packages for full Bayesian
+inference. If these are not installed, the function returns guidance
+on installation and falls back to frequentist meta-analysis via
+<code><a href="meta_analysis.html">meta_analysis</a></code>.</p>
+<p>Install dependencies with:
+<code>install.packages(c("brms", "rstan"))</code></p>
+<p>Note: rstan may require additional setup. See
+<a href="https://mc-stan.org/users/interfaces/rstan" class="external-link">https://mc-stan.org/users/interfaces/rstan</a> for details.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

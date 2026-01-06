@@ -132,6 +132,7 @@ result@heterogeneity$I2
 
 # Forest plot
 forest_plot <- create_meta_forest_plot(result, title = "Treatment Effect")
+forest_plot@plot
 
 # Network meta-analysis
 nma_data <- data.frame(
@@ -142,6 +143,7 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
+nma_result$summary
 ```
 
 ## Classes

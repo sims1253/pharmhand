@@ -33,19 +33,26 @@ bayesian_meta_analysis(
 
 - study_labels:
 
-  Character vector of study names
+  Character vector of study names (optional, defaults to "Study 1",
+  "Study 2", etc.)
 
 - effect_measure:
 
-  Character. Effect type
+  Character. Effect type: "hr" (hazard ratio), "or" (odds ratio), "rr"
+  (risk ratio), "rd" (risk difference), "md" (mean difference), "smd"
+  (standardized mean difference)
 
 - prior_mu:
 
-  Prior for overall effect: list(mean, sd)
+  Prior for overall effect: list(mean, sd). Controls the normal prior on
+  the overall pooled effect. Default: list(mean = 0, sd = 10)
 
 - prior_tau:
 
-  Prior for heterogeneity: list(type, scale)
+  Prior for heterogeneity: list(type, scale). Valid types:
+  "half_cauchy", "half_normal", "exponential". Scale controls expected
+  heterogeneity magnitude. Default: list(type = "half_cauchy", scale =
+  0.5)
 
 - chains:
 
@@ -69,4 +76,50 @@ bayesian_meta_analysis(
 
 ## Value
 
-List with posterior summaries or guidance for installation
+A list containing:
+
+- estimate:
+
+  Posterior mean of overall effect
+
+- ci:
+
+  Credible interval (2.5%, 97.5%)
+
+- tau:
+
+  Posterior mean of heterogeneity SD
+
+- tau_ci:
+
+  Credible interval for tau
+
+- k:
+
+  Number of studies
+
+- effect_measure:
+
+  Effect measure used
+
+- model:
+
+  Model type ("bayesian")
+
+- fit:
+
+  Full brms fit object (when brms available)
+
+If brms is not installed, returns a list with installation guidance.
+
+## Details
+
+This function requires the brms and rstan packages for full Bayesian
+inference. If these are not installed, the function returns guidance on
+installation and falls back to frequentist meta-analysis via
+[`meta_analysis`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md).
+
+Install dependencies with: `install.packages(c("brms", "rstan"))`
+
+Note: rstan may require additional setup. See
+<https://mc-stan.org/users/interfaces/rstan> for details.
