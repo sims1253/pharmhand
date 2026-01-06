@@ -459,9 +459,14 @@ calculate_sucra <- function(
 	sucra <- numeric(n_treat)
 	names(sucra) <- treatments
 
-	for (i in seq_len(n_treat)) {
-		cum_probs <- cumsum(rank_probs[i, 1:(n_treat - 1)])
-		sucra[i] <- mean(cum_probs)
+	# Handle degenerate case of single treatment
+	if (n_treat == 1) {
+		sucra <- 1.0 # Single treatment is trivially best
+	} else {
+		for (i in seq_len(n_treat)) {
+			cum_probs <- cumsum(rank_probs[i, 1:(n_treat - 1)])
+			sucra[i] <- mean(cum_probs)
+		}
 	}
 
 	# Mean rank
@@ -509,6 +514,7 @@ calculate_sucra <- function(
 #' @param show_ci Logical. Show confidence intervals. Default: TRUE
 #' @param highlight_sig Logical. Highlight significant comparisons.
 #'   Default: TRUE
+#' @param conf_level Numeric. Confidence level. Default: 0.95
 #'
 #' @return ClinicalTable with league table matrix
 #' @export
@@ -528,7 +534,8 @@ create_league_table <- function(
 	nma_result,
 	digits = 2,
 	show_ci = TRUE,
-	highlight_sig = TRUE
+	highlight_sig = TRUE,
+	conf_level = 0.95
 ) {
 	if (!is.list(nma_result) || !"comparisons" %in% names(nma_result)) {
 		ph_abort("nma_result must be from network_meta()")
@@ -540,6 +547,9 @@ create_league_table <- function(
 	effect_measure <- nma_result$effect_measure
 	is_ratio <- effect_measure %in% c("hr", "or", "rr")
 	null_value <- if (is_ratio) 1 else 0
+
+	# Calculate z-score for confidence level
+	z <- stats::qnorm(1 - (1 - conf_level) / 2)
 
 	# Create matrix for league table
 	# Row treatment vs Column treatment
@@ -625,8 +635,8 @@ create_league_table <- function(
 				se_col <- if (is.na(se_col) || se_col == 0) se_floor else se_col
 				se_diff <- sqrt(se_row^2 + se_col^2)
 
-				ci_lower <- exp(log_diff - 1.96 * se_diff)
-				ci_upper <- exp(log_diff + 1.96 * se_diff)
+				ci_lower <- exp(log_diff - z * se_diff)
+				ci_upper <- exp(log_diff + z * se_diff)
 			} else {
 				est_row <- est_vs_ref[t_row]
 				est_col <- est_vs_ref[t_col]
@@ -638,8 +648,8 @@ create_league_table <- function(
 				se_col <- if (is.na(se_col) || se_col == 0) se_floor else se_col
 				se_diff <- sqrt(se_row^2 + se_col^2)
 
-				ci_lower <- estimate - 1.96 * se_diff
-				ci_upper <- estimate + 1.96 * se_diff
+				ci_lower <- estimate - z * se_diff
+				ci_upper <- estimate + z * se_diff
 			}
 
 			# Check significance
