@@ -1,7 +1,8 @@
-#' @title Publication Bias Assessment Functions
+#' Publication Bias Assessment Functions
+#'
+#' Functions for assessing and adjusting for publication bias in meta-analysis.
+#'
 #' @name meta_bias
-#' @description Functions for assessing and adjusting for publication bias in
-#'   meta-analysis.
 #' @seealso
 #'   \code{\link[=eggers_test]{eggers_test}} for Egger's regression test
 #'   of funnel plot asymmetry.
@@ -11,7 +12,7 @@
 NULL
 
 
-#' @title Egger's Test for Funnel Plot Asymmetry
+#' Egger's Test for Funnel Plot Asymmetry
 #'
 #' Performs Egger's linear regression test to assess funnel plot asymmetry,
 #' which may indicate publication bias.
@@ -129,7 +130,7 @@ eggers_test <- function(
 }
 
 
-#' @title Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
+#' Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
 #'
 #' Performs the Duval & Tweedie trim-and-fill method to estimate the number
 #' of missing studies and adjust the pooled effect for publication bias.
@@ -170,6 +171,18 @@ trim_and_fill <- function(
 ) {
 	side <- match.arg(side)
 	estimator <- match.arg(estimator)
+
+	# Validate maxiter
+	if (
+		!is.numeric(maxiter) ||
+			length(maxiter) != 1 ||
+			is.na(maxiter) ||
+			!is.finite(maxiter) ||
+			maxiter < 1
+	) {
+		ph_abort("'maxiter' must be a single positive integer >= 1")
+	}
+	maxiter <- as.integer(maxiter)
 
 	if (!S7::S7_inherits(meta_result, MetaResult)) {
 		ph_abort("meta_result must be a MetaResult object")

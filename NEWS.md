@@ -13,10 +13,7 @@
 
 ### Input Validation
 
-* Added validation in `eggers_test()` to require positive, non-missing standard errors
-* Added validation in `trim_and_fill()` to require positive, non-missing standard errors
-* Added validation in `meta_analysis()` to require positive, non-missing standard errors
-* Added validation in `calculate_heterogeneity()` to require positive, non-missing standard errors
+* Require positive, non-missing standard errors in `eggers_test()`, `trim_and_fill()`, `meta_analysis()`, and `calculate_heterogeneity()`
 
 ### Code Quality
 

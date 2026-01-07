@@ -197,6 +197,21 @@ create_time_to_first_ae <- function(
 	assert_numeric_scalar(conf_level, "conf_level")
 	assert_in_range(conf_level, 0, 1, "conf_level")
 
+	# Validate ref_group if provided
+	if (!is.null(ref_group)) {
+		if (!is.character(ref_group) || length(ref_group) != 1) {
+			ph_abort("'ref_group' must be a single character string")
+		}
+		trt_levels <- unique(c(adsl[[trt_var]], adae[[trt_var]]))
+		if (!(ref_group %in% trt_levels)) {
+			ph_abort(sprintf(
+				"'ref_group' value '%s' not found in treatment levels. Valid values: %s",
+				ref_group,
+				paste(trt_levels, collapse = ", ")
+			))
+		}
+	}
+
 	adae_cols <- c("USUBJID", "TRTEMFL", time_var)
 	missing_adae <- setdiff(adae_cols, names(adae))
 	if (length(missing_adae) > 0) {

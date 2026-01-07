@@ -369,8 +369,14 @@ create_spider_plot <- function(
 	# Add individual lines
 	if (!is.null(highlight_subjects)) {
 		# Non-highlighted subjects in gray
-		data_other <- data[!data[[subject_var]] %in% highlight_subjects, ]
-		data_highlight <- data[data[[subject_var]] %in% highlight_subjects, ]
+		data_other <- dplyr::filter(
+			data,
+			!(.data[[subject_var]] %in% highlight_subjects)
+		)
+		data_highlight <- dplyr::filter(
+			data,
+			.data[[subject_var]] %in% highlight_subjects
+		)
 
 		p <- p +
 			ggplot2::geom_line(
