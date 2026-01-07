@@ -141,7 +141,7 @@ test_that("create_subgroup_table works with TTE endpoint", {
 	skip_if_not_installed("survival")
 
 	set.seed(42)
-	adtte <- create_mock_tte_subgroup(n = 40)
+	adtte <- create_mock_tte_subgroup(n = 100)
 
 	tbl <- create_subgroup_table(
 		adtte,

@@ -23,6 +23,11 @@ NULL
 )
 
 #' Resolve color palette from parameter or options
+#'
+#' @param palette Optional character vector of colors or a single string naming
+#'   a palette. If NULL (default), uses the value of option "pharmhand.palette"
+#'   or falls back to the default Okabe-Ito palette.
+#' @return A character vector of color hex codes.
 #' @keywords internal
 .resolve_palette <- function(palette = NULL) {
 	if (!is.null(palette)) {
@@ -52,7 +57,9 @@ NULL
 }
 
 #' Create pharmhand plotting theme with consistent white background
+#'
 #' @param base_size Base font size for plot text elements (default: 11)
+#' @return A ggplot2 theme object
 #' @keywords internal
 .pharmhand_theme <- function(base_size = 11) {
 	ggplot2::theme_minimal(base_size = base_size) +

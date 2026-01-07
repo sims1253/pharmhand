@@ -734,7 +734,7 @@ test_that("update_pt_config() creates new PT config if none exists", {
 
 test_that("update_pt_config() can update multiple properties", {
 	config_list <- create_test_config()
-	registry <- parse_config_registry(config_list)
+	registry <- pharmhand:::parse_config_registry(config_list)
 
 	registry <- update_pt_config(
 		registry,

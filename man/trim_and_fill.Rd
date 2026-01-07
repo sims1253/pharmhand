@@ -2,10 +2,7 @@
 % Please edit documentation in R/meta_bias.R
 \name{trim_and_fill}
 \alias{trim_and_fill}
-\title{Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
-
-Performs the Duval & Tweedie trim-and-fill method to estimate the number
-of missing studies and adjust the pooled effect for publication bias.}
+\title{Duval & Tweedie Trim-and-Fill Publication Bias Adjustment}
 \usage{
 trim_and_fill(
   meta_result,
@@ -39,8 +36,6 @@ A list with components:
 }
 }
 \description{
-Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
-
 Performs the Duval & Tweedie trim-and-fill method to estimate the number
 of missing studies and adjust the pooled effect for publication bias.
 }

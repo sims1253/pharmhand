@@ -5,7 +5,8 @@ library(pharmhand)
 test_that("create_tte_summary_table works with basic data", {
 	skip_if_not_installed("survival")
 
-	adtte <- create_mock_tte_subgroup(n = 40)
+	set.seed(456)
+	adtte <- create_mock_tte_subgroup(n = 100)
 
 	tbl <- create_tte_summary_table(adtte)
 

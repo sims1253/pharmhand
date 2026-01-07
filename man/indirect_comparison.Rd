@@ -2,8 +2,7 @@
 % Please edit documentation in R/meta_indirect.R
 \name{indirect_comparison}
 \alias{indirect_comparison}
-\title{Calculates indirect treatment effect comparing A vs C through common
-comparator B using the Bucher method (anchored indirect comparison).}
+\title{Indirect Treatment Comparison (Bucher Method)}
 \usage{
 indirect_comparison(
   effect_ab,

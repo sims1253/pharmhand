@@ -25,6 +25,19 @@ NULL
 #' @param conf_level Numeric. Confidence level for CI (default: 0.95)
 #'
 #' @return List with mcid estimate, ci, n, and method
+#' @examples
+#' \dontrun{
+#' # Calculate MCID using anchor-based method
+#' result <- calculate_mcid_anchor(
+#'   data = pro_data,
+#'   score_var = "CHG",
+#'   anchor_var = "PGIC"
+#' )
+#'
+#' # Access results
+#' result$mcid
+#' result$ci
+#' }
 #' @export
 calculate_mcid_anchor <- function(
 	data,
@@ -308,6 +321,18 @@ calculate_mcid <- function(
 #' \item{definition}{Deterioration definition used}
 #' \item{n_subjects}{Total number of subjects}
 #' \item{n_events}{Total number of deterioration events}
+#' }
+#' @examples
+#' \dontrun{
+#' # Create time-to-deterioration analysis
+#' ttd <- create_ttd_analysis(
+#'   data = pro_data,
+#'   threshold = 5,
+#'   direction = "decrease"
+#' )
+#'
+#' # Access summary table
+#' ttd$summary_table
 #' }
 #' @export
 create_ttd_analysis <- function(

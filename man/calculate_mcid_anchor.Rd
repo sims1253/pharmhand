@@ -35,3 +35,17 @@ List with mcid estimate, ci, n, and method
 Calculates the Minimal Clinically Important Difference using an anchor
 variable (e.g., Patient Global Impression of Change).
 }
+\examples{
+\dontrun{
+# Calculate MCID using anchor-based method
+result <- calculate_mcid_anchor(
+  data = pro_data,
+  score_var = "CHG",
+  anchor_var = "PGIC"
+)
+
+# Access results
+result$mcid
+result$ci
+}
+}

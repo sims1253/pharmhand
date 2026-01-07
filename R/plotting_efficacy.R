@@ -97,15 +97,25 @@ create_mean_plot <- function(
 			dplyr::summarise(
 				mean_val = mean(.data[[y_var]], na.rm = TRUE),
 				sd_val = stats::sd(.data[[y_var]], na.rm = TRUE),
-				n = dplyr::n(),
+				n = sum(!is.na(.data[[y_var]])),
 				.groups = "drop"
 			) |>
 			dplyr::mutate(
-				se = .data$sd_val / sqrt(.data$n),
-				ci_lower = .data$mean_val -
-					stats::qt(1 - alpha / 2, .data$n - 1) * .data$se,
-				ci_upper = .data$mean_val +
-					stats::qt(1 - alpha / 2, .data$n - 1) * .data$se
+				se = dplyr::if_else(
+					.data$n > 1,
+					.data$sd_val / sqrt(.data$n),
+					NA_real_
+				),
+				ci_lower = dplyr::if_else(
+					.data$n > 1,
+					.data$mean_val - stats::qt(1 - alpha / 2, .data$n - 1) * .data$se,
+					NA_real_
+				),
+				ci_upper = dplyr::if_else(
+					.data$n > 1,
+					.data$mean_val + stats::qt(1 - alpha / 2, .data$n - 1) * .data$se,
+					NA_real_
+				)
 			)
 	} else {
 		summary_data <- data |>
@@ -113,15 +123,25 @@ create_mean_plot <- function(
 			dplyr::summarise(
 				mean_val = mean(.data[[y_var]], na.rm = TRUE),
 				sd_val = stats::sd(.data[[y_var]], na.rm = TRUE),
-				n = dplyr::n(),
+				n = sum(!is.na(.data[[y_var]])),
 				.groups = "drop"
 			) |>
 			dplyr::mutate(
-				se = .data$sd_val / sqrt(.data$n),
-				ci_lower = .data$mean_val -
-					stats::qt(1 - alpha / 2, .data$n - 1) * .data$se,
-				ci_upper = .data$mean_val +
-					stats::qt(1 - alpha / 2, .data$n - 1) * .data$se
+				se = dplyr::if_else(
+					.data$n > 1,
+					.data$sd_val / sqrt(.data$n),
+					NA_real_
+				),
+				ci_lower = dplyr::if_else(
+					.data$n > 1,
+					.data$mean_val - stats::qt(1 - alpha / 2, .data$n - 1) * .data$se,
+					NA_real_
+				),
+				ci_upper = dplyr::if_else(
+					.data$n > 1,
+					.data$mean_val + stats::qt(1 - alpha / 2, .data$n - 1) * .data$se,
+					NA_real_
+				)
 			)
 	}
 

@@ -47,7 +47,23 @@ eggers_test <- function(
 		ph_abort("Effect estimates (yi) and standard errors (sei) required")
 	}
 
+	if (length(yi) != length(sei)) {
+		ph_abort("yi and sei must have the same length")
+	}
+
 	k <- length(yi)
+
+	if (anyNA(yi)) {
+		return(list(
+			intercept = NA_real_,
+			slope = NA_real_,
+			se = NA_real_,
+			t_value = NA_real_,
+			p_value = NA_real_,
+			df = NA_integer_,
+			interpretation = "Insufficient data (NA in yi)"
+		))
+	}
 
 	if (k < 3) {
 		return(list(
@@ -198,7 +214,20 @@ trim_and_fill <- function(
 		ph_abort("MetaResult must contain yi and sei in metadata")
 	}
 
+	if (length(yi) != length(sei)) {
+		ph_abort("MetaResult metadata: yi and sei must have the same length")
+	}
+
 	k <- length(yi)
+
+	# Validate yi for NA values before computing weights
+	if (anyNA(yi)) {
+		invalid_idx <- which(is.na(yi))
+		ph_abort(sprintf(
+			"Effect estimates (yi) must be non-missing. Invalid indices: %s",
+			paste(invalid_idx, collapse = ", ")
+		))
+	}
 
 	# Validate sei before computing weights
 	if (anyNA(sei) || any(sei <= 0)) {

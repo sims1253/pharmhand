@@ -2,8 +2,7 @@
 % Please edit documentation in R/meta_bayesian.R
 \name{bayesian_meta_analysis}
 \alias{bayesian_meta_analysis}
-\title{Interface for Bayesian meta-analysis using brms/rstan when available.
-Provides guidance when dependencies are not installed.}
+\title{Bayesian Meta-Analysis}
 \usage{
 bayesian_meta_analysis(
   yi,
@@ -12,10 +11,16 @@ bayesian_meta_analysis(
   effect_measure = c("hr", "or", "rr", "rd", "md", "smd"),
   prior_mu = list(mean = 0, sd = 10),
   prior_tau = list(type = "half_cauchy", scale = 0.5),
+  prior_predictive = FALSE,
+  posterior_predictive = TRUE,
+  pp_check_type = "dens_overlay",
+  pp_ndraws = 100,
   chains = 4,
   iter = 4000,
   warmup = 2000,
   seed = NULL,
+  adapt_delta = 0.95,
+  max_treedepth = 12,
   ...
 )
 }
@@ -38,6 +43,21 @@ normal prior on the overall pooled effect. Default: list(mean = 0, sd = 10)}
 "half_cauchy", "half_normal", "exponential". Scale controls expected
 heterogeneity magnitude. Default: list(type = "half_cauchy", scale = 0.5)}
 
+\item{prior_predictive}{Logical. Whether to perform prior predictive check.
+When TRUE, samples from the prior predictive distribution are generated
+and returned. Default: FALSE}
+
+\item{posterior_predictive}{Logical. Whether to perform posterior predictive
+check. Generates posterior predictive checks using pp_check().
+Default: TRUE}
+
+\item{pp_check_type}{Character. Type of posterior predictive plot/check.
+See ?brms::pp_check for options. Common values: "dens_overlay",
+"hist", "scatter", "stat". Default: "dens_overlay"}
+
+\item{pp_ndraws}{Integer. Number of draws to use for posterior predictive
+checks. Default: 100}
+
 \item{chains}{Integer. Number of MCMC chains. Default: 4}
 
 \item{iter}{Integer. Total iterations per chain. Default: 4000}
@@ -46,20 +66,22 @@ heterogeneity magnitude. Default: list(type = "half_cauchy", scale = 0.5)}
 
 \item{seed}{Integer. Random seed}
 
+\item{adapt_delta}{Numeric. MCMC sampler tuning parameter (0-1).
+Default: 0.95. Higher values reduce divergent transitions but slow
+sampling.}
+
+\item{max_treedepth}{Integer. Maximum tree depth for NUTS sampler.
+Default: 12. Higher values allow more complex posterior geometry but
+may indicate issues.}
+
 \item{...}{Additional arguments passed to brms::brm}
 }
 \value{
-A list containing:
-\item{estimate}{Posterior mean of overall effect}
-\item{ci}{Credible interval (2.5\%, 97.5\%)}
-\item{tau}{Posterior mean of heterogeneity SD}
-\item{tau_ci}{Credible interval for tau}
-\item{k}{Number of studies}
-\item{effect_measure}{Effect measure used}
-\item{model}{Model type ("bayesian")}
-\item{fit}{Full brms fit object (when brms available)}
-
-If brms is not installed, returns a list with installation guidance.
+A list with class "bayesian_meta_result" containing posterior_mean,
+ci_95, tau_mean, tau_ci_95, n_studies, effect_measure, model_type, fit,
+convergence_diagnostics, prior_predictive, posterior_predictive, and
+pp_check_plot. See Details for full descriptions. Returns installation
+guidance if brms is not installed.
 }
 \description{
 Interface for Bayesian meta-analysis using brms/rstan when available.
@@ -96,5 +118,25 @@ result <- bayesian_meta_analysis(
 result$posterior_mean
 result$ci_95
 result$interpretation
+
+# With predictive checking enabled
+result_with_pp <- bayesian_meta_analysis(
+  yi = yi,
+  sei = sei,
+  effect_measure = "hr",
+  prior_predictive = TRUE,
+  posterior_predictive = TRUE,
+  pp_check_type = "dens_overlay",
+  pp_ndraws = 100
+)
+
+# Access prior predictive results
+result_with_pp$prior_predictive$summary
+
+# Access posterior predictive results
+result_with_pp$posterior_predictive$bayes_p_value
+
+# Get the pp_check plot
+print(result_with_pp$pp_check_plot)
 }
 }

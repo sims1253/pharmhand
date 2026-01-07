@@ -14,11 +14,17 @@
 ### Input Validation
 
 * Require positive, non-missing standard errors in `eggers_test()`, `trim_and_fill()`, `meta_analysis()`, and `calculate_heterogeneity()`
+* Added `length(yi) == length(sei)` validation in `eggers_test()` and `trim_and_fill()`
+* Added `anyNA(yi)` check in `eggers_test()` returning NA-filled result with clear interpretation
+* Added `anyNA(yi)` check in `trim_and_fill()` with error listing invalid indices
 
 ### Code Quality
 
 * Changed `stop()` to `ph_abort()` in example script for consistent error handling
 * Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd
+* Added `:=` import from rlang to fix undefined global function warning
+* Fixed `create_mean_plot()` n calculation to count non-missing values
+* Added guards for CI computation when n <= 1 to avoid Inf values
 
 ### Plotting Fixes
 
@@ -26,6 +32,17 @@
 * Fixed `create_forest_plot()` Cox model CI column extraction to use positional indexing instead of fragile name construction
 * Fixed `create_km_plot()` risk table grid background by explicitly setting panel.grid.major/minor to element_blank()
 * Fixed `safe_pct()` division by zero in `safety_summary.R` by adding helper function applied to 9 locations
+
+### Bayesian Meta-Analysis Fixes
+
+* Fixed `bayesian_meta_analysis()` to use `brms::neff_ratio()` instead of non-exported `brms::ess_bulk()`/`brms::ess_tail()`
+* Fixed `bayesian_meta_analysis()` to compute BFMI from nuts_params energy values
+* Fixed `bayesian_meta_analysis()` to use `brms::nuts_params()` for divergent transitions instead of accessing internal `fit$fit@sim$divergent__`
+* Added `tryCatch` wrapper around `brms::brm()` calls for better error handling
+* Changed all brms tests to use `cores = 1` to avoid parallel rstan issues in CI
+* Added `bayesplot` to Suggests, removed direct `rstan` dependency
+* Fixed roxygen documentation to avoid `\describe{}` block Rd parsing issues
+* Added brms test caching helper to speed up test suite
 
 ### Documentation
 

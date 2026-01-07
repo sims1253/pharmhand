@@ -6,6 +6,14 @@
 \usage{
 .resolve_palette(palette = NULL)
 }
+\arguments{
+\item{palette}{Optional character vector of colors or a single string naming
+a palette. If NULL (default), uses the value of option "pharmhand.palette"
+or falls back to the default Okabe-Ito palette.}
+}
+\value{
+A character vector of color hex codes.
+}
 \description{
 Resolve color palette from parameter or options
 }

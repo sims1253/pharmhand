@@ -2,10 +2,7 @@
 % Please edit documentation in R/meta_bias.R
 \name{eggers_test}
 \alias{eggers_test}
-\title{Egger's Test for Funnel Plot Asymmetry
-
-Performs Egger's linear regression test to assess funnel plot asymmetry,
-which may indicate publication bias.}
+\title{Egger's Test for Funnel Plot Asymmetry}
 \usage{
 eggers_test(yi = NULL, sei = NULL, meta_result = NULL)
 }
@@ -21,8 +18,6 @@ List with intercept, slope, standard error, t-value, p-value,
 df, and interpretation
 }
 \description{
-Egger's Test for Funnel Plot Asymmetry
-
 Performs Egger's linear regression test to assess funnel plot asymmetry,
 which may indicate publication bias.
 }
