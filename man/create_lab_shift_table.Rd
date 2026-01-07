@@ -32,3 +32,16 @@ ClinicalTable object
 \description{
 Create Laboratory Shift Table
 }
+\examples{
+# Create lab shift table
+adlb <- data.frame(
+  USUBJID = c("01", "02", "03", "04"),
+  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  PARAMCD = rep("ALT", 4),
+  BNRIND = c("Normal", "Normal", "High", "Normal"),
+  ANRIND = c("Normal", "High", "High", "Normal"),
+  AVISIT = rep("Week 24", 4)
+)
+table <- create_lab_shift_table(adlb, paramcd = "ALT", visit = "Week 24")
+table@type
+}

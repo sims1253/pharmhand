@@ -12,6 +12,18 @@ NULL
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
+#' @examples
+#' # Create lab summary table
+#' adlb <- data.frame(
+#'   USUBJID = c("01", "02", "03", "04"),
+#'   TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+#'   PARAMCD = rep("HGB", 4),
+#'   PARAM = rep("Hemoglobin", 4),
+#'   AVISIT = rep("Week 24", 4),
+#'   AVAL = c(14.2, 13.8, 14.5, 14.1)
+#' )
+#' table <- create_lab_summary_table(adlb, params = "HGB", visit = "Week 24")
+#' table@type
 #' @export
 create_lab_summary_table <- function(
 	adlb,
@@ -86,6 +98,18 @@ create_lab_summary_table <- function(
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
+#' @examples
+#' # Create lab shift table
+#' adlb <- data.frame(
+#'   USUBJID = c("01", "02", "03", "04"),
+#'   TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+#'   PARAMCD = rep("ALT", 4),
+#'   BNRIND = c("Normal", "Normal", "High", "Normal"),
+#'   ANRIND = c("Normal", "High", "High", "Normal"),
+#'   AVISIT = rep("Week 24", 4)
+#' )
+#' table <- create_lab_shift_table(adlb, paramcd = "ALT", visit = "Week 24")
+#' table@type
 #' @export
 create_lab_shift_table <- function(
 	adlb,

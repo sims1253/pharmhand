@@ -141,15 +141,7 @@ test_that("create_subgroup_table works with TTE endpoint", {
 	skip_if_not_installed("survival")
 
 	set.seed(42)
-	adtte <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		AGEGR1 = sample(c("<65", ">=65"), 60, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adtte <- create_mock_tte_subgroup(n = 40)
 
 	tbl <- create_subgroup_table(
 		adtte,
@@ -193,14 +185,7 @@ test_that("create_subgroup_table includes interaction p-values", {
 	skip_if_not_installed("survival")
 
 	set.seed(42)
-	adtte <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		stringsAsFactors = FALSE
-	)
+	adtte <- create_mock_tte_subgroup(n = 40)
 
 	tbl <- create_subgroup_table(
 		adtte,
@@ -216,14 +201,7 @@ test_that("create_subgroup_table can disable interaction p-values", {
 	skip_if_not_installed("survival")
 
 	set.seed(42)
-	adtte <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		stringsAsFactors = FALSE
-	)
+	adtte <- create_mock_tte_subgroup(n = 40)
 
 	tbl <- create_subgroup_table(
 		adtte,
@@ -273,13 +251,7 @@ test_that("create_subgroup_table warns for missing subgroup variables", {
 	skip_if_not_installed("survival")
 
 	set.seed(42)
-	adtte <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVAL = c(rexp(20, 0.05), rexp(20, 0.03)),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		stringsAsFactors = FALSE
-	)
+	adtte <- create_mock_tte_subgroup(n = 40)
 
 	expect_warning(
 		create_subgroup_table(
@@ -293,13 +265,7 @@ test_that("create_subgroup_table warns for missing subgroup variables", {
 
 test_that("create_subgroup_table handles missing subgroup variable", {
 	set.seed(123)
-	adtte <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVAL = c(rexp(20, 0.05), rexp(20, 0.03)),
-		CNSR = sample(0:1, 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adtte <- create_mock_tte_subgroup(n = 40)
 
 	expect_warning(
 		create_subgroup_table(

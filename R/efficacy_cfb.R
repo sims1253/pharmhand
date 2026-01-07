@@ -8,7 +8,7 @@ NULL
 #'
 #' Generates a summary table showing change from baseline statistics for vital
 #' signs or other continuous parameters. The table displays mean change,
-#' standard deviation, and other descriptive statistics by treatment group for a
+#' standard deviation, and other descriptive statistics by treatment group for an
 #' analysis visit.
 #'
 #' @param advs An ADaM ADVS (Analysis Data Vital Signs) data frame. Required
@@ -29,6 +29,19 @@ NULL
 #' @return A ClinicalTable S7 object with the formatted change-from-baseline
 #'   summary statistics table. The object includes the underlying data frame,
 #'   a formatted flextable for rendering, and metadata about the analysis.
+#'
+#' @examples
+#' # Create change from baseline summary
+#' advs <- data.frame(
+#'   USUBJID = c("01", "02", "03", "04"),
+#'   TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+#'   PARAMCD = rep("SYSBP", 4),
+#'   PARAM = rep("Systolic Blood Pressure", 4),
+#'   AVISIT = rep("End of Treatment", 4),
+#'   CHG = c(-2.5, -3.1, -8.2, -7.5)
+#' )
+#' table <- create_cfb_summary_table(advs, params = "SYSBP")
+#' table@type
 #'
 #' @export
 create_cfb_summary_table <- function(

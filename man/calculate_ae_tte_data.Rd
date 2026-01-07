@@ -21,3 +21,14 @@ Data frame formatted for KM plotting
 \description{
 Prepares time-to-event data for Kaplan-Meier analysis of adverse events.
 }
+\examples{
+\dontrun{
+# Calculate TTE data for a specific SOC
+tte_data <- calculate_ae_tte_data(
+  adsl = adsl,
+  adae = adae,
+  soc = "Gastrointestinal disorders"
+)
+head(tte_data)
+}
+}

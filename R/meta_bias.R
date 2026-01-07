@@ -59,6 +59,15 @@ eggers_test <- function(
 		))
 	}
 
+	# Validate sei
+	if (any(is.na(sei)) || any(sei <= 0)) {
+		invalid_idx <- which(is.na(sei) | sei <= 0)
+		ph_abort(sprintf(
+			"All standard errors (sei) must be positive and non-missing. Invalid entries at positions: %s",
+			paste(invalid_idx, collapse = ", ")
+		))
+	}
+
 	# Egger's regression: (yi/sei) ~ (1/sei)
 	# Model: zi ~ precision, where zi = yi/sei and precision = 1/sei
 	# Under no bias, intercept should be 0
@@ -172,6 +181,15 @@ trim_and_fill <- function(
 	}
 
 	k <- length(yi)
+
+	# Validate sei before computing weights
+	if (any(is.na(sei)) || any(sei <= 0)) {
+		invalid_idx <- which(is.na(sei) | sei <= 0)
+		ph_abort(sprintf(
+			"All standard errors (sei) must be positive and non-missing. Invalid entries at positions: %s",
+			paste(invalid_idx, collapse = ", ")
+		))
+	}
 
 	# Initial pooled estimate
 	wi <- 1 / (sei^2)

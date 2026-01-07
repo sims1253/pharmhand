@@ -5,14 +5,7 @@ library(pharmhand)
 test_that("create_tte_summary_table works with basic data", {
 	skip_if_not_installed("survival")
 
-	set.seed(42)
-	adtte <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVAL = c(rexp(20, 0.05), rexp(20, 0.03)),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		stringsAsFactors = FALSE
-	)
+	adtte <- create_mock_tte_subgroup(n = 40)
 
 	tbl <- create_tte_summary_table(adtte)
 
