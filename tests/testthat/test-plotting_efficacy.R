@@ -6,6 +6,7 @@ library(testthat)
 library(pharmhand)
 
 test_that("create_mean_plot handles missing group_var", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(1:50, each = 5),
 		AVISITN = rep(0:4, 50),
@@ -23,6 +24,7 @@ test_that("create_mean_plot handles missing group_var", {
 })
 
 test_that("create_mean_plot with custom confidence level", {
+	set.seed(123)
 	data <- data.frame(
 		visit = rep(c("V1", "V2"), each = 100),
 		value = c(rnorm(100, 10, 2), rnorm(100, 12, 2))
@@ -47,6 +49,7 @@ test_that("create_mean_plot with custom confidence level", {
 })
 
 test_that("create_mean_plot with show_points", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(1:20, each = 2),
 		visit = rep(c("V1", "V2"), 20),
@@ -66,6 +69,7 @@ test_that("create_mean_plot with show_points", {
 })
 
 test_that("create_mean_plot without show_n", {
+	set.seed(123)
 	data <- data.frame(
 		visit = rep(c("V1", "V2"), each = 100),
 		value = c(rnorm(100, 10, 2), rnorm(100, 12, 2))
@@ -82,6 +86,7 @@ test_that("create_mean_plot without show_n", {
 })
 
 test_that("create_mean_plot with custom parameters", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(1:20, each = 2),
 		visit = rep(c("V1", "V2"), 20),
@@ -109,6 +114,7 @@ test_that("create_mean_plot with custom parameters", {
 })
 
 test_that("create_spider_plot handles missing group_var", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:20), each = 6),
 		AVISITN = rep(0:5, 20),
@@ -127,6 +133,7 @@ test_that("create_spider_plot handles missing group_var", {
 })
 
 test_that("create_spider_plot highlights subjects", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:20), each = 4),
 		AVISITN = rep(0:3, 20),
@@ -146,6 +153,7 @@ test_that("create_spider_plot highlights subjects", {
 })
 
 test_that("create_spider_plot with only reference line", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),
@@ -163,6 +171,7 @@ test_that("create_spider_plot with only reference line", {
 })
 
 test_that("create_spider_plot with custom alpha", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),
@@ -188,6 +197,7 @@ test_that("create_spider_plot with custom alpha", {
 })
 
 test_that("create_spider_plot with custom line_size", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),
@@ -205,6 +215,7 @@ test_that("create_spider_plot with custom line_size", {
 })
 
 test_that("create_spider_plot handles missing values", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),
@@ -221,6 +232,7 @@ test_that("create_spider_plot handles missing values", {
 })
 
 test_that("create_spider_plot with custom labels", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),
@@ -241,6 +253,7 @@ test_that("create_spider_plot with custom labels", {
 })
 
 test_that("create_spider_plot with multiple threshold lines", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),
@@ -259,6 +272,7 @@ test_that("create_spider_plot with multiple threshold lines", {
 })
 
 test_that("create_spider_plot with groups and colors", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:20), each = 4),
 		AVISITN = rep(0:3, 20),
@@ -278,6 +292,7 @@ test_that("create_spider_plot with groups and colors", {
 })
 
 test_that("create_spider_plot with custom base_size", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),

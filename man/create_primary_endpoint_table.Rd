@@ -6,7 +6,6 @@
 \usage{
 create_primary_endpoint_table(
   advs,
-  trt_n,
   paramcd = "SYSBP",
   visit = "End of Treatment",
   trt_var = "TRT01P",
@@ -16,8 +15,6 @@ create_primary_endpoint_table(
 }
 \arguments{
 \item{advs}{ADVS data frame}
-
-\item{trt_n}{Treatment group counts}
 
 \item{paramcd}{Parameter code to analyze (default: "SYSBP")}
 

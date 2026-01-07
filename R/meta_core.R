@@ -230,6 +230,8 @@ meta_analysis <- function(
 		display_ci <- exp(c(ci_lower, ci_upper))
 		if (!is.null(pred_interval)) {
 			display_pred <- exp(pred_interval)
+		} else {
+			display_pred <- NULL
 		}
 	} else {
 		display_estimate <- theta

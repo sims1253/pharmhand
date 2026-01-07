@@ -248,7 +248,7 @@ trim_and_fill <- function(
 			# Wilcoxon statistic: sum of positive signed ranks
 			Tn <- sum(signed_ranks[signed_ranks > 0])
 			# Q0 estimator per Duval & Tweedie (2000)
-			k0_new <- floor(n - 1 / 2 - sqrt(2 * n^2 - 4 * Tn + 1 / 4))
+			k0_new <- max(0, floor((n - 1) / 2 - sqrt(2 * n^2 - 4 * Tn + 1 / 4)))
 		}
 
 		k0_new <- min(k0_new, n - 1) # Can't impute more than n-1 studies

@@ -385,6 +385,7 @@ test_that("create_time_to_first_ae returns valid result with valid inputs", {
 })
 
 test_that("create_time_to_first_ae works without ae_filter", {
+	set.seed(123)
 	# Use larger dataset to avoid coxph convergence warnings
 	n_per_arm <- 20
 	adsl <- data.frame(
@@ -461,6 +462,7 @@ test_that("create_time_to_first_ae errors with missing required ADSL columns", {
 })
 
 test_that("create_time_to_first_ae derives censor_var from TRTEDT/TRTSDT", {
+	set.seed(123)
 	# Use larger dataset to avoid coxph convergence warnings
 	n_per_arm <- 20
 	adsl <- data.frame(
@@ -522,6 +524,7 @@ test_that("create_time_to_first_ae errors when censor_var not derivable", {
 })
 
 test_that("create_time_to_first_ae filters to TRTEMFL == 'Y'", {
+	set.seed(123)
 	# Use dataset with mixed TRTEMFL but ensure data works with survfit
 	n_per_arm <- 15
 	adsl <- data.frame(
@@ -564,6 +567,7 @@ test_that("create_time_to_first_ae filters to TRTEMFL == 'Y'", {
 })
 
 test_that("create_time_to_first_ae errors with no subjects available", {
+	set.seed(123)
 	# Use larger dataset so the "subjects excluded" warning is about filtering
 	# not about too few subjects in the cox model
 	n_per_arm <- 20
@@ -680,6 +684,7 @@ test_that("create_time_to_first_ae validates conf_level parameter", {
 })
 
 test_that("create_time_to_first_ae handles multiple events per subject", {
+	set.seed(123)
 	# Use larger dataset to avoid coxph convergence warnings
 	n_per_arm <- 20
 	adsl <- data.frame(
@@ -720,6 +725,7 @@ test_that("create_time_to_first_ae handles multiple events per subject", {
 })
 
 test_that("create_time_to_first_ae filters SAFFL == 'Y'", {
+	set.seed(123)
 	# Use dataset that works with survfit (both strata have censored observations)
 	n_per_arm <- 15
 	adsl <- data.frame(
@@ -762,6 +768,7 @@ test_that("create_time_to_first_ae filters SAFFL == 'Y'", {
 })
 
 test_that("create_time_to_first_ae uses custom title", {
+	set.seed(123)
 	# Use dataset large enough for coxph convergence but avoid survfit
 	# n.censor issue
 	n_per_arm <- 15

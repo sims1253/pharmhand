@@ -12,7 +12,6 @@ test_that("create_cfb_summary_table works", {
 		AVAL = c(120, 140),
 		CHG = c(-5, -10)
 	)
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
 
 	tbl <- create_cfb_summary_table(advs, params = "SYSBP")
 
@@ -29,7 +28,6 @@ test_that("create_vs_by_visit_table works", {
 		AVISIT = c("Baseline", "Week 2"),
 		AVAL = c(120, 140)
 	)
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
 
 	tbl <- create_vs_by_visit_table(
 		advs,

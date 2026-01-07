@@ -610,27 +610,6 @@ test_that("create_ttd_analysis handles all events", {
 	expect_equal(result$n_events, 20)
 })
 
-test_that("create_ttd_analysis handles all events", {
-	set.seed(123)
-	data <- expand.grid(
-		USUBJID = paste0("SUBJ", sprintf("%03d", 1:20)),
-		AVISITN = 0:3
-	)
-	data$TRT01P <- rep(c("Treatment", "Placebo"), each = 40)
-	data$BASE <- rep(rnorm(20, 50, 5), each = 4)
-	# All deteriorated at first visit - each subject has only first visit with chg
-	data$CHG <- ifelse(data$AVISITN == 2, -10, 0)
-	data$ADY <- data$AVISITN * 30
-
-	result <- create_ttd_analysis(
-		data = data,
-		threshold = 5,
-		direction = "decrease"
-	)
-
-	expect_equal(result$n_events, 20)
-})
-
 test_that("create_ttd_analysis with increase direction", {
 	set.seed(123)
 	data <- expand.grid(
@@ -653,7 +632,7 @@ test_that("create_ttd_analysis with increase direction", {
 	expect_equal(result$direction, "increase")
 })
 
-test_that("create_ttd_analysis with confirmed definition", {
+test_that("create_ttd_analysis confirmed definition detects consecutive", {
 	set.seed(123)
 	# Create data where 5 subjects have consecutive deterioration (2+ visits)
 	data <- expand.grid(
@@ -685,39 +664,7 @@ test_that("create_ttd_analysis with confirmed definition", {
 	expect_equal(result$definition, "confirmed")
 })
 
-test_that("create_ttd_analysis with confirmed definition", {
-	set.seed(123)
-	# Create data where 5 subjects have consecutive deterioration (2+ visits)
-	data <- expand.grid(
-		USUBJID = paste0("SUBJ", sprintf("%03d", 1:20)),
-		AVISITN = 0:3
-	)
-	data$TRT01P <- rep(c("Treatment", "Placebo"), each = 40)
-	data$BASE <- rep(rnorm(20, 50, 5), each = 4)
-	data$ADY <- data$AVISITN * 30
-
-	# First 5 subjects deteriorate at visits 2 and 3 (consecutive)
-	data$CHG <- c(
-		rep(0, 20), # First 20 rows no deterioration
-		rep(-10, 20), # Next 20 deteriorate at visit 2
-		rep(-12, 20), # All 80 rows deteriorate at visit 3 too
-		rep(-14, 20)
-	) # All 80 rows deteriorate at visit 4 too
-	data$CHG[1:20] <- 0 # Reset first 20 to no deterioration
-	data$CHG[21:40] <- c(rep(-10, 10), rep(0, 10)) # 5 subjects with 2 consecutive
-
-	result <- create_ttd_analysis(
-		data = data,
-		threshold = 5,
-		direction = "decrease",
-		definition = "confirmed",
-		confirmation_visits = 2
-	)
-
-	expect_equal(result$definition, "confirmed")
-})
-
-test_that("create_ttd_analysis with confirmed definition", {
+test_that("create_ttd_analysis confirmed definition uses individual CHG", {
 	set.seed(123)
 	data <- expand.grid(
 		USUBJID = paste0("SUBJ", sprintf("%03d", 1:10)),
