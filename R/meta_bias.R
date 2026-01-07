@@ -60,10 +60,13 @@ eggers_test <- function(
 	}
 
 	# Validate sei
-	if (any(is.na(sei)) || any(sei <= 0)) {
+	if (anyNA(sei) || any(sei <= 0)) {
 		invalid_idx <- which(is.na(sei) | sei <= 0)
 		ph_abort(sprintf(
-			"All standard errors (sei) must be positive and non-missing. Invalid entries at positions: %s",
+			paste(
+				"All standard errors (sei) must be positive and non-missing.",
+				"Invalid entries at positions: %s"
+			),
 			paste(invalid_idx, collapse = ", ")
 		))
 	}
@@ -183,10 +186,13 @@ trim_and_fill <- function(
 	k <- length(yi)
 
 	# Validate sei before computing weights
-	if (any(is.na(sei)) || any(sei <= 0)) {
+	if (anyNA(sei) || any(sei <= 0)) {
 		invalid_idx <- which(is.na(sei) | sei <= 0)
 		ph_abort(sprintf(
-			"All standard errors (sei) must be positive and non-missing. Invalid entries at positions: %s",
+			paste(
+				"All standard errors (sei) must be positive and non-missing.",
+				"Invalid entries at positions: %s"
+			),
 			paste(invalid_idx, collapse = ", ")
 		))
 	}

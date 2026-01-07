@@ -42,8 +42,8 @@ a formatted flextable for rendering, and metadata about the analysis.
 \description{
 Generates a summary table showing change from baseline statistics for vital
 signs or other continuous parameters. The table displays mean change,
-standard deviation, and other descriptive statistics by treatment group for an
-analysis visit.
+standard deviation, and other descriptive statistics
+by treatment group for an analysis visit.
 }
 \examples{
 # Create change from baseline summary

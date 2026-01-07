@@ -50,6 +50,7 @@
 * Fixed error message regex patterns to match actual function outputs
 
 ### Source Code Fixes
+
 * Fixed `km_summary` matrix conversion in `efficacy_tte.R` to preserve column names for single treatment arms
 * Fixed `pct` column warning in `safety_summary.R` by using proper `dplyr::mutate()` instead of for-loop assignment
 * Fixed `survfit` `n.censor` matrix handling in `plotting_survival.R` by converting to vector
@@ -57,6 +58,7 @@
 * Fixed S7 class checking in `config_api.R` to use `S7::S7_inherits()` instead of `inherits()`
 
 ### Test Cleanup
+
 * Removed tests for unimplemented `maic()` and `stc()` functions
 * Fixed missing `registry` variable in config API tests
 * Changed REML tests to use DerSimonian-Laird method to avoid convergence warnings

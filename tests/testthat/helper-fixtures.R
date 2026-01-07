@@ -267,7 +267,7 @@ create_mock_advs <- function(n = 20) {
 	visits <- c("Baseline", "Week 4", "Week 8", "End of Treatment")
 
 	data_list <- lapply(subjects, function(subj) {
-		trt <- if (as.integer(gsub("SUBJ", "", subj)) <= n / 2) {
+		trt <- if (as.integer(gsub("SUBJ", "", subj, fixed = TRUE)) <= n / 2) {
 			"Placebo"
 		} else {
 			"Active"
@@ -294,6 +294,9 @@ create_mock_advs <- function(n = 20) {
 #' @param n Integer specifying number of subjects. Default: 40
 #' @return A data frame with mock TTE data including subgroup variables
 create_mock_tte_subgroup <- function(n = 40) {
+	if (n %% 2 != 0) {
+		stop("n must be even for balanced treatment groups")
+	}
 	set.seed(123)
 	data.frame(
 		USUBJID = sprintf("SUBJ%03d", 1:n),
@@ -312,6 +315,10 @@ create_mock_tte_subgroup <- function(n = 40) {
 #' @param n Integer specifying number of subjects per arm. Default: 30
 #' @return A data frame suitable for forest plot generation from TTE data
 create_mock_forest_tte <- function(n = 30) {
+	if (n %% 2 != 0) {
+		stop("n must be even for balanced treatment groups")
+	}
+	set.seed(123)
 	data.frame(
 		USUBJID = sprintf("SUBJ%03d", 1:(n * 2)),
 		TRT01P = rep(c("Placebo", "Active"), each = n),

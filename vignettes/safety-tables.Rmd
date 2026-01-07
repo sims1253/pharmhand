@@ -338,7 +338,7 @@ cat("\nUse generate_word() to export to Word.")
 
 ## Time-to-Event Analysis
 
-```{r tte, fig.height=3}
+```{r tte}
 # Calculate time-to-event data for a specific SOC
 tte_data <- calculate_ae_tte_data(
   adsl = adsl,
