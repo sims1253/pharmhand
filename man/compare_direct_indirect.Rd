@@ -37,3 +37,22 @@ A list with components:
 Compares direct evidence (from head-to-head trials) with indirect evidence
 (from anchored comparison) to assess consistency.
 }
+\examples{
+# Compare direct and indirect evidence
+# Direct evidence: A vs B from head-to-head trial
+direct <- list(estimate = log(0.80), se = 0.15)
+
+# Indirect evidence via Bucher method
+indirect <- indirect_comparison(
+  effect_ab = log(0.75), se_ab = 0.12,
+  effect_bc = log(0.85), se_bc = 0.10,
+  effect_measure = "hr"
+)
+
+comparison <- compare_direct_indirect(
+  direct_result = direct,
+  indirect_result = indirect,
+  effect_measure = "hr"
+)
+comparison$is_consistent
+}

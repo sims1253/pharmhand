@@ -39,12 +39,11 @@ generate_efficacy_report <- function(
 ) {
 	# Load pharmaverseadam data
 	if (!requireNamespace("pharmaverseadam", quietly = TRUE)) {
-		stop(
+		ph_abort(
 			paste(
 				"Package pharmaverseadam is required.",
 				"Install with: install.packages('pharmaverseadam')"
-			),
-			call. = FALSE
+			)
 		)
 	}
 

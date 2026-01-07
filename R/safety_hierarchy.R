@@ -26,6 +26,19 @@ NULL
 #' @param autofit Logical. Whether to autofit column widths. Default: TRUE
 #'
 #' @return ClinicalTable with hierarchical AE summary
+#'
+#' @examples
+#' \dontrun{
+#' # Create AE hierarchy table
+#' table <- create_ae_hierarchy_table(
+#'   adae = adae,
+#'   adsl = adsl,
+#'   levels = c("soc", "pt"),
+#'   min_pct = 5
+#' )
+#' table@flextable
+#' }
+#'
 #' @export
 create_ae_hierarchy_table <- function(
 	adae,

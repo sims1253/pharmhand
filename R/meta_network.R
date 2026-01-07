@@ -594,6 +594,11 @@ create_league_table <- function(
 		ph_abort("nma_result must be from network_meta()")
 	}
 
+	# Use NMA result's confidence level if available
+	if (!is.null(nma_result$conf_level)) {
+		conf_level <- nma_result$conf_level
+	}
+
 	comparisons <- nma_result$comparisons
 	treatments <- nma_result$network$treatments
 	n_treat <- length(treatments)

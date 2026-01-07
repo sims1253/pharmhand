@@ -85,8 +85,10 @@ create_responder_table <- function(
 		dplyr::summarise(
 			N = dplyr::n(),
 			responders = sum(.data$responder, na.rm = TRUE),
-			rate = ifelse(.data$N > 0, .data$responders / .data$N, NA_real_),
 			.groups = "drop"
+		) |>
+		dplyr::mutate(
+			rate = ifelse(.data$N > 0, .data$responders / .data$N, NA_real_)
 		)
 
 	# Filter out empty groups

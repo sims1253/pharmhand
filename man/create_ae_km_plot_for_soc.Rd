@@ -21,3 +21,14 @@ ClinicalPlot object
 \description{
 Create AE KM Plot for a specific SOC
 }
+\examples{
+\dontrun{
+# Create KM plot for AE in a specific SOC
+plot <- create_ae_km_plot_for_soc(
+  adsl = adsl,
+  adae = adae,
+  soc = "Gastrointestinal disorders"
+)
+plot@plot
+}
+}

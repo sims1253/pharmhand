@@ -13,6 +13,16 @@ NULL
 #' @param soc SOC value to filter by
 #' @param trt_var Treatment variable name
 #' @return Data frame formatted for KM plotting
+#' @examples
+#' \dontrun{
+#' # Calculate TTE data for a specific SOC
+#' tte_data <- calculate_ae_tte_data(
+#'   adsl = adsl,
+#'   adae = adae,
+#'   soc = "Gastrointestinal disorders"
+#' )
+#' head(tte_data)
+#' }
 #' @export
 calculate_ae_tte_data <- function(
 	adsl,
@@ -97,6 +107,16 @@ calculate_ae_tte_data <- function(
 #' @param soc SOC value to filter by
 #' @param trt_var Treatment variable name
 #' @return ClinicalPlot object
+#' @examples
+#' \dontrun{
+#' # Create KM plot for AE in a specific SOC
+#' plot <- create_ae_km_plot_for_soc(
+#'   adsl = adsl,
+#'   adae = adae,
+#'   soc = "Gastrointestinal disorders"
+#' )
+#' plot@plot
+#' }
 #' @export
 create_ae_km_plot_for_soc <- function(
 	adsl,

@@ -462,7 +462,7 @@ exact_table@flextable
 
 Combine multiple analyses into a report:
 
-  ```{r complete-report, eval=FALSE}
+```{r complete-report, eval=FALSE}
 generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
 
   # Section 1: Primary Endpoint Summary

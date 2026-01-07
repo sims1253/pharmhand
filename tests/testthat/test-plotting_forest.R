@@ -10,15 +10,7 @@ test_that("create_forest_plot works with TTE data", {
 	skip_if_not_installed("ggplot2")
 
 	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		AGEGR1 = sample(c("<65", ">=65"), 60, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	df <- create_mock_forest_tte(n = 30)
 
 	p <- create_forest_plot(
 		df,
@@ -61,14 +53,7 @@ test_that("create_forest_plot includes overall estimate", {
 	skip_if_not_installed("ggplot2")
 
 	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		stringsAsFactors = FALSE
-	)
+	df <- create_mock_forest_tte(n = 30)
 
 	p <- create_forest_plot(
 		df,
@@ -85,14 +70,7 @@ test_that("create_forest_plot calculates interaction p-values", {
 	skip_if_not_installed("ggplot2")
 
 	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		stringsAsFactors = FALSE
-	)
+	df <- create_mock_forest_tte(n = 30)
 
 	p <- create_forest_plot(
 		df,
@@ -110,13 +88,7 @@ test_that("create_forest_plot warns for missing subgroup variables", {
 	skip_if_not_installed("ggplot2")
 
 	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVAL = c(rexp(20, 0.05), rexp(20, 0.03)),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		stringsAsFactors = FALSE
-	)
+	df <- create_mock_forest_tte(n = 20)
 
 	expect_warning(
 		create_forest_plot(
@@ -133,14 +105,7 @@ test_that("create_forest_plot respects log_scale parameter", {
 	skip_if_not_installed("ggplot2")
 
 	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		stringsAsFactors = FALSE
-	)
+	df <- create_mock_forest_tte(n = 30)
 
 	p_log <- create_forest_plot(
 		df,
@@ -165,15 +130,8 @@ test_that("create_forest_plot works with ADaMData", {
 	skip_if_not_installed("ggplot2")
 
 	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVAL = c(rexp(30, 0.05), rexp(30, 0.03)),
-		CNSR = sample(0:1, 60, replace = TRUE, prob = c(0.7, 0.3)),
-		SEX = rep(c("M", "F"), 30),
-		SAFFL = "Y",
-		stringsAsFactors = FALSE
-	)
+	df <- create_mock_forest_tte(n = 30)
+	df$SAFFL <- "Y"
 
 	adam <- ADaMData(data = df, population = "SAF")
 	p <- create_forest_plot(

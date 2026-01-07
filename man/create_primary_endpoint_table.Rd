@@ -32,3 +32,15 @@ ClinicalTable object
 \description{
 Create Primary Endpoint Summary Table
 }
+\examples{
+# Create primary endpoint summary
+advs <- data.frame(
+  USUBJID = c("01", "02", "03", "04"),
+  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  PARAMCD = rep("SYSBP", 4),
+  AVISIT = rep("End of Treatment", 4),
+  AVAL = c(120, 125, 118, 122)
+)
+table <- create_primary_endpoint_table(advs, paramcd = "SYSBP")
+table@type
+}

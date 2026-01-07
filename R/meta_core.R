@@ -89,6 +89,11 @@ meta_analysis <- function(
 		ph_abort("yi and sei must have the same length")
 	}
 
+	# Validate sei values
+	if (any(is.na(sei)) || any(sei <= 0)) {
+		ph_abort("All standard errors (sei) must be positive and non-missing")
+	}
+
 	k <- length(yi) # number of studies
 
 	if (k < 2) {
@@ -341,6 +346,12 @@ calculate_heterogeneity <- function(
 	method <- match.arg(method)
 
 	k <- length(yi)
+
+	# Validate sei
+	if (any(is.na(sei)) || any(sei <= 0)) {
+		ph_abort("All standard errors (sei) must be positive and non-missing")
+	}
+
 	wi <- 1 / (sei^2)
 
 	# Fixed effect estimate
@@ -504,10 +515,8 @@ leave_one_out <- function(
 	k <- length(yi)
 
 	# Extract confidence level from meta_result if available
-	conf_level <- if (
-		!is.null(meta_result) && !is.null(meta_result@metadata$conf_level)
-	) {
-		meta_result@metadata$conf_level
+	conf_level <- if (!is.null(meta_result) && !is.null(meta_result@ci_level)) {
+		meta_result@ci_level
 	} else {
 		0.95
 	}

@@ -256,3 +256,84 @@ create_statistical_test_data <- function() {
 		stringsAsFactors = FALSE
 	)
 }
+
+#' Create mock ADVS data for vital signs testing
+#'
+#' @param n Integer specifying number of subjects. Default: 20
+#' @return A data frame with mock ADVS data
+create_mock_advs <- function(n = 20) {
+	set.seed(123)
+	subjects <- sprintf("SUBJ%03d", 1:n)
+	visits <- c("Baseline", "Week 4", "Week 8", "End of Treatment")
+
+	data_list <- lapply(subjects, function(subj) {
+		trt <- if (as.integer(gsub("SUBJ", "", subj)) <= n / 2) {
+			"Placebo"
+		} else {
+			"Active"
+		}
+		base_val <- runif(1, 110, 140)
+		data.frame(
+			USUBJID = rep(subj, length(visits)),
+			TRT01P = rep(trt, length(visits)),
+			PARAMCD = rep("SYSBP", length(visits)),
+			PARAM = rep("Systolic Blood Pressure", length(visits)),
+			AVISIT = visits,
+			AVAL = round(base_val + rnorm(length(visits), 0, 5), 1),
+			BASE = rep(round(base_val, 1), length(visits)),
+			CHG = c(0, round(rnorm(length(visits) - 1, -3, 4), 1)),
+			stringsAsFactors = FALSE
+		)
+	})
+
+	do.call(rbind, data_list)
+}
+
+#' Create mock TTE data for subgroup analysis
+#'
+#' @param n Integer specifying number of subjects. Default: 40
+#' @return A data frame with mock TTE data including subgroup variables
+create_mock_tte_subgroup <- function(n = 40) {
+	set.seed(123)
+	data.frame(
+		USUBJID = sprintf("SUBJ%03d", 1:n),
+		TRT01P = rep(c("Placebo", "Active"), each = n / 2),
+		AVAL = c(rexp(n / 2, 0.05), rexp(n / 2, 0.03)),
+		CNSR = sample(0:1, n, replace = TRUE, prob = c(0.7, 0.3)),
+		SEX = rep(c("M", "F"), n / 2),
+		AGEGR1 = sample(c("<65", ">=65"), n, replace = TRUE),
+		RACE = sample(c("White", "Black", "Asian"), n, replace = TRUE),
+		stringsAsFactors = FALSE
+	)
+}
+
+#' Create mock forest plot TTE data
+#'
+#' @param n Integer specifying number of subjects per arm. Default: 30
+#' @return A data frame suitable for forest plot generation from TTE data
+create_mock_forest_tte <- function(n = 30) {
+	data.frame(
+		USUBJID = sprintf("SUBJ%03d", 1:(n * 2)),
+		TRT01P = rep(c("Placebo", "Active"), each = n),
+		AVAL = c(rexp(n, 0.05), rexp(n, 0.035)),
+		CNSR = sample(0:1, n * 2, replace = TRUE, prob = c(0.6, 0.4)),
+		SEX = sample(c("M", "F"), n * 2, replace = TRUE),
+		AGEGR1 = sample(c("<65", ">=65"), n * 2, replace = TRUE),
+		stringsAsFactors = FALSE
+	)
+}
+
+#' Create mock meta-analysis study data
+#'
+#' @param k Integer specifying number of studies. Default: 5
+#' @return A data frame with mock meta-analysis data
+create_mock_meta_studies <- function(k = 5) {
+	set.seed(123)
+	data.frame(
+		study = paste("Study", 1:k),
+		yi = log(runif(k, 0.6, 0.9)),
+		sei = runif(k, 0.08, 0.20),
+		ni = sample(50:200, k, replace = TRUE),
+		stringsAsFactors = FALSE
+	)
+}

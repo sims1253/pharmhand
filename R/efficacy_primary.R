@@ -12,6 +12,17 @@ NULL
 #' @param title Table title
 #' @param autofit Logical, whether to autofit column widths (default: TRUE)
 #' @return ClinicalTable object
+#' @examples
+#' # Create primary endpoint summary
+#' advs <- data.frame(
+#'   USUBJID = c("01", "02", "03", "04"),
+#'   TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+#'   PARAMCD = rep("SYSBP", 4),
+#'   AVISIT = rep("End of Treatment", 4),
+#'   AVAL = c(120, 125, 118, 122)
+#' )
+#' table <- create_primary_endpoint_table(advs, paramcd = "SYSBP")
+#' table@type
 #' @export
 create_primary_endpoint_table <- function(
 	advs,
@@ -44,16 +55,43 @@ create_primary_endpoint_table <- function(
 		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			n = sum(!is.na(.data$AVAL)),
-			Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
-			SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
-			Median = round(median(.data$AVAL, na.rm = TRUE), 1),
-			Min = round(min(.data$AVAL, na.rm = TRUE), 1),
-			Max = round(max(.data$AVAL, na.rm = TRUE), 1),
+			Mean = dplyr::if_else(n == 0, NA_real_, mean(.data$AVAL, na.rm = TRUE)),
+			SD = dplyr::if_else(n == 0, NA_real_, sd(.data$AVAL, na.rm = TRUE)),
+			Median = dplyr::if_else(
+				n == 0,
+				NA_real_,
+				median(.data$AVAL, na.rm = TRUE)
+			),
+			Min = dplyr::if_else(n == 0, NA_real_, min(.data$AVAL, na.rm = TRUE)),
+			Max = dplyr::if_else(n == 0, NA_real_, max(.data$AVAL, na.rm = TRUE)),
 			.groups = "drop"
 		) |>
 		dplyr::mutate(
-			`Mean (SD)` = paste0(.data$Mean, " (", .data$SD, ")"),
-			`Min, Max` = paste0(.data$Min, ", ", .data$Max),
+			Mean = round(.data$Mean, 1),
+			SD = round(.data$SD, 2),
+			Median = round(.data$Median, 1),
+			Min = round(.data$Min, 1),
+			Max = round(.data$Max, 1),
+			`Mean (SD)` = dplyr::if_else(
+				is.na(.data$Mean) |
+					is.nan(.data$Mean) |
+					is.infinite(.data$Mean) |
+					is.na(.data$SD) |
+					is.nan(.data$SD) |
+					is.infinite(.data$SD),
+				"-",
+				paste0(.data$Mean, " (", .data$SD, ")")
+			),
+			`Min, Max` = dplyr::if_else(
+				is.na(.data$Min) |
+					is.nan(.data$Min) |
+					is.infinite(.data$Min) |
+					is.na(.data$Max) |
+					is.nan(.data$Max) |
+					is.infinite(.data$Max),
+				"-",
+				paste0(.data$Min, ", ", .data$Max)
+			),
 			n = as.character(.data$n),
 			Median = as.character(.data$Median)
 		) |>

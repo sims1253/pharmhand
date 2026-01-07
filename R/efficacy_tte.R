@@ -168,25 +168,49 @@ create_tte_summary_table <- function(
 
 			# Extract survival estimates for this timepoint
 			if (length(trt_levels) > 1) {
-				idx <- which(landmark_summary$time == time_pt)
-				if (length(idx) == 0) {
-					# No exact match - find nearest time point
-					ph_warn(sprintf(
-						"No exact match for landmark timepoint %.1f, finding nearest",
-						time_pt
-					))
-					idx <- which.min(abs(landmark_summary$time - time_pt))
+				# For each treatment level, find the matching stratum
+				surv_vals <- numeric(length(trt_levels))
+				lower_vals <- numeric(length(trt_levels))
+				upper_vals <- numeric(length(trt_levels))
+
+				for (k in seq_along(trt_levels)) {
+					trt <- trt_levels[k]
+					# Stratum format is "TRT01P=Active", "TRT01P=Placebo", etc.
+					stratum_name <- paste0(trt_var_actual, "=", trt)
+
+					# Find rows matching both time point and stratum
+					time_idx <- which(landmark_summary$time == time_pt)
+					if (length(time_idx) == 0) {
+						# No exact match - find nearest time point
+						ph_warn(sprintf(
+							"No exact match for landmark timepoint %.1f, finding nearest",
+							time_pt
+						))
+						time_idx <- which.min(abs(landmark_summary$time - time_pt))
+					}
+
+					# Match stratum - strata component has format "TRT01P=Active"
+					strata_vals <- landmark_summary$strata[time_idx]
+					stratum_match <- which(names(strata_vals) == stratum_name)
+
+					if (length(stratum_match) == 0) {
+						# Fallback: use first match if no exact stratum found
+						if (length(time_idx) > 0) {
+							stratum_match <- 1
+						} else {
+							ph_warn(sprintf(
+								"No stratum match for treatment %s at time %.1f",
+								trt,
+								time_pt
+							))
+							next
+						}
+					}
+
+					surv_vals[k] <- landmark_summary$surv[time_idx[stratum_match]]
+					lower_vals[k] <- landmark_summary$lower[time_idx[stratum_match]]
+					upper_vals[k] <- landmark_summary$upper[time_idx[stratum_match]]
 				}
-				# For multiple matches (common with multi-strata),
-				# use first without warning
-				# This is expected behavior when summary returns multiple
-				# entries at same time
-				if (length(idx) > 1) {
-					idx <- idx[1]
-				}
-				surv_vals <- landmark_summary$surv[idx]
-				lower_vals <- landmark_summary$lower[idx]
-				upper_vals <- landmark_summary$upper[idx]
 			} else {
 				surv_vals <- landmark_summary$surv[i]
 				lower_vals <- landmark_summary$lower[i]
@@ -211,7 +235,7 @@ create_tte_summary_table <- function(
 		)
 
 		cox_fit <- survival::coxph(surv_formula, data = df)
-		cox_summary <- summary(cox_fit)
+		cox_summary <- summary(cox_fit, conf.int = conf_level)
 
 		if (isTRUE(check_ph)) {
 			ph_test <- tryCatch(
@@ -258,6 +282,11 @@ create_tte_summary_table <- function(
 		results[[hr_col_name]][ref_idx] <- "Reference"
 		results$`p-value`[ref_idx] <- "-"
 
+		# Build dynamic CI column names based on conf_level
+		# Format: "lower .95", "upper .95" for 95% CI
+		lower_col <- paste0("lower .", sub("^0\\.", "", format(conf_level)))
+		upper_col <- paste0("upper .", sub("^0\\.", "", format(conf_level)))
+
 		# Other groups get HR values
 		for (j in seq_len(nrow(hr_table))) {
 			trt_name <- gsub(trt_var_actual, "", rownames(hr_table)[j])
@@ -267,8 +296,8 @@ create_tte_summary_table <- function(
 				results[[hr_col_name]][trt_idx] <- sprintf(
 					"%.2f (%.2f, %.2f)",
 					hr_table[j, "exp(coef)"],
-					hr_table[j, "lower .95"],
-					hr_table[j, "upper .95"]
+					hr_table[j, lower_col],
+					hr_table[j, upper_col]
 				)
 				results$`p-value`[trt_idx] <- format_pvalue(
 					hr_coefs[j, "Pr(>|z|)"]
