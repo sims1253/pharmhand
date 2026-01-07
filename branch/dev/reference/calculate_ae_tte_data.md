@@ -29,3 +29,17 @@ calculate_ae_tte_data(adsl, adae, soc, trt_var = "TRT01P")
 ## Value
 
 Data frame formatted for KM plotting
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Calculate TTE data for a specific SOC
+tte_data <- calculate_ae_tte_data(
+  adsl = adsl,
+  adae = adae,
+  soc = "Gastrointestinal disorders"
+)
+head(tte_data)
+} # }
+```

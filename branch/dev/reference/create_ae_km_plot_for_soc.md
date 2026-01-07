@@ -29,3 +29,17 @@ create_ae_km_plot_for_soc(adsl, adae, soc, trt_var = "TRT01P")
 ## Value
 
 ClinicalPlot object
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Create KM plot for AE in a specific SOC
+plot <- create_ae_km_plot_for_soc(
+  adsl = adsl,
+  adae = adae,
+  soc = "Gastrointestinal disorders"
+)
+plot@plot
+} # }
+```

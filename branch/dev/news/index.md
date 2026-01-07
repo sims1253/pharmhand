@@ -1,5 +1,61 @@
 # Changelog
 
+## pharmhand 0.3.1.9000
+
+### Bug Fixes
+
+#### Robustness Improvements
+
+- Fixed
+  [`create_primary_endpoint_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_primary_endpoint_table.md)
+  to handle empty data or all-NA values gracefully, returning “-”
+  instead of NaN/Inf
+- Fixed `create_responder_analysis_table()` to compute response rate in
+  separate mutate step, avoiding fragile self-reference in summarise
+- Fixed
+  [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_tte_summary_table.md)
+  to correctly extract landmark survival estimates for each treatment
+  stratum instead of using first stratum for all
+- Fixed
+  [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_tte_summary_table.md)
+  to use dynamic CI column names based on conf_level instead of
+  hardcoded “lower .95”/“upper .95”
+- Fixed
+  [`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md)
+  to use NMA result’s stored confidence level when available
+- Fixed
+  [`leave_one_out()`](https://sims1253.github.io/pharmhand/branch/dev/reference/leave_one_out.md)
+  to read ci_level from correct slot (<meta_result@ci>\_level instead of
+  [@metadata](https://github.com/metadata)\$conf_level)
+
+#### Input Validation
+
+- Added validation in
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
+  to require positive, non-missing standard errors
+- Added validation in
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
+  to require positive, non-missing standard errors
+- Added validation in
+  [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
+  to require positive, non-missing standard errors
+- Added validation in
+  [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)
+  to require positive, non-missing standard errors
+
+#### Code Quality
+
+- Changed [`stop()`](https://rdrr.io/r/base/stop.html) to `ph_abort()`
+  in example script for consistent error handling
+- Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd
+
+### Test Improvements
+
+- Refactored test-plotting_forest.R, test-efficacy_tte.R, and
+  test-efficacy_subgroup.R to use shared test fixtures
+- Added documentation examples to exported functions in efficacy and
+  safety modules
+
 ## pharmhand 0.3.0.9000
 
 ### Major Changes

@@ -35,12 +35,6 @@ adtte <- pharmaverseadam::adtte_onco  # Time-to-event data (oncology)
 adrs <- pharmaverseadam::adrs_onco    # Response data (oncology)
 
 # Note: adtte_onco and adrs_onco use ARM as treatment variable (not TRT01P)
-
-# Get treatment counts for tables that require denominators
-trt_n <- adsl |>
-  dplyr::filter(.data$SAFFL == "Y") |>
-  dplyr::group_by(.data$TRT01P) |>
-  dplyr::summarise(N = dplyr::n(), .groups = "drop")
 ```
 
 ## Time-to-Event Analysis
@@ -413,7 +407,6 @@ secondary endpoints.
 # Create primary endpoint summary table
 primary_table <- create_primary_endpoint_table(
   advs = advs,
-  trt_n = trt_n,
   paramcd = "SYSBP",
   visit = "End of Treatment",
   title = "Primary Endpoint Summary: Systolic Blood Pressure"
@@ -439,7 +432,6 @@ primary_table@flextable
 # Secondary endpoint analysis
 secondary_table <- create_primary_endpoint_table(
   advs = advs,
-  trt_n = trt_n,
   paramcd = "DIABP",
   visit = "Week 8",
   title = "Secondary Endpoint: Diastolic Blood Pressure at Week 8"
@@ -643,12 +635,6 @@ Combine multiple analyses into a report:
 
 ``` r
 generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
-
-  # Get treatment counts for denominators
-  trt_n <- adsl |>
-    filter(SAFFL == "Y") |>
-    group_by(TRT01P) |>
-    summarise(N = n(), .groups = "drop")
 
   # Section 1: Primary Endpoint Summary
   primary_content <- create_primary_endpoint_table(

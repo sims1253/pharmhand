@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,38 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.1.9000" id="pharmhand-0319000">pharmhand 0.3.1.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0319000"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-1-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1-9000"></a></h3>
+<div class="section level4">
+<h4 id="robustness-improvements-0-3-1-9000">Robustness Improvements<a class="anchor" aria-label="anchor" href="#robustness-improvements-0-3-1-9000"></a></h4>
+<ul><li>Fixed <code><a href="../reference/create_primary_endpoint_table.html">create_primary_endpoint_table()</a></code> to handle empty data or all-NA values gracefully, returning “-” instead of NaN/Inf</li>
+<li>Fixed <code>create_responder_analysis_table()</code> to compute response rate in separate mutate step, avoiding fragile self-reference in summarise</li>
+<li>Fixed <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> to correctly extract landmark survival estimates for each treatment stratum instead of using first stratum for all</li>
+<li>Fixed <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> to use dynamic CI column names based on conf_level instead of hardcoded “lower .95”/“upper .95”</li>
+<li>Fixed <code><a href="../reference/create_league_table.html">create_league_table()</a></code> to use NMA result’s stored confidence level when available</li>
+<li>Fixed <code><a href="../reference/leave_one_out.html">leave_one_out()</a></code> to read ci_level from correct slot (<a href="mailto:meta_result@ci" class="email">meta_result@ci</a>_level instead of <a href="https://github.com/metadata" class="external-link">@metadata</a>$conf_level)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="input-validation-0-3-1-9000">Input Validation<a class="anchor" aria-label="anchor" href="#input-validation-0-3-1-9000"></a></h4>
+<ul><li>Added validation in <code><a href="../reference/eggers_test.html">eggers_test()</a></code> to require positive, non-missing standard errors</li>
+<li>Added validation in <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code> to require positive, non-missing standard errors</li>
+<li>Added validation in <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code> to require positive, non-missing standard errors</li>
+<li>Added validation in <code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code> to require positive, non-missing standard errors</li>
+</ul></div>
+<div class="section level4">
+<h4 id="code-quality-0-3-1-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-3-1-9000"></a></h4>
+<ul><li>Changed <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> to <code>ph_abort()</code> in example script for consistent error handling</li>
+<li>Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="test-improvements-0-3-1-9000">Test Improvements<a class="anchor" aria-label="anchor" href="#test-improvements-0-3-1-9000"></a></h3>
+<ul><li>Refactored test-plotting_forest.R, test-efficacy_tte.R, and test-efficacy_subgroup.R to use shared test fixtures</li>
+<li>Added documentation examples to exported functions in efficacy and safety modules</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0.9000" id="pharmhand-0309000">pharmhand 0.3.0.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0309000"></a></h2>
 <div class="section level3">

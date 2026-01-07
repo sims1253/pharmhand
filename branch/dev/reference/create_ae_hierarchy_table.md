@@ -82,3 +82,18 @@ create_ae_hierarchy_table(
 ## Value
 
 ClinicalTable with hierarchical AE summary
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Create AE hierarchy table
+table <- create_ae_hierarchy_table(
+  adae = adae,
+  adsl = adsl,
+  levels = c("soc", "pt"),
+  min_pct = 5
+)
+table@flextable
+} # }
+```
