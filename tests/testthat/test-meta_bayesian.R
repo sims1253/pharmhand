@@ -5,22 +5,16 @@ library(pharmhand)
 # Helper to skip if brms/Stan is not fully functional
 skip_if_brms_unavailable <- function() {
 	skip_if_not_installed("brms")
-	skip_if_not_installed("rstan")
 
-	# Check if Stan can actually compile - this catches broken toolchain issues
+	# Check if brms/Stan backend can actually work
 	tryCatch(
 		{
-			# Just check that rstan is loadable and has required functions
-			if (!requireNamespace("rstan", quietly = TRUE)) {
-				skip("rstan not available")
-			}
-			# Check if C++ toolchain is configured
-			if (!rstan::rstan_options("auto_write")) {
-				# This is fine, just a config option
+			if (!requireNamespace("brms", quietly = TRUE)) {
+				skip("brms not available")
 			}
 		},
 		error = function(e) {
-			skip(paste("Stan/rstan not functional:", conditionMessage(e)))
+			skip(paste("brms not functional:", conditionMessage(e)))
 		}
 	)
 }
@@ -106,7 +100,7 @@ test_that("bayesian_meta_analysis with brms returns bayesian_meta_result", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2, # Use fewer chains for faster tests
-		cores = 2,
+		cores = 1,
 		iter = 2000, # Use more iterations for better ESS
 		warmup = 1000,
 		seed = 42,
@@ -143,7 +137,7 @@ test_that("bayesian_meta_analysis with brms stores fit object", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -169,7 +163,7 @@ test_that("bayesian_meta_analysis with brms respects custom priors", {
 		prior_mu = list(mean = -0.5, sd = 2),
 		prior_tau = list(type = "half_cauchy", scale = 0.3),
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -204,7 +198,7 @@ test_that("bayesian_meta_analysis with brms generates correct study labels", {
 		study_labels = custom_labels,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -231,7 +225,7 @@ test_that("bayesian_meta_analysis includes convergence diagnostics", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -279,7 +273,7 @@ test_that("bayesian_meta_analysis warns when Rhat > 1.01", {
 			sei = sei,
 			effect_measure = "hr",
 			chains = 2,
-			cores = 2,
+			cores = 1,
 			iter = 500,
 			warmup = 200,
 			seed = 42,
@@ -303,7 +297,7 @@ test_that("bayesian_meta_analysis warns when ESS < 400", {
 			sei = sei,
 			effect_measure = "hr",
 			chains = 2,
-			cores = 2,
+			cores = 1,
 			iter = 500,
 			warmup = 200,
 			seed = 42,
@@ -327,7 +321,7 @@ test_that("bayesian_meta_analysis warns when divergent transitions > 0", {
 			sei = sei,
 			effect_measure = "hr",
 			chains = 2,
-			cores = 2,
+			cores = 1,
 			iter = 500,
 			warmup = 200,
 			seed = 42,
@@ -351,7 +345,7 @@ test_that("bayesian_meta_analysis accepts adapt_delta parameter", {
 		effect_measure = "hr",
 		adapt_delta = 0.95,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42
@@ -365,7 +359,7 @@ test_that("bayesian_meta_analysis accepts adapt_delta parameter", {
 		effect_measure = "hr",
 		adapt_delta = 0.99,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42
@@ -387,7 +381,7 @@ test_that("bayesian_meta_analysis accepts max_treedepth parameter", {
 		effect_measure = "hr",
 		max_treedepth = 15,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42
@@ -412,7 +406,7 @@ test_that("bayesian_meta_analysis performs posterior predictive check", {
 		effect_measure = "hr",
 		posterior_predictive = TRUE,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -447,7 +441,7 @@ test_that("bayesian_meta_analysis performs prior predictive check", {
 		effect_measure = "hr",
 		prior_predictive = TRUE,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -480,7 +474,7 @@ test_that("bayesian_meta_analysis skips posterior predictive when FALSE", {
 		effect_measure = "hr",
 		posterior_predictive = FALSE,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -509,7 +503,7 @@ test_that("bayesian_meta_analysis supports different pp_check types", {
 		pp_check_type = "dens_overlay",
 		posterior_predictive = TRUE,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42,
@@ -528,7 +522,7 @@ test_that("bayesian_meta_analysis supports different pp_check types", {
 		pp_check_type = "hist",
 		posterior_predictive = TRUE,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42,
@@ -547,7 +541,7 @@ test_that("bayesian_meta_analysis supports different pp_check types", {
 		pp_check_type = "ecdf_overlay",
 		posterior_predictive = TRUE,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42,
@@ -575,7 +569,7 @@ test_that("create_bayesian_trace_plots generates plots", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -607,7 +601,7 @@ test_that("create_bayesian_trace_plots validates input", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -650,7 +644,7 @@ test_that("create_bayesian_trace_plots handles missing bayesplot", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -685,7 +679,7 @@ test_that("prior_sensitivity_analysis creates default scenarios", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42,
@@ -732,7 +726,7 @@ test_that("prior_sensitivity_analysis accepts custom scenarios", {
 		effect_measure = "hr",
 		prior_scenarios = custom_scenarios,
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42,
@@ -757,7 +751,7 @@ test_that("prior_sensitivity_analysis calculates sensitivity statistics", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42,
@@ -799,7 +793,7 @@ test_that("prior_sensitivity_analysis returns prior_sensitivity_result class", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 1000,
 		warmup = 500,
 		seed = 42,
@@ -832,7 +826,7 @@ test_that("format_bayesian_result_iqwig formats estimates", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -852,7 +846,7 @@ test_that("format_bayesian_result_iqwig formats estimates", {
 		sei = sei,
 		effect_measure = "smd",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -878,7 +872,7 @@ test_that("format_bayesian_result_iqwig formats CI with semicolons", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -891,7 +885,7 @@ test_that("format_bayesian_result_iqwig formats CI with semicolons", {
 	expect_true("ci_95" %in% names(iqwig_result))
 	expect_true(grepl("\\[", iqwig_result$ci_95)) # Opening bracket
 	expect_true(grepl("\\]", iqwig_result$ci_95)) # Closing bracket
-	expect_true(grepl(";", iqwig_result$ci_95)) # Semicolon separator
+	expect_true(grepl(";", iqwig_result$ci_95, fixed = TRUE)) # Semicolon separator
 
 	# Test that decimal places are respected
 	expect_true(is.character(iqwig_result$ci_95))
@@ -910,7 +904,7 @@ test_that("format_bayesian_result_iqwig creates probability statements", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -925,7 +919,7 @@ test_that("format_bayesian_result_iqwig creates probability statements", {
 	expect_true(grepl("P", iqwig_hr$probability_statement, ignore.case = TRUE))
 
 	# Test that threshold is 1 for ratios (HR)
-	expect_true(grepl("1", iqwig_hr$probability_statement))
+	expect_true(grepl("1", iqwig_hr$probability_statement, fixed = TRUE))
 
 	# Test difference measure (threshold = 0)
 	result_smd <- bayesian_meta_analysis(
@@ -933,7 +927,7 @@ test_that("format_bayesian_result_iqwig creates probability statements", {
 		sei = sei,
 		effect_measure = "smd",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -959,7 +953,7 @@ test_that("format_bayesian_result_iqwig formats heterogeneity", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -975,7 +969,8 @@ test_that("format_bayesian_result_iqwig formats heterogeneity", {
 	# Test that tau CI is formatted
 	expect_true("tau_ci" %in% names(iqwig_result))
 	expect_true(is.character(iqwig_result$tau_ci))
-	expect_true(grepl(";", iqwig_result$tau_ci)) # Semicolon separator
+	# Semicolon separator
+	expect_true(grepl(";", iqwig_result$tau_ci, fixed = TRUE))
 })
 
 test_that("format_bayesian_result_iqwig creates interpretation text", {
@@ -990,7 +985,7 @@ test_that("format_bayesian_result_iqwig creates interpretation text", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -1034,7 +1029,7 @@ test_that("create_bayesian_forest_plot_iqwig generates ggplot", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,
@@ -1075,7 +1070,7 @@ test_that("create_bayesian_forest_plot_iqwig uses IQWiG formatting", {
 		sei = sei,
 		effect_measure = "hr",
 		chains = 2,
-		cores = 2,
+		cores = 1,
 		iter = 2000,
 		warmup = 1000,
 		seed = 42,

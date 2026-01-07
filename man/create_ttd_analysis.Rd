@@ -78,3 +78,16 @@ A list with components:
 Performs time-to-deterioration (TTD) analysis for PRO endpoints.
 Deterioration is defined as a decrease from baseline exceeding the MCID.
 }
+\examples{
+\dontrun{
+# Create time-to-deterioration analysis
+ttd <- create_ttd_analysis(
+  data = pro_data,
+  threshold = 5,
+  direction = "decrease"
+)
+
+# Access summary table
+ttd$summary_table
+}
+}

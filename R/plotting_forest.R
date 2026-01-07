@@ -280,7 +280,8 @@ create_forest_plot <- function(
 		metadata = list(
 			subgroups = subgroups,
 			endpoint_type = endpoint_type,
-			ref_group = ref_group
+			ref_group = ref_group,
+			log_scale = log_scale
 		)
 	)
 }

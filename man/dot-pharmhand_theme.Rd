@@ -9,6 +9,9 @@
 \arguments{
 \item{base_size}{Base font size for plot text elements (default: 11)}
 }
+\value{
+A ggplot2 theme object
+}
 \description{
 Create pharmhand plotting theme with consistent white background
 }

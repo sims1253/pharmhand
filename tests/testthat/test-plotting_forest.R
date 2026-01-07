@@ -123,6 +123,10 @@ test_that("create_forest_plot respects log_scale parameter", {
 
 	expect_s7_class(p_log, ClinicalPlot)
 	expect_s7_class(p_linear, ClinicalPlot)
+
+	# Verify log_scale parameter is stored and differs
+	expect_true(p_log@metadata$log_scale)
+	expect_false(p_linear@metadata$log_scale)
 })
 
 test_that("create_forest_plot works with ADaMData", {

@@ -4,6 +4,6 @@
 \alias{meta_indirect}
 \title{Indirect Comparison Functions}
 \description{
-Functions for performing indirect treatment comparisons
-using the Bucher method and assessing transitivity.
+Functions for performing indirect treatment comparisons using the Bucher
+method and assessing transitivity.
 }

@@ -30,7 +30,7 @@ utils::globalVariables(c(
 ))
 
 #' @importFrom stats sd median quantile setNames as.formula na.omit
-#' @importFrom rlang %||% .data
+#' @importFrom rlang %||% .data :=
 #' @importFrom admiraldev assert_data_frame assert_character_scalar
 #'   assert_character_vector assert_numeric_vector
 NULL
