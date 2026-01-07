@@ -28,7 +28,7 @@ create_ae_km_plot_for_soc(adsl, adae, soc, trt_var = "TRT01P")
 
 ## Value
 
-ClinicalPlot object
+ClinicalPlot object, or NULL if no data available for the specified SOC
 
 ## Examples
 
