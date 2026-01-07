@@ -423,7 +423,8 @@ create_km_plot <- function(
 			ggplot2::labs(x = NULL, y = NULL) +
 			.pharmhand_theme(base_size = base_size) +
 			ggplot2::theme(
-				panel.grid = ggplot2::element_blank(),
+				panel.grid.major = ggplot2::element_blank(),
+				panel.grid.minor = ggplot2::element_blank(),
 				axis.text.x = ggplot2::element_blank(),
 				legend.position = "none",
 				plot.margin = ggplot2::margin(0, 0, 0, 0, "lines")

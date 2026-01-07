@@ -16,7 +16,8 @@ create_ae_km_plot_for_soc(adsl, adae, soc, trt_var = "TRT01P")
 \item{trt_var}{Treatment variable name}
 }
 \value{
-ClinicalPlot object, or NULL if no data available for the specified SOC
+ClinicalPlot object, or NULL if no data available for the
+specified SOC
 }
 \description{
 Create AE KM Plot for a specific SOC

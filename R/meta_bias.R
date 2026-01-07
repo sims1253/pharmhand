@@ -11,6 +11,7 @@
 NULL
 
 
+#' @title Egger's Test for Funnel Plot Asymmetry
 #'
 #' Performs Egger's linear regression test to assess funnel plot asymmetry,
 #' which may indicate publication bias.
@@ -19,8 +20,8 @@ NULL
 #' @param sei Numeric vector of standard errors
 #' @param meta_result A MetaResult object (alternative to yi/sei)
 #'
-#' @return List with intercept, slope, standard error, t-value,
-#'   p-value, and interpretation
+#' @return List with intercept, slope, standard error, t-value, p-value,
+#'   df, and interpretation
 #' @export
 #'
 #' @examples
@@ -64,8 +65,8 @@ eggers_test <- function(
 		invalid_idx <- which(is.na(sei) | sei <= 0)
 		ph_abort(sprintf(
 			paste(
-				"All standard errors (sei) must be positive and non-missing.",
-				"Invalid entries at positions: %s"
+				"Standard errors must be positive and non-missing.",
+				"Invalid indices: %s"
 			),
 			paste(invalid_idx, collapse = ", ")
 		))
@@ -128,6 +129,7 @@ eggers_test <- function(
 }
 
 
+#' @title Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
 #'
 #' Performs the Duval & Tweedie trim-and-fill method to estimate the number
 #' of missing studies and adjust the pooled effect for publication bias.
@@ -190,8 +192,8 @@ trim_and_fill <- function(
 		invalid_idx <- which(is.na(sei) | sei <= 0)
 		ph_abort(sprintf(
 			paste(
-				"All standard errors (sei) must be positive and non-missing.",
-				"Invalid entries at positions: %s"
+				"Standard errors must be positive and non-missing.",
+				"Invalid indices: %s"
 			),
 			paste(invalid_idx, collapse = ", ")
 		))

@@ -354,12 +354,10 @@ calculate_subgroup_effect <- function(
 				)
 				cox_summary <- summary(cox_fit, conf.int = conf_level)
 				estimate <- cox_summary$conf.int[1, "exp(coef)"]
-				# Build column names from conf_level
-				conf_pct <- sprintf("%.2f", conf_level * 100)
-				lower_col <- paste0("lower ", conf_pct)
-				upper_col <- paste0("upper ", conf_pct)
-				lcl <- cox_summary$conf.int[1, lower_col]
-				ucl <- cox_summary$conf.int[1, upper_col]
+				# Extract using position (more robust than name matching)
+				# conf.int columns are: exp(coef), exp(-coef), lower .XX, upper .XX
+				lcl <- cox_summary$conf.int[1, 3] # lower CI bound
+				ucl <- cox_summary$conf.int[1, 4] # upper CI bound
 				pvalue <- cox_summary$coefficients[1, "Pr(>|z|)"]
 			},
 			error = function(e) NULL

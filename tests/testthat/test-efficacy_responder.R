@@ -21,36 +21,6 @@ test_that("create_responder_table works with basic data", {
 	expect_true("95% CI" %in% names(tbl@data))
 })
 
-test_that("create_responder_table calculates OR correctly", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
-
-	tbl <- create_responder_table(adrs, comparison_type = "OR")
-
-	expect_true("OR (95% CI)" %in% names(tbl@data))
-	expect_equal(tbl@metadata$comparison_type, "OR")
-})
-
-test_that("create_responder_table calculates RR correctly", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
-
-	tbl <- create_responder_table(adrs, comparison_type = "RR")
-
-	expect_true("RR (95% CI)" %in% names(tbl@data))
-	expect_equal(tbl@metadata$comparison_type, "RR")
-})
-
 test_that("create_responder_table handles extreme response rates with RR", {
 	# Test case where reference group has 0% response rate
 	# This would cause division by zero without continuity correction

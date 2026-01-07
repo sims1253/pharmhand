@@ -2,7 +2,9 @@
 % Please edit documentation in R/meta_bias.R
 \name{eggers_test}
 \alias{eggers_test}
-\title{Performs Egger's linear regression test to assess funnel plot asymmetry,
+\title{Egger's Test for Funnel Plot Asymmetry
+
+Performs Egger's linear regression test to assess funnel plot asymmetry,
 which may indicate publication bias.}
 \usage{
 eggers_test(yi = NULL, sei = NULL, meta_result = NULL)
@@ -15,10 +17,12 @@ eggers_test(yi = NULL, sei = NULL, meta_result = NULL)
 \item{meta_result}{A MetaResult object (alternative to yi/sei)}
 }
 \value{
-List with intercept, slope, standard error, t-value,
-p-value, and interpretation
+List with intercept, slope, standard error, t-value, p-value,
+df, and interpretation
 }
 \description{
+Egger's Test for Funnel Plot Asymmetry
+
 Performs Egger's linear regression test to assess funnel plot asymmetry,
 which may indicate publication bias.
 }

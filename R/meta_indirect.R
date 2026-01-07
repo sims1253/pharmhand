@@ -369,6 +369,26 @@ assess_transitivity <- function(
 		dplyr::slice(1) |>
 		dplyr::ungroup()
 
+	# Validate that characteristics don't vary within studies
+	# (study-level expected)
+	for (var in char_vars) {
+		within_study_variation <- study_characteristics |>
+			dplyr::group_by(.data$study_id) |>
+			dplyr::summarise(
+				n_unique = dplyr::n_distinct(.data[[var]], na.rm = TRUE),
+				.groups = "drop"
+			) |>
+			dplyr::filter(.data$n_unique > 1)
+
+		if (nrow(within_study_variation) > 0) {
+			ph_warn(sprintf(
+				"Characteristic '%s' varies within %d study(ies); using first value",
+				var,
+				nrow(within_study_variation)
+			))
+		}
+	}
+
 	# Get which treatments are compared in each study
 	study_treatments <- study_characteristics |>
 		dplyr::group_by(.data$study_id) |>

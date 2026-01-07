@@ -14,6 +14,16 @@ AEREL_RELATED_VALUES <- c(
 	"DEFINITELY RELATED"
 )
 
+#' Safe percentage calculation
+#' @keywords internal
+safe_pct <- function(n, N, digits = 1) {
+	dplyr::if_else(
+		N == 0 | is.na(N),
+		NA_real_,
+		round(n / N * 100, digits)
+	)
+}
+
 #' Create Adverse Event Summary Table
 #'
 #' Generate AE summary tables for clinical study reports.
@@ -367,8 +377,12 @@ create_ae_table_soc <- function(
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = round(.data$n_subj / .data$N * 100, 1),
-			display = paste0(.data$n_subj, " (", .data$pct, "%)")
+			pct = safe_pct(.data$n_subj, .data$N),
+			display = dplyr::if_else(
+				is.na(.data$pct),
+				paste0(.data$n_subj, " (--)"),
+				paste0(.data$n_subj, " (", .data$pct, "%)")
+			)
 		) |>
 		dplyr::select("AEBODSYS", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
@@ -441,8 +455,12 @@ create_ae_table_soc_pt <- function(
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = round(.data$n_subj / .data$N * 100, 1),
-			display = paste0(.data$n_subj, " (", .data$pct, "%)")
+			pct = safe_pct(.data$n_subj, .data$N),
+			display = dplyr::if_else(
+				is.na(.data$pct),
+				paste0(.data$n_subj, " (--)"),
+				paste0(.data$n_subj, " (", .data$pct, "%)")
+			)
 		) |>
 		dplyr::select("AEBODSYS", "AEDECOD", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
@@ -511,8 +529,12 @@ create_ae_table_pt <- function(adae, trt_n, trt_var, soc, title, autofit) {
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = round(.data$n_subj / .data$N * 100, 1),
-			display = paste0(.data$n_subj, " (", .data$pct, "%)")
+			pct = safe_pct(.data$n_subj, .data$N),
+			display = dplyr::if_else(
+				is.na(.data$pct),
+				paste0(.data$n_subj, " (--)"),
+				paste0(.data$n_subj, " (", .data$pct, "%)")
+			)
 		) |>
 		dplyr::select("AEDECOD", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
@@ -563,8 +585,12 @@ create_ae_table_common <- function(
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = round(.data$n_subj / .data$N * 100, 1),
-			display = paste0(.data$n_subj, " (", .data$pct, "%)")
+			pct = safe_pct(.data$n_subj, .data$N),
+			display = dplyr::if_else(
+				is.na(.data$pct),
+				paste0(.data$n_subj, " (--)"),
+				paste0(.data$n_subj, " (", .data$pct, "%)")
+			)
 		) |>
 		dplyr::select("AEBODSYS", "AEDECOD", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
@@ -643,8 +669,12 @@ create_ae_table_severity <- function(
 		dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = round(.data$n / .data$N * 100, 1),
-			display = paste0(.data$n, " (", .data$pct, "%)")
+			pct = safe_pct(.data$n, .data$N),
+			display = dplyr::if_else(
+				is.na(.data$pct),
+				paste0(.data$n, " (--)"),
+				paste0(.data$n, " (", .data$pct, "%)")
+			)
 		) |>
 		dplyr::select("max_sev", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
@@ -684,8 +714,12 @@ create_ae_table_relationship <- function(adae, trt_n, trt_var, title, autofit) {
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = round(.data$n_subj / .data$N * 100, 1),
-			display = paste0(.data$n_subj, " (", .data$pct, "%)")
+			pct = safe_pct(.data$n_subj, .data$N),
+			display = dplyr::if_else(
+				is.na(.data$pct),
+				paste0(.data$n_subj, " (--)"),
+				paste0(.data$n_subj, " (", .data$pct, "%)")
+			)
 		) |>
 		dplyr::select("AEREL", dplyr::all_of(trt_var), "display") |>
 		tidyr::pivot_wider(
@@ -734,8 +768,12 @@ create_ae_table_sae <- function(adae, trt_n, trt_var, title, autofit) {
 			) |>
 			dplyr::left_join(trt_n, by = trt_var) |>
 			dplyr::mutate(
-				pct = round(.data$n_subj / .data$N * 100, 1),
-				display = paste0(.data$n_subj, " (", .data$pct, "%)")
+				pct = safe_pct(.data$n_subj, .data$N),
+				display = dplyr::if_else(
+					is.na(.data$pct),
+					paste0(.data$n_subj, " (--)"),
+					paste0(.data$n_subj, " (", .data$pct, "%)")
+				)
 			) |>
 			dplyr::select("AEBODSYS", "AEDECOD", dplyr::all_of(trt_var), "display") |>
 			tidyr::pivot_wider(
@@ -796,8 +834,12 @@ create_ae_table_discontinuation <- function(
 			) |>
 			dplyr::left_join(trt_n, by = trt_var) |>
 			dplyr::mutate(
-				pct = round(.data$n_subj / .data$N * 100, 1),
-				display = paste0(.data$n_subj, " (", .data$pct, "%)")
+				pct = safe_pct(.data$n_subj, .data$N),
+				display = dplyr::if_else(
+					is.na(.data$pct),
+					paste0(.data$n_subj, " (--)"),
+					paste0(.data$n_subj, " (", .data$pct, "%)")
+				)
 			) |>
 			dplyr::select("AEBODSYS", "AEDECOD", dplyr::all_of(trt_var), "display") |>
 			tidyr::pivot_wider(
@@ -838,8 +880,12 @@ create_ae_table_deaths <- function(adsl, trt_var, title, autofit) {
 			.groups = "drop"
 		) |>
 		dplyr::mutate(
-			pct = round(.data$n_deaths / .data$N * 100, 1),
-			`Deaths n (%)` = paste0(.data$n_deaths, " (", .data$pct, "%)"),
+			pct = safe_pct(.data$n_deaths, .data$N),
+			`Deaths n (%)` = dplyr::if_else(
+				is.na(.data$pct),
+				paste0(.data$n_deaths, " (--)"),
+				paste0(.data$n_deaths, " (", .data$pct, "%)")
+			),
 			N = as.character(.data$N)
 		) |>
 		dplyr::select(dplyr::all_of(trt_var), "N", "Deaths n (%)")

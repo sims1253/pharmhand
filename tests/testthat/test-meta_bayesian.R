@@ -1,6 +1,5 @@
 # Tests for Bayesian meta-analysis functions (R/meta_bayesian.R)
 
-library(testthat)
 library(pharmhand)
 
 # =============================================================================
@@ -75,8 +74,9 @@ test_that("bayesian_meta_analysis validates study_labels length", {
 test_that("bayesian_meta_analysis with brms returns bayesian_meta_result", {
 	skip_if_not_installed("brms")
 
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	# Use 8 studies with consistent effect sizes for stable MCMC
+	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
+	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
 
 	result <- bayesian_meta_analysis(
 		yi = yi,
@@ -86,7 +86,8 @@ test_that("bayesian_meta_analysis with brms returns bayesian_meta_result", {
 		cores = 2,
 		iter = 2000, # Use more iterations for better ESS
 		warmup = 1000,
-		seed = 42
+		seed = 42,
+		adapt_delta = 0.99
 	)
 
 	# Should return bayesian_meta_result class
@@ -110,8 +111,9 @@ test_that("bayesian_meta_analysis with brms returns bayesian_meta_result", {
 test_that("bayesian_meta_analysis with brms stores fit object", {
 	skip_if_not_installed("brms")
 
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	# Use 8 studies with consistent effect sizes for stable MCMC
+	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
+	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
 
 	result <- bayesian_meta_analysis(
 		yi = yi,
@@ -121,7 +123,8 @@ test_that("bayesian_meta_analysis with brms stores fit object", {
 		cores = 2,
 		iter = 2000,
 		warmup = 1000,
-		seed = 42
+		seed = 42,
+		adapt_delta = 0.99
 	)
 
 	# Should contain the brms fit object
@@ -132,8 +135,9 @@ test_that("bayesian_meta_analysis with brms stores fit object", {
 test_that("bayesian_meta_analysis with brms respects custom priors", {
 	skip_if_not_installed("brms")
 
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	# Use 8 studies with consistent effect sizes for stable MCMC
+	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
+	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
 
 	result <- bayesian_meta_analysis(
 		yi = yi,
@@ -145,7 +149,8 @@ test_that("bayesian_meta_analysis with brms respects custom priors", {
 		cores = 2,
 		iter = 2000,
 		warmup = 1000,
-		seed = 42
+		seed = 42,
+		adapt_delta = 0.99
 	)
 
 	# Should return bayesian_meta_result
@@ -156,9 +161,19 @@ test_that("bayesian_meta_analysis with brms respects custom priors", {
 test_that("bayesian_meta_analysis with brms generates correct study labels", {
 	skip_if_not_installed("brms")
 
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
-	custom_labels <- c("Trial A", "Trial B", "Trial C")
+	# Use 8 studies with consistent effect sizes for stable MCMC
+	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
+	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
+	custom_labels <- c(
+		"Trial A",
+		"Trial B",
+		"Trial C",
+		"Trial D",
+		"Trial E",
+		"Trial F",
+		"Trial G",
+		"Trial H"
+	)
 
 	result <- bayesian_meta_analysis(
 		yi = yi,
@@ -169,7 +184,8 @@ test_that("bayesian_meta_analysis with brms generates correct study labels", {
 		cores = 2,
 		iter = 2000,
 		warmup = 1000,
-		seed = 42
+		seed = 42,
+		adapt_delta = 0.99
 	)
 
 	# Should use custom labels

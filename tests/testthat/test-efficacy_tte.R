@@ -20,6 +20,7 @@ test_that("create_tte_summary_table with landmarks", {
 	skip_if_not_installed("survival")
 
 	# Use fixed times to ensure unique landmark matches (no duplicates at 12 or 24)
+	set.seed(123)
 	adtte <- data.frame(
 		USUBJID = sprintf("SUBJ%02d", 1:40),
 		TRT01P = rep(c("Placebo", "Active"), each = 20),
