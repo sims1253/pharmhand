@@ -30,18 +30,12 @@
 
 #### Input Validation
 
-- Added validation in
-  [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
-  to require positive, non-missing standard errors
-- Added validation in
-  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
-  to require positive, non-missing standard errors
-- Added validation in
-  [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
-  to require positive, non-missing standard errors
-- Added validation in
+- Require positive, non-missing standard errors in
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md),
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md),
+  [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md),
+  and
   [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)
-  to require positive, non-missing standard errors
 
 #### Code Quality
 
