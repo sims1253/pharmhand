@@ -106,7 +106,7 @@ calculate_ae_tte_data <- function(
 #' @param adae ADAE data frame
 #' @param soc SOC value to filter by
 #' @param trt_var Treatment variable name
-#' @return ClinicalPlot object
+#' @return ClinicalPlot object, or NULL if no data available for the specified SOC
 #' @examples
 #' \dontrun{
 #' # Create KM plot for AE in a specific SOC

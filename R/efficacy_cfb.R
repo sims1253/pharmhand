@@ -8,8 +8,8 @@ NULL
 #'
 #' Generates a summary table showing change from baseline statistics for vital
 #' signs or other continuous parameters. The table displays mean change,
-#' standard deviation, and other descriptive statistics by treatment group for an
-#' analysis visit.
+#' standard deviation, and other descriptive statistics
+#'   by treatment group for an analysis visit.
 #'
 #' @param advs An ADaM ADVS (Analysis Data Vital Signs) data frame. Required
 #'   columns include: USUBJID, PARAMCD (parameter code), PARAM (parameter name),

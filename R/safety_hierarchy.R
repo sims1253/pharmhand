@@ -155,6 +155,15 @@ create_ae_hierarchy_table <- function(
 		n_col <- as.character(trt)
 		N_total <- trt_n$N[trt_n[[trt_var]] == trt]
 
+		# Guard against division by zero
+		if (length(N_total) == 0 || N_total == 0) {
+			ph_warn(sprintf(
+				"No subjects found for treatment '%s', skipping percentage calculation",
+				trt
+			))
+			next
+		}
+
 		if (n_col %in% names(combined)) {
 			combined[[paste0(n_col, "_fmt")]] <- sprintf(
 				"%d (%.1f%%)",
@@ -168,15 +177,19 @@ create_ae_hierarchy_table <- function(
 	# Filter by minimum percentage
 	if (min_pct > 0) {
 		pct_cols <- grep("_pct$", names(combined), value = TRUE)
-		combined$max_pct <- do.call(pmax, c(combined[pct_cols], na.rm = TRUE))
-		combined <- combined[combined$max_pct >= min_pct, ]
+		if (length(pct_cols) > 0) {
+			combined$max_pct <- do.call(pmax, c(combined[pct_cols], na.rm = TRUE))
+			combined <- combined[combined$max_pct >= min_pct, ]
+		}
 	}
 
 	# Sort
 	if (sort_by == "frequency") {
 		pct_cols <- grep("_pct$", names(combined), value = TRUE)
-		combined$sort_val <- rowMeans(combined[pct_cols], na.rm = TRUE)
-		combined <- combined[order(-combined$sort_val), ]
+		if (length(pct_cols) > 0) {
+			combined$sort_val <- rowMeans(combined[pct_cols], na.rm = TRUE)
+			combined <- combined[order(-combined$sort_val), ]
+		}
 	} else {
 		combined <- combined[order(combined$term), ]
 	}

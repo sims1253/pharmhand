@@ -90,7 +90,7 @@ meta_analysis <- function(
 	}
 
 	# Validate sei values
-	if (any(is.na(sei)) || any(sei <= 0)) {
+	if (anyNA(sei) || any(sei <= 0)) {
 		ph_abort("All standard errors (sei) must be positive and non-missing")
 	}
 
@@ -348,7 +348,7 @@ calculate_heterogeneity <- function(
 	k <- length(yi)
 
 	# Validate sei
-	if (any(is.na(sei)) || any(sei <= 0)) {
+	if (anyNA(sei) || any(sei <= 0)) {
 		ph_abort("All standard errors (sei) must be positive and non-missing")
 	}
 
