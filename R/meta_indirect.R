@@ -1,10 +1,13 @@
-#' @title Indirect Comparison Functions
+#' Indirect Comparison Functions
+#'
+#' Functions for performing indirect treatment comparisons using the Bucher
+#' method and assessing transitivity.
+#'
 #' @name meta_indirect
-#' @description Functions for performing indirect treatment comparisons
-#'   using the Bucher method and assessing transitivity.
 NULL
 
 
+#' Indirect Treatment Comparison (Bucher Method)
 #'
 #' Calculates indirect treatment effect comparing A vs C through common
 #' comparator B using the Bucher method (anchored indirect comparison).
