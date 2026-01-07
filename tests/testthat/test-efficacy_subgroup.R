@@ -292,6 +292,7 @@ test_that("create_subgroup_table warns for missing subgroup variables", {
 })
 
 test_that("create_subgroup_table handles missing subgroup variable", {
+	set.seed(123)
 	adtte <- data.frame(
 		USUBJID = sprintf("SUBJ%02d", 1:40),
 		TRT01P = rep(c("Placebo", "Active"), each = 20),

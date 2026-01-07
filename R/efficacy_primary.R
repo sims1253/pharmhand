@@ -6,7 +6,6 @@ NULL
 #' Create Primary Endpoint Summary Table
 #'
 #' @param advs ADVS data frame
-#' @param trt_n Treatment group counts
 #' @param paramcd Parameter code to analyze (default: "SYSBP")
 #' @param visit Visit to analyze (default: "End of Treatment")
 #' @param trt_var Treatment variable name (default: "TRT01P")
@@ -16,7 +15,6 @@ NULL
 #' @export
 create_primary_endpoint_table <- function(
 	advs,
-	trt_n,
 	paramcd = "SYSBP",
 	visit = "End of Treatment",
 	trt_var = "TRT01P",
@@ -24,7 +22,6 @@ create_primary_endpoint_table <- function(
 	autofit = TRUE
 ) {
 	assert_data_frame(advs, "advs")
-	assert_data_frame(trt_n, "trt_n")
 
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
 	missing_cols <- setdiff(required_cols, names(advs))
@@ -46,7 +43,7 @@ create_primary_endpoint_table <- function(
 		) |>
 		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
-			n = dplyr::n(),
+			n = sum(!is.na(.data$AVAL)),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
 			SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
 			Median = round(median(.data$AVAL, na.rm = TRUE), 1),

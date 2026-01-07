@@ -61,6 +61,9 @@ create_tte_summary_table <- function(
 	title = "Time-to-Event Summary",
 	autofit = TRUE
 ) {
+	# Calculate confidence interval percentage for dynamic column names
+	ci_pct <- round(conf_level * 100)
+
 	# Get filtered data and treatment variable
 	df <- get_filtered_data(data)
 	trt_var_actual <- get_trt_var(data, default = trt_var)
@@ -141,7 +144,8 @@ create_tte_summary_table <- function(
 	results$Median <- sprintf("%.1f", km_summary[, median_col])
 	results$Median_LCL <- sprintf("%.1f", km_summary[, ci_lower_name])
 	results$Median_UCL <- sprintf("%.1f", km_summary[, ci_upper_name])
-	results$`Median (95% CI)` <- ifelse(
+	median_col_name <- paste0("Median (", ci_pct, "% CI)")
+	results[[median_col_name]] <- ifelse(
 		is.na(km_summary[, median_col]),
 		"NE",
 		paste0(
@@ -160,7 +164,7 @@ create_tte_summary_table <- function(
 
 		for (i in seq_along(landmarks)) {
 			time_pt <- landmarks[i]
-			col_name <- paste0(time_pt, "-", time_unit, " Rate (95% CI)")
+			col_name <- paste0(time_pt, "-", time_unit, " Rate (", ci_pct, "% CI)")
 
 			# Extract survival estimates for this timepoint
 			if (length(trt_levels) > 1) {
@@ -245,12 +249,13 @@ create_tte_summary_table <- function(
 		hr_table <- cox_summary$conf.int
 		hr_coefs <- cox_summary$coefficients
 
-		results$`HR (95% CI)` <- NA_character_
+		hr_col_name <- paste0("HR (", ci_pct, "% CI)")
+		results[[hr_col_name]] <- NA_character_
 		results$`p-value` <- NA_character_
 
 		# Reference group gets "Reference"
 		ref_idx <- which(results$Treatment == ref_group)
-		results$`HR (95% CI)`[ref_idx] <- "Reference"
+		results[[hr_col_name]][ref_idx] <- "Reference"
 		results$`p-value`[ref_idx] <- "-"
 
 		# Other groups get HR values
@@ -259,7 +264,7 @@ create_tte_summary_table <- function(
 			trt_idx <- which(results$Treatment == trt_name)
 
 			if (length(trt_idx) > 0) {
-				results$`HR (95% CI)`[trt_idx] <- sprintf(
+				results[[hr_col_name]][trt_idx] <- sprintf(
 					"%.2f (%.2f, %.2f)",
 					hr_table[j, "exp(coef)"],
 					hr_table[j, "lower .95"],
@@ -273,22 +278,31 @@ create_tte_summary_table <- function(
 	}
 
 	# Select columns for display
+	median_col_name <- paste0("Median (", ci_pct, "% CI)")
 	display_cols <- c(
 		"Treatment",
 		"N",
 		"Events n (%)",
-		"Median (95% CI)"
+		median_col_name
 	)
 
 	# Add landmark columns if present
 	if (!is.null(landmarks)) {
-		landmark_cols <- paste0(landmarks, "-", time_unit, " Rate (95% CI)")
+		landmark_cols <- paste0(
+			landmarks,
+			"-",
+			time_unit,
+			" Rate (",
+			ci_pct,
+			"% CI)"
+		)
 		display_cols <- c(display_cols, landmark_cols)
 	}
 
 	# Add HR columns if present
-	if ("HR (95% CI)" %in% names(results)) {
-		display_cols <- c(display_cols, "HR (95% CI)", "p-value")
+	hr_col_name <- paste0("HR (", ci_pct, "% CI)")
+	if (hr_col_name %in% names(results)) {
+		display_cols <- c(display_cols, hr_col_name, "p-value")
 	}
 
 	display_df <- results[, display_cols, drop = FALSE]

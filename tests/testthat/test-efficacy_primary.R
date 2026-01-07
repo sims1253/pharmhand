@@ -16,9 +16,7 @@ test_that("create_primary_endpoint_table works", {
 		),
 		AVAL = c(120, 130, 140, 150)
 	)
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(2, 2))
-
-	tbl <- create_primary_endpoint_table(advs, trt_n)
+	tbl <- create_primary_endpoint_table(advs)
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "primary_endpoint")
@@ -38,27 +36,20 @@ test_that("create_primary_endpoint_table validates inputs", {
 		AVISIT = c("End of Treatment", "End of Treatment"),
 		AVAL = c(120, 130)
 	)
-	trt_n <- data.frame(TRT01P = c("A", "B"), N = c(1, 1))
 
 	# Non-data-frame input
 	expect_error(
-		create_primary_endpoint_table(NULL, trt_n),
+		create_primary_endpoint_table(NULL),
 		"must be a data frame"
 	)
 	expect_error(
-		create_primary_endpoint_table(list(a = 1), trt_n),
-		"must be a data frame"
-	)
-
-	# trt_n must be a data frame
-	expect_error(
-		create_primary_endpoint_table(advs, NULL),
+		create_primary_endpoint_table(list(a = 1)),
 		"must be a data frame"
 	)
 
 	advs_missing <- advs[, setdiff(names(advs), "AVAL")]
 	expect_error(
-		create_primary_endpoint_table(advs_missing, trt_n),
+		create_primary_endpoint_table(advs_missing),
 		"missing required columns"
 	)
 })

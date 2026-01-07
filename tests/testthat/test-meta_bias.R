@@ -69,22 +69,6 @@ test_that("trim_and_fill detects and imputes missing studies", {
 	expect_true("n_imputed" %in% names(tf_result))
 })
 
-test_that("trim_and_fill returns expected structure", {
-	# Create asymmetric data for trim and fill
-	yi <- c(-0.5, -0.4, -0.3, -0.1, 0.0, 0.5, 0.6, 0.7)
-	sei <- c(0.1, 0.12, 0.15, 0.18, 0.2, 0.1, 0.12, 0.15)
-
-	meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "md")
-
-	# Just check it returns a list with expected structure
-	tf_result <- trim_and_fill(meta_res)
-
-	expect_true(is.list(tf_result))
-	expect_true("original" %in% names(tf_result))
-	expect_true("adjusted" %in% names(tf_result))
-	expect_true("n_imputed" %in% names(tf_result))
-})
-
 test_that("trim_and_fill supports different estimators", {
 	yi <- c(-0.5, -0.4, -0.3, -0.1, 0.0, 0.5, 0.6, 0.7)
 	sei <- c(0.1, 0.12, 0.15, 0.18, 0.2, 0.1, 0.12, 0.15)

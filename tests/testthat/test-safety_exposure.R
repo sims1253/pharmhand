@@ -168,6 +168,7 @@ test_that("calculate_exposure_adjusted_rate: different confidence levels", {
 })
 
 test_that("create_ae_exposure_table: by = 'pt' (preferred term)", {
+	set.seed(123)
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1) # Add exposure duration in days
 
@@ -192,6 +193,7 @@ test_that("create_ae_exposure_table: by = 'pt' (preferred term)", {
 })
 
 test_that("create_ae_exposure_table: by = 'soc' (system organ class)", {
+	set.seed(123)
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 
@@ -216,6 +218,7 @@ test_that("create_ae_exposure_table: by = 'soc' (system organ class)", {
 })
 
 test_that("create_ae_exposure_table: by = 'overall'", {
+	set.seed(123)
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 
@@ -241,6 +244,7 @@ test_that("create_ae_exposure_table: by = 'overall'", {
 })
 
 test_that("create_ae_exposure_table: time_unit options", {
+	set.seed(123)
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 
@@ -280,6 +284,7 @@ test_that("create_ae_exposure_table: time_unit options", {
 })
 
 test_that("create_ae_exposure_table: threshold filters results", {
+	set.seed(123)
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 
@@ -508,6 +513,7 @@ test_that("create_ae_exposure_table: custom per value", {
 })
 
 test_that("create_ae_exposure_table: custom conf_level", {
+	set.seed(123)
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 
@@ -524,6 +530,7 @@ test_that("create_ae_exposure_table: custom conf_level", {
 })
 
 test_that("create_ae_exposure_table returns correct ClinicalTable", {
+	set.seed(123)
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 

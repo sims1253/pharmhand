@@ -406,7 +406,9 @@ add_table <- S7::new_generic(
 #' @describeIn add_table Method for StudyResult
 #' @noRd
 S7::method(add_table, StudyResult) <- function(obj, table, name = NULL) {
-	stopifnot(S7::S7_inherits(table, ClinicalTable))
+	if (!S7::S7_inherits(table, ClinicalTable)) {
+		ph_abort("'table' must be a ClinicalTable object")
+	}
 	if (!is.null(name)) {
 		admiraldev::assert_character_scalar(name)
 	}
@@ -440,7 +442,9 @@ add_plot <- S7::new_generic(
 #' @describeIn add_plot Method for StudyResult
 #' @noRd
 S7::method(add_plot, StudyResult) <- function(obj, plot, name = NULL) {
-	stopifnot(S7::S7_inherits(plot, ClinicalPlot))
+	if (!S7::S7_inherits(plot, ClinicalPlot)) {
+		ph_abort("'plot' must be a ClinicalPlot object")
+	}
 	if (!is.null(name)) {
 		admiraldev::assert_character_scalar(name)
 	}
@@ -474,7 +478,9 @@ add_section <- S7::new_generic(
 #' @describeIn add_section Method for ClinicalReport
 #' @noRd
 S7::method(add_section, ClinicalReport) <- function(obj, section, name = NULL) {
-	stopifnot(inherits(section, "ReportSection"))
+	if (!S7::S7_inherits(section, ReportSection)) {
+		ph_abort("'section' must be a ReportSection object")
+	}
 	if (!is.null(name)) {
 		admiraldev::assert_character_scalar(name)
 	}
@@ -508,7 +514,9 @@ add_content <- S7::new_generic(
 #' @describeIn add_content Method for ReportSection
 #' @noRd
 S7::method(add_content, ReportSection) <- function(obj, content, name = NULL) {
-	stopifnot(S7::S7_inherits(content, ClinicalContent))
+	if (!S7::S7_inherits(content, ClinicalContent)) {
+		ph_abort("'content' must be a ClinicalContent object")
+	}
 	if (!is.null(name)) {
 		admiraldev::assert_character_scalar(name)
 	}

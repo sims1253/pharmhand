@@ -63,7 +63,7 @@ network_meta <- function(
 	admiraldev::assert_data_frame(data)
 
 	# Validate required columns
-	required_cols <- c("study", "treat1", "treat2", effect_var, se_var)
+	required_cols <- c(study_var, treat1_var, treat2_var, effect_var, se_var)
 	missing_cols <- setdiff(required_cols, names(data))
 	if (length(missing_cols) > 0) {
 		ph_abort(sprintf(
@@ -73,7 +73,7 @@ network_meta <- function(
 	}
 
 	# Check for self-comparisons
-	self_comp <- data$treat1 == data$treat2
+	self_comp <- data[[treat1_var]] == data[[treat2_var]]
 	if (any(self_comp, na.rm = TRUE)) {
 		ph_abort("Self-comparisons (treat1 == treat2) are not allowed")
 	}

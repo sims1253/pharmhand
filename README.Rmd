@@ -170,7 +170,7 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
-nma_result$summary
+nma_result$comparisons
 ```
 
 ## Classes

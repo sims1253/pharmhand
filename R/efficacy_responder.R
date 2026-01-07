@@ -60,6 +60,10 @@ create_responder_table <- function(
 	ci_method <- match.arg(ci_method)
 	comparison_type <- match.arg(comparison_type)
 
+	# Define confidence level percentage for dynamic labels
+	ci_pct <- round(conf_level * 100)
+	comparison_col_name <- paste0(comparison_type, " (", ci_pct, "% CI)")
+
 	# Get filtered data
 	df <- get_filtered_data(data)
 	trt_var_actual <- get_trt_var(data, default = trt_var)
@@ -127,12 +131,12 @@ create_responder_table <- function(
 			conf_level = conf_level
 		)
 
-		response_summary[[paste0(comparison_type, " (95% CI)")]] <- NA_character_
+		response_summary[[comparison_col_name]] <- NA_character_
 		response_summary$`p-value` <- NA_character_
 
 		# Reference group
 		ref_idx <- which(response_summary[[trt_var_actual]] == ref_group)
-		response_summary[[paste0(comparison_type, " (95% CI)")]][ref_idx] <-
+		response_summary[[comparison_col_name]][ref_idx] <-
 			"Reference"
 		response_summary$`p-value`[ref_idx] <- "-"
 
@@ -142,7 +146,7 @@ create_responder_table <- function(
 			if (length(trt_idx) > 0) {
 				comp <- comparison[[trt]]
 				if (comparison_type == "RD") {
-					response_summary[[paste0(comparison_type, " (95% CI)")]][trt_idx] <-
+					response_summary[[comparison_col_name]][trt_idx] <-
 						sprintf(
 							"%.1f (%.1f, %.1f)",
 							comp$estimate * 100,
@@ -150,7 +154,7 @@ create_responder_table <- function(
 							comp$ucl * 100
 						)
 				} else {
-					response_summary[[paste0(comparison_type, " (95% CI)")]][trt_idx] <-
+					response_summary[[comparison_col_name]][trt_idx] <-
 						sprintf(
 							"%.2f (%.2f, %.2f)",
 							comp$estimate,
@@ -165,10 +169,10 @@ create_responder_table <- function(
 
 	# Select and rename columns for display
 	display_cols <- c(trt_var_actual, "n/N", "Rate (%)", ci_col_name)
-	if (paste0(comparison_type, " (95% CI)") %in% names(response_summary)) {
+	if (comparison_col_name %in% names(response_summary)) {
 		display_cols <- c(
 			display_cols,
-			paste0(comparison_type, " (95% CI)"),
+			comparison_col_name,
 			"p-value"
 		)
 	}
@@ -182,7 +186,7 @@ create_responder_table <- function(
 		title = title,
 		footnotes = c(
 			paste("Response defined as:", paste(response_values, collapse = ", ")),
-			paste("95% CI calculated using", ci_method, "method"),
+			paste0(ci_pct, "% CI calculated using ", ci_method, " method"),
 			if (length(trt_levels) > 1) {
 				paste(comparison_type, "compared to", ref_group)
 			} else {
