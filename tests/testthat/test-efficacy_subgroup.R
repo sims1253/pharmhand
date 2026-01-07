@@ -263,20 +263,6 @@ test_that("create_subgroup_table warns for missing subgroup variables", {
 	)
 })
 
-test_that("create_subgroup_table handles missing subgroup variable", {
-	set.seed(123)
-	adtte <- create_mock_tte_subgroup(n = 40)
-
-	expect_warning(
-		create_subgroup_table(
-			adtte,
-			subgroups = list(NONEXISTENT = "Missing"),
-			endpoint_type = "tte"
-		),
-		"not found"
-	)
-})
-
 test_that("create_subgroup_table with empty subgroup levels", {
 	# Use larger sample and balanced treatment assignment per sex to avoid
 	# "Loglik converged before variable 1" warnings

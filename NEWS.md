@@ -3,6 +3,7 @@
 ## Bug Fixes
 
 ### Robustness Improvements
+
 * Fixed `create_primary_endpoint_table()` to handle empty data or all-NA values gracefully, returning "-" instead of NaN/Inf
 * Fixed `create_responder_analysis_table()` to compute response rate in separate mutate step, avoiding fragile self-reference in summarise
 * Fixed `create_tte_summary_table()` to correctly extract landmark survival estimates for each treatment stratum instead of using first stratum for all
@@ -11,25 +12,47 @@
 * Fixed `leave_one_out()` to read ci_level from correct slot (meta_result@ci_level instead of @metadata$conf_level)
 
 ### Input Validation
+
 * Added validation in `eggers_test()` to require positive, non-missing standard errors
 * Added validation in `trim_and_fill()` to require positive, non-missing standard errors
 * Added validation in `meta_analysis()` to require positive, non-missing standard errors
 * Added validation in `calculate_heterogeneity()` to require positive, non-missing standard errors
 
 ### Code Quality
+
 * Changed `stop()` to `ph_abort()` in example script for consistent error handling
 * Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd
+
+### Plotting Fixes
+
+* Fixed `create_efficacy_waterfall_plot()` to compute category counts in separate mutate step, avoiding fragile self-reference in summarise
+* Fixed `create_forest_plot()` Cox model CI column extraction to use positional indexing instead of fragile name construction
+* Fixed `create_km_plot()` risk table grid background by explicitly setting panel.grid.major/minor to element_blank()
+* Fixed `safe_pct()` division by zero in `safety_summary.R` by adding helper function applied to 9 locations
+
+### Documentation
+
+* Added @title tags and completed @return documentation in `meta_bias.R`
+* Added within-study variation warning documentation in `assess_transitivity()`
+* Split long @return lines in `safety_tte.R`
+* Added description field to meta-analysis vignette
+* Updated brms section in meta-analysis vignette with installation guidance
 
 ## Test Improvements
 
 * Refactored test-plotting_forest.R, test-efficacy_tte.R, and test-efficacy_subgroup.R to use shared test fixtures
 * Added documentation examples to exported functions in efficacy and safety modules
+* Updated `test-meta_bayesian.R` with 8-study test data and `adapt_delta = 0.99` to prevent divergent transitions
+* Added `set.seed()` to 11 tests in `test-pro-analysis.R`
+* Added `set.seed()` to `test-efficacy_tte.R` before sample() call
+* Removed duplicate tests in `test-efficacy_responder.R` and `test-efficacy_subgroup.R`
 
 # pharmhand 0.3.0.9000
 
 ## Major Changes
 
 ### Test Suite Reorganization
+
 * **One-test-file-per-source-file convention**: Reorganized test files to follow R testing best practices.
   - Split `test-efficacy_tables.R` into `test-efficacy_cfb.R`, `test-efficacy_lab.R`, `test-efficacy_primary.R`, `test-efficacy_responder.R`, `test-efficacy_subgroup.R`, and `test-efficacy_tte.R`
   - Split `test-meta-analysis.R` into `test-meta_core.R`, `test-meta_bayesian.R`, `test-meta_bias.R`, `test-meta_indirect.R`, `test-meta_network.R`, and `test-meta_plots.R`
@@ -37,12 +60,14 @@
   - Renamed `test-safety_tables.R` to `test-safety_summary.R` and extracted `test-safety_comparison.R` and `test-safety_hierarchy.R`
 
 ### New Test Coverage
+
 * Added comprehensive tests for Configuration API (`test-config_api.R`)
 * Added comprehensive tests for Configuration Classes (`test-config_classes.R`)
 
 ## Bug Fixes
 
 ### Test Data Improvements
+
 * Fixed test data in safety TTE tests to use larger sample sizes (20+ subjects per arm) to avoid Cox model convergence issues
 * Fixed test data to avoid duplicate landmark timepoints in TTE summary tests
 * Fixed test data for subgroup analysis to have adequate subjects per subgroup (25+)
@@ -65,6 +90,7 @@
 * Replaced `any(is.na())` with `anyNA()` per jarl recommendations
 
 ## Code Quality
+
 * All tests pass (1874 tests)
 * No warnings or skipped tests
 * lintr clean (line length compliance)

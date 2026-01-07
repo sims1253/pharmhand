@@ -162,6 +162,15 @@ create_tte_summary_table <- function(
 	if (!is.null(landmarks) && length(landmarks) > 0) {
 		landmark_summary <- summary(km_fit, times = landmarks, extend = TRUE)
 
+		# Expand strata counts into per-row labels (e.g.,
+		# c("TRT01P=Active"=2, "TRT01P=Placebo"=2)
+		# becomes c("TRT01P=Active", "TRT01P=Active", "TRT01P=Placebo",
+		# "TRT01P=Placebo"))
+		strata_labels <- rep(
+			names(landmark_summary$strata),
+			times = as.integer(landmark_summary$strata)
+		)
+
 		for (i in seq_along(landmarks)) {
 			time_pt <- landmarks[i]
 			col_name <- paste0(time_pt, "-", time_unit, " Rate (", ci_pct, "% CI)")
@@ -189,14 +198,16 @@ create_tte_summary_table <- function(
 						time_idx <- which.min(abs(landmark_summary$time - time_pt))
 					}
 
-					# Match stratum - strata component has format "TRT01P=Active"
-					strata_vals <- landmark_summary$strata[time_idx]
-					stratum_match <- which(names(strata_vals) == stratum_name)
+					# Find row index that matches both time point and stratum
+					# Use expanded strata_labels to identify which rows belong to which stratum
+					row_idx <- which(
+						landmark_summary$time == time_pt & strata_labels == stratum_name
+					)
 
-					if (length(stratum_match) == 0) {
-						# Fallback: use first match if no exact stratum found
+					if (length(row_idx) == 0) {
+						# Fallback: use first time-matched row if no exact stratum found
 						if (length(time_idx) > 0) {
-							stratum_match <- 1
+							row_idx <- time_idx[1]
 						} else {
 							ph_warn(sprintf(
 								"No stratum match for treatment %s at time %.1f",
@@ -207,9 +218,9 @@ create_tte_summary_table <- function(
 						}
 					}
 
-					surv_vals[k] <- landmark_summary$surv[time_idx[stratum_match]]
-					lower_vals[k] <- landmark_summary$lower[time_idx[stratum_match]]
-					upper_vals[k] <- landmark_summary$upper[time_idx[stratum_match]]
+					surv_vals[k] <- landmark_summary$surv[row_idx]
+					lower_vals[k] <- landmark_summary$lower[row_idx]
+					upper_vals[k] <- landmark_summary$upper[row_idx]
 				}
 			} else {
 				surv_vals <- landmark_summary$surv[i]

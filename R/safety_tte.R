@@ -76,8 +76,10 @@ calculate_ae_tte_data <- function(
 	# If TRTDURD is not available, derive it from TRTEDT and TRTSDT
 	if (!"TRTDURD" %in% names(tte_data)) {
 		if ("TRTEDT" %in% names(tte_data) && "TRTSDT" %in% names(tte_data)) {
-			tte_data$TRTDURD <- as.numeric(tte_data$TRTEDT - tte_data$TRTSDT) +
-				1
+			tte_data <- tte_data |>
+				dplyr::mutate(
+					TRTDURD = as.numeric(.data$TRTEDT - .data$TRTSDT) + 1
+				)
 		} else {
 			ph_abort(
 				paste0(
@@ -106,7 +108,8 @@ calculate_ae_tte_data <- function(
 #' @param adae ADAE data frame
 #' @param soc SOC value to filter by
 #' @param trt_var Treatment variable name
-#' @return ClinicalPlot object, or NULL if no data available for the specified SOC
+#' @return ClinicalPlot object, or NULL if no data available for the
+#'   specified SOC
 #' @examples
 #' \dontrun{
 #' # Create KM plot for AE in a specific SOC
@@ -248,10 +251,11 @@ create_time_to_first_ae <- function(
 				"TRTEDT" %in% names(tte_data) &&
 				"TRTSDT" %in% names(tte_data)
 		) {
-			tte_data[[censor_var]] <- as.numeric(
-				tte_data$TRTEDT - tte_data$TRTSDT
-			) +
-				1
+			tte_data <- tte_data |>
+				dplyr::mutate(
+					!!rlang::sym(censor_var) := as.numeric(.data$TRTEDT - .data$TRTSDT) +
+						1
+				)
 		} else {
 			ph_abort(
 				paste0(

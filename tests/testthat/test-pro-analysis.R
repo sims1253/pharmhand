@@ -20,6 +20,7 @@ test_that("calculate_mcid_anchor calculates anchor-based MCID", {
 })
 
 test_that("calculate_mcid_distribution calculates distribution-based MCID", {
+	set.seed(123)
 	data <- data.frame(
 		BASE = rnorm(100, mean = 50, sd = 10)
 	)
@@ -38,6 +39,7 @@ test_that("calculate_mcid_distribution calculates distribution-based MCID", {
 })
 
 test_that("calculate_mcid_distribution calculates SEM with reliability", {
+	set.seed(123)
 	data <- data.frame(
 		BASE = rnorm(100, mean = 50, sd = 10)
 	)
@@ -102,6 +104,7 @@ test_that("create_ttd_analysis creates time-to-deterioration analysis", {
 })
 
 test_that("create_mean_plot creates ClinicalPlot", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(1:50, each = 5),
 		AVISITN = rep(0:4, 50),
@@ -122,6 +125,7 @@ test_that("create_mean_plot creates ClinicalPlot", {
 
 test_that("create_mean_plot calculates correct CIs", {
 	# Small dataset with known properties
+	set.seed(123)
 	data <- data.frame(
 		visit = rep(c("V1", "V2"), each = 100),
 		value = c(rnorm(100, 10, 2), rnorm(100, 12, 2))
@@ -139,6 +143,7 @@ test_that("create_mean_plot calculates correct CIs", {
 })
 
 test_that("create_spider_plot creates ClinicalPlot", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:20), each = 6),
 		AVISITN = rep(0:5, 20),
@@ -158,6 +163,7 @@ test_that("create_spider_plot creates ClinicalPlot", {
 })
 
 test_that("create_spider_plot handles threshold lines", {
+	set.seed(123)
 	data <- data.frame(
 		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
 		AVISITN = rep(0:3, 10),
@@ -394,6 +400,7 @@ test_that("calculate_mcid_distribution handles zero variance", {
 })
 
 test_that("calculate_mcid_distribution with reliability (SEM)", {
+	set.seed(123)
 	data <- data.frame(
 		BASE = rnorm(100, mean = 50, sd = 10)
 	)
@@ -413,6 +420,7 @@ test_that("calculate_mcid_distribution with reliability (SEM)", {
 })
 
 test_that("calculate_mcid_distribution without reliability (no SEM)", {
+	set.seed(123)
 	data <- data.frame(
 		BASE = rnorm(100, mean = 50, sd = 10)
 	)
@@ -427,6 +435,7 @@ test_that("calculate_mcid_distribution without reliability (no SEM)", {
 })
 
 test_that("calculate_mcid_distribution handles reliability edge cases", {
+	set.seed(123)
 	data <- data.frame(
 		BASE = rnorm(100, mean = 50, sd = 10)
 	)
@@ -449,6 +458,7 @@ test_that("calculate_mcid_distribution handles reliability edge cases", {
 })
 
 test_that("calculate_mcid_distribution with selective methods", {
+	set.seed(123)
 	data <- data.frame(
 		BASE = rnorm(100, mean = 50, sd = 10)
 	)
@@ -465,6 +475,7 @@ test_that("calculate_mcid_distribution with selective methods", {
 })
 
 test_that("calculate_mcid_distribution handles variable not found", {
+	set.seed(123)
 	data <- data.frame(
 		OTHER = rnorm(100)
 	)
