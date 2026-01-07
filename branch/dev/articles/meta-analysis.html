@@ -17,6 +17,15 @@
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Meta-Analysis and Network Meta-Analysis">
+<meta name="description" content="Comprehensive guide to pairwise meta-analysis, indirect comparison, network meta-analysis, and Bayesian meta-analysis using pharmhand for HTA submissions.
+">
+<meta property="og:description" content="Comprehensive guide to pairwise meta-analysis, indirect comparison, network meta-analysis, and Bayesian meta-analysis using pharmhand for HTA submissions.
+">
+<meta property="og:image" content="https://sims1253.github.io/pharmhand/branch/dev/reference/figures/logo.png">
+<meta property="og:image:alt" content="pharmhand hex logo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@scholzmx">
+<meta name="twitter:site" content="@scholzmx">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -385,9 +394,10 @@ distributions.</p>
 <span><span class="co"># Probability of benefit</span></span>
 <span><span class="va">bayes_result</span><span class="op">$</span><span class="va">prob_benefit</span></span></code></pre></div>
 <p><strong>Note:</strong> Bayesian meta-analysis requires the
-<code>brms</code> package and a working Stan installation. If brms is
-not available, the function returns a frequentist random-effects
-estimate as a fallback with installation guidance.</p>
+<code>brms</code> package and a working Stan installation. Install with
+<code>install.packages("brms")</code>. For users without brms, the
+frequentist <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code> function provides an
+alternative.</p>
 <p>Advantages of the Bayesian approach include:</p>
 <ul>
 <li>Natural interpretation of credible intervals as probability

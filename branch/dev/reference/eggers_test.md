@@ -1,4 +1,6 @@
-# Performs Egger's linear regression test to assess funnel plot asymmetry, which may indicate publication bias.
+# Egger's Test for Funnel Plot Asymmetry Performs Egger's linear regression test to assess funnel plot asymmetry, which may indicate publication bias.
+
+Egger's Test for Funnel Plot Asymmetry
 
 Performs Egger's linear regression test to assess funnel plot asymmetry,
 which may indicate publication bias.
@@ -25,7 +27,7 @@ eggers_test(yi = NULL, sei = NULL, meta_result = NULL)
 
 ## Value
 
-List with intercept, slope, standard error, t-value, p-value, and
+List with intercept, slope, standard error, t-value, p-value, df, and
 interpretation
 
 ## Examples

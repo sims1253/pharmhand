@@ -387,12 +387,13 @@ assessment, sensitivity analysis, and publication bias detection.
 - [`create_funnel_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_funnel_plot.md)
   : Create Funnel Plot for Publication Bias Assessment
 - [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
-  : Performs Egger's linear regression test to assess funnel plot
-  asymmetry, which may indicate publication bias.
+  : Egger's Test for Funnel Plot Asymmetry Performs Egger's linear
+  regression test to assess funnel plot asymmetry, which may indicate
+  publication bias.
 - [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
-  : Performs the Duval & Tweedie trim-and-fill method to estimate the
-  number of missing studies and adjust the pooled effect for publication
-  bias.
+  : Duval & Tweedie Trim-and-Fill Publication Bias Adjustment Performs
+  the Duval & Tweedie trim-and-fill method to estimate the number of
+  missing studies and adjust the pooled effect for publication bias.
 - [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)
   : Interface for Bayesian meta-analysis using brms/rstan when
   available. Provides guidance when dependencies are not installed.

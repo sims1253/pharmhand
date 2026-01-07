@@ -318,9 +318,10 @@ bayes_result$prob_benefit
 ```
 
 **Note:** Bayesian meta-analysis requires the `brms` package and a
-working Stan installation. If brms is not available, the function
-returns a frequentist random-effects estimate as a fallback with
-installation guidance.
+working Stan installation. Install with `install.packages("brms")`. For
+users without brms, the frequentist
+[`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
+function provides an alternative.
 
 Advantages of the Bayesian approach include:
 

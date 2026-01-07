@@ -64,11 +64,35 @@
 <ul><li>Changed <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> to <code>ph_abort()</code> in example script for consistent error handling</li>
 <li>Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd</li>
 </ul></div>
+<div class="section level4">
+<h4 id="plotting-fixes-0-3-1-9000">Plotting Fixes<a class="anchor" aria-label="anchor" href="#plotting-fixes-0-3-1-9000"></a></h4>
+<ul><li>Fixed <code>create_efficacy_waterfall_plot()</code> to compute category counts in separate mutate step, avoiding fragile self-reference in summarise</li>
+<li>Fixed <code><a href="../reference/create_forest_plot.html">create_forest_plot()</a></code> Cox model CI column extraction to use positional indexing instead of fragile name construction</li>
+<li>Fixed <code><a href="../reference/create_km_plot.html">create_km_plot()</a></code> risk table grid background by explicitly setting panel.grid.major/minor to element_blank()</li>
+<li>Fixed <code><a href="../reference/safe_pct.html">safe_pct()</a></code> division by zero in <code>safety_summary.R</code> by adding helper function applied to 9 locations</li>
+</ul></div>
+<div class="section level4">
+<h4 id="documentation-0-3-1-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3-1-9000"></a></h4>
+<ul><li>Added <a href="https://github.com/title" class="external-link">@title</a> tags and completed <a href="https://github.com/return" class="external-link">@return</a> documentation in <code>meta_bias.R</code>
+</li>
+<li>Added within-study variation warning documentation in <code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code>
+</li>
+<li>Split long <a href="https://github.com/return" class="external-link">@return</a> lines in <code>safety_tte.R</code>
+</li>
+<li>Added description field to meta-analysis vignette</li>
+<li>Updated brms section in meta-analysis vignette with installation guidance</li>
+</ul></div>
 </div>
 <div class="section level3">
 <h3 id="test-improvements-0-3-1-9000">Test Improvements<a class="anchor" aria-label="anchor" href="#test-improvements-0-3-1-9000"></a></h3>
 <ul><li>Refactored test-plotting_forest.R, test-efficacy_tte.R, and test-efficacy_subgroup.R to use shared test fixtures</li>
 <li>Added documentation examples to exported functions in efficacy and safety modules</li>
+<li>Updated <code>test-meta_bayesian.R</code> with 8-study test data and <code>adapt_delta = 0.99</code> to prevent divergent transitions</li>
+<li>Added <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to 11 tests in <code>test-pro-analysis.R</code>
+</li>
+<li>Added <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to <code>test-efficacy_tte.R</code> before sample() call</li>
+<li>Removed duplicate tests in <code>test-efficacy_responder.R</code> and <code>test-efficacy_subgroup.R</code>
+</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -49,12 +49,49 @@
   in example script for consistent error handling
 - Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd
 
+#### Plotting Fixes
+
+- Fixed `create_efficacy_waterfall_plot()` to compute category counts in
+  separate mutate step, avoiding fragile self-reference in summarise
+- Fixed
+  [`create_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_forest_plot.md)
+  Cox model CI column extraction to use positional indexing instead of
+  fragile name construction
+- Fixed
+  [`create_km_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_km_plot.md)
+  risk table grid background by explicitly setting
+  panel.grid.major/minor to element_blank()
+- Fixed
+  [`safe_pct()`](https://sims1253.github.io/pharmhand/branch/dev/reference/safe_pct.md)
+  division by zero in `safety_summary.R` by adding helper function
+  applied to 9 locations
+
+#### Documentation
+
+- Added [@title](https://github.com/title) tags and completed
+  [@return](https://github.com/return) documentation in `meta_bias.R`
+- Added within-study variation warning documentation in
+  [`assess_transitivity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_transitivity.md)
+- Split long [@return](https://github.com/return) lines in
+  `safety_tte.R`
+- Added description field to meta-analysis vignette
+- Updated brms section in meta-analysis vignette with installation
+  guidance
+
 ### Test Improvements
 
 - Refactored test-plotting_forest.R, test-efficacy_tte.R, and
   test-efficacy_subgroup.R to use shared test fixtures
 - Added documentation examples to exported functions in efficacy and
   safety modules
+- Updated `test-meta_bayesian.R` with 8-study test data and
+  `adapt_delta = 0.99` to prevent divergent transitions
+- Added [`set.seed()`](https://rdrr.io/r/base/Random.html) to 11 tests
+  in `test-pro-analysis.R`
+- Added [`set.seed()`](https://rdrr.io/r/base/Random.html) to
+  `test-efficacy_tte.R` before sample() call
+- Removed duplicate tests in `test-efficacy_responder.R` and
+  `test-efficacy_subgroup.R`
 
 ## pharmhand 0.3.0.9000
 

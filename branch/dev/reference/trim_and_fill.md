@@ -1,4 +1,6 @@
-# Performs the Duval & Tweedie trim-and-fill method to estimate the number of missing studies and adjust the pooled effect for publication bias.
+# Duval & Tweedie Trim-and-Fill Publication Bias Adjustment Performs the Duval & Tweedie trim-and-fill method to estimate the number of missing studies and adjust the pooled effect for publication bias.
+
+Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
 
 Performs the Duval & Tweedie trim-and-fill method to estimate the number
 of missing studies and adjust the pooled effect for publication bias.
