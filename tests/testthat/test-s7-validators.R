@@ -385,7 +385,8 @@ test_that("MultiArmStudy treatment_var defaults correctly", {
 	study <- MultiArmStudy(
 		data = data.frame(),
 		study_id = "TEST",
-		study_title = "Test Study"
+		study_title = "Test Study",
+		arms = c("Arm A", "Arm B", "Arm C")
 	)
 	expect_equal(study@treatment_var, "TRT01P")
 })

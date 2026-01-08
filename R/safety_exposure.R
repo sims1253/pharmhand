@@ -90,7 +90,9 @@ calculate_exposure_adjusted_rate <- function(
 #'   (default: "TRTDURD")
 #' @param trt_var Character. Treatment variable (default: "TRT01P")
 #' @param by Character. "soc", "pt", or "overall" (default: "pt")
-#' @param time_unit Character. "days", "weeks", "months" (default: "days")
+#' @param time_unit Character. Unit of the exposure_var values:
+#'   "days" (default for TRTDURD), "weeks", or "months".
+#'   Used to convert exposure to patient-years.
 #' @param per Numeric. Rate per X patient-years (default: 100)
 #' @param conf_level Numeric. Confidence level (default: 0.95)
 #' @param threshold Numeric. Minimum incidence to include (default: 0)
@@ -201,6 +203,8 @@ create_ae_exposure_table <- function(
 		)
 	}
 
+	# Convert exposure from time_unit to patient-years
+	# time_unit describes the units of exposure_var (e.g., TRTDURD is typically days)
 	year_divisor <- switch(
 		time_unit,
 		days = 365.25,

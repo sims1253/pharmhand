@@ -154,49 +154,57 @@ bayesian_meta_analysis <- function(
 	}
 
 	if (!is.numeric(yi)) {
-		ph_abort("'yi' must be numeric", call. = FALSE)
+		ph_abort("'yi' must be numeric")
 	}
 	if (!is.numeric(sei)) {
-		ph_abort("'sei' must be numeric", call. = FALSE)
+		ph_abort("'sei' must be numeric")
 	}
 	if (length(yi) != length(sei)) {
-		ph_abort("'yi' and 'sei' must have the same length", call. = FALSE)
+		ph_abort("'yi' and 'sei' must have the same length")
 	}
 	if (any(sei <= 0, na.rm = TRUE)) {
-		ph_abort("'sei' must contain only positive values", call. = FALSE)
+		ph_abort("'sei' must contain only positive values")
 	}
 	if (!is.null(study_labels) && length(study_labels) != k) {
 		ph_abort(
-			sprintf("'study_labels' must have length %d to match 'yi'", k),
-			call. = FALSE
+			sprintf("'study_labels' must have length %d to match 'yi'", k)
 		)
 	}
 
 	# Validate prior_mu
 	if (!is.list(prior_mu) || is.null(prior_mu$mean) || is.null(prior_mu$sd)) {
 		ph_abort(
-			"'prior_mu' must be a list with 'mean' and 'sd' components",
-			call. = FALSE
+			"'prior_mu' must be a list with 'mean' and 'sd' components"
 		)
 	}
 	if (!is.numeric(prior_mu$mean) || length(prior_mu$mean) != 1) {
-		ph_abort("'prior_mu$mean' must be a single numeric value", call. = FALSE)
+		ph_abort("'prior_mu$mean' must be a single numeric value")
 	}
 	if (
 		!is.numeric(prior_mu$sd) || length(prior_mu$sd) != 1 || prior_mu$sd <= 0
 	) {
 		ph_abort(
-			"'prior_mu$sd' must be a single positive numeric value",
-			call. = FALSE
+			"'prior_mu$sd' must be a single positive numeric value"
 		)
 	}
 
 	# Validate prior_tau
-	if (!is.list(prior_tau) || is.null(prior_tau$scale)) {
+	if (
+		!is.list(prior_tau) || is.null(prior_tau$scale) || is.null(prior_tau$type)
+	) {
 		ph_abort(
-			"'prior_tau' must be a list with 'type' and 'scale' components",
-			call. = FALSE
+			"'prior_tau' must be a list with 'type' and 'scale' components"
 		)
+	}
+	if (!is.character(prior_tau$type) || length(prior_tau$type) != 1) {
+		ph_abort("'prior_tau$type' must be a single character string")
+	}
+	valid_tau_types <- c("half_cauchy", "half_normal", "exponential")
+	if (!prior_tau$type %in% valid_tau_types) {
+		ph_abort(sprintf(
+			"prior_tau$type must be one of: %s",
+			paste(valid_tau_types, collapse = ", ")
+		))
 	}
 	if (
 		!is.numeric(prior_tau$scale) ||
@@ -204,8 +212,7 @@ bayesian_meta_analysis <- function(
 			prior_tau$scale <= 0
 	) {
 		ph_abort(
-			"'prior_tau$scale' must be a single positive numeric value",
-			call. = FALSE
+			"'prior_tau$scale' must be a single positive numeric value"
 		)
 	}
 
@@ -216,7 +223,7 @@ bayesian_meta_analysis <- function(
 			chains < 1 ||
 			chains != as.integer(chains)
 	) {
-		ph_abort("'chains' must be a positive integer", call. = FALSE)
+		ph_abort("'chains' must be a positive integer")
 	}
 	if (
 		!is.numeric(iter) ||
@@ -224,7 +231,7 @@ bayesian_meta_analysis <- function(
 			iter < 1 ||
 			iter != as.integer(iter)
 	) {
-		ph_abort("'iter' must be a positive integer", call. = FALSE)
+		ph_abort("'iter' must be a positive integer")
 	}
 	if (
 		!is.numeric(warmup) ||
@@ -232,10 +239,10 @@ bayesian_meta_analysis <- function(
 			warmup < 0 ||
 			warmup != as.integer(warmup)
 	) {
-		ph_abort("'warmup' must be a non-negative integer", call. = FALSE)
+		ph_abort("'warmup' must be a non-negative integer")
 	}
 	if (warmup >= iter) {
-		ph_abort("'warmup' must be less than 'iter'", call. = FALSE)
+		ph_abort("'warmup' must be less than 'iter'")
 	}
 
 	# Prepare data for brms
@@ -253,16 +260,6 @@ bayesian_meta_analysis <- function(
 	formula <- brms::bf(yi | se(sei) ~ 1 + (1 | study))
 
 	# Build priors
-	# Validate prior_tau$type
-	valid_tau_types <- c("half_cauchy", "half_normal", "exponential")
-	if (!prior_tau$type %in% valid_tau_types) {
-		ph_abort(sprintf(
-			"prior_tau$type must be one of: %s",
-			paste(valid_tau_types, collapse = ", ")
-		))
-	}
-
-	# Build tau prior string based on type
 	# Note: brms uses lb (lower bound) to enforce non-negative constraints
 	tau_prior_str <- switch(
 		prior_tau$type,
@@ -382,8 +379,16 @@ bayesian_meta_analysis <- function(
 	neff_ratios <- brms::neff_ratio(fit)
 	bulk_ess_values <- neff_ratios * total_samples
 	min_bulk_ess <- min(bulk_ess_values, na.rm = TRUE)
-	# Use same for tail ESS (neff_ratio is overall ESS ratio)
-	min_tail_ess <- min_bulk_ess
+
+	# Get tail ESS using posterior package if available
+	if (requireNamespace("posterior", quietly = TRUE)) {
+		draws_array <- posterior::as_draws_array(fit)
+		tail_ess_values <- posterior::ess_tail(draws_array)
+		min_tail_ess <- min(tail_ess_values, na.rm = TRUE)
+	} else {
+		# Fallback: use bulk ESS as approximation for tail ESS
+		min_tail_ess <- min_bulk_ess
+	}
 
 	# Extract BFMI from nuts_params energy values
 	np <- brms::nuts_params(fit)
@@ -510,6 +515,7 @@ bayesian_meta_analysis <- function(
 
 		# Calculate Bayesian p-value: proportion of y_rep >= y
 		# This is a one-sided p-value for the discrepancy measure
+		bayes_p_value <- NULL
 		if (is.matrix(y_rep) || is.data.frame(y_rep)) {
 			# y_rep is a matrix with ndraws x n observations
 			# For each observation, calculate proportion of y_rep >= observed y
@@ -538,7 +544,7 @@ bayesian_meta_analysis <- function(
 			bayes_p_value = overall_bayes_p,
 			type = pp_check_type,
 			ndraws = pp_ndraws,
-			individual_p_values = if (exists("bayes_p_value")) bayes_p_value else NULL
+			individual_p_values = bayes_p_value
 		)
 
 		ph_inform(sprintf(
@@ -635,16 +641,14 @@ create_bayesian_trace_plots <- function(
 	# Validate input is a bayesian_meta_result object
 	if (!inherits(bayesian_result, "bayesian_meta_result")) {
 		ph_abort(
-			"Input must be a bayesian_meta_result object from bayesian_meta_analysis()",
-			call. = FALSE
+			"Input must be a bayesian_meta_result object from bayesian_meta_analysis()"
 		)
 	}
 
 	# Check for brms availability
 	if (!requireNamespace("brms", quietly = TRUE)) {
 		ph_abort(
-			"Creating trace plots requires the 'brms' package.",
-			call. = FALSE
+			"Creating trace plots requires the 'brms' package."
 		)
 	}
 
@@ -653,8 +657,7 @@ create_bayesian_trace_plots <- function(
 
 	if (is.null(fit)) {
 		ph_abort(
-			"The bayesian_result object does not contain a fit object.",
-			call. = FALSE
+			"The bayesian_result object does not contain a fit object."
 		)
 	}
 
@@ -671,8 +674,7 @@ create_bayesian_trace_plots <- function(
 
 		if (length(parameters) == 0) {
 			ph_abort(
-				"None of the specified parameters are available in the model.",
-				call. = FALSE
+				"None of the specified parameters are available in the model."
 			)
 		}
 	}
@@ -682,7 +684,7 @@ create_bayesian_trace_plots <- function(
 
 	if (!is.null(chains)) {
 		if (!is.numeric(chains) || length(chains) != 1 || chains < 1) {
-			ph_abort("'chains' must be a positive integer", call. = FALSE)
+			ph_abort("'chains' must be a positive integer")
 		}
 		if (chains > n_chains) {
 			ph_abort(
@@ -690,8 +692,7 @@ create_bayesian_trace_plots <- function(
 					"Requested %d chains but model only has %d chains",
 					chains,
 					n_chains
-				),
-				call. = FALSE
+				)
 			)
 		}
 	}
@@ -709,15 +710,11 @@ create_bayesian_trace_plots <- function(
 		old_ask <- graphics::par(ask = FALSE)
 		on.exit(graphics::par(ask = old_ask), add = TRUE)
 
-		plot_result <- plot(
+		plot(
 			fit,
 			pars = parameters,
 			...
 		)
-
-		# plot() returns NULL invisibly when combine_plots = TRUE (default behavior)
-		# The plot is rendered directly to the graphics device
-		# We need to return a ggplot object, so we use bayesplot::mcmc_trace instead
 
 		# Try using mcmc_trace from bayesplot for better control
 		if (requireNamespace("bayesplot", quietly = TRUE)) {
@@ -750,10 +747,10 @@ create_bayesian_trace_plots <- function(
 			# This will print directly to the graphics device
 			plot(fit, pars = parameters, ask = FALSE, ...)
 
-			ph_inform(
+			ph_inform(paste0(
 				"Trace plots rendered using brms. Consider installing 'bayesplot' ",
 				"for ggplot objects."
-			)
+			))
 
 			# Return invisible NULL since brms::plot doesn't return a ggplot
 			return(invisible(NULL))
@@ -762,11 +759,10 @@ create_bayesian_trace_plots <- function(
 		# Return individual plots for each parameter
 
 		if (!requireNamespace("bayesplot", quietly = TRUE)) {
-			ph_abort(
+			ph_abort(paste0(
 				"Returning individual plots requires the 'bayesplot' package. ",
-				"Install with: install.packages('bayesplot')",
-				call. = FALSE
-			)
+				"Install with: install.packages('bayesplot')"
+			))
 		}
 
 		# Get posterior draws
@@ -850,10 +846,10 @@ prior_sensitivity_analysis <- function(
 
 	# Validate inputs
 	if (!is.numeric(yi) || !is.numeric(sei)) {
-		ph_abort("'yi' and 'sei' must be numeric vectors", call. = FALSE)
+		ph_abort("'yi' and 'sei' must be numeric vectors")
 	}
 	if (length(yi) != length(sei)) {
-		ph_abort("'yi' and 'sei' must have the same length", call. = FALSE)
+		ph_abort("'yi' and 'sei' must have the same length")
 	}
 
 	# Create default scenarios if none provided
@@ -878,8 +874,7 @@ prior_sensitivity_analysis <- function(
 	# Ensure prior_scenarios is a list
 	if (!is.list(prior_scenarios)) {
 		ph_abort(
-			"'prior_scenarios' must be a list of prior specifications",
-			call. = FALSE
+			"'prior_scenarios' must be a list of prior specifications"
 		)
 	}
 
@@ -893,12 +888,10 @@ prior_sensitivity_analysis <- function(
 
 	# Check brms availability
 	if (!requireNamespace("brms", quietly = TRUE)) {
-		ph_inform(paste(
-			"Prior sensitivity analysis requires the 'brms' package.",
-			"Install with: install.packages('brms')",
-			sep = "\n"
+		ph_abort(paste0(
+			"Prior sensitivity analysis requires the 'brms' package. ",
+			"Install with: install.packages('brms')"
 		))
-		return(NULL)
 	}
 
 	ph_inform(sprintf(
@@ -1024,11 +1017,15 @@ prior_sensitivity_analysis <- function(
 		is_ratio <- effect_measure %in% c("hr", "or", "rr")
 		threshold <- if (is_ratio) 1 else 0
 
-		ci_includes_threshold <- sapply(seq_len(nrow(comparison_df)), function(i) {
-			ci_lower <- comparison_df$ci_95_lower[i]
-			ci_upper <- comparison_df$ci_95_upper[i]
-			ci_lower <= threshold && ci_upper >= threshold
-		})
+		ci_includes_threshold <- vapply(
+			seq_len(nrow(comparison_df)),
+			function(i) {
+				ci_lower <- comparison_df$ci_95_lower[i]
+				ci_upper <- comparison_df$ci_95_upper[i]
+				ci_lower <= threshold && ci_upper >= threshold
+			},
+			logical(1)
+		)
 
 		ci_coverage_pct <- mean(ci_includes_threshold) * 100
 
@@ -1175,14 +1172,13 @@ format_bayesian_result_iqwig <- function(
 	# Validate input is a bayesian_meta_result object
 	if (!inherits(bayesian_result, "bayesian_meta_result")) {
 		ph_abort(
-			"Input must be a bayesian_meta_result object from bayesian_meta_analysis()",
-			call. = FALSE
+			"Input must be a bayesian_meta_result object from bayesian_meta_analysis()"
 		)
 	}
 
 	# Validate locale
 	if (!locale %in% c("en", "de")) {
-		ph_abort("'locale' must be 'en' or 'de'", call. = FALSE)
+		ph_abort("'locale' must be 'en' or 'de'")
 	}
 
 	# Extract relevant components from bayesian_result
@@ -1238,11 +1234,7 @@ format_bayesian_result_iqwig <- function(
 	# For ratios: P(HR < 1) = XX.X% (probability effect is beneficial)
 	# For differences: P(effect < 0) = XX.X% (probability of negative effect)
 	if (include_prob) {
-		prob_beneficial <- if (is_ratio) {
-			bayesian_result$prob_negative * 100
-		} else {
-			bayesian_result$prob_negative * 100
-		}
+		prob_beneficial <- bayesian_result$prob_negative * 100
 
 		prob_beneficial_fmt <- format_percentage(
 			prob_beneficial / 100,
@@ -1280,7 +1272,7 @@ format_bayesian_result_iqwig <- function(
 		)
 
 		interpretation_text <- paste(
-			interpretation_parts[!sapply(interpretation_parts, is.null)],
+			interpretation_parts[!vapply(interpretation_parts, is.null, logical(1))],
 			collapse = "; "
 		)
 	} else {
@@ -1296,7 +1288,7 @@ format_bayesian_result_iqwig <- function(
 	)
 
 	full_text <- paste(
-		full_text_parts[!sapply(full_text_parts, is.null)],
+		full_text_parts[!vapply(full_text_parts, is.null, logical(1))],
 		collapse = "; "
 	)
 
@@ -1319,11 +1311,7 @@ format_bayesian_result_iqwig <- function(
 			tau_ci_upper = bayesian_result$tau_ci_95[2],
 			effect_measure = effect_measure,
 			n_studies = bayesian_result$n_studies,
-			prob_beneficial = if (is_ratio) {
-				bayesian_result$prob_negative
-			} else {
-				bayesian_result$prob_negative
-			}
+			prob_beneficial = bayesian_result$prob_negative
 		)
 	)
 
@@ -1388,14 +1376,13 @@ create_bayesian_forest_plot_iqwig <- function(
 	# Validate input is a bayesian_meta_result object
 	if (!inherits(bayesian_result, "bayesian_meta_result")) {
 		ph_abort(
-			"Input must be a bayesian_meta_result object from bayesian_meta_analysis()",
-			call. = FALSE
+			"Input must be a bayesian_meta_result object from bayesian_meta_analysis()"
 		)
 	}
 
 	# Validate locale
 	if (!locale %in% c("en", "de")) {
-		ph_abort("'locale' must be 'en' or 'de'", call. = FALSE)
+		ph_abort("'locale' must be 'en' or 'de'")
 	}
 
 	# Extract effect measure info
@@ -1427,7 +1414,6 @@ create_bayesian_forest_plot_iqwig <- function(
 		) {
 			# Extract from brms fit object
 			fit <- bayesian_result$fit
-			data <- brms::fixef(fit, summary = FALSE)
 			# This is a simplified extraction - actual implementation may vary
 			study_yi <- bayesian_result$metadata$yi %||% numeric(0)
 			study_sei <- bayesian_result$metadata$sei %||% numeric(0)
@@ -1435,8 +1421,7 @@ create_bayesian_forest_plot_iqwig <- function(
 				paste("Study", seq_along(study_yi))
 		} else {
 			ph_abort(
-				"study_data must be provided or available in bayesian_result metadata",
-				call. = FALSE
+				"study_data must be provided or available in bayesian_result metadata"
 			)
 		}
 	} else {
@@ -1451,7 +1436,7 @@ create_bayesian_forest_plot_iqwig <- function(
 	k <- length(study_yi)
 
 	if (k == 0) {
-		ph_abort("No studies found in study_data", call. = FALSE)
+		ph_abort("No studies found in study_data")
 	}
 
 	# Calculate study-specific estimates and CIs
@@ -1539,9 +1524,6 @@ create_bayesian_forest_plot_iqwig <- function(
 	} else {
 		xlim <- xlim + c(-0.1, 0.1)
 	}
-
-	# Determine decimal separator for locale
-	dec_sep <- if (locale == "de") "," else "."
 
 	# Build the forest plot using ggplot2
 	p <- ggplot2::ggplot(

@@ -1019,7 +1019,7 @@ test_that("create_bayesian_forest_plot_iqwig generates ggplot", {
 
 	# Test that ClinicalPlot object is returned
 	iqwig_result <- format_bayesian_result_iqwig(result)
-	forest_plot <- create_bayesian_forest_plot_iqwig(iqwig_result)
+	forest_plot <- create_bayesian_forest_plot_iqwig(result)
 	expect_true("ClinicalPlot" %in% class(forest_plot))
 
 	# Test that studies are displayed
@@ -1033,7 +1033,7 @@ test_that("create_bayesian_forest_plot_iqwig generates ggplot", {
 
 	# Test that weights can be displayed
 	forest_plot_weighted <- create_bayesian_forest_plot_iqwig(
-		iqwig_result,
+		result,
 		show_weights = TRUE
 	)
 	expect_true("ClinicalPlot" %in% class(forest_plot_weighted))
@@ -1059,7 +1059,7 @@ test_that("create_bayesian_forest_plot_iqwig uses IQWiG formatting", {
 	)
 
 	iqwig_result <- format_bayesian_result_iqwig(result)
-	forest_plot <- create_bayesian_forest_plot_iqwig(iqwig_result)
+	forest_plot <- create_bayesian_forest_plot_iqwig(result)
 
 	# Test that subtitle includes heterogeneity
 	# (The subtitle should contain tau information)

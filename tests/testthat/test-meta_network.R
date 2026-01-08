@@ -15,9 +15,9 @@ test_that("network_meta analyzes treatment network", {
 
 	result <- network_meta(nma_data, effect_measure = "hr")
 
-	expect_true(is.list(result))
-	expect_true("comparisons" %in% names(result))
-	expect_true("network" %in% names(result))
+	expect_true(S7::S7_inherits(result, NMAResult))
+	expect_true("comparisons" %in% names(S7::props(result)))
+	expect_true("network" %in% names(S7::props(result)))
 	expect_equal(result@network$n_treatments, 3)
 })
 
@@ -34,8 +34,8 @@ test_that("network_meta handles incomplete networks", {
 	# Should still produce results even if network not fully connected
 	result <- network_meta(incomplete_data, effect_measure = "hr")
 
-	expect_true(is.list(result))
-	expect_true("network" %in% names(result))
+	expect_true(S7::S7_inherits(result, NMAResult))
+	expect_true("network" %in% names(S7::props(result)))
 })
 
 test_that("network_meta handles custom reference treatment", {
@@ -49,7 +49,7 @@ test_that("network_meta handles custom reference treatment", {
 
 	result_ref_b <- network_meta(nma_data, reference = "B", effect_measure = "hr")
 
-	expect_true(is.list(result_ref_b))
+	expect_true(S7::S7_inherits(result_ref_b, NMAResult))
 	expect_equal(result_ref_b@network$reference, "B")
 })
 
@@ -64,7 +64,7 @@ test_that("network_meta handles fixed-effect model", {
 
 	result <- network_meta(nma_data, effect_measure = "hr", model = "fixed")
 
-	expect_true(is.list(result))
+	expect_true(S7::S7_inherits(result, NMAResult))
 	expect_equal(result@model, "fixed")
 })
 
@@ -217,19 +217,19 @@ test_that("node_splitting errors on invalid nma_result input", {
 
 	expect_error(
 		node_splitting(bad_nma),
-		"must be from network_meta\\(\\)"
+		"NMAResult.*from network_meta"
 	)
 
 	# Invalid: not a list
 	expect_error(
 		node_splitting("not a list"),
-		"must be from network_meta\\(\\)"
+		"NMAResult.*from network_meta"
 	)
 
 	# Invalid: empty list
 	expect_error(
 		node_splitting(list()),
-		"must be from network_meta\\(\\)"
+		"NMAResult.*from network_meta"
 	)
 })
 
@@ -321,7 +321,7 @@ test_that("network_meta handles different effect measures in network", {
 
 	result_md <- network_meta(md_data, effect_measure = "md")
 
-	expect_true(is.list(result_md))
+	expect_true(S7::S7_inherits(result_md, NMAResult))
 	expect_equal(result_md@effect_measure, "md")
 })
 
@@ -336,8 +336,8 @@ test_that("network_meta creates proper comparison structure", {
 
 	result <- network_meta(nma_data, effect_measure = "hr")
 
-	expect_true("comparisons" %in% names(result))
-	expect_true("network" %in% names(result))
+	expect_true("comparisons" %in% names(S7::props(result)))
+	expect_true("network" %in% names(S7::props(result)))
 	expect_true(result@network$n_treatments >= 3)
 	expect_true(result@n_studies >= 4)
 })
