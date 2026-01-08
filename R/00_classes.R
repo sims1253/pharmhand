@@ -375,6 +375,140 @@ MetaResult <- S7::new_class(
 	)
 )
 
+#' NMAResult Class
+#'
+#' An S7 class for representing network meta-analysis results including
+#' comparison tables, network structure, and metadata.
+#'
+#' @export
+#'
+#' @param comparisons Data frame of treatment comparisons vs reference
+#' @param network List containing network structure:
+#'   - treatments: character vector of treatment names
+#'   - n_treatments: integer number of treatments
+#'   - edges: data frame of study comparisons
+#'   - reference: character reference treatment name
+#' @param model Character string: "fixed" or "random"
+#' @param effect_measure Character string: "hr", "or", "rr", "rd", "md", "smd"
+#' @param conf_level Numeric confidence level (default: 0.95)
+#' @param method Character string for NMA method
+#' @param n_studies Integer number of studies in the network
+#' @param metadata List of additional metadata
+#'
+#' @return An NMAResult object
+#'
+#' @examples
+#' \dontrun{
+#' result <- NMAResult(
+#'   comparisons = comparison_df,
+#'   network = list(
+#'     treatments = c("A", "B", "C"),
+#'     n_treatments = 3L,
+#'     edges = data.frame(treat1 = "A", treat2 = "B", n_studies = 2L),
+#'     reference = "A"
+#'   ),
+#'   model = "random",
+#'   effect_measure = "hr"
+#' )
+#' }
+NMAResult <- S7::new_class(
+	"NMAResult",
+	package = "pharmhand",
+	properties = list(
+		comparisons = S7::new_property(
+			S7::class_data.frame,
+			default = data.frame(),
+			validator = function(value) {
+				admiraldev::assert_data_frame(value)
+				NULL
+			}
+		),
+		network = S7::new_property(
+			S7::class_list,
+			default = list(),
+			validator = function(value) {
+				# Validate network structure
+				required_fields <- c("treatments", "edges", "reference")
+				missing <- setdiff(required_fields, names(value))
+				if (length(missing) > 0) {
+					return(sprintf(
+						"network must contain: %s",
+						paste(missing, collapse = ", ")
+					))
+				}
+				# Validate treatments is character vector
+				if (!is.character(value$treatments)) {
+					return("network$treatments must be a character vector")
+				}
+				# Validate edges is data frame
+				if (!is.data.frame(value$edges)) {
+					return("network$edges must be a data frame")
+				}
+				# Validate reference is character scalar
+				if (!is.character(value$reference) || length(value$reference) != 1) {
+					return("network$reference must be a single character value")
+				}
+				NULL
+			}
+		),
+		model = S7::new_property(
+			S7::class_character,
+			default = "random",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				if (!value %in% c("fixed", "random")) {
+					return("model must be 'fixed' or 'random'")
+				}
+				NULL
+			}
+		),
+		effect_measure = S7::new_property(
+			S7::class_character,
+			default = "hr",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_measures <- c("hr", "or", "rr", "rd", "md", "smd", "irr")
+				if (!value %in% valid_measures) {
+					return(sprintf(
+						"effect_measure must be one of: %s",
+						paste(valid_measures, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		conf_level = S7::new_property(
+			S7::class_numeric,
+			default = 0.95,
+			validator = function(value) {
+				if (length(value) != 1 || value <= 0 || value >= 1) {
+					return("conf_level must be a single value between 0 and 1")
+				}
+				NULL
+			}
+		),
+		method = S7::new_property(
+			S7::class_character,
+			default = "bucher_chain",
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				NULL
+			}
+		),
+		n_studies = S7::new_property(
+			S7::class_integer,
+			default = NA_integer_,
+			validator = function(value) {
+				if (length(value) != 1 || value < 0) {
+					return("n_studies must be a non-negative integer")
+				}
+				NULL
+			}
+		),
+		metadata = S7::new_property(S7::class_list, default = list())
+	)
+)
+
 #' EvidenceGrade Class
 #'
 #' An S7 class for representing IQWiG evidence grading results
@@ -1012,7 +1146,7 @@ MultiArmStudy <- S7::new_class(
 			default = character(),
 			validator = function(value) {
 				admiraldev::assert_character_vector(value)
-				if (length(value) > 0 && length(value) < 3) {
+				if (length(value) < 3) {
 					return("arms must have at least 3 elements for a multi-arm study")
 				}
 				NULL
@@ -1109,6 +1243,78 @@ StudySet <- S7::new_class(
 				vapply(self@studies, function(s) s@study_id, character(1))
 			}
 		)
+	)
+)
+
+#' MCIDResult Class
+#'
+#' An S7 class for representing Minimal Clinically Important Difference
+#' (MCID) calculation results from anchor-based, distribution-based,
+#' or combined methods.
+#'
+#' @export
+#'
+#' @param anchor List or NULL. Anchor-based MCID results containing
+#'   mcid, ci, n, se, and method
+#' @param distribution List or NULL. Distribution-based MCID results
+#'   containing half_sd, one_sem, third_sd, fifth_sd, sd, n, and method
+#' @param method Character string: "anchor", "distribution", or "both"
+#' @param metadata List of additional metadata
+#'
+#' @return An MCIDResult object
+#'
+#' @examples
+#' \dontrun{
+#' # Anchor-based MCID result
+#' result <- MCIDResult(
+#'   anchor = list(mcid = 2.5, ci = c(1.8, 3.2), n = 45L),
+#'   distribution = NULL,
+#'   method = "anchor"
+#' )
+#'
+#' # Access components
+#' result@anchor$mcid
+#' result@method
+#' }
+MCIDResult <- S7::new_class(
+	"MCIDResult",
+	package = "pharmhand",
+	properties = list(
+		anchor = S7::new_property(
+			S7::class_list,
+			default = NULL,
+			validator = function(value) {
+				if (!is.null(value) && !is.list(value)) {
+					return("anchor must be a list or NULL")
+				}
+				NULL
+			}
+		),
+		distribution = S7::new_property(
+			S7::class_list,
+			default = NULL,
+			validator = function(value) {
+				if (!is.null(value) && !is.list(value)) {
+					return("distribution must be a list or NULL")
+				}
+				NULL
+			}
+		),
+		method = S7::new_property(
+			S7::class_character,
+			validator = function(value) {
+				admiraldev::assert_character_scalar(value)
+				valid_methods <- c("anchor", "distribution", "both")
+				if (!value %in% valid_methods) {
+					return(sprintf(
+						"method must be one of: %s",
+						paste(valid_methods, collapse = ", ")
+					))
+				}
+				NULL
+			}
+		),
+		metadata = S7::new_property(S7::class_list, default = list())
 	)
 )
 

@@ -1,4 +1,28 @@
-# pharmhand 0.3.2.9000
+# pharmhand 0.3.3.9000
+
+## Breaking Changes
+
+### Source File Reorganization
+
+* **Efficacy module split**: `R/efficacy_tables.R` has been split into focused modules:
+  - `R/efficacy_primary.R` - Primary endpoint tables (`create_primary_endpoint_table()`)
+  - `R/efficacy_cfb.R` - Change from baseline tables
+  - `R/efficacy_lab.R` - Laboratory tables
+  - `R/efficacy_tte.R` - Time-to-event tables
+  - `R/efficacy_responder.R` - Responder analysis tables
+  - `R/efficacy_subgroup.R` - Subgroup analysis tables
+
+* **Safety module split**: `R/safety_tables.R` has been split into focused modules:
+  - `R/safety_summary.R` - AE summary tables (`create_ae_summary_table()`)
+  - `R/safety_comparison.R` - AE comparison tables
+  - `R/safety_hierarchy.R` - SOC/PT hierarchy tables
+  - `R/safety_tte.R` - Safety time-to-event analysis
+  - `R/safety_exposure.R` - Exposure-adjusted analysis
+
+* **Migration guidance**: Users who previously sourced these files directly should:
+  - Use the package namespace (e.g., `pharmhand::create_primary_endpoint_table()`)
+  - Or source the new module files (e.g., `source('R/efficacy_primary.R')`)
+  - Update any direct imports to reference the new module names
 
 ## Bug Fixes
 
@@ -55,10 +79,10 @@
 ## Test Improvements
 
 * Refactored test-plotting_forest.R, test-efficacy_tte.R, and test-efficacy_subgroup.R to use shared test fixtures
-* Added documentation examples to exported functions in efficacy and safety modules
+* Included documentation examples to exported functions in efficacy and safety modules
 * Updated `test-meta_bayesian.R` with 8-study test data and `adapt_delta = 0.99` to prevent divergent transitions
-* Added `set.seed()` to 11 tests in `test-pro-analysis.R`
-* Added `set.seed()` to `test-efficacy_tte.R` before sample() call
+* Seeded RNG in 11 tests in `test-pro-analysis.R`
+* Applied `set.seed()` to `test-efficacy_tte.R` before sample() call
 * Removed duplicate tests in `test-efficacy_responder.R` and `test-efficacy_subgroup.R`
 
 # pharmhand 0.3.0.9000

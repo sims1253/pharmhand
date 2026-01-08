@@ -1,8 +1,5 @@
 # Tests for format string grammar
 
-library(testthat)
-library(pharmhand)
-
 test_that("format_spec creates valid FormatSpec object", {
 	spec <- format_spec("xx.xx")
 

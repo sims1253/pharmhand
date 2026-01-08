@@ -485,13 +485,13 @@ create_network_plot <- function(
 	layout <- match.arg(layout)
 
 	# Extract network structure
-	if (is.list(nma_result) && "network" %in% names(nma_result)) {
-		network <- nma_result$network
+	if (S7::S7_inherits(nma_result, NMAResult)) {
+		network <- nma_result@network
 		treatments <- network$treatments
 		edges <- network$edges
 		reference <- network$reference
 	} else {
-		ph_abort("nma_result must contain network structure")
+		ph_abort("nma_result must be an NMAResult object from network_meta()")
 	}
 
 	n_nodes <- length(treatments)
@@ -534,9 +534,13 @@ create_network_plot <- function(
 	# Calculate node sizes
 	if (node_size == "n_studies") {
 		# Count studies involving each treatment
-		node_data$n_studies <- sapply(treatments, function(t) {
-			sum(edges$treat1 == t | edges$treat2 == t)
-		})
+		node_data$n_studies <- vapply(
+			treatments,
+			function(t) {
+				sum(edges$treat1 == t | edges$treat2 == t)
+			},
+			integer(1)
+		)
 		node_data$size <- 3 +
 			5 * (node_data$n_studies / max(1, max(node_data$n_studies)))
 	} else {

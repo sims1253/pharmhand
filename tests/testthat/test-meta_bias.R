@@ -1,14 +1,10 @@
 # Tests for publication bias functions (R/meta_bias.R)
 
-library(testthat)
-library(pharmhand)
-
 # =============================================================================
 # eggers_test function tests
 # =============================================================================
 
 test_that("eggers_test detects asymmetry", {
-	# Create asymmetric data (small studies with large effects)
 	yi <- c(0.5, 0.6, 0.4, 0.3, 0.8, 1.0, 1.2)
 	sei <- c(0.3, 0.3, 0.25, 0.2, 0.1, 0.08, 0.05)
 
@@ -56,7 +52,6 @@ test_that("eggers_test can accept MetaResult input", {
 # =============================================================================
 
 test_that("trim_and_fill detects and imputes missing studies", {
-	# Create asymmetric data
 	yi <- c(-0.5, -0.4, -0.3, -0.1, 0.0, 0.5, 0.6, 0.7)
 	sei <- c(0.1, 0.12, 0.15, 0.18, 0.2, 0.1, 0.12, 0.15)
 
@@ -114,4 +109,26 @@ test_that("create_funnel_plot supports customization", {
 
 	expect_s7_class(plot_custom, ClinicalPlot)
 	expect_equal(plot_custom@type, "funnel")
+	expect_equal(plot_custom@title, "Custom Funnel")
+	expect_equal(plot_custom@plot$labels$title, "Custom Funnel")
+
+	# The CI region is added via geom_polygon, check no polygon layers exist
+	layer_types <- sapply(plot_custom@plot$layers, function(l) class(l$geom)[1])
+	expect_false("GeomPolygon" %in% layer_types)
+
+	# Egger line is added via geom_line
+	expect_false("GeomLine" %in% layer_types)
+	expect_false("caption" %in% names(plot_custom@plot$labels))
+})
+
+test_that("create_funnel_plot default title is used when not specified", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+
+	plot_default <- create_funnel_plot(meta_res)
+
+	expect_equal(plot_default@title, "Funnel Plot")
+	expect_equal(plot_default@plot$labels$title, "Funnel Plot")
 })

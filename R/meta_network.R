@@ -291,6 +291,21 @@ network_meta <- function(
 		method = "bucher_chain",
 		n_studies = nrow(df)
 	)
+
+	NMAResult(
+		comparisons = comparison_table,
+		network = list(
+			treatments = treatments,
+			n_treatments = n_treatments,
+			edges = edges,
+			reference = reference
+		),
+		model = model,
+		effect_measure = effect_measure,
+		conf_level = conf_level,
+		method = "bucher_chain",
+		n_studies = nrow(df)
+	)
 }
 
 #'
@@ -324,14 +339,14 @@ node_splitting <- function(
 	data = NULL,
 	conf_level = 0.95
 ) {
-	if (!is.list(nma_result) || !"network" %in% names(nma_result)) {
-		ph_abort("nma_result must be from network_meta()")
+	if (!S7::S7_inherits(nma_result, NMAResult)) {
+		ph_abort("nma_result must be an NMAResult object from network_meta()")
 	}
 
-	network <- nma_result$network
+	network <- nma_result@network
 	edges <- network$edges
 	reference <- network$reference
-	effect_measure <- nma_result$effect_measure
+	effect_measure <- nma_result@effect_measure
 	is_ratio <- effect_measure %in% c("hr", "or", "rr")
 
 	# For each comparison with both direct and indirect evidence
@@ -348,9 +363,9 @@ node_splitting <- function(
 		}
 
 		# Get comparison info from nma_result
-		comp_row <- nma_result$comparisons[
-			nma_result$comparisons$treatment == t2 &
-				nma_result$comparisons$vs == reference,
+		comp_row <- nma_result@comparisons[
+			nma_result@comparisons$treatment == t2 &
+				nma_result@comparisons$vs == reference,
 		]
 
 		if (nrow(comp_row) == 0) {
@@ -443,12 +458,12 @@ calculate_sucra <- function(
 	n_sim = 1000,
 	seed = 42
 ) {
-	if (!is.list(nma_result) || !"comparisons" %in% names(nma_result)) {
-		ph_abort("nma_result must be from network_meta()")
+	if (!S7::S7_inherits(nma_result, NMAResult)) {
+		ph_abort("nma_result must be an NMAResult object from network_meta()")
 	}
 
-	comparisons <- nma_result$comparisons
-	effect_measure <- nma_result$effect_measure
+	comparisons <- nma_result@comparisons
+	effect_measure <- nma_result@effect_measure
 	is_ratio <- effect_measure %in% c("hr", "or", "rr")
 
 	# Default direction
@@ -590,19 +605,19 @@ create_league_table <- function(
 	highlight_sig = TRUE,
 	conf_level = 0.95
 ) {
-	if (!is.list(nma_result) || !"comparisons" %in% names(nma_result)) {
-		ph_abort("nma_result must be from network_meta()")
+	if (!S7::S7_inherits(nma_result, NMAResult)) {
+		ph_abort("nma_result must be an NMAResult object from network_meta()")
 	}
 
 	# Use NMA result's confidence level if available
-	if (!is.null(nma_result$conf_level)) {
-		conf_level <- nma_result$conf_level
+	if (!is.null(nma_result@conf_level)) {
+		conf_level <- nma_result@conf_level
 	}
 
-	comparisons <- nma_result$comparisons
-	treatments <- nma_result$network$treatments
+	comparisons <- nma_result@comparisons
+	treatments <- nma_result@network$treatments
 	n_treat <- length(treatments)
-	effect_measure <- nma_result$effect_measure
+	effect_measure <- nma_result@effect_measure
 	is_ratio <- effect_measure %in% c("hr", "or", "rr")
 	null_value <- if (is_ratio) 1 else 0
 

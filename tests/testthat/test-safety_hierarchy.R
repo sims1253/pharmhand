@@ -2,9 +2,6 @@
 # Tests for create_ae_hierarchy_table
 # Source: R/safety_hierarchy.R
 
-library(testthat)
-library(pharmhand)
-
 describe("create_ae_hierarchy_table", {
 	it("creates hierarchical AE table with SOC and PT", {
 		adsl <- data.frame(

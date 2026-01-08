@@ -218,7 +218,7 @@ create_mean_plot <- function(
 					label = paste0("n=", .data$n)
 				),
 				vjust = 1.5,
-				size = base_size / 4,
+				size = base_size / 3,
 				position = position
 			)
 	}

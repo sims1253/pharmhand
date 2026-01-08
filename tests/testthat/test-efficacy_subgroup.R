@@ -1,9 +1,6 @@
 # Tests for R/efficacy_subgroup.R
-library(testthat)
-library(pharmhand)
 
 test_that("create_subgroup_analysis_table works", {
-	# Not heavily used in function but passed
 	adsl <- data.frame(USUBJID = c("01", "02"))
 	advs <- data.frame(
 		USUBJID = c("01", "02", "03", "04"),
@@ -383,5 +380,4 @@ test_that("create_subgroup_table with binary endpoint handles no events", {
 	)
 
 	expect_s7_class(tbl, ClinicalTable)
-	# Should still create table even with no events
 })

@@ -1,6 +1,4 @@
 # Tests for R/efficacy_tte.R
-library(testthat)
-library(pharmhand)
 
 test_that("create_tte_summary_table works with basic data", {
 	skip_if_not_installed("survival")

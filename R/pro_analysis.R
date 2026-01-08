@@ -59,7 +59,7 @@ calculate_mcid_anchor <- function(
 	}
 
 	# Filter to minimal improvement group
-	minimal_data <- data[data[[anchor_var]] %in% anchor_minimal, , drop = FALSE]
+	minimal_data <- dplyr::filter(data, .data[[anchor_var]] %in% anchor_minimal)
 
 	if (nrow(minimal_data) == 0) {
 		ph_warn("No observations in minimal improvement group")
@@ -274,8 +274,11 @@ calculate_mcid <- function(
 	}
 
 	results$method <- method
-	class(results) <- c("mcid_result", class(results))
-	results
+	MCIDResult(
+		anchor = results$anchor,
+		distribution = results$distribution,
+		method = results$method
+	)
 }
 
 # =============================================================================
@@ -368,6 +371,13 @@ create_ttd_analysis <- function(
 
 	# Check required columns
 	required_vars <- c(subject_var, trt_var, time_var)
+
+	# Helper function for safe minimum calculation
+	safe_min <- function(x, na.rm = TRUE) {
+		x <- x[!is.na(x)]
+		if (length(x) == 0) NA_real_ else min(x)
+	}
+
 	if (chg_var %in% names(data)) {
 		change_col <- chg_var
 	} else if (base_var %in% names(data) && value_var %in% names(data)) {
@@ -395,13 +405,7 @@ create_ttd_analysis <- function(
 			dplyr::filter(.data$deteriorated) |>
 			dplyr::group_by(dplyr::across(dplyr::all_of(c(subject_var, trt_var)))) |>
 			dplyr::summarise(
-				event_time = if (
-					length(.data[[time_var]][!is.na(.data[[time_var]])]) == 0
-				) {
-					NA_real_
-				} else {
-					min(.data[[time_var]], na.rm = TRUE)
-				},
+				event_time = safe_min(.data[[time_var]]),
 				event = 1L,
 				.groups = "drop"
 			)
@@ -417,13 +421,7 @@ create_ttd_analysis <- function(
 			) |>
 			dplyr::group_by(dplyr::across(dplyr::all_of(c(subject_var, trt_var)))) |>
 			dplyr::summarise(
-				event_time = if (
-					length(.data[[time_var]][!is.na(.data[[time_var]])]) == 0
-				) {
-					NA_real_
-				} else {
-					min(.data[[time_var]], na.rm = TRUE)
-				},
+				event_time = safe_min(.data[[time_var]]),
 				event = 1L,
 				.groups = "drop"
 			)

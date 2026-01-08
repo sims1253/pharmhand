@@ -1,13 +1,10 @@
 # Tests for meta-analysis core functions (R/meta_core.R)
 
-library(testthat)
-library(pharmhand)
-
 # =============================================================================
 # meta_analysis function tests
 # =============================================================================
 
-test_that("meta_analysis performs fixed-effect analysis", {
+test_that("meta_analysis returns MetaResult for fixed-effect model", {
 	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
 	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
 
@@ -19,14 +16,79 @@ test_that("meta_analysis performs fixed-effect analysis", {
 	)
 
 	expect_s7_class(result, MetaResult)
+})
+
+test_that("meta_analysis sets correct model for fixed-effect", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "fixed"
+	)
+
 	expect_equal(result@model, "fixed")
+})
+
+test_that("meta_analysis sets correct effect measure", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "fixed"
+	)
+
 	expect_equal(result@effect_measure, "hr")
+})
+
+test_that("meta_analysis records number of studies", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "fixed"
+	)
+
 	expect_equal(result@n, 5L)
+})
+
+test_that("meta_analysis produces positive estimate for HR", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "fixed"
+	)
+
 	expect_true(result@estimate > 0) # HR should be positive
+})
+
+test_that("meta_analysis produces confidence interval", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "fixed"
+	)
+
 	expect_length(result@ci, 2)
 })
 
-test_that("meta_analysis performs random-effects analysis", {
+test_that("meta_analysis returns MetaResult for random-effects model", {
 	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
 	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
 
@@ -38,12 +100,51 @@ test_that("meta_analysis performs random-effects analysis", {
 	)
 
 	expect_s7_class(result, MetaResult)
+})
+
+test_that("meta_analysis sets correct model for random-effects", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "random"
+	)
+
 	expect_equal(result@model, "random")
+})
+
+test_that("meta_analysis calculates tau2 for random-effects", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "random"
+	)
+
 	expect_true(!is.null(result@heterogeneity$tau2))
+})
+
+test_that("meta_analysis calculates I2 for random-effects", {
+	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		model = "random"
+	)
+
 	expect_true(!is.null(result@heterogeneity$I2))
 })
 
-test_that("meta_analysis calculates heterogeneity statistics", {
+test_that("meta_analysis calculates Q statistic", {
 	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6) # Variable effects
 	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
 
@@ -56,7 +157,35 @@ test_that("meta_analysis calculates heterogeneity statistics", {
 
 	het <- result@heterogeneity
 	expect_true(het$Q > 0)
+})
+
+test_that("meta_analysis calculates I2 statistic", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6) # Variable effects
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "md",
+		model = "random"
+	)
+
+	het <- result@heterogeneity
 	expect_true(het$I2 >= 0 && het$I2 <= 100)
+})
+
+test_that("meta_analysis calculates tau2 statistic", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6) # Variable effects
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "md",
+		model = "random"
+	)
+
+	het <- result@heterogeneity
 	expect_true(het$tau2 >= 0)
 })
 
@@ -80,9 +209,16 @@ test_that("meta_analysis errors with mismatched lengths", {
 	)
 })
 
-test_that("meta_analysis errors with missing yi or sei", {
+test_that("meta_analysis errors with missing yi", {
 	expect_error(
 		meta_analysis(yi = NULL, sei = c(0.1, 0.2), effect_measure = "hr"),
+		"required"
+	)
+})
+
+test_that("meta_analysis errors with missing sei", {
+	expect_error(
+		meta_analysis(yi = c(0.1, 0.2), sei = NULL, effect_measure = "hr"),
 		"required"
 	)
 })
@@ -115,35 +251,66 @@ test_that("meta_analysis calculates prediction intervals for random effects", {
 	expect_length(result@prediction_interval, 2)
 })
 
-test_that("meta_analysis respects different effect measures", {
+test_that("meta_analysis works with HR effect measure", {
 	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
 	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
 
-	# Test different effect measures (using DL method for stable convergence)
 	hr_result <- meta_analysis(
 		yi = yi,
 		sei = sei,
 		effect_measure = "hr",
 		method = "DL"
 	)
+
+	expect_s7_class(hr_result, MetaResult)
+})
+
+test_that("meta_analysis works with OR effect measure", {
+	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
+	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+
 	or_result <- meta_analysis(
 		yi = yi,
 		sei = sei,
 		effect_measure = "or",
 		method = "DL"
 	)
+
+	expect_s7_class(or_result, MetaResult)
+})
+
+test_that("meta_analysis works with RR effect measure", {
+	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
+	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+
 	rr_result <- meta_analysis(
 		yi = yi,
 		sei = sei,
 		effect_measure = "rr",
 		method = "DL"
 	)
+
+	expect_s7_class(rr_result, MetaResult)
+})
+
+test_that("meta_analysis works with RD effect measure", {
+	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
+	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+
 	rd_result <- meta_analysis(
 		yi = yi,
 		sei = sei,
 		effect_measure = "rd",
 		method = "DL"
 	)
+
+	expect_s7_class(rd_result, MetaResult)
+})
+
+test_that("meta_analysis works with MD effect measure", {
+	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
+	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+
 	md_result <- meta_analysis(
 		yi = yi,
 		sei = sei,
@@ -151,28 +318,36 @@ test_that("meta_analysis respects different effect measures", {
 		method = "DL"
 	)
 
-	expect_s7_class(hr_result, MetaResult)
-	expect_s7_class(or_result, MetaResult)
-	expect_s7_class(rr_result, MetaResult)
-	expect_s7_class(rd_result, MetaResult)
 	expect_s7_class(md_result, MetaResult)
 })
 
-test_that("meta_analysis uses different tau2 estimation methods", {
+test_that("meta_analysis uses DL method", {
 	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
 	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
 
 	result_dl <- meta_analysis(yi = yi, sei = sei, method = "DL")
-	result_reml <- meta_analysis(yi = yi, sei = sei, method = "REML")
-	result_pm <- meta_analysis(yi = yi, sei = sei, method = "PM")
 
 	expect_s7_class(result_dl, MetaResult)
-	expect_s7_class(result_reml, MetaResult)
-	expect_s7_class(result_pm, MetaResult)
-
-	# Different methods may produce slightly different tau2 estimates
 	expect_true(!is.na(result_dl@heterogeneity$tau2))
+})
+
+test_that("meta_analysis uses REML method", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	result_reml <- meta_analysis(yi = yi, sei = sei, method = "REML")
+
+	expect_s7_class(result_reml, MetaResult)
 	expect_true(!is.na(result_reml@heterogeneity$tau2))
+})
+
+test_that("meta_analysis uses PM method", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	result_pm <- meta_analysis(yi = yi, sei = sei, method = "PM")
+
+	expect_s7_class(result_pm, MetaResult)
 	expect_true(!is.na(result_pm@heterogeneity$tau2))
 })
 
@@ -181,13 +356,18 @@ test_that("meta_analysis applies Knapp-Hartung adjustment", {
 	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
 
 	result_kh <- meta_analysis(yi = yi, sei = sei, knapp_hartung = TRUE)
-	result_no_kh <- meta_analysis(yi = yi, sei = sei, knapp_hartung = FALSE)
 
 	expect_s7_class(result_kh, MetaResult)
-	expect_s7_class(result_no_kh, MetaResult)
-
-	# Knapp-Hartung should affect the confidence intervals
 	expect_true(result_kh@metadata$knapp_hartung)
+})
+
+test_that("meta_analysis omits Knapp-Hartung adjustment when FALSE", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	result_no_kh <- meta_analysis(yi = yi, sei = sei, knapp_hartung = FALSE)
+
+	expect_s7_class(result_no_kh, MetaResult)
 	expect_false(result_no_kh@metadata$knapp_hartung)
 })
 
@@ -204,9 +384,35 @@ test_that("meta_analysis stores individual study results", {
 
 	expect_true(is.list(result@study_results))
 	expect_equal(length(result@study_results), 3)
+})
+
+test_that("meta_analysis stores study results as ComparisonResult", {
+	yi <- log(c(0.75, 0.82, 0.68))
+	sei <- c(0.12, 0.15, 0.18)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		study_labels = c("Study 1", "Study 2", "Study 3")
+	)
+
 	expect_true(all(sapply(result@study_results, function(x) {
 		S7::S7_inherits(x, ComparisonResult)
 	})))
+})
+
+test_that("meta_analysis labels study results correctly", {
+	yi <- log(c(0.75, 0.82, 0.68))
+	sei <- c(0.12, 0.15, 0.18)
+
+	result <- meta_analysis(
+		yi = yi,
+		sei = sei,
+		effect_measure = "hr",
+		study_labels = c("Study 1", "Study 2", "Study 3")
+	)
+
 	expect_equal(names(result@study_results), c("Study 1", "Study 2", "Study 3"))
 })
 
@@ -218,43 +424,93 @@ test_that("meta_analysis stores study weights", {
 
 	expect_true(!is.null(result@weights))
 	expect_length(result@weights, 3)
+})
+
+test_that("meta_analysis has positive study weights", {
+	yi <- log(c(0.75, 0.82, 0.68))
+	sei <- c(0.12, 0.15, 0.18)
+
+	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+
 	expect_true(all(result@weights > 0))
+})
+
+test_that("meta_analysis study weights sum to 1", {
+	yi <- log(c(0.75, 0.82, 0.68))
+	sei <- c(0.12, 0.15, 0.18)
+
+	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+
 	expect_equal(sum(result@weights), 1, tolerance = 0.001)
-	# Weights should sum to 1
 })
 
 # =============================================================================
 # calculate_heterogeneity function tests
 # =============================================================================
 
-test_that("calculate_heterogeneity returns all statistics", {
+test_that("calculate_heterogeneity returns Q statistic", {
 	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
 	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
 
 	het <- calculate_heterogeneity(yi, sei)
 
-	expect_true(is.list(het))
 	expect_true("Q" %in% names(het))
+})
+
+test_that("calculate_heterogeneity returns I2 statistic", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	het <- calculate_heterogeneity(yi, sei)
+
 	expect_true("I2" %in% names(het))
+})
+
+test_that("calculate_heterogeneity returns tau2 statistic", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	het <- calculate_heterogeneity(yi, sei)
+
 	expect_true("tau2" %in% names(het))
+})
+
+test_that("calculate_heterogeneity returns interpretation", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	het <- calculate_heterogeneity(yi, sei)
+
 	expect_true("interpretation" %in% names(het))
 })
 
-test_that("calculate_heterogeneity supports different methods", {
+test_that("calculate_heterogeneity supports DL method", {
 	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
 	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
 
 	het_dl <- calculate_heterogeneity(yi, sei, method = "DL")
-	het_reml <- calculate_heterogeneity(yi, sei, method = "REML")
-	het_pm <- calculate_heterogeneity(yi, sei, method = "PM")
 
 	expect_equal(het_dl$method, "DL")
-	expect_equal(het_reml$method, "REML")
-	expect_equal(het_pm$method, "PM")
-
-	# All should have heterogeneity statistics
 	expect_true(!is.na(het_dl$tau2))
+})
+
+test_that("calculate_heterogeneity supports REML method", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	het_reml <- calculate_heterogeneity(yi, sei, method = "REML")
+
+	expect_equal(het_reml$method, "REML")
 	expect_true(!is.na(het_reml$tau2))
+})
+
+test_that("calculate_heterogeneity supports PM method", {
+	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+	het_pm <- calculate_heterogeneity(yi, sei, method = "PM")
+
+	expect_equal(het_pm$method, "PM")
 	expect_true(!is.na(het_pm$tau2))
 })
 

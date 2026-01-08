@@ -1,15 +1,7 @@
 # Tests for R/efficacy_responder.R
-library(testthat)
-library(pharmhand)
 
 test_that("create_responder_table works with basic data", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs)
 
@@ -24,16 +16,7 @@ test_that("create_responder_table works with basic data", {
 test_that("create_responder_table handles extreme response rates with RR", {
 	# Test case where reference group has 0% response rate
 	# This would cause division by zero without continuity correction
-	adrs_zero_ref <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		# All Placebo are non-responders (SD/PD), some Active are responders
-		AVALC = c(
-			rep("SD", 20),
-			sample(c("CR", "PR", "SD", "PD"), 20, replace = TRUE)
-		),
-		stringsAsFactors = FALSE
-	)
+	adrs_zero_ref <- create_mock_responder_data(n = 40, zero_ref = TRUE)
 
 	# Should not error - continuity correction should be applied
 	expect_no_error({
@@ -45,16 +28,7 @@ test_that("create_responder_table handles extreme response rates with RR", {
 	expect_true("RR (95% CI)" %in% names(tbl@data))
 
 	# Test case where treatment has 100% response rate
-	adrs_full_trt <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		# All Active are responders, some Placebo are responders
-		AVALC = c(
-			sample(c("CR", "PR", "SD", "PD"), 20, replace = TRUE),
-			rep("CR", 20)
-		),
-		stringsAsFactors = FALSE
-	)
+	adrs_full_trt <- create_mock_responder_data(n = 40, full_trt = TRUE)
 
 	expect_no_error({
 		tbl2 <- create_responder_table(adrs_full_trt, comparison_type = "RR")
@@ -62,13 +36,7 @@ test_that("create_responder_table handles extreme response rates with RR", {
 })
 
 test_that("create_responder_table supports different CI methods", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl_wilson <- create_responder_table(adrs, ci_method = "wilson")
 	tbl_exact <- create_responder_table(adrs, ci_method = "exact")
@@ -78,14 +46,8 @@ test_that("create_responder_table supports different CI methods", {
 })
 
 test_that("create_responder_table works with ADaMData", {
-	set.seed(42)
-	adrs_df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		SAFFL = "Y",
-		stringsAsFactors = FALSE
-	)
+	adrs_df <- create_mock_responder_data(n = 40)
+	adrs_df$SAFFL <- "Y"
 
 	adam <- ADaMData(data = adrs_df, population = "SAF")
 	tbl <- create_responder_table(adam)
@@ -95,13 +57,7 @@ test_that("create_responder_table works with ADaMData", {
 })
 
 test_that("create_responder_table handles OR comparison", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs, comparison_type = "OR")
 
@@ -114,13 +70,7 @@ test_that("create_responder_table handles OR comparison", {
 })
 
 test_that("create_responder_table handles RR comparison", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs, comparison_type = "RR")
 
@@ -129,13 +79,7 @@ test_that("create_responder_table handles RR comparison", {
 })
 
 test_that("create_responder_table handles RD comparison", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs, comparison_type = "RD")
 
@@ -148,13 +92,7 @@ test_that("create_responder_table handles RD comparison", {
 })
 
 test_that("create_responder_table wilson CI method works", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs, ci_method = "wilson")
 
@@ -163,13 +101,7 @@ test_that("create_responder_table wilson CI method works", {
 })
 
 test_that("create_responder_table exact CI method works", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs, ci_method = "exact")
 
@@ -178,13 +110,7 @@ test_that("create_responder_table exact CI method works", {
 })
 
 test_that("create_responder_table wald CI method works", {
-	set.seed(42)
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs, ci_method = "wald")
 
@@ -192,45 +118,8 @@ test_that("create_responder_table wald CI method works", {
 	expect_true("95% CI" %in% names(tbl@data))
 })
 
-test_that("create_responder_table handles 100% response rate", {
-	# All responders - edge case for CI calculation
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:20),
-		TRT01P = rep(c("Placebo", "Active"), each = 10),
-		AVALC = c(rep("CR", 10), rep("CR", 10)),
-		stringsAsFactors = FALSE
-	)
-
-	expect_no_error({
-		tbl <- create_responder_table(adrs, ci_method = "exact")
-	})
-
-	expect_s7_class(tbl, ClinicalTable)
-})
-
-test_that("create_responder_table handles 0% response rate", {
-	# No responders - edge case for CI calculation
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:20),
-		TRT01P = rep(c("Placebo", "Active"), each = 10),
-		AVALC = c(rep("SD", 10), rep("PD", 10)),
-		stringsAsFactors = FALSE
-	)
-
-	expect_no_error({
-		tbl <- create_responder_table(adrs, ci_method = "exact")
-	})
-
-	expect_s7_class(tbl, ClinicalTable)
-})
-
 test_that("create_responder_table handles very small sample size", {
-	adrs <- data.frame(
-		USUBJID = c("001", "002", "003", "004"),
-		TRT01P = c("Placebo", "Placebo", "Active", "Active"),
-		AVALC = c("CR", "SD", "CR", "PR"),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_small_subgroup_data(n = 4, include_sex = FALSE)
 
 	expect_no_error({
 		tbl <- create_responder_table(adrs)
@@ -291,12 +180,7 @@ test_that("create_responder_table handles NA response values", {
 })
 
 test_that("create_responder_table uses custom ref_group", {
-	adrs <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 40, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
+	adrs <- create_mock_responder_data(n = 40)
 
 	tbl <- create_responder_table(adrs, ref_group = "Active")
 

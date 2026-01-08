@@ -2,93 +2,9 @@
 # Tests for calculate_ae_risk_difference, create_ae_comparison_table
 # Source: R/safety_comparison.R
 
-library(testthat)
-library(pharmhand)
-
 # ==============================================================================
 # Tests for AE Comparison Functionality
 # ==============================================================================
-
-# Helper function to create mock data with known values for comparison tests
-create_comparison_test_data <- function() {
-	# Create ADSL with 100 subjects per arm for easy percentage calculations
-	adsl <- data.frame(
-		USUBJID = sprintf("SUBJ%03d", 1:200),
-		TRT01P = rep(c("Placebo", "Active"), each = 100),
-		SAFFL = rep("Y", 200),
-		stringsAsFactors = FALSE
-	)
-
-	# Create ADAE with known incidences:
-	# - Headache: 20% in Active (20/100), 10% in Placebo (10/100)
-	# - Nausea: 15% in Active (15/100), 15% in Placebo (15/100)
-	# - Fatigue: 5% in Active (5/100), 10% in Placebo (10/100)
-	# - Rash: 8% in Active (8/100), 0% in Placebo (0/100) - tests zero incidence
-	adae <- rbind(
-		# Headache - SOC: Nervous system
-		data.frame(
-			USUBJID = sprintf("SUBJ%03d", 1:10),
-			TRT01P = "Placebo",
-			TRTEMFL = "Y",
-			AEBODSYS = "Nervous system disorders",
-			AEDECOD = "Headache",
-			stringsAsFactors = FALSE
-		),
-		data.frame(
-			USUBJID = sprintf("SUBJ%03d", 101:120),
-			TRT01P = "Active",
-			TRTEMFL = "Y",
-			AEBODSYS = "Nervous system disorders",
-			AEDECOD = "Headache",
-			stringsAsFactors = FALSE
-		),
-		# Nausea - SOC: Gastrointestinal
-		data.frame(
-			USUBJID = sprintf("SUBJ%03d", 11:25),
-			TRT01P = "Placebo",
-			TRTEMFL = "Y",
-			AEBODSYS = "Gastrointestinal disorders",
-			AEDECOD = "Nausea",
-			stringsAsFactors = FALSE
-		),
-		data.frame(
-			USUBJID = sprintf("SUBJ%03d", 121:135),
-			TRT01P = "Active",
-			TRTEMFL = "Y",
-			AEBODSYS = "Gastrointestinal disorders",
-			AEDECOD = "Nausea",
-			stringsAsFactors = FALSE
-		),
-		# Fatigue - SOC: General disorders
-		data.frame(
-			USUBJID = sprintf("SUBJ%03d", 26:35),
-			TRT01P = "Placebo",
-			TRTEMFL = "Y",
-			AEBODSYS = "General disorders",
-			AEDECOD = "Fatigue",
-			stringsAsFactors = FALSE
-		),
-		data.frame(
-			USUBJID = sprintf("SUBJ%03d", 136:140),
-			TRT01P = "Active",
-			TRTEMFL = "Y",
-			AEBODSYS = "General disorders",
-			AEDECOD = "Fatigue",
-			stringsAsFactors = FALSE
-		),
-		# Rash - SOC: Skin disorders (only in Active)
-		data.frame(
-			USUBJID = sprintf("SUBJ%03d", 141:148),
-			TRT01P = "Active",
-			TRTEMFL = "Y",
-			AEBODSYS = "Skin and subcutaneous tissue disorders",
-			AEDECOD = "Rash",
-			stringsAsFactors = FALSE
-		)
-	)
-
-	list(adsl = adsl, adae = adae)
-}
 
 # ------------------------------------------------------------------------------
 # Tests for calculate_ae_risk_difference() - Internal function

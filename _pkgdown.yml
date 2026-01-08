@@ -111,7 +111,6 @@ reference:
   - create_primary_endpoint_table
   - create_cfb_summary_table
   - ancova_adjust_continuous
-  - assess_iceman
 
 - title: "Safety Tables"
   desc: >
@@ -241,6 +240,7 @@ reference:
   - calculate_interaction_pvalue
   - calculate_interaction_pvalue_table
   - calculate_response_comparison
+  - assess_iceman
 
 - title: "PRO Analysis"
   desc: >
@@ -266,6 +266,10 @@ reference:
   - eggers_test
   - trim_and_fill
   - bayesian_meta_analysis
+  - create_bayesian_forest_plot_iqwig
+  - create_bayesian_trace_plots
+  - format_bayesian_result_iqwig
+  - prior_sensitivity_analysis
 
 - title: "Network Meta-Analysis"
   desc: >

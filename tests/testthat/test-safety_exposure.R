@@ -312,8 +312,10 @@ test_that("create_ae_exposure_table: threshold filters results", {
 	)
 
 	expect_true(S7::S7_inherits(result_all, ClinicalTable))
+	expect_true(S7::S7_inherits(result_filtered, ClinicalTable))
+	# Either empty table or smaller than unfiltered
 	expect_true(
-		is.null(result_filtered) ||
+		(isTRUE(result_filtered@metadata$empty)) ||
 			nrow(result_filtered@data) <= nrow(result_all@data)
 	)
 })
@@ -387,7 +389,7 @@ test_that("create_ae_exposure_table: missing TRTEMFL column", {
 	)
 })
 
-test_that("create_ae_exposure_table: no TEAEs returns NULL with warning", {
+test_that("create_ae_exposure_table: no TEAEs returns empty table", {
 	adsl <- create_mock_adsl(n = 10)
 	adsl$TRTDURD <- round(runif(10, 30, 365), 1)
 
@@ -402,7 +404,14 @@ test_that("create_ae_exposure_table: no TEAEs returns NULL with warning", {
 		"No treatment-emergent adverse events found"
 	)
 
-	expect_null(result)
+	# Should return empty ClinicalTable, not NULL
+	expect_s7_class(result, ClinicalTable)
+	expect_true(result@metadata$empty)
+	expect_equal(
+		result@metadata$empty_reason,
+		"No treatment-emergent adverse events found"
+	)
+	expect_equal(nrow(result@data), 0)
 })
 
 test_that("create_ae_exposure_table: invalid by parameter", {

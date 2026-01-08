@@ -1,9 +1,6 @@
 # Tests for R/efficacy_primary.R
-library(testthat)
-library(pharmhand)
 
 test_that("create_primary_endpoint_table works", {
-	# Mock data
 	advs <- data.frame(
 		USUBJID = c("01", "02", "03", "04"),
 		TRT01P = c("A", "A", "B", "B"),
@@ -22,7 +19,6 @@ test_that("create_primary_endpoint_table works", {
 	expect_equal(tbl@type, "primary_endpoint")
 	expect_equal(tbl@title, "Primary Endpoint Summary")
 
-	# Check data structure
 	expect_true(all(c("Statistic", "A", "B") %in% names(tbl@data)))
 	# n, Mean (SD), Median, Min, Max transposed = 4 rows
 	expect_equal(nrow(tbl@data), 4)

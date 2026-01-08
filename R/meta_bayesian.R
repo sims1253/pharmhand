@@ -172,6 +172,72 @@ bayesian_meta_analysis <- function(
 		)
 	}
 
+	# Validate prior_mu
+	if (!is.list(prior_mu) || is.null(prior_mu$mean) || is.null(prior_mu$sd)) {
+		ph_abort(
+			"'prior_mu' must be a list with 'mean' and 'sd' components",
+			call. = FALSE
+		)
+	}
+	if (!is.numeric(prior_mu$mean) || length(prior_mu$mean) != 1) {
+		ph_abort("'prior_mu$mean' must be a single numeric value", call. = FALSE)
+	}
+	if (
+		!is.numeric(prior_mu$sd) || length(prior_mu$sd) != 1 || prior_mu$sd <= 0
+	) {
+		ph_abort(
+			"'prior_mu$sd' must be a single positive numeric value",
+			call. = FALSE
+		)
+	}
+
+	# Validate prior_tau
+	if (!is.list(prior_tau) || is.null(prior_tau$scale)) {
+		ph_abort(
+			"'prior_tau' must be a list with 'type' and 'scale' components",
+			call. = FALSE
+		)
+	}
+	if (
+		!is.numeric(prior_tau$scale) ||
+			length(prior_tau$scale) != 1 ||
+			prior_tau$scale <= 0
+	) {
+		ph_abort(
+			"'prior_tau$scale' must be a single positive numeric value",
+			call. = FALSE
+		)
+	}
+
+	# Validate MCMC arguments
+	if (
+		!is.numeric(chains) ||
+			length(chains) != 1 ||
+			chains < 1 ||
+			chains != as.integer(chains)
+	) {
+		ph_abort("'chains' must be a positive integer", call. = FALSE)
+	}
+	if (
+		!is.numeric(iter) ||
+			length(iter) != 1 ||
+			iter < 1 ||
+			iter != as.integer(iter)
+	) {
+		ph_abort("'iter' must be a positive integer", call. = FALSE)
+	}
+	if (
+		!is.numeric(warmup) ||
+			length(warmup) != 1 ||
+			warmup < 0 ||
+			warmup != as.integer(warmup)
+	) {
+		ph_abort("'warmup' must be a non-negative integer", call. = FALSE)
+	}
+	if (warmup >= iter) {
+		ph_abort("'warmup' must be less than 'iter'", call. = FALSE)
+	}
+
 	# Prepare data for brms
 	data <- data.frame(
 		yi = yi,
@@ -514,6 +580,11 @@ bayesian_meta_analysis <- function(
 			"effect",
 			if (is_ratio) "1" else "0",
 			100 * if (is_ratio) mean(mu_display < 1) else mean(mu_display < 0)
+		),
+		metadata = list(
+			yi = yi,
+			sei = sei,
+			study_labels = study_labels
 		)
 	)
 

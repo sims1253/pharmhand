@@ -10,6 +10,27 @@
 	cache_dir
 }
 
+#' Skip tests if brms is not available or functional
+#'
+#' Checks if brms is installed and can actually be loaded.
+#' This is necessary because brms depends on Stan which requires proper
+#' toolchains.
+skip_if_brms_unavailable <- function() {
+	skip_if_not_installed("brms")
+
+	# Check if brms/Stan backend can actually work
+	tryCatch(
+		{
+			if (!requireNamespace("brms", quietly = TRUE)) {
+				skip("brms not available")
+			}
+		},
+		error = function(e) {
+			skip(paste("brms not functional:", conditionMessage(e)))
+		}
+	)
+}
+
 # Get a cached brms fit or create one
 # Uses file-based caching so compiled Stan code is reused
 get_cached_bayesian_result <- function(

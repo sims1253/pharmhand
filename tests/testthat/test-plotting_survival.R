@@ -2,9 +2,6 @@
 # Tests for create_km_plot, create_ae_cumulative_incidence_plot,
 # create_loglog_plot
 
-library(testthat)
-library(pharmhand)
-
 test_that("create_km_plot works with valid data", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
@@ -28,13 +25,7 @@ test_that("create_km_plot handles CNSR inversion", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(123)
-	# ADaM format: CNSR = 0 means event, CNSR = 1 means censored
-	df <- data.frame(
-		AVAL = rexp(20, 0.1),
-		CNSR = sample(0:1, 20, replace = TRUE),
-		TRT01P = rep(c("Placebo", "Active"), each = 10)
-	)
+	df <- create_mock_km_data(n = 20, rate = 0.1)
 
 	p <- create_km_plot(
 		df,
@@ -51,12 +42,7 @@ test_that("create_km_plot shows median lines", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	p <- create_km_plot(df, show_median = TRUE)
 
@@ -70,12 +56,7 @@ test_that("create_km_plot shows confidence bands", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	p <- create_km_plot(df, show_ci = TRUE)
 
@@ -89,12 +70,7 @@ test_that("create_km_plot shows landmarks", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	p <- create_km_plot(df, landmarks = c(12, 24))
 
@@ -108,14 +84,8 @@ test_that("create_km_plot works with ADaMData", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:40),
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20),
-		SAFFL = "Y"
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
+	df$SAFFL <- "Y"
 
 	adam <- ADaMData(data = df, population = "SAF")
 	p <- create_km_plot(adam)
@@ -128,12 +98,7 @@ test_that("create_km_plot applies custom palette", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	custom_colors <- c("Placebo" = "red", "Active" = "blue")
 	p <- create_km_plot(df, palette = custom_colors)
@@ -145,12 +110,7 @@ test_that("create_km_plot uses base_size parameter", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	p <- create_km_plot(df, base_size = 14)
 
@@ -163,12 +123,7 @@ test_that("create_km_plot uses okabe_ito palette by default", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	p <- create_km_plot(df)
 
@@ -182,12 +137,7 @@ test_that("create_km_plot respects pharmhand.palette option", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	# Set custom palette via options
 	old_opt <- getOption("pharmhand.palette")
@@ -206,12 +156,7 @@ test_that("create_km_plot supports named palettes via option", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	# Set a named palette via options (R4 is another built-in palette)
 	old_opt <- getOption("pharmhand.palette")
@@ -230,12 +175,7 @@ test_that("create_km_plot risk table uses consistent font size", {
 	skip_if_not_installed("ggplot2")
 	skip_if_not_installed("patchwork")
 
-	set.seed(42)
-	df <- data.frame(
-		AVAL = rexp(40, 0.05),
-		CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3)),
-		TRT01P = rep(c("Placebo", "Active"), each = 20)
-	)
+	df <- create_mock_km_data(n = 40, rate = 0.05, prob_event = 0.7)
 
 	p <- create_km_plot(df, risk_table = TRUE, base_size = 14)
 
