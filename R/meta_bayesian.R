@@ -431,14 +431,14 @@ bayesian_meta_analysis <- function(
 
 	if (min_bulk_ess < 400) {
 		ph_inform(sprintf(
-			"WARNING: Min bulk ESS = %d < 400. Consider running more iterations.",
+			"WARNING: Min bulk ESS = %.0f < 400. Consider running more iterations.",
 			min_bulk_ess
 		))
 	}
 
 	if (min_tail_ess < 400) {
 		ph_inform(sprintf(
-			"WARNING: Min tail ESS = %d < 400. Consider running more iterations.",
+			"WARNING: Min tail ESS = %.0f < 400. Consider running more iterations.",
 			min_tail_ess
 		))
 	}
@@ -709,9 +709,9 @@ create_bayesian_trace_plots <- function(
 		old_ask <- graphics::par(ask = FALSE)
 		on.exit(graphics::par(ask = old_ask), add = TRUE)
 
-		plot_result <- brms::plot(
+		plot_result <- plot(
 			fit,
-			parameters = parameters,
+			pars = parameters,
 			...
 		)
 
@@ -748,7 +748,7 @@ create_bayesian_trace_plots <- function(
 		} else {
 			# Fallback to brms::plot if bayesplot not available
 			# This will print directly to the graphics device
-			brms::plot(fit, parameters = parameters, ask = FALSE, ...)
+			plot(fit, pars = parameters, ask = FALSE, ...)
 
 			ph_inform(
 				"Trace plots rendered using brms. Consider installing 'bayesplot' ",

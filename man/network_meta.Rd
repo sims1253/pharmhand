@@ -69,6 +69,6 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18, 0.14)
 )
 result <- network_meta(nma_data, effect_measure = "hr")
-result$comparisons
-result$network$treatments
+result@comparisons
+result@network$treatments
 }
