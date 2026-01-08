@@ -44,7 +44,9 @@ create_ae_exposure_table(
 
 - time_unit:
 
-  Character. "days", "weeks", "months" (default: "days")
+  Character. Unit of the exposure_var values: "days" (default for
+  TRTDURD), "weeks", or "months". Used to convert exposure to
+  patient-years.
 
 - per:
 
