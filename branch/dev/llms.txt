@@ -143,7 +143,7 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
-nma_result$summary
+nma_result$comparisons
 ```
 
 ## Classes
@@ -328,8 +328,6 @@ responder, and subgroup analyses.
   : Create Change from Baseline Summary Table
 - [`ancova_adjust_continuous()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ancova_adjust_continuous.md)
   : ANCOVA Analysis for Continuous Endpoints
-- [`assess_iceman()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_iceman.md)
-  : Assess Subgroup Credibility Using ICEMAN Criteria
 
 ## Safety Tables
 
@@ -541,12 +539,16 @@ Functions for subgroup and interaction analyses in clinical trials.
   : Calculate Interaction P-value for Table
 - [`calculate_response_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_response_comparison.md)
   : Calculate Response Comparison (OR, RR, or RD)
+- [`assess_iceman()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_iceman.md)
+  : Assess Subgroup Credibility Using ICEMAN Criteria
 
 ## PRO Analysis
 
 Patient-Reported Outcomes analysis functions including minimal
 clinically important difference (MCID) and time-to-deterioration.
 
+- [`MCIDResult()`](https://sims1253.github.io/pharmhand/branch/dev/reference/MCIDResult.md)
+  : MCIDResult Class
 - [`calculate_mcid()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid.md)
   : Calculate MCID (Combined Approach)
 - [`calculate_mcid_anchor()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_mcid_anchor.md)
@@ -574,25 +576,29 @@ assessment, sensitivity analysis, and publication bias detection.
 - [`create_funnel_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_funnel_plot.md)
   : Create Funnel Plot for Publication Bias Assessment
 - [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
-  : Egger's Test for Funnel Plot Asymmetry Performs Egger's linear
-  regression test to assess funnel plot asymmetry, which may indicate
-  publication bias.
+  : Egger's Test for Funnel Plot Asymmetry
 - [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
-  : Duval & Tweedie Trim-and-Fill Publication Bias Adjustment Performs
-  the Duval & Tweedie trim-and-fill method to estimate the number of
-  missing studies and adjust the pooled effect for publication bias.
+  : Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
 - [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)
-  : Interface for Bayesian meta-analysis using brms/rstan when
-  available. Provides guidance when dependencies are not installed.
+  : Bayesian Meta-Analysis
+- [`create_bayesian_forest_plot_iqwig()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_bayesian_forest_plot_iqwig.md)
+  : Create IQWiG-Compliant Forest Plot for Bayesian Meta-Analysis
+- [`create_bayesian_trace_plots()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_bayesian_trace_plots.md)
+  : Create Trace Plots for Bayesian Meta-Analysis
+- [`format_bayesian_result_iqwig()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_bayesian_result_iqwig.md)
+  : Format Bayesian Meta-Analysis Result for IQWiG Submission
+- [`prior_sensitivity_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/prior_sensitivity_analysis.md)
+  : Prior Sensitivity Analysis for Bayesian Meta-Analysis
 
 ## Network Meta-Analysis
 
 Indirect treatment comparison and network meta-analysis functions for
 comparing multiple treatments across studies.
 
+- [`NMAResult()`](https://sims1253.github.io/pharmhand/branch/dev/reference/NMAResult.md)
+  : NMAResult Class
 - [`indirect_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/indirect_comparison.md)
-  : Calculates indirect treatment effect comparing A vs C through common
-  comparator B using the Bucher method (anchored indirect comparison).
+  : Indirect Treatment Comparison (Bucher Method)
 - [`compare_direct_indirect()`](https://sims1253.github.io/pharmhand/branch/dev/reference/compare_direct_indirect.md)
   : Compare Direct and Indirect Evidence
 - [`network_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/network_meta.md)

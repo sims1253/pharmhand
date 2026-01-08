@@ -1,6 +1,4 @@
-# Duval & Tweedie Trim-and-Fill Publication Bias Adjustment Performs the Duval & Tweedie trim-and-fill method to estimate the number of missing studies and adjust the pooled effect for publication bias.
-
-Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
+# Duval & Tweedie Trim-and-Fill Publication Bias Adjustment
 
 Performs the Duval & Tweedie trim-and-fill method to estimate the number
 of missing studies and adjust the pooled effect for publication bias.
@@ -42,11 +40,11 @@ A list with components:
 
 - original:
 
-  Original MetaResult object
+  List with original estimate, confidence interval, and k
 
 - adjusted:
 
-  Adjusted MetaResult with imputed studies
+  List with adjusted estimate, confidence interval, and k
 
 - n_imputed:
 
@@ -64,9 +62,13 @@ A list with components:
 
   Estimator method used
 
-- summary:
+- effect_measure:
 
-  Text summary of the adjustment
+  Effect measure used
+
+- interpretation:
+
+  Text interpretation of the adjustment
 
 ## Examples
 

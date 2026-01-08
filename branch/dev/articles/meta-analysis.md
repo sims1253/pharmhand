@@ -13,6 +13,10 @@ meta-analysis (NMA), supporting German HTA requirements (G-BA/IQWiG).
 
 ### Basic Meta-Analysis
 
+The
+\[[`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)\]
+function performs fixed or random effects meta-analysis.
+
 ``` r
 # Five studies with hazard ratios
 yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
@@ -38,6 +42,10 @@ result@heterogeneity$I2
 
 ### Heterogeneity Assessment
 
+The
+\[[`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)\]
+function computes heterogeneity statistics including Q, I², and τ².
+
 ``` r
 het <- calculate_heterogeneity(yi, sei, method = "REML")
 het$Q
@@ -51,6 +59,11 @@ het$interpretation
 ```
 
 ### Leave-One-Out Sensitivity Analysis
+
+The
+\[[`leave_one_out()`](https://sims1253.github.io/pharmhand/branch/dev/reference/leave_one_out.md)\]
+function performs leave-one-out sensitivity analysis to identify
+influential studies.
 
 ``` r
 loo <- leave_one_out(result)
@@ -67,6 +80,10 @@ loo$influential_studies
 
 ### Forest Plot
 
+The
+\[[`create_meta_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_meta_forest_plot.md)\]
+function creates forest plots for visualizing meta-analysis results.
+
 ``` r
 plot <- create_meta_forest_plot(result, title = "Treatment Effect (HR)")
 plot@plot
@@ -80,12 +97,20 @@ plot](meta-analysis_files/figure-html/forest-1.png)
 
 ### Funnel Plot and Publication Bias
 
+The
+\[[`create_funnel_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_funnel_plot.md)\]
+function creates funnel plots to assess publication bias.
+
 ``` r
 funnel <- create_funnel_plot(result, title = "Funnel Plot")
 funnel@plot
 ```
 
 ![Funnel plot](meta-analysis_files/figure-html/funnel-1.png)
+
+The
+\[[`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)\]
+function performs Egger’s test for funnel plot asymmetry.
 
 ``` r
 egger <- eggers_test(yi = yi, sei = sei)
@@ -97,6 +122,10 @@ egger$interpretation
 
 ### Trim-and-Fill
 
+The
+\[[`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)\]
+function performs trim-and-fill analysis to adjust for publication bias.
+
 ``` r
 tf <- trim_and_fill(result)
 tf$n_imputed
@@ -106,6 +135,10 @@ tf$interpretation
 ```
 
 ## Indirect Comparison
+
+The
+\[[`indirect_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/indirect_comparison.md)\]
+function performs indirect comparisons using the Bucher method.
 
 ``` r
 # Bucher method: A vs B via common comparator C
@@ -127,6 +160,10 @@ indirect@ci
 
 ## Network Meta-Analysis
 
+The
+\[[`network_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/network_meta.md)\]
+function performs network meta-analysis for multiple treatments.
+
 ### Basic NMA
 
 ``` r
@@ -139,7 +176,7 @@ nma_data <- data.frame(
 )
 
 nma <- network_meta(nma_data, effect_measure = "hr")
-nma$comparisons
+nma@comparisons
 #>   treatment vs estimate  ci_lower  ci_upper        se n_studies  evidence rank
 #> 1         A  A   1.0000 1.0000000 1.0000000 0.0000000        NA reference   NA
 #> B         B  A   0.7500 0.5928121 0.9488672 0.1200000         1    direct    2
@@ -148,6 +185,10 @@ nma$comparisons
 ```
 
 ### Network Geometry Plot
+
+The
+\[[`create_network_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_network_plot.md)\]
+function creates network geometry plots to visualize treatment networks.
 
 ``` r
 net_plot <- create_network_plot(nma, title = "Treatment Network")
@@ -158,6 +199,11 @@ net_plot@plot
 plot](meta-analysis_files/figure-html/network-plot-1.png)
 
 ### SUCRA Rankings
+
+The
+\[[`calculate_sucra()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_sucra.md)\]
+function calculates SUCRA (Surface Under the Cumulative Ranking) scores
+for treatment rankings.
 
 ``` r
 sucra <- calculate_sucra(nma)
@@ -172,6 +218,10 @@ sucra$interpretation
 ```
 
 ### League Table
+
+The
+\[[`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md)\]
+function creates league tables showing pairwise treatment comparisons.
 
 ``` r
 league <- create_league_table(nma)
@@ -189,6 +239,10 @@ league@data
 ```
 
 ### Transitivity Assessment
+
+The
+\[[`assess_transitivity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_transitivity.md)\]
+function assesses the transitivity assumption in network meta-analysis.
 
 ``` r
 chars <- data.frame(
@@ -236,7 +290,12 @@ indirect <- indirect_comparison(
   label_b = "C",
   label_c = "B"
 )
+```
 
+\[[`compare_direct_indirect()`](https://sims1253.github.io/pharmhand/branch/dev/reference/compare_direct_indirect.md)\]
+compares direct and indirect evidence for consistency.
+
+``` r
 # Compare direct and indirect evidence
 consistency <- compare_direct_indirect(
   direct_result = direct,
@@ -259,6 +318,11 @@ evidence are consistent, supporting the validity of the indirect
 comparison.
 
 ### Node-Splitting Analysis
+
+The
+\[[`node_splitting()`](https://sims1253.github.io/pharmhand/branch/dev/reference/node_splitting.md)\]
+function performs node-splitting analysis to assess inconsistency in
+network meta-analysis.
 
 For network meta-analyses, node-splitting separates direct and indirect
 evidence for each comparison to identify potential inconsistencies:
@@ -288,9 +352,12 @@ transitivity assumption.
 ## Bayesian Meta-Analysis
 
 For researchers preferring Bayesian inference, pharmhand provides an
-interface to Bayesian meta-analysis using the brms package. This allows
-specification of informative priors and provides full posterior
-distributions.
+interface to Bayesian meta-analysis using the brms package via the
+\[[`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)\]
+function. This allows specification of informative priors and provides
+full posterior distributions.
+
+### Basic Bayesian Meta-Analysis
 
 ``` r
 # Bayesian random-effects meta-analysis
@@ -304,23 +371,201 @@ bayes_result <- bayesian_meta_analysis(
   prior_tau = list(type = "half_cauchy", scale = 0.5),
   chains = 4,
   iter = 4000,
+  adapt_delta = 0.95,
+  max_treedepth = 12,
   seed = 12345
 )
 
-# Posterior summary
-bayes_result$posterior_summary
+# Posterior summary statistics
+bayes_result$posterior_mean      # Mean of posterior distribution
+bayes_result$posterior_median    # Median of posterior distribution
+bayes_result$ci_95               # 95% credible interval
+bayes_result$prob_benefit        # P(HR < 1)
+bayes_result$prob_superior       # P(HR < 0.9)
+```
 
-# Credible intervals
-bayes_result$credible_interval
+### Convergence Diagnostics
 
-# Probability of benefit
-bayes_result$prob_benefit
+The
+\[[`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)\]
+function now automatically reports convergence diagnostics to ensure
+reliable results:
+
+``` r
+# Access convergence diagnostics
+bayes_result$convergence_diagnostics
+
+# Check individual metrics
+bayes_result$convergence_diagnostics$max_rhat      # Should be <= 1.01
+bayes_result$convergence_diagnostics$min_bulk_ess # Should be >= 400
+bayes_result$convergence_diagnostics$min_tail_ess # Should be >= 400
+bayes_result$convergence_diagnostics$divergent_transitions # Should be 0
+```
+
+Warnings are automatically issued when convergence issues are detected.
+To improve convergence:
+
+- Increase `adapt_delta` parameter (try 0.99 or 0.999)
+- Increase `iter` for more samples
+- Use more informative priors
+
+### Predictive Checks
+
+#### Posterior Predictive Checks
+
+Assess model fit to the observed data:
+
+``` r
+# Enable posterior predictive checks
+bayes_result <- bayesian_meta_analysis(
+  yi = yi,
+  sei = sei,
+  effect_measure = "hr",
+  posterior_predictive = TRUE,
+  pp_check_type = "dens_overlay",
+  pp_ndraws = 100
+)
+
+# View posterior predictive plot
+bayes_result$pp_check_plot
+
+# Check Bayesian p-value (should be around 0.5 for good fit)
+bayes_result$posterior_predictive$bayes_p_value
+```
+
+#### Prior Predictive Checks
+
+Evaluate prior reasonableness before seeing data:
+
+``` r
+# Fit with prior-only
+bayes_result <- bayesian_meta_analysis(
+  yi = yi,
+  sei = sei,
+  effect_measure = "hr",
+  prior_predictive = TRUE
+)
+
+# View prior distribution
+bayes_result$prior_predictive$summary
+```
+
+### Trace Plots
+
+The
+\[[`create_bayesian_trace_plots()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_bayesian_trace_plots.md)\]
+function visualizes MCMC chain convergence:
+
+``` r
+# Create combined trace plots
+trace_plot <- create_bayesian_trace_plots(bayes_result)
+print(trace_plot)
+
+# Create individual parameter plots
+trace_plots <- create_bayesian_trace_plots(
+  bayes_result,
+  parameters = c("b_Intercept", "sd_study__Intercept"),
+  combine_plots = FALSE
+)
+print(trace_plots$b_Intercept)
+```
+
+Good convergence shows: - Well-mixed chains (no drift or stickiness) -
+Similar distributions across chains - Rapid autocorrelation decay
+
+### Prior Sensitivity Analysis
+
+The
+\[[`prior_sensitivity_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/prior_sensitivity_analysis.md)\]
+function tests how results change with different prior specifications:
+
+``` r
+# Run sensitivity analysis with default scenarios
+sensitivity <- prior_sensitivity_analysis(
+  yi = yi,
+  sei = sei,
+  effect_measure = "hr",
+  chains = 2,
+  iter = 2000
+)
+
+# Compare estimates across priors
+sensitivity$comparison
+
+# View robustness summary
+sensitivity$sensitivity_summary$robustness_interpretation
+```
+
+Or specify custom prior scenarios:
+
+``` r
+custom_scenarios <- list(
+  skeptical = list(
+    prior_mu = list(mean = 0, sd = 0.5),
+    prior_tau = list(type = "half_cauchy", scale = 0.3)
+  ),
+  optimistic = list(
+    prior_mu = list(mean = -0.5, sd = 1),
+    prior_tau = list(type = "half_cauchy", scale = 0.2)
+  )
+)
+
+sensitivity <- prior_sensitivity_analysis(
+  yi = yi,
+  sei = sei,
+  effect_measure = "hr",
+  prior_scenarios = custom_scenarios
+)
+```
+
+### IQWiG-Compliant Reporting
+
+The
+\[[`format_bayesian_result_iqwig()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_bayesian_result_iqwig.md)\]
+function formats Bayesian results for German HTA submissions:
+
+``` r
+# Format for IQWiG submission
+formatted <- format_bayesian_result_iqwig(
+  bayes_result,
+  locale = "de"  # German locale
+)
+
+# View formatted components
+formatted$estimate      # "0.790"
+formatted$ci           # "[0.712; 0.877]"
+formatted$probability   # "P(HR < 1) = 98.5%"
+formatted$interpretation # Complete interpretation
+
+# Export full formatted text
+formatted$full_text
+```
+
+The
+\[[`create_bayesian_forest_plot_iqwig()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_bayesian_forest_plot_iqwig.md)\]
+function creates IQWiG-compliant forest plots:
+
+``` r
+# Create IQWiG-formatted forest plot
+study_data <- data.frame(
+  yi = yi,
+  sei = sei,
+  study_labels = paste("Study", 1:5)
+)
+
+forest_iqwig <- create_bayesian_forest_plot_iqwig(
+  bayes_result,
+  study_data = study_data,
+  locale = "de",
+  title = "Behandlungseffekt (HR)"
+)
+print(forest_iqwig)
 ```
 
 **Note:** Bayesian meta-analysis requires the `brms` package and a
 working Stan installation. Install with `install.packages("brms")`. For
 users without brms, the frequentist
-[`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
+\[[`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)\]
 function provides an alternative.
 
 Advantages of the Bayesian approach include:
@@ -334,21 +579,25 @@ Advantages of the Bayesian approach include:
 
 pharmhand provides a complete toolkit for evidence synthesis:
 
-| Function                                                                                                            | Purpose                             |
-|---------------------------------------------------------------------------------------------------------------------|-------------------------------------|
-| [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)                     | Fixed/random-effects meta-analysis  |
-| [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md) | Q, I², τ² statistics                |
-| [`leave_one_out()`](https://sims1253.github.io/pharmhand/branch/dev/reference/leave_one_out.md)                     | Sensitivity analysis                |
-| [`create_meta_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_meta_forest_plot.md) | Forest plot visualization           |
-| [`create_funnel_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_funnel_plot.md)           | Publication bias assessment         |
-| [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)                         | Funnel asymmetry test               |
-| [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)                     | Bias adjustment                     |
-| [`indirect_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/indirect_comparison.md)         | Bucher indirect comparison          |
-| [`compare_direct_indirect()`](https://sims1253.github.io/pharmhand/branch/dev/reference/compare_direct_indirect.md) | Test direct vs indirect consistency |
-| [`network_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/network_meta.md)                       | Network meta-analysis               |
-| [`create_network_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_network_plot.md)         | Network geometry                    |
-| [`calculate_sucra()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_sucra.md)                 | Treatment rankings                  |
-| [`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md)         | Pairwise comparisons                |
-| [`assess_transitivity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_transitivity.md)         | Transitivity check                  |
-| [`node_splitting()`](https://sims1253.github.io/pharmhand/branch/dev/reference/node_splitting.md)                   | NMA inconsistency testing           |
-| [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)   | Bayesian meta-analysis (via brms)   |
+| Function                                                                                                                                    | Purpose                               |
+|---------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
+| \[[`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)\]                                         | Fixed/random-effects meta-analysis    |
+| \[[`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)\]                     | Q, I², τ² statistics                  |
+| \[[`leave_one_out()`](https://sims1253.github.io/pharmhand/branch/dev/reference/leave_one_out.md)\]                                         | Sensitivity analysis                  |
+| \[[`create_meta_forest_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_meta_forest_plot.md)\]                     | Forest plot visualization             |
+| \[[`create_funnel_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_funnel_plot.md)\]                               | Publication bias assessment           |
+| \[[`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)\]                                             | Funnel asymmetry test                 |
+| \[[`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)\]                                         | Bias adjustment                       |
+| \[[`indirect_comparison()`](https://sims1253.github.io/pharmhand/branch/dev/reference/indirect_comparison.md)\]                             | Bucher indirect comparison            |
+| \[[`compare_direct_indirect()`](https://sims1253.github.io/pharmhand/branch/dev/reference/compare_direct_indirect.md)\]                     | Test direct vs indirect consistency   |
+| \[[`network_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/network_meta.md)\]                                           | Network meta-analysis                 |
+| \[[`create_network_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_network_plot.md)\]                             | Network geometry                      |
+| \[[`calculate_sucra()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_sucra.md)\]                                     | Treatment rankings                    |
+| \[[`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md)\]                             | Pairwise comparisons                  |
+| \[[`assess_transitivity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_transitivity.md)\]                             | Transitivity check                    |
+| \[[`node_splitting()`](https://sims1253.github.io/pharmhand/branch/dev/reference/node_splitting.md)\]                                       | NMA inconsistency testing             |
+| \[[`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)\]                       | Bayesian meta-analysis (via brms)     |
+| \[[`create_bayesian_trace_plots()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_bayesian_trace_plots.md)\]             | MCMC trace plot visualization         |
+| \[[`prior_sensitivity_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/prior_sensitivity_analysis.md)\]               | Prior sensitivity analysis            |
+| \[[`format_bayesian_result_iqwig()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_bayesian_result_iqwig.md)\]           | IQWiG formatting for Bayesian results |
+| \[[`create_bayesian_forest_plot_iqwig()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_bayesian_forest_plot_iqwig.md)\] | IQWiG-compliant forest plots          |

@@ -47,3 +47,20 @@ calculate_mcid_anchor(
 ## Value
 
 List with mcid estimate, ci, n, and method
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Calculate MCID using anchor-based method
+result <- calculate_mcid_anchor(
+  data = pro_data,
+  score_var = "CHG",
+  anchor_var = "PGIC"
+)
+
+# Access results
+result$mcid
+result$ci
+} # }
+```

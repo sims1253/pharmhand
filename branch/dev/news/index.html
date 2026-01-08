@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,11 +40,51 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.1.9000" id="pharmhand-0319000">pharmhand 0.3.1.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0319000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.3.9000" id="pharmhand-0339000">pharmhand 0.3.3.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0339000"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-0-3-1-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1-9000"></a></h3>
+<h3 id="breaking-changes-0-3-3-9000">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-3-9000"></a></h3>
 <div class="section level4">
-<h4 id="robustness-improvements-0-3-1-9000">Robustness Improvements<a class="anchor" aria-label="anchor" href="#robustness-improvements-0-3-1-9000"></a></h4>
+<h4 id="source-file-reorganization-0-3-3-9000">Source File Reorganization<a class="anchor" aria-label="anchor" href="#source-file-reorganization-0-3-3-9000"></a></h4>
+<ul><li>
+<strong>Efficacy module split</strong>: <code>R/efficacy_tables.R</code> has been split into focused modules:
+<ul><li>
+<code>R/efficacy_primary.R</code> - Primary endpoint tables (<code><a href="../reference/create_primary_endpoint_table.html">create_primary_endpoint_table()</a></code>)</li>
+<li>
+<code>R/efficacy_cfb.R</code> - Change from baseline tables</li>
+<li>
+<code>R/efficacy_lab.R</code> - Laboratory tables</li>
+<li>
+<code>R/efficacy_tte.R</code> - Time-to-event tables</li>
+<li>
+<code>R/efficacy_responder.R</code> - Responder analysis tables</li>
+<li>
+<code>R/efficacy_subgroup.R</code> - Subgroup analysis tables</li>
+</ul></li>
+<li>
+<strong>Safety module split</strong>: <code>R/safety_tables.R</code> has been split into focused modules:
+<ul><li>
+<code>R/safety_summary.R</code> - AE summary tables (<code><a href="../reference/create_ae_summary_table.html">create_ae_summary_table()</a></code>)</li>
+<li>
+<code>R/safety_comparison.R</code> - AE comparison tables</li>
+<li>
+<code>R/safety_hierarchy.R</code> - SOC/PT hierarchy tables</li>
+<li>
+<code>R/safety_tte.R</code> - Safety time-to-event analysis</li>
+<li>
+<code>R/safety_exposure.R</code> - Exposure-adjusted analysis</li>
+</ul></li>
+<li>
+<strong>Migration guidance</strong>: Users who previously sourced these files directly should:
+<ul><li>Use the package namespace (e.g., <code><a href="../reference/create_primary_endpoint_table.html">pharmhand::create_primary_endpoint_table()</a></code>)</li>
+<li>Or source the new module files (e.g., <code>source('R/efficacy_primary.R')</code>)</li>
+<li>Update any direct imports to reference the new module names</li>
+</ul></li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-3-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-3-9000"></a></h3>
+<div class="section level4">
+<h4 id="robustness-improvements-0-3-3-9000">Robustness Improvements<a class="anchor" aria-label="anchor" href="#robustness-improvements-0-3-3-9000"></a></h4>
 <ul><li>Fixed <code><a href="../reference/create_primary_endpoint_table.html">create_primary_endpoint_table()</a></code> to handle empty data or all-NA values gracefully, returning “-” instead of NaN/Inf</li>
 <li>Fixed <code>create_responder_analysis_table()</code> to compute response rate in separate mutate step, avoiding fragile self-reference in summarise</li>
 <li>Fixed <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> to correctly extract landmark survival estimates for each treatment stratum instead of using first stratum for all</li>
@@ -53,24 +93,44 @@
 <li>Fixed <code><a href="../reference/leave_one_out.html">leave_one_out()</a></code> to read ci_level from correct slot (<a href="mailto:meta_result@ci" class="email">meta_result@ci</a>_level instead of <a href="https://github.com/metadata" class="external-link">@metadata</a>$conf_level)</li>
 </ul></div>
 <div class="section level4">
-<h4 id="input-validation-0-3-1-9000">Input Validation<a class="anchor" aria-label="anchor" href="#input-validation-0-3-1-9000"></a></h4>
+<h4 id="input-validation-0-3-3-9000">Input Validation<a class="anchor" aria-label="anchor" href="#input-validation-0-3-3-9000"></a></h4>
 <ul><li>Require positive, non-missing standard errors in <code><a href="../reference/eggers_test.html">eggers_test()</a></code>, <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code>, <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code>, and <code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code>
 </li>
+<li>Added <code>length(yi) == length(sei)</code> validation in <code><a href="../reference/eggers_test.html">eggers_test()</a></code> and <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code>
+</li>
+<li>Added <code>anyNA(yi)</code> check in <code><a href="../reference/eggers_test.html">eggers_test()</a></code> returning NA-filled result with clear interpretation</li>
+<li>Added <code>anyNA(yi)</code> check in <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code> with error listing invalid indices</li>
 </ul></div>
 <div class="section level4">
-<h4 id="code-quality-0-3-1-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-3-1-9000"></a></h4>
+<h4 id="code-quality-0-3-3-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-3-3-9000"></a></h4>
 <ul><li>Changed <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> to <code>ph_abort()</code> in example script for consistent error handling</li>
 <li>Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd</li>
+<li>Added <code>:=</code> import from rlang to fix undefined global function warning</li>
+<li>Fixed <code><a href="../reference/create_mean_plot.html">create_mean_plot()</a></code> n calculation to count non-missing values</li>
+<li>Added guards for CI computation when n &lt;= 1 to avoid Inf values</li>
 </ul></div>
 <div class="section level4">
-<h4 id="plotting-fixes-0-3-1-9000">Plotting Fixes<a class="anchor" aria-label="anchor" href="#plotting-fixes-0-3-1-9000"></a></h4>
+<h4 id="plotting-fixes-0-3-3-9000">Plotting Fixes<a class="anchor" aria-label="anchor" href="#plotting-fixes-0-3-3-9000"></a></h4>
 <ul><li>Fixed <code>create_efficacy_waterfall_plot()</code> to compute category counts in separate mutate step, avoiding fragile self-reference in summarise</li>
 <li>Fixed <code><a href="../reference/create_forest_plot.html">create_forest_plot()</a></code> Cox model CI column extraction to use positional indexing instead of fragile name construction</li>
 <li>Fixed <code><a href="../reference/create_km_plot.html">create_km_plot()</a></code> risk table grid background by explicitly setting panel.grid.major/minor to element_blank()</li>
 <li>Fixed <code><a href="../reference/safe_pct.html">safe_pct()</a></code> division by zero in <code>safety_summary.R</code> by adding helper function applied to 9 locations</li>
 </ul></div>
 <div class="section level4">
-<h4 id="documentation-0-3-1-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3-1-9000"></a></h4>
+<h4 id="bayesian-meta-analysis-fixes-0-3-3-9000">Bayesian Meta-Analysis Fixes<a class="anchor" aria-label="anchor" href="#bayesian-meta-analysis-fixes-0-3-3-9000"></a></h4>
+<ul><li>Fixed <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> to use <code><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">brms::neff_ratio()</a></code> instead of non-exported <code>brms::ess_bulk()</code>/<code>brms::ess_tail()</code>
+</li>
+<li>Fixed <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> to compute BFMI from nuts_params energy values</li>
+<li>Fixed <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> to use <code><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">brms::nuts_params()</a></code> for divergent transitions instead of accessing internal <code>fit$fit@sim$divergent__</code>
+</li>
+<li>Added <code>tryCatch</code> wrapper around <code><a href="https://paulbuerkner.com/brms/reference/brm.html" class="external-link">brms::brm()</a></code> calls for better error handling</li>
+<li>Changed all brms tests to use <code>cores = 1</code> to avoid parallel rstan issues in CI</li>
+<li>Added <code>bayesplot</code> to Suggests, removed direct <code>rstan</code> dependency</li>
+<li>Fixed roxygen documentation to avoid <code>\describe{}</code> block Rd parsing issues</li>
+<li>Added brms test caching helper to speed up test suite</li>
+</ul></div>
+<div class="section level4">
+<h4 id="documentation-0-3-3-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3-3-9000"></a></h4>
 <ul><li>Added <a href="https://github.com/title" class="external-link">@title</a> tags and completed <a href="https://github.com/return" class="external-link">@return</a> documentation in <code>meta_bias.R</code>
 </li>
 <li>Added within-study variation warning documentation in <code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code>
@@ -82,13 +142,13 @@
 </ul></div>
 </div>
 <div class="section level3">
-<h3 id="test-improvements-0-3-1-9000">Test Improvements<a class="anchor" aria-label="anchor" href="#test-improvements-0-3-1-9000"></a></h3>
+<h3 id="test-improvements-0-3-3-9000">Test Improvements<a class="anchor" aria-label="anchor" href="#test-improvements-0-3-3-9000"></a></h3>
 <ul><li>Refactored test-plotting_forest.R, test-efficacy_tte.R, and test-efficacy_subgroup.R to use shared test fixtures</li>
-<li>Added documentation examples to exported functions in efficacy and safety modules</li>
+<li>Included documentation examples to exported functions in efficacy and safety modules</li>
 <li>Updated <code>test-meta_bayesian.R</code> with 8-study test data and <code>adapt_delta = 0.99</code> to prevent divergent transitions</li>
-<li>Added <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to 11 tests in <code>test-pro-analysis.R</code>
+<li>Seeded RNG in 11 tests in <code>test-pro-analysis.R</code>
 </li>
-<li>Added <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to <code>test-efficacy_tte.R</code> before sample() call</li>
+<li>Applied <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to <code>test-efficacy_tte.R</code> before sample() call</li>
 <li>Removed duplicate tests in <code>test-efficacy_responder.R</code> and <code>test-efficacy_subgroup.R</code>
 </li>
 </ul></div>

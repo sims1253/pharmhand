@@ -30,8 +30,10 @@
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/HTAEndpoint.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/HTASection.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/LayeredTable.html</loc></url>
+<url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/MCIDResult.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/MetaResult.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/MultiArmStudy.html</loc></url>
+<url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/NMAResult.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/PTConfig.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/PerformanceReport.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/PopulationConfig.html</loc></url>
@@ -112,6 +114,8 @@
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_ae_km_plot_for_soc.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_ae_summary_table.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_analysis_meta.html</loc></url>
+<url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_bayesian_forest_plot_iqwig.html</loc></url>
+<url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_bayesian_trace_plots.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_cfb_summary_table.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_chef_endpoint.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/create_clinical_table.html</loc></url>
@@ -158,6 +162,7 @@
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/eggers_test.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/extract_chef_metadata.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/flatten_chef_results.html</loc></url>
+<url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/format_bayesian_result_iqwig.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/format_ci.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/format_content.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/format_number.html</loc></url>
@@ -205,6 +210,7 @@
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/plotting_efficacy.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/plotting_forest.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/plotting_survival.html</loc></url>
+<url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/prior_sensitivity_analysis.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/pro_analysis.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/reporting_engine.html</loc></url>
 <url><loc>https://sims1253.github.io/pharmhand/branch/dev//reference/reset_custom_translations.html</loc></url>

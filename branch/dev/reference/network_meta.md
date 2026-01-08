@@ -93,11 +93,7 @@ nma_data <- data.frame(
 )
 result <- network_meta(nma_data, effect_measure = "hr")
 result$comparisons
-#>   treatment vs estimate  ci_lower  ci_upper        se n_studies  evidence rank
-#> 1         A  A   1.0000 1.0000000 1.0000000 0.0000000        NA reference   NA
-#> B         B  A   0.7500 0.5928121 0.9488672 0.1200000         1    direct    2
-#> C         C  A   0.8000 0.5621778 1.1384298 0.1800000         1    direct    3
-#> D         D  A   0.6375 0.4441466 0.9150272 0.1843909         2  indirect    1
+#> Error: Can't get S7 properties with `$`. Did you mean `result@comparisons`?
 result$network$treatments
-#> [1] "A" "B" "C" "D"
+#> Error: Can't get S7 properties with `$`. Did you mean `result@network`?
 ```

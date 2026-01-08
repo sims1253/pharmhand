@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,6 +98,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="basic-meta-analysis">Basic Meta-Analysis<a class="anchor" aria-label="anchor" href="#basic-meta-analysis"></a>
 </h3>
+<p>The [<code><a href="../reference/meta_analysis.html">meta_analysis()</a></code>] function performs fixed or random
+effects meta-analysis.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Five studies with hazard ratios</span></span>
 <span><span class="va">yi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">0.82</span>, <span class="fl">0.68</span>, <span class="fl">0.91</span>, <span class="fl">0.77</span><span class="op">)</span><span class="op">)</span></span>
@@ -123,6 +125,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="heterogeneity-assessment">Heterogeneity Assessment<a class="anchor" aria-label="anchor" href="#heterogeneity-assessment"></a>
 </h3>
+<p>The [<code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code>] function computes
+heterogeneity statistics including Q, I², and τ².</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">het</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity</a></span><span class="op">(</span><span class="va">yi</span>, <span class="va">sei</span>, method <span class="op">=</span> <span class="st">"REML"</span><span class="op">)</span></span>
 <span><span class="va">het</span><span class="op">$</span><span class="va">Q</span></span>
@@ -137,6 +141,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="leave-one-out-sensitivity-analysis">Leave-One-Out Sensitivity Analysis<a class="anchor" aria-label="anchor" href="#leave-one-out-sensitivity-analysis"></a>
 </h3>
+<p>The [<code><a href="../reference/leave_one_out.html">leave_one_out()</a></code>] function performs leave-one-out
+sensitivity analysis to identify influential studies.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/leave_one_out.html">leave_one_out</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="va">loo</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"excluded_study"</span>, <span class="st">"estimate_display"</span>, <span class="st">"I2"</span><span class="op">)</span><span class="op">]</span></span>
@@ -152,6 +158,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="forest-plot">Forest Plot<a class="anchor" aria-label="anchor" href="#forest-plot"></a>
 </h3>
+<p>The [<code><a href="../reference/create_meta_forest_plot.html">create_meta_forest_plot()</a></code>] function creates forest
+plots for visualizing meta-analysis results.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_meta_forest_plot.html">create_meta_forest_plot</a></span><span class="op">(</span><span class="va">result</span>, title <span class="op">=</span> <span class="st">"Treatment Effect (HR)"</span><span class="op">)</span></span>
 <span><span class="va">plot</span><span class="op">@</span><span class="va">plot</span></span>
@@ -163,10 +171,14 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="funnel-plot-and-publication-bias">Funnel Plot and Publication Bias<a class="anchor" aria-label="anchor" href="#funnel-plot-and-publication-bias"></a>
 </h3>
+<p>The [<code><a href="../reference/create_funnel_plot.html">create_funnel_plot()</a></code>] function creates funnel plots
+to assess publication bias.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">funnel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_funnel_plot.html">create_funnel_plot</a></span><span class="op">(</span><span class="va">result</span>, title <span class="op">=</span> <span class="st">"Funnel Plot"</span><span class="op">)</span></span>
 <span><span class="va">funnel</span><span class="op">@</span><span class="va">plot</span></span></code></pre></div>
 <p><img src="meta-analysis_files/figure-html/funnel-1.png" class="r-plt" alt="Funnel plot" width="672"></p>
+<p>The [<code><a href="../reference/eggers_test.html">eggers_test()</a></code>] function performs Egger’s test for
+funnel plot asymmetry.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">egger</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/eggers_test.html">eggers_test</a></span><span class="op">(</span>yi <span class="op">=</span> <span class="va">yi</span>, sei <span class="op">=</span> <span class="va">sei</span><span class="op">)</span></span>
 <span><span class="va">egger</span><span class="op">$</span><span class="va">p_value</span></span>
@@ -177,6 +189,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="trim-and-fill">Trim-and-Fill<a class="anchor" aria-label="anchor" href="#trim-and-fill"></a>
 </h3>
+<p>The [<code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code>] function performs trim-and-fill
+analysis to adjust for publication bias.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trim_and_fill.html">trim_and_fill</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="va">tf</span><span class="op">$</span><span class="va">n_imputed</span></span>
@@ -188,6 +202,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level2">
 <h2 id="indirect-comparison">Indirect Comparison<a class="anchor" aria-label="anchor" href="#indirect-comparison"></a>
 </h2>
+<p>The [<code><a href="../reference/indirect_comparison.html">indirect_comparison()</a></code>] function performs indirect
+comparisons using the Bucher method.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Bucher method: A vs B via common comparator C</span></span>
 <span><span class="va">indirect</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/indirect_comparison.html">indirect_comparison</a></span><span class="op">(</span></span>
@@ -208,6 +224,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level2">
 <h2 id="network-meta-analysis">Network Meta-Analysis<a class="anchor" aria-label="anchor" href="#network-meta-analysis"></a>
 </h2>
+<p>The [<code><a href="../reference/network_meta.html">network_meta()</a></code>] function performs network
+meta-analysis for multiple treatments.</p>
 <div class="section level3">
 <h3 id="basic-nma">Basic NMA<a class="anchor" aria-label="anchor" href="#basic-nma"></a>
 </h3>
@@ -221,7 +239,7 @@ network meta-analysis (NMA), supporting German HTA requirements
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_meta.html">network_meta</a></span><span class="op">(</span><span class="va">nma_data</span>, effect_measure <span class="op">=</span> <span class="st">"hr"</span><span class="op">)</span></span>
-<span><span class="va">nma</span><span class="op">$</span><span class="va">comparisons</span></span>
+<span><span class="va">nma</span><span class="op">@</span><span class="va">comparisons</span></span>
 <span><span class="co">#&gt;   treatment vs estimate  ci_lower  ci_upper        se n_studies  evidence rank</span></span>
 <span><span class="co">#&gt; 1         A  A   1.0000 1.0000000 1.0000000 0.0000000        NA reference   NA</span></span>
 <span><span class="co">#&gt; B         B  A   0.7500 0.5928121 0.9488672 0.1200000         1    direct    2</span></span>
@@ -231,6 +249,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="network-geometry-plot">Network Geometry Plot<a class="anchor" aria-label="anchor" href="#network-geometry-plot"></a>
 </h3>
+<p>The [<code><a href="../reference/create_network_plot.html">create_network_plot()</a></code>] function creates network
+geometry plots to visualize treatment networks.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">net_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_network_plot.html">create_network_plot</a></span><span class="op">(</span><span class="va">nma</span>, title <span class="op">=</span> <span class="st">"Treatment Network"</span><span class="op">)</span></span>
 <span><span class="va">net_plot</span><span class="op">@</span><span class="va">plot</span></span></code></pre></div>
@@ -239,6 +259,9 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="sucra-rankings">SUCRA Rankings<a class="anchor" aria-label="anchor" href="#sucra-rankings"></a>
 </h3>
+<p>The [<code><a href="../reference/calculate_sucra.html">calculate_sucra()</a></code>] function calculates SUCRA
+(Surface Under the Cumulative Ranking) scores for treatment
+rankings.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sucra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculate_sucra.html">calculate_sucra</a></span><span class="op">(</span><span class="va">nma</span><span class="op">)</span></span>
 <span><span class="va">sucra</span><span class="op">$</span><span class="va">ranking</span></span>
@@ -253,6 +276,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="league-table">League Table<a class="anchor" aria-label="anchor" href="#league-table"></a>
 </h3>
+<p>The [<code><a href="../reference/create_league_table.html">create_league_table()</a></code>] function creates league
+tables showing pairwise treatment comparisons.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">league</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_league_table.html">create_league_table</a></span><span class="op">(</span><span class="va">nma</span><span class="op">)</span></span>
 <span><span class="va">league</span><span class="op">@</span><span class="va">data</span></span>
@@ -270,6 +295,8 @@ network meta-analysis (NMA), supporting German HTA requirements
 <div class="section level3">
 <h3 id="transitivity-assessment">Transitivity Assessment<a class="anchor" aria-label="anchor" href="#transitivity-assessment"></a>
 </h3>
+<p>The [<code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code>] function assesses the
+transitivity assumption in network meta-analysis.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  study_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="st">"S1"</span>, <span class="st">"S2"</span>, <span class="st">"S2"</span>, <span class="st">"S3"</span>, <span class="st">"S3"</span>, <span class="st">"S4"</span>, <span class="st">"S4"</span><span class="op">)</span>,</span>
@@ -315,9 +342,11 @@ comparison, we can test whether they agree:</p>
 <span>  label_a <span class="op">=</span> <span class="st">"A"</span>,</span>
 <span>  label_b <span class="op">=</span> <span class="st">"C"</span>,</span>
 <span>  label_c <span class="op">=</span> <span class="st">"B"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Compare direct and indirect evidence</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>[<code><a href="../reference/compare_direct_indirect.html">compare_direct_indirect()</a></code>] compares direct and indirect
+evidence for consistency.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Compare direct and indirect evidence</span></span>
 <span><span class="va">consistency</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_direct_indirect.html">compare_direct_indirect</a></span><span class="op">(</span></span>
 <span>  direct_result <span class="op">=</span> <span class="va">direct</span>,</span>
 <span>  indirect_result <span class="op">=</span> <span class="va">indirect</span>,</span>
@@ -339,10 +368,12 @@ indirect comparison.</p>
 <div class="section level3">
 <h3 id="node-splitting-analysis">Node-Splitting Analysis<a class="anchor" aria-label="anchor" href="#node-splitting-analysis"></a>
 </h3>
+<p>The [<code><a href="../reference/node_splitting.html">node_splitting()</a></code>] function performs node-splitting
+analysis to assess inconsistency in network meta-analysis.</p>
 <p>For network meta-analyses, node-splitting separates direct and
 indirect evidence for each comparison to identify potential
 inconsistencies:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Node-splitting analysis on our NMA</span></span>
 <span><span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/node_splitting.html">node_splitting</a></span><span class="op">(</span><span class="va">nma</span><span class="op">)</span></span>
 <span><span class="va">ns</span><span class="op">$</span><span class="va">results</span></span>
@@ -367,10 +398,14 @@ transitivity assumption.</p>
 <h2 id="bayesian-meta-analysis">Bayesian Meta-Analysis<a class="anchor" aria-label="anchor" href="#bayesian-meta-analysis"></a>
 </h2>
 <p>For researchers preferring Bayesian inference, pharmhand provides an
-interface to Bayesian meta-analysis using the brms package. This allows
+interface to Bayesian meta-analysis using the brms package via the
+[<code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code>] function. This allows
 specification of informative priors and provides full posterior
 distributions.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="basic-bayesian-meta-analysis">Basic Bayesian Meta-Analysis<a class="anchor" aria-label="anchor" href="#basic-bayesian-meta-analysis"></a>
+</h3>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Bayesian random-effects meta-analysis</span></span>
 <span><span class="co"># Requires: install.packages("brms")</span></span>
 <span><span class="va">bayes_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis</a></span><span class="op">(</span></span>
@@ -382,21 +417,183 @@ distributions.</p>
 <span>  prior_tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"half_cauchy"</span>, scale <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>  chains <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  iter <span class="op">=</span> <span class="fl">4000</span>,</span>
+<span>  adapt_delta <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  max_treedepth <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">12345</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Posterior summary</span></span>
-<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">posterior_summary</span></span>
+<span><span class="co"># Posterior summary statistics</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">posterior_mean</span>      <span class="co"># Mean of posterior distribution</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">posterior_median</span>    <span class="co"># Median of posterior distribution</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">ci_95</span>               <span class="co"># 95% credible interval</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">prob_benefit</span>        <span class="co"># P(HR &lt; 1)</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">prob_superior</span>       <span class="co"># P(HR &lt; 0.9)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="convergence-diagnostics">Convergence Diagnostics<a class="anchor" aria-label="anchor" href="#convergence-diagnostics"></a>
+</h3>
+<p>The [<code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code>] function now
+automatically reports convergence diagnostics to ensure reliable
+results:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Access convergence diagnostics</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">convergence_diagnostics</span></span>
 <span></span>
-<span><span class="co"># Credible intervals</span></span>
-<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">credible_interval</span></span>
+<span><span class="co"># Check individual metrics</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">convergence_diagnostics</span><span class="op">$</span><span class="va">max_rhat</span>      <span class="co"># Should be &lt;= 1.01</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">convergence_diagnostics</span><span class="op">$</span><span class="va">min_bulk_ess</span> <span class="co"># Should be &gt;= 400</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">convergence_diagnostics</span><span class="op">$</span><span class="va">min_tail_ess</span> <span class="co"># Should be &gt;= 400</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">convergence_diagnostics</span><span class="op">$</span><span class="va">divergent_transitions</span> <span class="co"># Should be 0</span></span></code></pre></div>
+<p>Warnings are automatically issued when convergence issues are
+detected. To improve convergence:</p>
+<ul>
+<li>Increase <code>adapt_delta</code> parameter (try 0.99 or 0.999)</li>
+<li>Increase <code>iter</code> for more samples</li>
+<li>Use more informative priors</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="predictive-checks">Predictive Checks<a class="anchor" aria-label="anchor" href="#predictive-checks"></a>
+</h3>
+<div class="section level4">
+<h4 id="posterior-predictive-checks">Posterior Predictive Checks<a class="anchor" aria-label="anchor" href="#posterior-predictive-checks"></a>
+</h4>
+<p>Assess model fit to the observed data:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Enable posterior predictive checks</span></span>
+<span><span class="va">bayes_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis</a></span><span class="op">(</span></span>
+<span>  yi <span class="op">=</span> <span class="va">yi</span>,</span>
+<span>  sei <span class="op">=</span> <span class="va">sei</span>,</span>
+<span>  effect_measure <span class="op">=</span> <span class="st">"hr"</span>,</span>
+<span>  posterior_predictive <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  pp_check_type <span class="op">=</span> <span class="st">"dens_overlay"</span>,</span>
+<span>  pp_ndraws <span class="op">=</span> <span class="fl">100</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Probability of benefit</span></span>
-<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">prob_benefit</span></span></code></pre></div>
+<span><span class="co"># View posterior predictive plot</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">pp_check_plot</span></span>
+<span></span>
+<span><span class="co"># Check Bayesian p-value (should be around 0.5 for good fit)</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">posterior_predictive</span><span class="op">$</span><span class="va">bayes_p_value</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="prior-predictive-checks">Prior Predictive Checks<a class="anchor" aria-label="anchor" href="#prior-predictive-checks"></a>
+</h4>
+<p>Evaluate prior reasonableness before seeing data:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Fit with prior-only</span></span>
+<span><span class="va">bayes_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis</a></span><span class="op">(</span></span>
+<span>  yi <span class="op">=</span> <span class="va">yi</span>,</span>
+<span>  sei <span class="op">=</span> <span class="va">sei</span>,</span>
+<span>  effect_measure <span class="op">=</span> <span class="st">"hr"</span>,</span>
+<span>  prior_predictive <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># View prior distribution</span></span>
+<span><span class="va">bayes_result</span><span class="op">$</span><span class="va">prior_predictive</span><span class="op">$</span><span class="va">summary</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="trace-plots">Trace Plots<a class="anchor" aria-label="anchor" href="#trace-plots"></a>
+</h3>
+<p>The [<code><a href="../reference/create_bayesian_trace_plots.html">create_bayesian_trace_plots()</a></code>] function visualizes
+MCMC chain convergence:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create combined trace plots</span></span>
+<span><span class="va">trace_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_bayesian_trace_plots.html">create_bayesian_trace_plots</a></span><span class="op">(</span><span class="va">bayes_result</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trace_plot</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create individual parameter plots</span></span>
+<span><span class="va">trace_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_bayesian_trace_plots.html">create_bayesian_trace_plots</a></span><span class="op">(</span></span>
+<span>  <span class="va">bayes_result</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b_Intercept"</span>, <span class="st">"sd_study__Intercept"</span><span class="op">)</span>,</span>
+<span>  combine_plots <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trace_plots</span><span class="op">$</span><span class="va">b_Intercept</span><span class="op">)</span></span></code></pre></div>
+<p>Good convergence shows: - Well-mixed chains (no drift or stickiness)
+- Similar distributions across chains - Rapid autocorrelation decay</p>
+</div>
+<div class="section level3">
+<h3 id="prior-sensitivity-analysis">Prior Sensitivity Analysis<a class="anchor" aria-label="anchor" href="#prior-sensitivity-analysis"></a>
+</h3>
+<p>The [<code><a href="../reference/prior_sensitivity_analysis.html">prior_sensitivity_analysis()</a></code>] function tests how
+results change with different prior specifications:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run sensitivity analysis with default scenarios</span></span>
+<span><span class="va">sensitivity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prior_sensitivity_analysis.html">prior_sensitivity_analysis</a></span><span class="op">(</span></span>
+<span>  yi <span class="op">=</span> <span class="va">yi</span>,</span>
+<span>  sei <span class="op">=</span> <span class="va">sei</span>,</span>
+<span>  effect_measure <span class="op">=</span> <span class="st">"hr"</span>,</span>
+<span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  iter <span class="op">=</span> <span class="fl">2000</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compare estimates across priors</span></span>
+<span><span class="va">sensitivity</span><span class="op">$</span><span class="va">comparison</span></span>
+<span></span>
+<span><span class="co"># View robustness summary</span></span>
+<span><span class="va">sensitivity</span><span class="op">$</span><span class="va">sensitivity_summary</span><span class="op">$</span><span class="va">robustness_interpretation</span></span></code></pre></div>
+<p>Or specify custom prior scenarios:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  skeptical <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    prior_mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>    prior_tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"half_cauchy"</span>, scale <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  optimistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    prior_mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    prior_tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"half_cauchy"</span>, scale <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sensitivity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prior_sensitivity_analysis.html">prior_sensitivity_analysis</a></span><span class="op">(</span></span>
+<span>  yi <span class="op">=</span> <span class="va">yi</span>,</span>
+<span>  sei <span class="op">=</span> <span class="va">sei</span>,</span>
+<span>  effect_measure <span class="op">=</span> <span class="st">"hr"</span>,</span>
+<span>  prior_scenarios <span class="op">=</span> <span class="va">custom_scenarios</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="iqwig-compliant-reporting">IQWiG-Compliant Reporting<a class="anchor" aria-label="anchor" href="#iqwig-compliant-reporting"></a>
+</h3>
+<p>The [<code><a href="../reference/format_bayesian_result_iqwig.html">format_bayesian_result_iqwig()</a></code>] function formats
+Bayesian results for German HTA submissions:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Format for IQWiG submission</span></span>
+<span><span class="va">formatted</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_bayesian_result_iqwig.html">format_bayesian_result_iqwig</a></span><span class="op">(</span></span>
+<span>  <span class="va">bayes_result</span>,</span>
+<span>  locale <span class="op">=</span> <span class="st">"de"</span>  <span class="co"># German locale</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># View formatted components</span></span>
+<span><span class="va">formatted</span><span class="op">$</span><span class="va">estimate</span>      <span class="co"># "0.790"</span></span>
+<span><span class="va">formatted</span><span class="op">$</span><span class="va">ci</span>           <span class="co"># "[0.712; 0.877]"</span></span>
+<span><span class="va">formatted</span><span class="op">$</span><span class="va">probability</span>   <span class="co"># "P(HR &lt; 1) = 98.5%"</span></span>
+<span><span class="va">formatted</span><span class="op">$</span><span class="va">interpretation</span> <span class="co"># Complete interpretation</span></span>
+<span></span>
+<span><span class="co"># Export full formatted text</span></span>
+<span><span class="va">formatted</span><span class="op">$</span><span class="va">full_text</span></span></code></pre></div>
+<p>The [<code><a href="../reference/create_bayesian_forest_plot_iqwig.html">create_bayesian_forest_plot_iqwig()</a></code>] function
+creates IQWiG-compliant forest plots:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create IQWiG-formatted forest plot</span></span>
+<span><span class="va">study_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  yi <span class="op">=</span> <span class="va">yi</span>,</span>
+<span>  sei <span class="op">=</span> <span class="va">sei</span>,</span>
+<span>  study_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Study"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">forest_iqwig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_bayesian_forest_plot_iqwig.html">create_bayesian_forest_plot_iqwig</a></span><span class="op">(</span></span>
+<span>  <span class="va">bayes_result</span>,</span>
+<span>  study_data <span class="op">=</span> <span class="va">study_data</span>,</span>
+<span>  locale <span class="op">=</span> <span class="st">"de"</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"Behandlungseffekt (HR)"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">forest_iqwig</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Note:</strong> Bayesian meta-analysis requires the
 <code>brms</code> package and a working Stan installation. Install with
 <code>install.packages("brms")</code>. For users without brms, the
-frequentist <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code> function provides an
+frequentist [<code><a href="../reference/meta_analysis.html">meta_analysis()</a></code>] function provides an
 alternative.</p>
 <p>Advantages of the Bayesian approach include:</p>
 <ul>
@@ -407,79 +604,100 @@ statements</li>
 <li>Better handling of small sample sizes</li>
 </ul>
 </div>
+</div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
 <p>pharmhand provides a complete toolkit for evidence synthesis:</p>
 <table class="table">
+<colgroup>
+<col width="52%">
+<col width="47%">
+</colgroup>
 <thead><tr class="header">
 <th>Function</th>
 <th>Purpose</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code><a href="../reference/meta_analysis.html">meta_analysis()</a></code></td>
+<td>[<code><a href="../reference/meta_analysis.html">meta_analysis()</a></code>]</td>
 <td>Fixed/random-effects meta-analysis</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code></td>
+<td>[<code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code>]</td>
 <td>Q, I², τ² statistics</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/leave_one_out.html">leave_one_out()</a></code></td>
+<td>[<code><a href="../reference/leave_one_out.html">leave_one_out()</a></code>]</td>
 <td>Sensitivity analysis</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/create_meta_forest_plot.html">create_meta_forest_plot()</a></code></td>
+<td>[<code><a href="../reference/create_meta_forest_plot.html">create_meta_forest_plot()</a></code>]</td>
 <td>Forest plot visualization</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/create_funnel_plot.html">create_funnel_plot()</a></code></td>
+<td>[<code><a href="../reference/create_funnel_plot.html">create_funnel_plot()</a></code>]</td>
 <td>Publication bias assessment</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/eggers_test.html">eggers_test()</a></code></td>
+<td>[<code><a href="../reference/eggers_test.html">eggers_test()</a></code>]</td>
 <td>Funnel asymmetry test</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code></td>
+<td>[<code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code>]</td>
 <td>Bias adjustment</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/indirect_comparison.html">indirect_comparison()</a></code></td>
+<td>[<code><a href="../reference/indirect_comparison.html">indirect_comparison()</a></code>]</td>
 <td>Bucher indirect comparison</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/compare_direct_indirect.html">compare_direct_indirect()</a></code></td>
+<td>[<code><a href="../reference/compare_direct_indirect.html">compare_direct_indirect()</a></code>]</td>
 <td>Test direct vs indirect consistency</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/network_meta.html">network_meta()</a></code></td>
+<td>[<code><a href="../reference/network_meta.html">network_meta()</a></code>]</td>
 <td>Network meta-analysis</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/create_network_plot.html">create_network_plot()</a></code></td>
+<td>[<code><a href="../reference/create_network_plot.html">create_network_plot()</a></code>]</td>
 <td>Network geometry</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/calculate_sucra.html">calculate_sucra()</a></code></td>
+<td>[<code><a href="../reference/calculate_sucra.html">calculate_sucra()</a></code>]</td>
 <td>Treatment rankings</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/create_league_table.html">create_league_table()</a></code></td>
+<td>[<code><a href="../reference/create_league_table.html">create_league_table()</a></code>]</td>
 <td>Pairwise comparisons</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code></td>
+<td>[<code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code>]</td>
 <td>Transitivity check</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/node_splitting.html">node_splitting()</a></code></td>
+<td>[<code><a href="../reference/node_splitting.html">node_splitting()</a></code>]</td>
 <td>NMA inconsistency testing</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code></td>
+<td>[<code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code>]</td>
 <td>Bayesian meta-analysis (via brms)</td>
+</tr>
+<tr class="odd">
+<td>[<code><a href="../reference/create_bayesian_trace_plots.html">create_bayesian_trace_plots()</a></code>]</td>
+<td>MCMC trace plot visualization</td>
+</tr>
+<tr class="even">
+<td>[<code><a href="../reference/prior_sensitivity_analysis.html">prior_sensitivity_analysis()</a></code>]</td>
+<td>Prior sensitivity analysis</td>
+</tr>
+<tr class="odd">
+<td>[<code><a href="../reference/format_bayesian_result_iqwig.html">format_bayesian_result_iqwig()</a></code>]</td>
+<td>IQWiG formatting for Bayesian results</td>
+</tr>
+<tr class="even">
+<td>[<code><a href="../reference/create_bayesian_forest_plot_iqwig.html">create_bayesian_forest_plot_iqwig()</a></code>]</td>
+<td>IQWiG-compliant forest plots</td>
 </tr>
 </tbody>
 </table>

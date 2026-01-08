@@ -122,3 +122,19 @@ A list with components:
 - n_events:
 
   Total number of deterioration events
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Create time-to-deterioration analysis
+ttd <- create_ttd_analysis(
+  data = pro_data,
+  threshold = 5,
+  direction = "decrease"
+)
+
+# Access summary table
+ttd$summary_table
+} # }
+```

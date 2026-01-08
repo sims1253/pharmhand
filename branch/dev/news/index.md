@@ -1,6 +1,35 @@
 # Changelog
 
-## pharmhand 0.3.1.9000
+## pharmhand 0.3.3.9000
+
+### Breaking Changes
+
+#### Source File Reorganization
+
+- **Efficacy module split**: `R/efficacy_tables.R` has been split into
+  focused modules:
+  - `R/efficacy_primary.R` - Primary endpoint tables
+    ([`create_primary_endpoint_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_primary_endpoint_table.md))
+  - `R/efficacy_cfb.R` - Change from baseline tables
+  - `R/efficacy_lab.R` - Laboratory tables
+  - `R/efficacy_tte.R` - Time-to-event tables
+  - `R/efficacy_responder.R` - Responder analysis tables
+  - `R/efficacy_subgroup.R` - Subgroup analysis tables
+- **Safety module split**: `R/safety_tables.R` has been split into
+  focused modules:
+  - `R/safety_summary.R` - AE summary tables
+    ([`create_ae_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_ae_summary_table.md))
+  - `R/safety_comparison.R` - AE comparison tables
+  - `R/safety_hierarchy.R` - SOC/PT hierarchy tables
+  - `R/safety_tte.R` - Safety time-to-event analysis
+  - `R/safety_exposure.R` - Exposure-adjusted analysis
+- **Migration guidance**: Users who previously sourced these files
+  directly should:
+  - Use the package namespace (e.g.,
+    [`pharmhand::create_primary_endpoint_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_primary_endpoint_table.md))
+  - Or source the new module files (e.g.,
+    `source('R/efficacy_primary.R')`)
+  - Update any direct imports to reference the new module names
 
 ### Bug Fixes
 
@@ -36,12 +65,27 @@
   [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md),
   and
   [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)
+- Added `length(yi) == length(sei)` validation in
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
+  and
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
+- Added `anyNA(yi)` check in
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/branch/dev/reference/eggers_test.md)
+  returning NA-filled result with clear interpretation
+- Added `anyNA(yi)` check in
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/branch/dev/reference/trim_and_fill.md)
+  with error listing invalid indices
 
 #### Code Quality
 
 - Changed [`stop()`](https://rdrr.io/r/base/stop.html) to `ph_abort()`
   in example script for consistent error handling
 - Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd
+- Added `:=` import from rlang to fix undefined global function warning
+- Fixed
+  [`create_mean_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_mean_plot.md)
+  n calculation to count non-missing values
+- Added guards for CI computation when n \<= 1 to avoid Inf values
 
 #### Plotting Fixes
 
@@ -60,6 +104,32 @@
   division by zero in `safety_summary.R` by adding helper function
   applied to 9 locations
 
+#### Bayesian Meta-Analysis Fixes
+
+- Fixed
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)
+  to use
+  [`brms::neff_ratio()`](https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html)
+  instead of non-exported `brms::ess_bulk()`/`brms::ess_tail()`
+- Fixed
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)
+  to compute BFMI from nuts_params energy values
+- Fixed
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bayesian_meta_analysis.md)
+  to use
+  [`brms::nuts_params()`](https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html)
+  for divergent transitions instead of accessing internal
+  `fit$fit@sim$divergent__`
+- Added `tryCatch` wrapper around
+  [`brms::brm()`](https://paulbuerkner.com/brms/reference/brm.html)
+  calls for better error handling
+- Changed all brms tests to use `cores = 1` to avoid parallel rstan
+  issues in CI
+- Added `bayesplot` to Suggests, removed direct `rstan` dependency
+- Fixed roxygen documentation to avoid `\describe{}` block Rd parsing
+  issues
+- Added brms test caching helper to speed up test suite
+
 #### Documentation
 
 - Added [@title](https://github.com/title) tags and completed
@@ -76,13 +146,12 @@
 
 - Refactored test-plotting_forest.R, test-efficacy_tte.R, and
   test-efficacy_subgroup.R to use shared test fixtures
-- Added documentation examples to exported functions in efficacy and
+- Included documentation examples to exported functions in efficacy and
   safety modules
 - Updated `test-meta_bayesian.R` with 8-study test data and
   `adapt_delta = 0.99` to prevent divergent transitions
-- Added [`set.seed()`](https://rdrr.io/r/base/Random.html) to 11 tests
-  in `test-pro-analysis.R`
-- Added [`set.seed()`](https://rdrr.io/r/base/Random.html) to
+- Seeded RNG in 11 tests in `test-pro-analysis.R`
+- Applied [`set.seed()`](https://rdrr.io/r/base/Random.html) to
   `test-efficacy_tte.R` before sample() call
 - Removed duplicate tests in `test-efficacy_responder.R` and
   `test-efficacy_subgroup.R`
