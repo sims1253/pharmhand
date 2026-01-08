@@ -147,7 +147,7 @@ nma_data <- data.frame(
 )
 
 nma <- network_meta(nma_data, effect_measure = "hr")
-nma$comparisons
+nma@comparisons
 ```
 
 ### Network Geometry Plot
