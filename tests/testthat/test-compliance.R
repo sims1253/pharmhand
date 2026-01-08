@@ -1,8 +1,5 @@
 # Tests for G-BA compliance checks
 
-library(testthat)
-library(pharmhand)
-
 test_that("check_gba_compliance passes for valid data.frame", {
 	df <- data.frame(Statistic = "n", Value = 10)
 	res <- check_gba_compliance(df, strict = FALSE, require_theme = FALSE)

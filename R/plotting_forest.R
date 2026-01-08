@@ -76,6 +76,14 @@ create_forest_plot <- function(
 ) {
 	endpoint_type <- match.arg(endpoint_type)
 
+	# Validate conf_level
+	if (!is.numeric(conf_level) || length(conf_level) != 1 || is.na(conf_level)) {
+		ph_abort("'conf_level' must be a single numeric value", call. = FALSE)
+	}
+	if (conf_level <= 0 || conf_level >= 1) {
+		ph_abort("'conf_level' must be strictly between 0 and 1", call. = FALSE)
+	}
+
 	# Get filtered data
 	df <- get_filtered_data(data)
 	trt_var_actual <- get_trt_var(data, default = trt_var)

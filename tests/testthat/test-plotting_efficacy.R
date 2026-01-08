@@ -2,9 +2,6 @@
 # Tests for create_mean_plot, create_spider_plot
 # Source: R/plotting_efficacy.R
 
-library(testthat)
-library(pharmhand)
-
 test_that("create_mean_plot handles missing group_var", {
 	set.seed(123)
 	data <- data.frame(
@@ -49,13 +46,7 @@ test_that("create_mean_plot with custom confidence level", {
 })
 
 test_that("create_mean_plot with show_points", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(1:20, each = 2),
-		visit = rep(c("V1", "V2"), 20),
-		value = rnorm(40, 10, 2),
-		group = rep(c("A", "B"), 20)
-	)
+	data <- create_mock_mean_data(n_subjects = 20, include_group = TRUE)
 
 	plot <- create_mean_plot(
 		data = data,
@@ -86,13 +77,7 @@ test_that("create_mean_plot without show_n", {
 })
 
 test_that("create_mean_plot with custom parameters", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(1:20, each = 2),
-		visit = rep(c("V1", "V2"), 20),
-		value = rnorm(40, 10, 2),
-		group = rep(c("A", "B"), 20)
-	)
+	data <- create_mock_mean_data(n_subjects = 20, include_group = TRUE)
 
 	plot <- create_mean_plot(
 		data = data,
@@ -114,12 +99,10 @@ test_that("create_mean_plot with custom parameters", {
 })
 
 test_that("create_spider_plot handles missing group_var", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:20), each = 6),
-		AVISITN = rep(0:5, 20),
-		PCHG = c(replicate(20, cumsum(c(0, rnorm(5, mean = -5, sd = 15))))),
-		stringsAsFactors = FALSE
+	data <- create_mock_spider_data(
+		n_subjects = 20,
+		n_visits = 6,
+		use_cumsum = TRUE
 	)
 
 	plot <- create_spider_plot(
@@ -133,12 +116,10 @@ test_that("create_spider_plot handles missing group_var", {
 })
 
 test_that("create_spider_plot highlights subjects", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:20), each = 4),
-		AVISITN = rep(0:3, 20),
-		PCHG = rnorm(80, 0, 20),
-		TRT01P = rep(c("Treatment", "Placebo"), each = 40)
+	data <- create_mock_spider_data(
+		n_subjects = 20,
+		n_visits = 4,
+		include_trt = TRUE
 	)
 
 	plot <- create_spider_plot(
@@ -153,12 +134,7 @@ test_that("create_spider_plot highlights subjects", {
 })
 
 test_that("create_spider_plot with only reference line", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
-		AVISITN = rep(0:3, 10),
-		PCHG = rnorm(40, 0, 20)
-	)
+	data <- create_mock_spider_data(n_subjects = 10, n_visits = 4)
 
 	plot <- create_spider_plot(
 		data = data,
@@ -171,12 +147,7 @@ test_that("create_spider_plot with only reference line", {
 })
 
 test_that("create_spider_plot with custom alpha", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
-		AVISITN = rep(0:3, 10),
-		PCHG = rnorm(40, 0, 20)
-	)
+	data <- create_mock_spider_data(n_subjects = 10, n_visits = 4)
 
 	plot_low <- create_spider_plot(
 		data = data,
@@ -197,12 +168,7 @@ test_that("create_spider_plot with custom alpha", {
 })
 
 test_that("create_spider_plot with custom line_size", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
-		AVISITN = rep(0:3, 10),
-		PCHG = rnorm(40, 0, 20)
-	)
+	data <- create_mock_spider_data(n_subjects = 10, n_visits = 4)
 
 	plot <- create_spider_plot(
 		data = data,
@@ -215,11 +181,10 @@ test_that("create_spider_plot with custom line_size", {
 })
 
 test_that("create_spider_plot handles missing values", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
-		AVISITN = rep(0:3, 10),
-		PCHG = c(rnorm(35, 0, 20), rep(NA, 5))
+	data <- create_mock_spider_data(
+		n_subjects = 10,
+		n_visits = 4,
+		include_na = TRUE
 	)
 
 	plot <- create_spider_plot(
@@ -232,12 +197,7 @@ test_that("create_spider_plot handles missing values", {
 })
 
 test_that("create_spider_plot with custom labels", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
-		AVISITN = rep(0:3, 10),
-		PCHG = rnorm(40, 0, 20)
-	)
+	data <- create_mock_spider_data(n_subjects = 10, n_visits = 4)
 
 	plot <- create_spider_plot(
 		data = data,
@@ -253,12 +213,7 @@ test_that("create_spider_plot with custom labels", {
 })
 
 test_that("create_spider_plot with multiple threshold lines", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
-		AVISITN = rep(0:3, 10),
-		PCHG = rnorm(40, 0, 20)
-	)
+	data <- create_mock_spider_data(n_subjects = 10, n_visits = 4)
 
 	plot <- create_spider_plot(
 		data = data,
@@ -272,32 +227,25 @@ test_that("create_spider_plot with multiple threshold lines", {
 })
 
 test_that("create_spider_plot with groups and colors", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:20), each = 4),
-		AVISITN = rep(0:3, 20),
-		PCHG = rnorm(80, 0, 20),
-		TRT = rep(c("A", "B"), 40)
+	data <- create_mock_spider_data(
+		n_subjects = 20,
+		n_visits = 4,
+		include_trt = TRUE
 	)
 
 	plot <- create_spider_plot(
 		data = data,
 		x_var = "AVISITN",
 		y_var = "PCHG",
-		group_var = "TRT",
-		palette = c("A" = "red", "B" = "blue")
+		group_var = "TRT01P",
+		palette = c("Treatment" = "red", "Placebo" = "blue")
 	)
 
 	expect_s7_class(plot, ClinicalPlot)
 })
 
 test_that("create_spider_plot with custom base_size", {
-	set.seed(123)
-	data <- data.frame(
-		USUBJID = rep(paste0("SUBJ", 1:10), each = 4),
-		AVISITN = rep(0:3, 10),
-		PCHG = rnorm(40, 0, 20)
-	)
+	data <- create_mock_spider_data(n_subjects = 10, n_visits = 4)
 
 	plot <- create_spider_plot(
 		data = data,

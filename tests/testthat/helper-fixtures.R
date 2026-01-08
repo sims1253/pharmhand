@@ -344,3 +344,467 @@ create_mock_meta_studies <- function(k = 5) {
 		stringsAsFactors = FALSE
 	)
 }
+
+#' Create test data for time-to-first-AE analysis
+#'
+#' @return A list with adsl and adae data frames for time-to-first-AE testing
+create_time_to_first_ae_test_data <- function() {
+	adsl <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "B", "B"),
+		SAFFL = c("Y", "Y", "Y", "Y"),
+		TRTDURD = c(10, 10, 10, 10),
+		stringsAsFactors = FALSE
+	)
+
+	adae <- data.frame(
+		USUBJID = c("01", "03", "04"),
+		TRTEMFL = c("Y", "Y", "Y"),
+		AEBODSYS = c("Infections", "Infections", "Cardiac"),
+		ASTDY = c(3, 5, 8),
+		stringsAsFactors = FALSE
+	)
+
+	list(adsl = adsl, adae = adae)
+}
+
+#' Create test data for safety comparison analysis
+#'
+#' @return A list with adsl and adae data frames with known incidences for
+#'   testing
+create_comparison_test_data <- function() {
+	# Create ADSL with 100 subjects per arm for easy percentage calculations
+	adsl <- data.frame(
+		USUBJID = sprintf("SUBJ%03d", 1:200),
+		TRT01P = rep(c("Placebo", "Active"), each = 100),
+		SAFFL = rep("Y", 200),
+		stringsAsFactors = FALSE
+	)
+
+	# Create ADAE with known incidences:
+	# - Headache: 20% in Active (20/100), 10% in Placebo (10/100)
+	# - Nausea: 15% in Active (15/100), 15% in Placebo (15/100)
+	# - Fatigue: 5% in Active (5/100), 10% in Placebo (10/100)
+	# - Rash: 8% in Active (8/100), 0% in Placebo (0/100) - tests zero incidence
+	adae <- rbind(
+		# Headache - SOC: Nervous system
+		data.frame(
+			USUBJID = sprintf("SUBJ%03d", 1:10),
+			TRT01P = "Placebo",
+			TRTEMFL = "Y",
+			AEBODSYS = "Nervous system disorders",
+			AEDECOD = "Headache",
+			stringsAsFactors = FALSE
+		),
+		data.frame(
+			USUBJID = sprintf("SUBJ%03d", 101:120),
+			TRT01P = "Active",
+			TRTEMFL = "Y",
+			AEBODSYS = "Nervous system disorders",
+			AEDECOD = "Headache",
+			stringsAsFactors = FALSE
+		),
+		# Nausea - SOC: Gastrointestinal
+		data.frame(
+			USUBJID = sprintf("SUBJ%03d", 11:25),
+			TRT01P = "Placebo",
+			TRTEMFL = "Y",
+			AEBODSYS = "Gastrointestinal disorders",
+			AEDECOD = "Nausea",
+			stringsAsFactors = FALSE
+		),
+		data.frame(
+			USUBJID = sprintf("SUBJ%03d", 121:135),
+			TRT01P = "Active",
+			TRTEMFL = "Y",
+			AEBODSYS = "Gastrointestinal disorders",
+			AEDECOD = "Nausea",
+			stringsAsFactors = FALSE
+		),
+		# Fatigue - SOC: General disorders
+		data.frame(
+			USUBJID = sprintf("SUBJ%03d", 26:35),
+			TRT01P = "Placebo",
+			TRTEMFL = "Y",
+			AEBODSYS = "General disorders",
+			AEDECOD = "Fatigue",
+			stringsAsFactors = FALSE
+		),
+		data.frame(
+			USUBJID = sprintf("SUBJ%03d", 136:140),
+			TRT01P = "Active",
+			TRTEMFL = "Y",
+			AEBODSYS = "General disorders",
+			AEDECOD = "Fatigue",
+			stringsAsFactors = FALSE
+		),
+		# Rash - SOC: Skin disorders (only in Active)
+		data.frame(
+			USUBJID = sprintf("SUBJ%03d", 141:148),
+			TRT01P = "Active",
+			TRTEMFL = "Y",
+			AEBODSYS = "Skin and subcutaneous tissue disorders",
+			AEDECOD = "Rash",
+			stringsAsFactors = FALSE
+		)
+	)
+
+	list(adsl = adsl, adae = adae)
+}
+
+#' Create test configuration for config API tests
+#'
+#' @return A list representing a valid configuration for testing
+create_test_config <- function() {
+	# Note: We use priority = 0L explicitly to avoid integer type issues
+	list(
+		subgroups = list(
+			test_sg = list(
+				variable = "TESTVAR",
+				labels = list(A = "Alpha", B = "Beta"),
+				order = NULL,
+				filter_values = NULL
+			)
+		),
+		populations = list(
+			test_pop = list(
+				variable = "POPVAR",
+				label = "Test Population",
+				description = "A test population",
+				flag_value = "Y"
+			)
+		),
+		soc_config = list(
+			variable = "AEBODSYS",
+			include_all = TRUE,
+			custom_order = NULL,
+			sort_by = "frequency",
+			min_subjects = 1,
+			top_n = NULL
+		),
+		pt_config = list(
+			variable = "AEDECOD",
+			include_all = TRUE,
+			sort_by = "frequency",
+			min_subjects = 1,
+			top_n_per_soc = NULL,
+			show_pt_codes = FALSE
+		),
+		performance = list(
+			docx = list(batch_size = 50)
+		),
+		report_types = list(),
+		plots = list(),
+		tables = list(),
+		validation = list()
+	)
+}
+
+# ==============================================================================
+# Efficacy Plotting Test Fixtures
+# ==============================================================================
+
+#' Create mock spider plot data for efficacy tests
+#'
+#' Creates data for spider plot testing with configurable parameters.
+#' Used in test-plotting_efficacy.R
+#'
+#' @param n_subjects Integer specifying number of subjects. Default: 20
+#' @param n_visits Integer specifying number of visits per subject. Default: 4
+#' @param include_trt Logical indicating whether to include TRT01P column.
+#'   Default: FALSE
+#' @param use_cumsum Logical indicating whether to use cumulative sum for PCHG.
+#'   Default: FALSE
+#' @param include_na Logical indicating whether to include NA values at end.
+#'   Default: FALSE
+#' @return A data frame with mock spider plot data
+create_mock_spider_data <- function(
+	n_subjects = 20,
+	n_visits = 4,
+	include_trt = FALSE,
+	use_cumsum = FALSE,
+	include_na = FALSE
+) {
+	set.seed(123)
+	subjects <- sprintf("SUBJ%03d", 1:n_subjects)
+	avisitn <- 0:(n_visits - 1)
+
+	if (use_cumsum) {
+		# Generate cumulative percent change values
+		pchg_list <- replicate(
+			n_subjects,
+			cumsum(c(0, rnorm(n_visits - 1, mean = -5, sd = 15))),
+			simplify = FALSE
+		)
+		pchg <- unlist(pchg_list)
+	} else {
+		pchg <- rnorm(n_subjects * n_visits, 0, 20)
+	}
+
+	if (include_na) {
+		pchg[(length(pchg) - 4):length(pchg)] <- NA
+	}
+
+	data <- data.frame(
+		USUBJID = rep(subjects, each = n_visits),
+		AVISITN = rep(avisitn, n_subjects),
+		PCHG = pchg,
+		stringsAsFactors = FALSE
+	)
+
+	if (include_trt) {
+		data$TRT01P <- rep(
+			c("Treatment", "Placebo"),
+			each = n_visits * n_subjects / 2
+		)
+	}
+
+	data
+}
+
+#' Create mock mean plot data for efficacy tests
+#'
+#' Creates data for mean plot testing with optional group variable.
+#' Used in test-plotting_efficacy.R
+#'
+#' @param n_subjects Integer specifying number of subjects. Default: 20
+#' @param include_group Logical indicating whether to include group column.
+#'   Default: FALSE
+#' @return A data frame with mock mean plot data
+create_mock_mean_data <- function(n_subjects = 20, include_group = FALSE) {
+	set.seed(123)
+
+	data <- data.frame(
+		USUBJID = rep(1:n_subjects, each = 2),
+		visit = rep(c("V1", "V2"), n_subjects),
+		value = rnorm(n_subjects * 2, 10, 2),
+		stringsAsFactors = FALSE
+	)
+
+	if (include_group) {
+		data$group <- rep(c("A", "B"), n_subjects)
+	}
+
+	data
+}
+
+# ==============================================================================
+# Survival Plotting Test Fixtures
+# ==============================================================================
+
+#' Create mock KM plot data
+#'
+#' Creates data for Kaplan-Meier plot testing.
+#' Used in test-plotting_survival.R
+#'
+#' @param n Integer specifying number of subjects. Default: 40
+#' @param rate Numeric specifying rate for rexp. Default: 0.05
+#' @param prob_event Numeric specifying probability of event. Default: 0.7
+#' @param use_adam_names Logical indicating whether to use ADaM column names
+#'   (AVAL, CNSR, TRT01P). Default: TRUE
+#' @return A data frame with mock KM plot data
+create_mock_km_data <- function(
+	n = 40,
+	rate = 0.05,
+	prob_event = 0.7,
+	use_adam_names = TRUE
+) {
+	set.seed(42)
+
+	if (use_adam_names) {
+		data.frame(
+			USUBJID = sprintf("SUBJ%02d", 1:n),
+			AVAL = rexp(n, rate),
+			CNSR = sample(
+				0:1,
+				n,
+				replace = TRUE,
+				prob = c(prob_event, 1 - prob_event)
+			),
+			TRT01P = rep(c("Placebo", "Active"), each = n / 2),
+			stringsAsFactors = FALSE
+		)
+	} else {
+		data.frame(
+			time = rexp(n, rate),
+			event = sample(
+				0:1,
+				n,
+				replace = TRUE,
+				prob = c(prob_event, 1 - prob_event)
+			),
+			trt = rep(c("A", "B"), each = n / 2),
+			stringsAsFactors = FALSE
+		)
+	}
+}
+
+# ==============================================================================
+# Responder Analysis Test Fixtures
+# ==============================================================================
+
+#' Create mock responder analysis data
+#'
+#' Creates data for responder analysis table testing.
+#' Used in test-efficacy_responder.R
+#'
+#' @param n Integer specifying number of subjects. Default: 40
+#' @param zero_ref Logical indicating whether all reference subjects are
+#'   non-responders. Default: FALSE
+#' @param full_trt Logical indicating whether all treatment subjects are
+#'   responders. Default: FALSE
+#' @param ref_group Character specifying reference group. Default: "Placebo"
+#' @return A data frame with mock responder analysis data
+create_mock_responder_data <- function(
+	n = 40,
+	zero_ref = FALSE,
+	full_trt = FALSE,
+	ref_group = "Placebo"
+) {
+	set.seed(42)
+
+	avalc <- sample(c("CR", "PR", "SD", "PD"), n, replace = TRUE)
+
+	if (zero_ref) {
+		# All placebo subjects are non-responders
+		n_ref <- n / 2
+		avalc[1:n_ref] <- sample(c("SD", "PD"), n_ref, replace = TRUE)
+	}
+
+	if (full_trt) {
+		# All treatment subjects are responders
+		n_trt <- n / 2
+		avalc[(n_trt + 1):n] <- rep("CR", n_trt)
+	}
+
+	data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:n),
+		TRT01P = rep(c(ref_group, "Active"), each = n / 2),
+		AVALC = avalc,
+		stringsAsFactors = FALSE
+	)
+}
+
+# ==============================================================================
+# Subgroup Analysis Test Fixtures
+# ==============================================================================
+
+#' Create mock small subgroup data
+#'
+#' Creates minimal test data for subgroup analysis with small sample sizes.
+#' Useful for testing edge cases and warnings.
+#' Used in test-efficacy_subgroup.R
+#'
+#' @param n Integer specifying number of subjects. Default: 4
+#' @param include_sex Logical indicating whether to include SEX column.
+#'   Default: TRUE
+#' @return A data frame with mock small subgroup data
+create_mock_small_subgroup_data <- function(n = 4, include_sex = TRUE) {
+	set.seed(42)
+
+	data <- data.frame(
+		USUBJID = c("001", "002", "003", "004"),
+		TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+		AVALC = c("CR", "SD", "CR", "PR"),
+		stringsAsFactors = FALSE
+	)
+
+	if (include_sex) {
+		data$SEX <- c("M", "F", "M", "F")
+	}
+
+	data
+}
+
+# ==============================================================================
+# TTE Analysis Test Fixtures
+# ==============================================================================
+
+#' Create mock TTE summary data
+#'
+#' Creates TTE data for summary table testing.
+#' Used in test-efficacy_tte.R
+#'
+#' @param n Integer specifying number of subjects. Default: 40
+#' @param include_subject_id Logical indicating whether to include USUBJID.
+#'   Default: TRUE
+#' @return A data frame with mock TTE data
+create_mock_tte_summary_data <- function(n = 40, include_subject_id = TRUE) {
+	set.seed(42)
+
+	data <- data.frame(
+		TRT01P = rep(c("Placebo", "Active"), each = n / 2),
+		AVAL = c(rexp(n / 2, 0.05), rexp(n / 2, 0.03)),
+		CNSR = sample(0:1, n, replace = TRUE, prob = c(0.7, 0.3)),
+		stringsAsFactors = FALSE
+	)
+
+	if (include_subject_id) {
+		data$USUBJID <- sprintf("SUBJ%02d", 1:n)
+		# Reorder columns
+		data <- data[, c("USUBJID", "TRT01P", "AVAL", "CNSR")]
+	}
+
+	data
+}
+
+# ==============================================================================
+# Forest Plot Test Fixtures
+# ==============================================================================
+
+#' Create mock forest plot binary data
+#'
+#' Creates data for forest plot testing with binary endpoints.
+#' Used in test-plotting_forest.R
+#'
+#' @param n Integer specifying number of subjects. Default: 60
+#' @param response_values Character vector specifying responder values.
+#'   Default: c("CR", "PR")
+#' @return A data frame with mock forest plot binary data
+create_mock_forest_binary_data <- function(
+	n = 60,
+	response_values = c("CR", "PR")
+) {
+	set.seed(42)
+
+	data.frame(
+		USUBJID = sprintf("SUBJ%02d", 1:n),
+		TRT01P = rep(c("Placebo", "Active"), each = n / 2),
+		AVALC = sample(c("CR", "PR", "SD", "PD"), n, replace = TRUE),
+		SEX = rep(c("M", "F"), n / 2),
+		stringsAsFactors = FALSE
+	)
+}
+
+# ==============================================================================
+# AE Summary Test Fixtures
+# ==============================================================================
+
+#' Create mock AE summary data
+#'
+#' Creates minimal test data for AE summary table testing.
+#' Used in test-safety_summary.R
+#'
+#' @param n Integer specifying number of subjects. Default: 3
+#' @return A list with adae and adsl data frames
+create_mock_ae_summary_data <- function(n = 3) {
+	adae <- data.frame(
+		USUBJID = c("01", "02", "03"),
+		TRT01P = c("A", "A", "B"),
+		TRTEMFL = c("Y", "Y", "Y"),
+		AEREL = c("RELATED", "NONE", "POSSIBLE"),
+		AESER = c("N", "N", "Y"),
+		AEACN = c("NONE", "DRUG WITHDRAWN", "NONE"),
+		AEOUT = c("RECOVERED", "RECOVERED", "FATAL"),
+		stringsAsFactors = FALSE
+	)
+
+	adsl <- data.frame(
+		USUBJID = c("01", "02", "03"),
+		TRT01P = c("A", "A", "B"),
+		SAFFL = rep("Y", n),
+		stringsAsFactors = FALSE
+	)
+
+	list(adae = adae, adsl = adsl)
+}

@@ -31,6 +31,8 @@ meta-analysis (NMA), supporting German HTA requirements (G-BA/IQWiG).
 
 ### Basic Meta-Analysis
 
+The [`meta_analysis()`] function performs fixed or random effects meta-analysis.
+
 ```{r meta-basic}
 # Five studies with hazard ratios
 yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
@@ -53,6 +55,8 @@ result@heterogeneity$I2
 
 ### Heterogeneity Assessment
 
+The [`calculate_heterogeneity()`] function computes heterogeneity statistics including Q, I², and τ².
+
 ```{r heterogeneity}
 het <- calculate_heterogeneity(yi, sei, method = "REML")
 het$Q
@@ -63,6 +67,8 @@ het$interpretation
 
 ### Leave-One-Out Sensitivity Analysis
 
+The [`leave_one_out()`] function performs leave-one-out sensitivity analysis to identify influential studies.
+
 ```{r loo}
 loo <- leave_one_out(result)
 loo$results[, c("excluded_study", "estimate_display", "I2")]
@@ -71,6 +77,8 @@ loo$influential_studies
 
 ### Forest Plot
 
+The [`create_meta_forest_plot()`] function creates forest plots for visualizing meta-analysis results.
+
 ```{r forest, fig.alt="Meta-analysis forest plot"}
 plot <- create_meta_forest_plot(result, title = "Treatment Effect (HR)")
 plot@plot
@@ -78,10 +86,14 @@ plot@plot
 
 ### Funnel Plot and Publication Bias
 
+The [`create_funnel_plot()`] function creates funnel plots to assess publication bias.
+
 ```{r funnel, fig.alt="Funnel plot"}
 funnel <- create_funnel_plot(result, title = "Funnel Plot")
 funnel@plot
 ```
+
+The [`eggers_test()`] function performs Egger's test for funnel plot asymmetry.
 
 ```{r egger}
 egger <- eggers_test(yi = yi, sei = sei)
@@ -91,6 +103,8 @@ egger$interpretation
 
 ### Trim-and-Fill
 
+The [`trim_and_fill()`] function performs trim-and-fill analysis to adjust for publication bias.
+
 ```{r trimfill}
 tf <- trim_and_fill(result)
 tf$n_imputed
@@ -98,6 +112,8 @@ tf$interpretation
 ```
 
 ## Indirect Comparison
+
+The [`indirect_comparison()`] function performs indirect comparisons using the Bucher method.
 
 ```{r indirect}
 # Bucher method: A vs B via common comparator C
@@ -117,6 +133,8 @@ indirect@ci
 
 ## Network Meta-Analysis
 
+The [`network_meta()`] function performs network meta-analysis for multiple treatments.
+
 ### Basic NMA
 
 ```{r nma}
@@ -134,12 +152,16 @@ nma$comparisons
 
 ### Network Geometry Plot
 
+The [`create_network_plot()`] function creates network geometry plots to visualize treatment networks.
+
 ```{r network-plot, fig.alt="Network geometry plot"}
 net_plot <- create_network_plot(nma, title = "Treatment Network")
 net_plot@plot
 ```
 
 ### SUCRA Rankings
+
+The [`calculate_sucra()`] function calculates SUCRA (Surface Under the Cumulative Ranking) scores for treatment rankings.
 
 ```{r sucra}
 sucra <- calculate_sucra(nma)
@@ -149,12 +171,16 @@ sucra$interpretation
 
 ### League Table
 
+The [`create_league_table()`] function creates league tables showing pairwise treatment comparisons.
+
 ```{r league}
 league <- create_league_table(nma)
 league@data
 ```
 
 ### Transitivity Assessment
+
+The [`assess_transitivity()`] function assesses the transitivity assumption in network meta-analysis.
 
 ```{r transitivity}
 chars <- data.frame(
@@ -200,7 +226,11 @@ indirect <- indirect_comparison(
   label_b = "C",
   label_c = "B"
 )
+```
 
+[`compare_direct_indirect()`] compares direct and indirect evidence for consistency.
+
+```{r consistency-compare}
 # Compare direct and indirect evidence
 consistency <- compare_direct_indirect(
   direct_result = direct,
@@ -219,6 +249,8 @@ are consistent, supporting the validity of the indirect comparison.
 
 ### Node-Splitting Analysis
 
+The [`node_splitting()`] function performs node-splitting analysis to assess inconsistency in network meta-analysis.
+
 For network meta-analyses, node-splitting separates direct and indirect
 evidence for each comparison to identify potential inconsistencies:
 
@@ -236,7 +268,7 @@ assumption.
 ## Bayesian Meta-Analysis
 
 For researchers preferring Bayesian inference, pharmhand provides an interface
-to Bayesian meta-analysis using the brms package. This allows specification of
+to Bayesian meta-analysis using the brms package via the [`bayesian_meta_analysis()`] function. This allows specification of
 informative priors and provides full posterior distributions.
 
 ### Basic Bayesian Meta-Analysis
@@ -268,7 +300,7 @@ bayes_result$prob_superior       # P(HR < 0.9)
 
 ### Convergence Diagnostics
 
-The function now automatically reports convergence diagnostics to ensure reliable results:
+The [`bayesian_meta_analysis()`] function now automatically reports convergence diagnostics to ensure reliable results:
 
 ```{r convergence, eval=FALSE}
 # Access convergence diagnostics
@@ -330,7 +362,7 @@ bayes_result$prior_predictive$summary
 
 ### Trace Plots
 
-Visualize MCMC chain convergence:
+The [`create_bayesian_trace_plots()`] function visualizes MCMC chain convergence:
 
 ```{r trace-plot, eval=FALSE}
 # Create combined trace plots
@@ -353,7 +385,7 @@ Good convergence shows:
 
 ### Prior Sensitivity Analysis
 
-Test how results change with different prior specifications:
+The [`prior_sensitivity_analysis()`] function tests how results change with different prior specifications:
 
 ```{r sensitivity, eval=FALSE}
 # Run sensitivity analysis with default scenarios
@@ -396,7 +428,7 @@ sensitivity <- prior_sensitivity_analysis(
 
 ### IQWiG-Compliant Reporting
 
-Format results for German HTA submissions:
+The [`format_bayesian_result_iqwig()`] function formats Bayesian results for German HTA submissions:
 
 ```{r iqwig-format, eval=FALSE}
 # Format for IQWiG submission
@@ -415,7 +447,7 @@ formatted$interpretation # Complete interpretation
 formatted$full_text
 ```
 
-Create IQWiG-compliant forest plots:
+The [`create_bayesian_forest_plot_iqwig()`] function creates IQWiG-compliant forest plots:
 
 ```{r iqwig-forest, eval=FALSE}
 # Create IQWiG-formatted forest plot
@@ -436,7 +468,7 @@ print(forest_iqwig)
 
 **Note:** Bayesian meta-analysis requires the `brms` package and a working
 Stan installation. Install with `install.packages("brms")`. For users without
-brms, the frequentist `meta_analysis()` function provides an alternative.
+brms, the frequentist [`meta_analysis()`] function provides an alternative.
 
 Advantages of the Bayesian approach include:
 
@@ -451,23 +483,23 @@ pharmhand provides a complete toolkit for evidence synthesis:
 
 | Function | Purpose |
 |----------|---------|
-| `meta_analysis()` | Fixed/random-effects meta-analysis |
-| `calculate_heterogeneity()` | Q, I², τ² statistics |
-| `leave_one_out()` | Sensitivity analysis |
-| `create_meta_forest_plot()` | Forest plot visualization |
-| `create_funnel_plot()` | Publication bias assessment |
-| `eggers_test()` | Funnel asymmetry test |
-| `trim_and_fill()` | Bias adjustment |
-| `indirect_comparison()` | Bucher indirect comparison |
-| `compare_direct_indirect()` | Test direct vs indirect consistency |
-| `network_meta()` | Network meta-analysis |
-| `create_network_plot()` | Network geometry |
-| `calculate_sucra()` | Treatment rankings |
-| `create_league_table()` | Pairwise comparisons |
-| `assess_transitivity()` | Transitivity check |
-| `node_splitting()` | NMA inconsistency testing |
-| `bayesian_meta_analysis()` | Bayesian meta-analysis (via brms) |
-| `create_bayesian_trace_plots()` | MCMC trace plot visualization |
-| `prior_sensitivity_analysis()` | Prior sensitivity analysis |
-| `format_bayesian_result_iqwig()` | IQWiG formatting for Bayesian results |
-| `create_bayesian_forest_plot_iqwig()` | IQWiG-compliant forest plots |
+| [`meta_analysis()`] | Fixed/random-effects meta-analysis |
+| [`calculate_heterogeneity()`] | Q, I², τ² statistics |
+| [`leave_one_out()`] | Sensitivity analysis |
+| [`create_meta_forest_plot()`] | Forest plot visualization |
+| [`create_funnel_plot()`] | Publication bias assessment |
+| [`eggers_test()`] | Funnel asymmetry test |
+| [`trim_and_fill()`] | Bias adjustment |
+| [`indirect_comparison()`] | Bucher indirect comparison |
+| [`compare_direct_indirect()`] | Test direct vs indirect consistency |
+| [`network_meta()`] | Network meta-analysis |
+| [`create_network_plot()`] | Network geometry |
+| [`calculate_sucra()`] | Treatment rankings |
+| [`create_league_table()`] | Pairwise comparisons |
+| [`assess_transitivity()`] | Transitivity check |
+| [`node_splitting()`] | NMA inconsistency testing |
+| [`bayesian_meta_analysis()`] | Bayesian meta-analysis (via brms) |
+| [`create_bayesian_trace_plots()`] | MCMC trace plot visualization |
+| [`prior_sensitivity_analysis()`] | Prior sensitivity analysis |
+| [`format_bayesian_result_iqwig()`] | IQWiG formatting for Bayesian results |
+| [`create_bayesian_forest_plot_iqwig()`] | IQWiG-compliant forest plots |

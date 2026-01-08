@@ -1,8 +1,5 @@
 # Tests for create_analysis_meta helper function
 
-library(testthat)
-library(pharmhand)
-
 test_that("create_analysis_meta returns AnalysisMeta object", {
 	meta <- create_analysis_meta()
 

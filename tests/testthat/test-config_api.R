@@ -23,55 +23,6 @@
 # - Accessing nested performance settings
 # - Edge cases like invalid inputs and missing configurations
 
-library(testthat)
-library(pharmhand)
-
-# Helper to create a valid config for testing with integer priorities
-create_test_config <- function() {
-	# Note: We use priority = 0L explicitly to avoid integer type issues
-	list(
-		subgroups = list(
-			test_sg = list(
-				variable = "TESTVAR",
-				labels = list(A = "Alpha", B = "Beta"),
-				order = NULL,
-				filter_values = NULL
-			)
-		),
-		populations = list(
-			test_pop = list(
-				variable = "POPVAR",
-				label = "Test Population",
-				description = "A test population",
-				flag_value = "Y"
-			)
-		),
-		soc_config = list(
-			variable = "AEBODSYS",
-			include_all = TRUE,
-			custom_order = NULL,
-			sort_by = "frequency",
-			min_subjects = 1,
-			top_n = NULL
-		),
-		pt_config = list(
-			variable = "AEDECOD",
-			include_all = TRUE,
-			sort_by = "frequency",
-			min_subjects = 1,
-			top_n_per_soc = NULL,
-			show_pt_codes = FALSE
-		),
-		performance = list(
-			docx = list(batch_size = 50)
-		),
-		report_types = list(),
-		plots = list(),
-		tables = list(),
-		validation = list()
-	)
-}
-
 # ============================================================================
 # parse_config_registry() Tests
 # ============================================================================

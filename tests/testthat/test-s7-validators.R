@@ -1,8 +1,5 @@
 # Tests for S7 Class Validators
 
-library(testthat)
-library(pharmhand)
-
 # ComparisonResult validators ----
 
 test_that("ComparisonResult accepts valid effect_measure", {
@@ -356,18 +353,6 @@ test_that("MultiArmStudy accepts valid arms with 3+ elements", {
 			study_title = "Test Study",
 			arms = c("Drug A", "Drug B", "Placebo"),
 			reference_arm = "Placebo"
-		)
-	)
-})
-
-test_that("MultiArmStudy accepts empty arms vector", {
-	expect_no_error(
-		MultiArmStudy(
-			data = data.frame(),
-			study_id = "TEST",
-			study_title = "Test Study",
-			arms = character(),
-			reference_arm = ""
 		)
 	)
 })

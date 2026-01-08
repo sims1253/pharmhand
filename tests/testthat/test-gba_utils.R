@@ -1,9 +1,6 @@
 # Tests for GBA/AMNOG SMD utilities
 # Tests SMD calculations for baseline balance assessment
 
-library(testthat)
-library(pharmhand)
-
 # =============================================================================
 # Tests for calculate_smd() - Continuous Variables
 # =============================================================================

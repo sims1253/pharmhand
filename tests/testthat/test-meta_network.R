@@ -1,8 +1,5 @@
 # Tests for network meta-analysis functions (R/meta_network.R)
 
-library(testthat)
-library(pharmhand)
-
 # =============================================================================
 # network_meta function tests
 # =============================================================================

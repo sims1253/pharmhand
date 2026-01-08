@@ -14,9 +14,6 @@
 # - Properties are accessible via @
 # - S7 class inheritance works
 
-library(testthat)
-library(pharmhand)
-
 # ============================================================================
 # Configuration (Abstract Base Class) Tests
 # ============================================================================

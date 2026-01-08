@@ -26,13 +26,14 @@ Default: "auto"}
 \value{
 A list with components:
 \describe{
-\item{original}{Original MetaResult object}
-\item{adjusted}{Adjusted MetaResult with imputed studies}
+\item{original}{List with original estimate, confidence interval, and k}
+\item{adjusted}{List with adjusted estimate, confidence interval, and k}
 \item{n_imputed}{Estimated number of missing studies}
 \item{side}{Side where studies were imputed}
 \item{imputed_studies}{Data frame with imputed effects}
 \item{estimator}{Estimator method used}
-\item{summary}{Text summary of the adjustment}
+\item{effect_measure}{Effect measure used}
+\item{interpretation}{Text interpretation of the adjustment}
 }
 }
 \description{

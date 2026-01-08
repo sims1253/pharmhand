@@ -1,8 +1,5 @@
 # Tests for indirect comparison functions (R/meta_indirect.R)
 
-library(testthat)
-library(pharmhand)
-
 # =============================================================================
 # indirect_comparison function tests
 # =============================================================================

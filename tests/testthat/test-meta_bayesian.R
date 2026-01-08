@@ -1,24 +1,5 @@
 # Tests for Bayesian meta-analysis functions (R/meta_bayesian.R)
 
-library(pharmhand)
-
-# Helper to skip if brms/Stan is not fully functional
-skip_if_brms_unavailable <- function() {
-	skip_if_not_installed("brms")
-
-	# Check if brms/Stan backend can actually work
-	tryCatch(
-		{
-			if (!requireNamespace("brms", quietly = TRUE)) {
-				skip("brms not available")
-			}
-		},
-		error = function(e) {
-			skip(paste("brms not functional:", conditionMessage(e)))
-		}
-	)
-}
-
 # =============================================================================
 # bayesian_meta_analysis validation tests
 # =============================================================================

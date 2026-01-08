@@ -2,9 +2,6 @@
 # Tests for create_forest_plot
 # Source: R/plotting_forest.R
 
-library(testthat)
-library(pharmhand)
-
 test_that("create_forest_plot works with TTE data", {
 	skip_if_not_installed("survival")
 	skip_if_not_installed("ggplot2")
@@ -27,14 +24,7 @@ test_that("create_forest_plot works with TTE data", {
 test_that("create_forest_plot works with binary data", {
 	skip_if_not_installed("ggplot2")
 
-	set.seed(42)
-	df <- data.frame(
-		USUBJID = sprintf("SUBJ%02d", 1:60),
-		TRT01P = rep(c("Placebo", "Active"), each = 30),
-		AVALC = sample(c("CR", "PR", "SD", "PD"), 60, replace = TRUE),
-		SEX = rep(c("M", "F"), 30),
-		stringsAsFactors = FALSE
-	)
+	df <- create_mock_forest_binary_data(n = 60)
 
 	p <- create_forest_plot(
 		df,
@@ -61,7 +51,6 @@ test_that("create_forest_plot includes overall estimate", {
 		endpoint_type = "tte"
 	)
 
-	# Check that data includes "Overall" row
 	expect_true(any(p@data$display_label == "Overall"))
 })
 
@@ -79,7 +68,6 @@ test_that("create_forest_plot calculates interaction p-values", {
 		show_interaction = TRUE
 	)
 
-	# interaction_p should be calculated
 	expect_true("interaction_p" %in% names(p@data))
 })
 

@@ -1,26 +1,12 @@
 # Tests for Safety Summary Functions
 # Tests for create_ae_summary_table, create_ae_exposure_table
 
-library(testthat)
-library(pharmhand)
-
 # Tests for the unified create_ae_summary_table() function
 
 test_that("create_ae_summary_table works with type='overview'", {
-	adae <- data.frame(
-		USUBJID = c("01", "02", "03"),
-		TRT01P = c("A", "A", "B"),
-		TRTEMFL = c("Y", "Y", "Y"),
-		AEREL = c("RELATED", "NONE", "POSSIBLE"),
-		AESER = c("N", "N", "Y"),
-		AEACN = c("NONE", "DRUG WITHDRAWN", "NONE"),
-		AEOUT = c("RECOVERED", "RECOVERED", "FATAL")
-	)
-	adsl <- data.frame(
-		USUBJID = c("01", "02", "03"),
-		TRT01P = c("A", "A", "B"),
-		SAFFL = c("Y", "Y", "Y")
-	)
+	data <- create_mock_ae_summary_data(n = 3)
+	adae <- data$adae
+	adsl <- data$adsl
 
 	tbl <- create_ae_summary_table(adae, adsl, type = "overview")
 
@@ -404,7 +390,7 @@ test_that("create_ae_summary_table auto-generates titles", {
 	expect_equal(tbl_common@title, "Most Common Adverse Events (Top 10)")
 })
 
-test_that("create_ae_summary_table respects soc_order for type='soc'", {
+test_that("create_ae_summary_table orders SOCs alphabetically by default", {
 	adae <- data.frame(
 		USUBJID = c("01", "02", "03", "04"),
 		TRT01P = c("A", "A", "A", "A"),
@@ -417,10 +403,23 @@ test_that("create_ae_summary_table respects soc_order for type='soc'", {
 		SAFFL = c("Y", "Y", "Y", "Y")
 	)
 
-	# Without soc_order, should be alphabetical
 	tbl_alpha <- create_ae_summary_table(adae, adsl, type = "soc")
 	socs_alpha <- tbl_alpha@data$`System Organ Class`
 	expect_equal(socs_alpha, c("A-SOC", "B-SOC", "M-SOC", "Z-SOC"))
+})
+
+test_that("create_ae_summary_table respects soc_order for type='soc'", {
+	adae <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "A", "A"),
+		TRTEMFL = c("Y", "Y", "Y", "Y"),
+		AEBODSYS = c("Z-SOC", "A-SOC", "M-SOC", "B-SOC")
+	)
+	adsl <- data.frame(
+		USUBJID = c("01", "02", "03", "04"),
+		TRT01P = c("A", "A", "A", "A"),
+		SAFFL = c("Y", "Y", "Y", "Y")
+	)
 
 	# With soc_order, should follow custom order
 	custom_order <- c("M-SOC", "A-SOC", "Z-SOC", "B-SOC")
@@ -502,7 +501,7 @@ test_that("create_ae_summary_table works without adsl (derives trt_n)", {
 	expect_equal(tbl@type, "ae_soc")
 })
 
-test_that("create_ae_summary_table validates input for deaths type", {
+test_that("create_ae_summary_table errors on NULL adsl for deaths type", {
 	expect_error(
 		create_ae_summary_table(adae = NULL, adsl = NULL, type = "deaths"),
 		"'adsl' must be a data frame"
@@ -535,26 +534,6 @@ test_that("create_ae_summary_table handles empty SAE data gracefully", {
 				any(grepl("No serious", tbl@data$Message, ignore.case = TRUE)))
 	)
 })
-
-create_time_to_first_ae_test_data <- function() {
-	adsl <- data.frame(
-		USUBJID = c("01", "02", "03", "04"),
-		TRT01P = c("A", "A", "B", "B"),
-		SAFFL = c("Y", "Y", "Y", "Y"),
-		TRTDURD = c(10, 10, 10, 10),
-		stringsAsFactors = FALSE
-	)
-
-	adae <- data.frame(
-		USUBJID = c("01", "03", "04"),
-		TRTEMFL = c("Y", "Y", "Y"),
-		AEBODSYS = c("Infections", "Infections", "Cardiac"),
-		ASTDY = c(3, 5, 8),
-		stringsAsFactors = FALSE
-	)
-
-	list(adsl = adsl, adae = adae)
-}
 
 test_that("create_time_to_first_ae returns KM summary table", {
 	data <- create_time_to_first_ae_test_data()
