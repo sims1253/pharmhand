@@ -30,7 +30,9 @@ create_ae_exposure_table(
 
 \item{by}{Character. "soc", "pt", or "overall" (default: "pt")}
 
-\item{time_unit}{Character. "days", "weeks", "months" (default: "days")}
+\item{time_unit}{Character. Unit of the exposure_var values:
+"days" (default for TRTDURD), "weeks", or "months".
+Used to convert exposure to patient-years.}
 
 \item{per}{Numeric. Rate per X patient-years (default: 100)}
 

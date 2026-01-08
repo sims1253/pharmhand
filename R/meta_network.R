@@ -277,21 +277,6 @@ network_meta <- function(
 	)
 	comparison_table <- rbind(ref_row, comparison_table)
 
-	list(
-		comparisons = comparison_table,
-		network = list(
-			treatments = treatments,
-			n_treatments = n_treatments,
-			edges = edges,
-			reference = reference
-		),
-		model = model,
-		effect_measure = effect_measure,
-		conf_level = conf_level,
-		method = "bucher_chain",
-		n_studies = nrow(df)
-	)
-
 	NMAResult(
 		comparisons = comparison_table,
 		network = list(

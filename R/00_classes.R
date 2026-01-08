@@ -499,8 +499,11 @@ NMAResult <- S7::new_class(
 			S7::class_integer,
 			default = NA_integer_,
 			validator = function(value) {
-				if (length(value) != 1 || value < 0) {
-					return("n_studies must be a non-negative integer")
+				if (length(value) != 1) {
+					return("n_studies must be a single integer value")
+				}
+				if (!is.na(value) && value < 0) {
+					return("n_studies must be non-negative")
 				}
 				NULL
 			}

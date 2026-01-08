@@ -36,6 +36,7 @@ Suggests:
     digest,
     patchwork,
     pharmaverseadam,
+    posterior,
     testthat (>= 3.1.5),
     lintr,
     styler,
