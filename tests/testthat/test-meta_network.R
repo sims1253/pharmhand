@@ -18,7 +18,7 @@ test_that("network_meta analyzes treatment network", {
 	expect_true(is.list(result))
 	expect_true("comparisons" %in% names(result))
 	expect_true("network" %in% names(result))
-	expect_equal(result$network$n_treatments, 3)
+	expect_equal(result@network$n_treatments, 3)
 })
 
 test_that("network_meta handles incomplete networks", {
@@ -50,7 +50,7 @@ test_that("network_meta handles custom reference treatment", {
 	result_ref_b <- network_meta(nma_data, reference = "B", effect_measure = "hr")
 
 	expect_true(is.list(result_ref_b))
-	expect_equal(result_ref_b$network$reference, "B")
+	expect_equal(result_ref_b@network$reference, "B")
 })
 
 test_that("network_meta handles fixed-effect model", {
@@ -65,7 +65,7 @@ test_that("network_meta handles fixed-effect model", {
 	result <- network_meta(nma_data, effect_measure = "hr", model = "fixed")
 
 	expect_true(is.list(result))
-	expect_equal(result$model, "fixed")
+	expect_equal(result@model, "fixed")
 })
 
 # =============================================================================
@@ -322,7 +322,7 @@ test_that("network_meta handles different effect measures in network", {
 	result_md <- network_meta(md_data, effect_measure = "md")
 
 	expect_true(is.list(result_md))
-	expect_equal(result_md$effect_measure, "md")
+	expect_equal(result_md@effect_measure, "md")
 })
 
 test_that("network_meta creates proper comparison structure", {
@@ -338,8 +338,8 @@ test_that("network_meta creates proper comparison structure", {
 
 	expect_true("comparisons" %in% names(result))
 	expect_true("network" %in% names(result))
-	expect_true(result$network$n_treatments >= 3)
-	expect_true(result$n_studies >= 4)
+	expect_true(result@network$n_treatments >= 3)
+	expect_true(result@n_studies >= 4)
 })
 
 test_that("create_network_plot handles disconnected components", {
