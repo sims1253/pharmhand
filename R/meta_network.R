@@ -640,7 +640,7 @@ create_league_table <- function(
 	# We need to calculate all pairwise comparisons
 	# From NMA results, we have comparisons vs reference
 
-	ref <- nma_result$network$reference
+	ref <- nma_result@network$reference
 	ref_idx <- which(treatments == ref)
 
 	# Get estimates vs reference for each treatment
