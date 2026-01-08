@@ -243,15 +243,15 @@ reference:
   - assess_iceman
 
 - title: "PRO Analysis"
-   desc: >
-     Patient-Reported Outcomes analysis functions including
-     minimal clinically important difference (MCID) and time-to-deterioration.
-   contents:
-   - MCIDResult
-   - calculate_mcid
-   - calculate_mcid_anchor
-   - calculate_mcid_distribution
-   - create_ttd_analysis
+  desc: >
+    Patient-Reported Outcomes analysis functions including
+    minimal clinically important difference (MCID) and time-to-deterioration.
+  contents:
+  - MCIDResult
+  - calculate_mcid
+  - calculate_mcid_anchor
+  - calculate_mcid_distribution
+  - create_ttd_analysis
 
 - title: "Meta-Analysis"
   desc: >
@@ -273,10 +273,10 @@ reference:
   - prior_sensitivity_analysis
 
 - title: "Network Meta-Analysis"
-   desc: >
-     Indirect treatment comparison and network meta-analysis functions
-     for comparing multiple treatments across studies.
-   contents:
+  desc: >
+    Indirect treatment comparison and network meta-analysis functions
+    for comparing multiple treatments across studies.
+  contents:
    - NMAResult
    - indirect_comparison
    - compare_direct_indirect
