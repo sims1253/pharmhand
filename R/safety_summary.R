@@ -117,34 +117,66 @@ create_ae_summary_table <- function(
 		"deaths",
 		"comparison"
 	),
-	trt_var = "TRT01P",
-	n_top = 15,
+	trt_var = ph_default("trt_var"),
+	n_top = ph_default("n_top"),
 	soc = NULL,
 	title = NULL,
-	autofit = TRUE,
+	autofit = ph_default("autofit"),
 	ref_group = NULL,
 	by = "pt",
 	threshold = 0,
 	sort_by = "incidence",
-	conf_level = 0.95,
+	conf_level = ph_default("conf_level"),
 	include_nnh = TRUE,
 	soc_order = NULL,
 	severity_levels = c("MILD", "MODERATE", "SEVERE")
 ) {
 	type <- match.arg(type)
 
-	# Input validation
+	# Input validation with improved messages
 	if (type != "deaths" && !is.data.frame(adae)) {
-		assert_data_frame(adae, "adae")
+		ph_abort(
+			"'adae' must be a data frame for type = '",
+			type,
+			"'. ",
+			"Got: ",
+			class(adae)[1]
+		)
 	}
 	if (type == "deaths" && !is.data.frame(adsl)) {
-		assert_data_frame(adsl, "adsl")
+		ph_abort(
+			"'adsl' data frame is required for type = 'deaths'. ",
+			"Got: ",
+			if (is.null(adsl)) "NULL" else class(adsl)[1]
+		)
 	}
 	if (type == "comparison" && !is.data.frame(adsl)) {
-		ph_abort("'adsl' is required for type = 'comparison'", call. = FALSE)
+		ph_abort(
+			"'adsl' data frame is required for type = 'comparison'. ",
+			"Cannot calculate risk differences. ",
+			"Got: ",
+			if (is.null(adsl)) "NULL" else class(adsl)[1]
+		)
 	}
 	if (type == "comparison" && is.null(ref_group)) {
-		ph_abort("'ref_group' is required for type = 'comparison'", call. = FALSE)
+		trt_display <- if (
+			is.data.frame(adae) &&
+				trt_var %in% names(adae)
+		) {
+			paste(unique(adae[[trt_var]]), collapse = ", ")
+		} else {
+			""
+		}
+		trt_values <- if (nchar(trt_display) > 0) {
+			paste0("Available in data: ", trt_display)
+		} else {
+			""
+		}
+		ph_abort(
+			"'ref_group' is required for type = 'comparison'. ",
+			"Specify which treatment to use as reference. ",
+			trt_values
+		)
 	}
 
 	# Validate required columns when deriving trt_n from adae

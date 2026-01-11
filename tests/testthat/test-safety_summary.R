@@ -504,7 +504,7 @@ test_that("create_ae_summary_table works without adsl (derives trt_n)", {
 test_that("create_ae_summary_table errors on NULL adsl for deaths type", {
 	expect_error(
 		create_ae_summary_table(adae = NULL, adsl = NULL, type = "deaths"),
-		"'adsl' must be a data frame"
+		"'adsl' data frame is required for type = 'deaths'"
 	)
 })
 

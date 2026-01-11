@@ -158,17 +158,6 @@ ShiftLayer <- S7::new_class(
 #'
 #' @export
 #'
-#' @usage
-#' LayeredTable(
-#'   data = data.frame(),
-#'   trt_var = "TRT01P",
-#'   pop_filter = NULL,
-#'   layers = list(),
-#'   title = NULL,
-#'   metadata = list(),
-#'   big_n = NULL
-#' )
-#'
 #' @param data Source data frame
 #' @param trt_var Treatment variable name
 #' @param pop_filter Population filter expression
@@ -195,7 +184,10 @@ LayeredTable <- S7::new_class(
 	"LayeredTable",
 	package = "pharmhand",
 	properties = list(
-		data = S7::new_property(S7::class_data.frame),
+		data = S7::new_property(
+			S7::class_data.frame,
+			default = quote(data.frame())
+		),
 		trt_var = S7::new_property(S7::class_character, default = "TRT01P"),
 		pop_filter = S7::new_property(S7::class_any, default = NULL),
 		layers = S7::new_property(

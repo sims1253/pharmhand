@@ -29,12 +29,14 @@ safety_results <- analyze_soc_pt(adae)
 
 # 4. Create S7 Report Content (Flextable by default for Word)
 baseline_table <- create_clinical_table(
-	baseline_stats,
-	"Table 1: Baseline Characteristics (ITT)"
+	data = baseline_stats@stats,
+	type = "baseline",
+	title = "Table 1: Baseline Characteristics (ITT)"
 )
 safety_table <- create_clinical_table(
-	safety_results,
-	"Table 2: Adverse Events by System Organ Class"
+	data = safety_results@stats,
+	type = "safety_ae",
+	title = "Table 2: Adverse Events by System Organ Class"
 )
 
 # 5. Assemble the S7 Clinical Report

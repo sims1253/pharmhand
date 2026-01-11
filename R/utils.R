@@ -84,3 +84,65 @@ assert_column_exists <- function(data, col, data_arg = "data") {
 get_na_string <- function() {
 	getOption("pharmhand.na_string", "--")
 }
+
+# =============================================================================
+# Package Defaults System
+# =============================================================================
+
+#' Package-wide default values
+#'
+#' Central registry of default parameter values used across the package.
+#' These can be overridden using options("pharmhand.<name>", value).
+#'
+#' @keywords internal
+.PH_DEFAULTS <- list(
+	trt_var = "TRT01P",
+	subject_var = "USUBJID",
+	autofit = TRUE,
+	conf_level = 0.95,
+	ci_level = 0.95,
+	na_string = "--",
+	population = "FAS",
+	n_top = 15,
+	threshold = 0.1,
+	digits = 2,
+	locale = "en"
+)
+
+#' Get Package Default Value
+#'
+#' Retrieves a default parameter value, checking options first,
+#' then falling back to built-in defaults.
+#'
+#' @param name Character string name of the parameter
+#' @param default Optional override default if both option and built-in are NULL
+#'
+#' @return The default value for the parameter
+#'
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' # Get default treatment variable
+#' ph_default("trt_var") # "TRT01P"
+#'
+#' # Override via option
+#' options(pharmhand.trt_var = "ARM")
+#' ph_default("trt_var") # "ARM"
+#' }
+ph_default <- function(name, default = NULL) {
+	# Check option first (allows user override)
+	opt_value <- getOption(paste0("pharmhand.", name))
+	if (!is.null(opt_value)) {
+		return(opt_value)
+	}
+
+	# Fall back to built-in default
+	builtin <- .PH_DEFAULTS[[name]]
+	if (!is.null(builtin)) {
+		return(builtin)
+	}
+
+	# Use provided default or NULL
+	default
+}

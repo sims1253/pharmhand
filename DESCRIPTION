@@ -1,6 +1,6 @@
 Package: pharmhand
 Title: Clinical Study Tables and Reports from ADaM Data
-Version: 0.3.3.9000
+Version: 0.3.4.9000
 Authors@R:
     person("Maximilian", "Scholz", , "dev.scholz@mailbox.org", role = c("aut", "cre"))
 Description: Create clinical study tables and reports from ADaM datasets.
@@ -24,11 +24,15 @@ Imports:
     yaml,
     gt,
     ggplot2,
-    survival
+    survival,
+    purrr,
+    tibble,
+    withr
 Suggests:
     admiral,
     brms,
     bayesplot,
+    cmdstanr,
     chef,
     chefStats,
     chefCriteria,
@@ -37,7 +41,8 @@ Suggests:
     patchwork,
     pharmaverseadam,
     posterior,
-    testthat (>= 3.1.5),
+    rstan,
+    testthat (>= 3.3.1),
     lintr,
     styler,
     rprojroot,
@@ -51,3 +56,4 @@ Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/Needs/website: tidyverse/tidytemplate
 VignetteBuilder: knitr
+

@@ -102,7 +102,7 @@ create_study_report <- function(x, title = NULL) {
 		sections[[length(sections) + 1]] <- ReportSection(
 			title = "Baseline Characteristics",
 			section_type = "baseline",
-			content = list(create_clinical_table(
+			content = list(clinical_table_from_results(
 				x@results$baseline,
 				"Demographics Summary"
 			))
@@ -113,7 +113,7 @@ create_study_report <- function(x, title = NULL) {
 		sections[[length(sections) + 1]] <- ReportSection(
 			title = "Safety Analysis",
 			section_type = "safety",
-			content = list(create_clinical_table(
+			content = list(clinical_table_from_results(
 				x@results$safety,
 				"Adverse Events by SOC/PT"
 			))

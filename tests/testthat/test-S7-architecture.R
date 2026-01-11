@@ -1,7 +1,7 @@
 # Test S7 architecture and high-performance reporting
 
 test_that("ADaMData and Analysis Core works", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl, population = "ITT")
 
 	# Basic analysis
@@ -12,7 +12,7 @@ test_that("ADaMData and Analysis Core works", {
 })
 
 test_that("Baseline Characteristics calculation works", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl)
 
 	results <- calculate_baseline(adam, vars = c("AGE"))
@@ -22,7 +22,7 @@ test_that("Baseline Characteristics calculation works", {
 })
 
 test_that("SOC-PT Analysis works", {
-	adae <- create_mock_adae(n = 20)
+	adae <- get_shared_adae(n = 20)
 	results <- analyze_soc_pt(adae)
 
 	expect_equal(results@type, "safety_ae")
@@ -32,7 +32,7 @@ test_that("SOC-PT Analysis works", {
 })
 
 test_that("Reporting Engine (flextable/gt) works", {
-	adsl <- create_mock_adsl(n = 10)
+	adsl <- get_shared_adsl(n = 10)
 	adam <- ADaMData(data = adsl)
 	results <- calculate_baseline(adam, vars = c("AGE"))
 
@@ -46,7 +46,7 @@ test_that("Reporting Engine (flextable/gt) works", {
 })
 
 test_that("Study Logic works", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	# Add AE columns for safety analysis test
 	adsl$AEBODSYS <- "Nervous system"
 	adsl$AEDECOD <- "Headache"
@@ -73,7 +73,7 @@ test_that("Study Logic works", {
 # Tests for ADaMData Computed Properties ----
 
 test_that("ADaMData filtered_data computed property works", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 
 	# With ITT population (all subjects should have ITTFL = "Y")
 	adam <- ADaMData(data = adsl, population = "ITT")
@@ -88,14 +88,14 @@ test_that("ADaMData filtered_data computed property works", {
 })
 
 test_that("ADaMData filtered_data returns all for ALL population", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl, population = "ALL")
 
 	expect_equal(nrow(adam@filtered_data), 20)
 })
 
 test_that("ADaMData trt_n computed property works", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl, population = "ITT")
 
 	trt_n <- adam@trt_n
@@ -108,7 +108,7 @@ test_that("ADaMData trt_n computed property works", {
 })
 
 test_that("ADaMData trt_n respects population filter", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	# Mark some subjects as not in PPS - set all to Y first
 	adsl$PPSFL <- "Y"
 	adsl$PPSFL[1:4] <- "N"
@@ -122,7 +122,7 @@ test_that("ADaMData trt_n respects population filter", {
 # Tests for Helper Functions ----
 
 test_that("get_trt_n works with ADaMData", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl, population = "ITT")
 
 	trt_n <- get_trt_n(adam)
@@ -133,7 +133,7 @@ test_that("get_trt_n works with ADaMData", {
 })
 
 test_that("get_trt_n works with data frame", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 
 	trt_n <- get_trt_n(adsl, trt_var = "TRT01P")
 
@@ -143,7 +143,7 @@ test_that("get_trt_n works with data frame", {
 })
 
 test_that("get_trt_n applies population filter for data frames", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adsl$PPSFL <- "Y"
 	adsl$PPSFL[1:4] <- "N"
 
@@ -153,7 +153,7 @@ test_that("get_trt_n applies population filter for data frames", {
 })
 
 test_that("get_filtered_data works with ADaMData", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl, population = "ITT")
 
 	df <- get_filtered_data(adam)
@@ -163,7 +163,7 @@ test_that("get_filtered_data works with ADaMData", {
 })
 
 test_that("get_filtered_data works with data frame", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adsl$PPSFL <- "Y"
 	adsl$PPSFL[1:4] <- "N"
 
@@ -174,7 +174,7 @@ test_that("get_filtered_data works with data frame", {
 })
 
 test_that("get_trt_var returns correct variable", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl, trt_var = "TRT01P")
 
 	expect_equal(get_trt_var(adam), "TRT01P")
@@ -182,7 +182,7 @@ test_that("get_trt_var returns correct variable", {
 })
 
 test_that("get_subject_var returns correct variable", {
-	adsl <- create_mock_adsl(n = 20)
+	adsl <- get_shared_adsl(n = 20)
 	adam <- ADaMData(data = adsl)
 
 	expect_equal(get_subject_var(adam), "USUBJID")

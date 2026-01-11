@@ -5,8 +5,7 @@
 \title{NMAResult Class}
 \usage{
 NMAResult(
-  comparisons = structure(list(), names = character(0), row.names = integer(0), class =
-    "data.frame"),
+  comparisons = data.frame(),
   network = list(),
   model = "random",
   effect_measure = "hr",

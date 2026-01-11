@@ -204,7 +204,7 @@ create_ae_exposure_table <- function(
 	}
 
 	# Convert exposure from time_unit to patient-years
-	# time_unit describes the units of exposure_var (e.g., TRTDURD is typically days)
+	# time_unit describes units of exposure_var (e.g., TRTDURD in days)
 	year_divisor <- switch(
 		time_unit,
 		days = 365.25,
@@ -256,77 +256,19 @@ create_ae_exposure_table <- function(
 
 	if (nrow(teae) == 0) {
 		ph_warn("No treatment-emergent adverse events found", call. = FALSE)
-		# Return empty ClinicalTable instead of NULL to avoid breaking
-		# downstream pipelines
-		term_label <- switch(
-			by,
-			overall = "Term",
-			soc = "System Organ Class",
-			pt = "Preferred Term"
-		)
-
-		# Build column names for the empty data frame
-		ci_level_pct <- round(conf_level * 100)
-		idr_label <- sprintf("IDR per %s PY (%d%% CI)", per, ci_level_pct)
-		value_cols <- c("Events (n)", "Patient-Years", idr_label)
-
-		# Create column names for each treatment level
-		col_names <- c(term_label)
-		for (trt in trt_levels) {
-			for (vc in value_cols) {
-				col_names <- c(col_names, paste0(trt, "\n", vc))
-			}
-		}
-
-		# Create empty data frame with correct column structure
-		output_df <- as.data.frame(
-			lapply(col_names, function(x) character(0)),
-			stringsAsFactors = FALSE
-		)
-		names(output_df) <- col_names
-
-		if (is.null(title)) {
-			title <- switch(
-				by,
-				overall = "Exposure-Adjusted Adverse Event Rates",
-				soc = "Exposure-Adjusted Adverse Events by System Organ Class",
-				pt = "Exposure-Adjusted Adverse Events by Preferred Term"
-			)
-		}
-
-		footnotes <- c(
-			"No treatment-emergent adverse events found (TRTEMFL = 'Y')",
-			sprintf(
-				"IDR per %s patient-years with %d%% Poisson CI",
-				per,
-				ci_level_pct
-			)
-		)
-
-		ft <- create_hta_table(
-			output_df,
-			title = title,
-			footnotes = footnotes,
-			autofit = autofit
-		)
-
 		return(
-			ClinicalTable(
-				data = output_df,
-				flextable = ft,
-				type = "ae_exposure",
+			create_empty_ae_exposure_table(
+				trt_levels = trt_levels,
+				by = by,
+				conf_level = conf_level,
+				per = per,
+				exposure_var = exposure_var,
+				trt_var = trt_var,
+				time_unit = time_unit,
+				threshold = threshold,
 				title = title,
-				metadata = list(
-					exposure_var = exposure_var,
-					trt_var = trt_var,
-					by = by,
-					time_unit = time_unit,
-					per = per,
-					conf_level = conf_level,
-					threshold = threshold,
-					empty = TRUE,
-					empty_reason = "No treatment-emergent adverse events found"
-				)
+				autofit = autofit,
+				empty_reason = "No treatment-emergent adverse events found"
 			)
 		)
 	}
@@ -408,77 +350,19 @@ create_ae_exposure_table <- function(
 			"No adverse events meet the specified threshold criteria",
 			call. = FALSE
 		)
-		# Return empty ClinicalTable instead of NULL to avoid breaking
-		# downstream pipelines
-		term_label <- switch(
-			by,
-			overall = "Term",
-			soc = "System Organ Class",
-			pt = "Preferred Term"
-		)
-
-		# Build column names for the empty data frame
-		ci_level_pct <- round(conf_level * 100)
-		idr_label <- sprintf("IDR per %s PY (%d%% CI)", per, ci_level_pct)
-		value_cols <- c("Events (n)", "Patient-Years", idr_label)
-
-		# Create column names for each treatment level
-		col_names <- c(term_label)
-		for (trt in trt_levels) {
-			for (vc in value_cols) {
-				col_names <- c(col_names, paste0(trt, "\n", vc))
-			}
-		}
-
-		# Create empty data frame with correct column structure
-		output_df <- as.data.frame(
-			lapply(col_names, function(x) character(0)),
-			stringsAsFactors = FALSE
-		)
-		names(output_df) <- col_names
-
-		if (is.null(title)) {
-			title <- switch(
-				by,
-				overall = "Exposure-Adjusted Adverse Event Rates",
-				soc = "Exposure-Adjusted Adverse Events by System Organ Class",
-				pt = "Exposure-Adjusted Adverse Events by Preferred Term"
-			)
-		}
-
-		footnotes <- c(
-			"No adverse events meet the specified threshold criteria",
-			sprintf(
-				"IDR per %s patient-years with %d%% Poisson CI",
-				per,
-				ci_level_pct
-			)
-		)
-
-		ft <- create_hta_table(
-			output_df,
-			title = title,
-			footnotes = footnotes,
-			autofit = autofit
-		)
-
 		return(
-			ClinicalTable(
-				data = output_df,
-				flextable = ft,
-				type = "ae_exposure",
+			create_empty_ae_exposure_table(
+				trt_levels = trt_levels,
+				by = by,
+				conf_level = conf_level,
+				per = per,
+				exposure_var = exposure_var,
+				trt_var = trt_var,
+				time_unit = time_unit,
+				threshold = threshold,
 				title = title,
-				metadata = list(
-					exposure_var = exposure_var,
-					trt_var = trt_var,
-					by = by,
-					time_unit = time_unit,
-					per = per,
-					conf_level = conf_level,
-					threshold = threshold,
-					empty = TRUE,
-					empty_reason = "No adverse events meet the specified threshold criteria"
-				)
+				autofit = autofit,
+				empty_reason = "No adverse events meet the specified threshold criteria"
 			)
 		)
 	}
@@ -601,6 +485,96 @@ create_ae_exposure_table <- function(
 			per = per,
 			conf_level = conf_level,
 			threshold = threshold
+		)
+	)
+}
+
+#' Create Empty AE Exposure Table
+#'
+#' Helper function to construct an empty ClinicalTable for AE exposure analysis
+#' when no events meet the criteria.
+#'
+#' @keywords internal
+create_empty_ae_exposure_table <- function(
+	trt_levels,
+	by,
+	conf_level,
+	per,
+	exposure_var,
+	trt_var,
+	time_unit,
+	threshold,
+	title,
+	autofit,
+	empty_reason
+) {
+	term_label <- switch(
+		by,
+		overall = "Term",
+		soc = "System Organ Class",
+		pt = "Preferred Term"
+	)
+
+	# Build column names for the empty data frame
+	ci_level_pct <- round(conf_level * 100)
+	idr_label <- sprintf("IDR per %s PY (%d%% CI)", per, ci_level_pct)
+	value_cols <- c("Events (n)", "Patient-Years", idr_label)
+
+	# Create column names for each treatment level
+	col_names <- c(term_label)
+	for (trt in trt_levels) {
+		for (vc in value_cols) {
+			col_names <- c(col_names, paste0(trt, "\n", vc))
+		}
+	}
+
+	# Create empty data frame with correct column structure
+	output_df <- as.data.frame(
+		lapply(col_names, function(x) character(0)),
+		stringsAsFactors = FALSE
+	)
+	names(output_df) <- col_names
+
+	if (is.null(title)) {
+		title <- switch(
+			by,
+			overall = "Exposure-Adjusted Adverse Event Rates",
+			soc = "Exposure-Adjusted Adverse Events by System Organ Class",
+			pt = "Exposure-Adjusted Adverse Events by Preferred Term"
+		)
+	}
+
+	footnotes <- c(
+		empty_reason,
+		sprintf(
+			"IDR per %s patient-years with %d%% Poisson CI",
+			per,
+			ci_level_pct
+		)
+	)
+
+	ft <- create_hta_table(
+		output_df,
+		title = title,
+		footnotes = footnotes,
+		autofit = autofit
+	)
+
+	ClinicalTable(
+		data = output_df,
+		flextable = ft,
+		type = "ae_exposure",
+		title = title,
+		metadata = list(
+			exposure_var = exposure_var,
+			trt_var = trt_var,
+			by = by,
+			time_unit = time_unit,
+			per = per,
+			conf_level = conf_level,
+			threshold = threshold,
+			empty = TRUE,
+			empty_reason = empty_reason
 		)
 	)
 }

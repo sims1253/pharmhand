@@ -5,8 +5,8 @@
 # =============================================================================
 
 test_that("meta_analysis returns MetaResult for fixed-effect model", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -19,8 +19,8 @@ test_that("meta_analysis returns MetaResult for fixed-effect model", {
 })
 
 test_that("meta_analysis sets correct model for fixed-effect", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -33,8 +33,8 @@ test_that("meta_analysis sets correct model for fixed-effect", {
 })
 
 test_that("meta_analysis sets correct effect measure", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -47,8 +47,8 @@ test_that("meta_analysis sets correct effect measure", {
 })
 
 test_that("meta_analysis records number of studies", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -61,8 +61,8 @@ test_that("meta_analysis records number of studies", {
 })
 
 test_that("meta_analysis produces positive estimate for HR", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -75,8 +75,8 @@ test_that("meta_analysis produces positive estimate for HR", {
 })
 
 test_that("meta_analysis produces confidence interval", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -89,8 +89,8 @@ test_that("meta_analysis produces confidence interval", {
 })
 
 test_that("meta_analysis returns MetaResult for random-effects model", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -103,8 +103,8 @@ test_that("meta_analysis returns MetaResult for random-effects model", {
 })
 
 test_that("meta_analysis sets correct model for random-effects", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -117,8 +117,8 @@ test_that("meta_analysis sets correct model for random-effects", {
 })
 
 test_that("meta_analysis calculates tau2 for random-effects", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -131,8 +131,8 @@ test_that("meta_analysis calculates tau2 for random-effects", {
 })
 
 test_that("meta_analysis calculates I2 for random-effects", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	result <- meta_analysis(
 		yi = yi,
@@ -145,8 +145,8 @@ test_that("meta_analysis calculates I2 for random-effects", {
 })
 
 test_that("meta_analysis calculates Q statistic", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6) # Variable effects
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md # Variable effects
+	sei <- .meta_sei_md
 
 	result <- meta_analysis(
 		yi = yi,
@@ -160,8 +160,8 @@ test_that("meta_analysis calculates Q statistic", {
 })
 
 test_that("meta_analysis calculates I2 statistic", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6) # Variable effects
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md # Variable effects
+	sei <- .meta_sei_md
 
 	result <- meta_analysis(
 		yi = yi,
@@ -175,8 +175,8 @@ test_that("meta_analysis calculates I2 statistic", {
 })
 
 test_that("meta_analysis calculates tau2 statistic", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6) # Variable effects
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md # Variable effects
+	sei <- .meta_sei_md
 
 	result <- meta_analysis(
 		yi = yi,
@@ -236,8 +236,8 @@ test_that("meta_analysis accepts data frame input", {
 })
 
 test_that("meta_analysis calculates prediction intervals for random effects", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	result <- meta_analysis(
 		yi = yi,
@@ -252,8 +252,8 @@ test_that("meta_analysis calculates prediction intervals for random effects", {
 })
 
 test_that("meta_analysis works with HR effect measure", {
-	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
-	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+	yi <- .meta_yi_or
+	sei <- .meta_sei_or
 
 	hr_result <- meta_analysis(
 		yi = yi,
@@ -266,8 +266,8 @@ test_that("meta_analysis works with HR effect measure", {
 })
 
 test_that("meta_analysis works with OR effect measure", {
-	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
-	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+	yi <- .meta_yi_or
+	sei <- .meta_sei_or
 
 	or_result <- meta_analysis(
 		yi = yi,
@@ -280,8 +280,8 @@ test_that("meta_analysis works with OR effect measure", {
 })
 
 test_that("meta_analysis works with RR effect measure", {
-	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
-	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+	yi <- .meta_yi_or
+	sei <- .meta_sei_or
 
 	rr_result <- meta_analysis(
 		yi = yi,
@@ -294,8 +294,8 @@ test_that("meta_analysis works with RR effect measure", {
 })
 
 test_that("meta_analysis works with RD effect measure", {
-	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
-	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+	yi <- .meta_yi_or
+	sei <- .meta_sei_or
 
 	rd_result <- meta_analysis(
 		yi = yi,
@@ -308,8 +308,8 @@ test_that("meta_analysis works with RD effect measure", {
 })
 
 test_that("meta_analysis works with MD effect measure", {
-	yi <- c(0.3, 0.5, 0.7, 0.4, 0.6)
-	sei <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+	yi <- .meta_yi_or
+	sei <- .meta_sei_or
 
 	md_result <- meta_analysis(
 		yi = yi,
@@ -322,8 +322,8 @@ test_that("meta_analysis works with MD effect measure", {
 })
 
 test_that("meta_analysis uses DL method", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	result_dl <- meta_analysis(yi = yi, sei = sei, method = "DL")
 
@@ -332,8 +332,8 @@ test_that("meta_analysis uses DL method", {
 })
 
 test_that("meta_analysis uses REML method", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	result_reml <- meta_analysis(yi = yi, sei = sei, method = "REML")
 
@@ -342,8 +342,8 @@ test_that("meta_analysis uses REML method", {
 })
 
 test_that("meta_analysis uses PM method", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	result_pm <- meta_analysis(yi = yi, sei = sei, method = "PM")
 
@@ -352,8 +352,8 @@ test_that("meta_analysis uses PM method", {
 })
 
 test_that("meta_analysis applies Knapp-Hartung adjustment", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	result_kh <- meta_analysis(yi = yi, sei = sei, knapp_hartung = TRUE)
 
@@ -362,8 +362,8 @@ test_that("meta_analysis applies Knapp-Hartung adjustment", {
 })
 
 test_that("meta_analysis omits Knapp-Hartung adjustment when FALSE", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	result_no_kh <- meta_analysis(yi = yi, sei = sei, knapp_hartung = FALSE)
 
@@ -372,8 +372,8 @@ test_that("meta_analysis omits Knapp-Hartung adjustment when FALSE", {
 })
 
 test_that("meta_analysis stores individual study results", {
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	yi <- .meta_yi_hr_small
+	sei <- .meta_sei_hr_small
 
 	result <- meta_analysis(
 		yi = yi,
@@ -387,8 +387,8 @@ test_that("meta_analysis stores individual study results", {
 })
 
 test_that("meta_analysis stores study results as ComparisonResult", {
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	yi <- .meta_yi_hr_small
+	sei <- .meta_sei_hr_small
 
 	result <- meta_analysis(
 		yi = yi,
@@ -403,8 +403,8 @@ test_that("meta_analysis stores study results as ComparisonResult", {
 })
 
 test_that("meta_analysis labels study results correctly", {
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	yi <- .meta_yi_hr_small
+	sei <- .meta_sei_hr_small
 
 	result <- meta_analysis(
 		yi = yi,
@@ -417,8 +417,8 @@ test_that("meta_analysis labels study results correctly", {
 })
 
 test_that("meta_analysis stores study weights", {
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	yi <- .meta_yi_hr_small
+	sei <- .meta_sei_hr_small
 
 	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
 
@@ -427,8 +427,8 @@ test_that("meta_analysis stores study weights", {
 })
 
 test_that("meta_analysis has positive study weights", {
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	yi <- .meta_yi_hr_small
+	sei <- .meta_sei_hr_small
 
 	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
 
@@ -436,8 +436,8 @@ test_that("meta_analysis has positive study weights", {
 })
 
 test_that("meta_analysis study weights sum to 1", {
-	yi <- log(c(0.75, 0.82, 0.68))
-	sei <- c(0.12, 0.15, 0.18)
+	yi <- .meta_yi_hr_small
+	sei <- .meta_sei_hr_small
 
 	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
 
@@ -449,8 +449,8 @@ test_that("meta_analysis study weights sum to 1", {
 # =============================================================================
 
 test_that("calculate_heterogeneity returns Q statistic", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	het <- calculate_heterogeneity(yi, sei)
 
@@ -458,8 +458,8 @@ test_that("calculate_heterogeneity returns Q statistic", {
 })
 
 test_that("calculate_heterogeneity returns I2 statistic", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	het <- calculate_heterogeneity(yi, sei)
 
@@ -467,8 +467,8 @@ test_that("calculate_heterogeneity returns I2 statistic", {
 })
 
 test_that("calculate_heterogeneity returns tau2 statistic", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	het <- calculate_heterogeneity(yi, sei)
 
@@ -476,8 +476,8 @@ test_that("calculate_heterogeneity returns tau2 statistic", {
 })
 
 test_that("calculate_heterogeneity returns interpretation", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	het <- calculate_heterogeneity(yi, sei)
 
@@ -485,8 +485,8 @@ test_that("calculate_heterogeneity returns interpretation", {
 })
 
 test_that("calculate_heterogeneity supports DL method", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	het_dl <- calculate_heterogeneity(yi, sei, method = "DL")
 
@@ -495,8 +495,8 @@ test_that("calculate_heterogeneity supports DL method", {
 })
 
 test_that("calculate_heterogeneity supports REML method", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	het_reml <- calculate_heterogeneity(yi, sei, method = "REML")
 
@@ -505,8 +505,8 @@ test_that("calculate_heterogeneity supports REML method", {
 })
 
 test_that("calculate_heterogeneity supports PM method", {
-	yi <- c(0.5, 0.8, 0.3, 1.0, 0.6)
-	sei <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+	yi <- .meta_yi_md
+	sei <- .meta_sei_md
 
 	het_pm <- calculate_heterogeneity(yi, sei, method = "PM")
 
@@ -519,8 +519,8 @@ test_that("calculate_heterogeneity supports PM method", {
 # =============================================================================
 
 test_that("leave_one_out performs sensitivity analysis", {
-	yi <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
-	sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+	yi <- .meta_yi_hr
+	sei <- .meta_sei_hr
 
 	meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
 	loo <- leave_one_out(meta_res)

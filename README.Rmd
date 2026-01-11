@@ -32,7 +32,7 @@ pharmhand creates clinical study tables and reports from ADaM datasets. It uses 
 pak::pak("sims1253/pharmhand")
 ```
 
-## Examples
+## Quick Start
 
 ```{r example-setup, include=FALSE}
 library(pharmhand)
@@ -44,12 +44,34 @@ adae <- pharmaverseadam::adae
 adrs <- pharmaverseadam::adrs_onco
 ```
 
+Generate complete reports in a single call:
+
+```{r quick-start, eval=FALSE}
+library(pharmhand)
+
+# One-line demographics report
+quick_demographics_report(adsl, "demographics.docx")
+
+# One-line safety report with multiple tables
+quick_safety_report(adae, adsl, "safety.docx")
+```
+
+## Examples
+
 ### Demographics Table
 
 ```{r demo-table, message=FALSE, warning=FALSE}
-adam_data <- ADaMData(data = adsl, trt_var = "TRT01P")
-demo_table <- create_demographics_table(adam_data)
+# Simple: pass data.frame directly (auto-coerced)
+demo_table <- create_demographics_table(adsl)
 demo_table@flextable
+```
+
+For advanced use with population filtering:
+
+```{r demo-table-advanced, eval=FALSE}
+# Advanced: explicit ADaMData for population control
+adam_data <- ADaMData(data = adsl, population = "SAF", trt_var = "TRT01P")
+demo_table <- create_demographics_table(adam_data)
 ```
 
 ### Kaplan-Meier Plot
@@ -67,11 +89,28 @@ km <- create_km_plot(
 km@plot
 ```
 
-## Quick Start
+## Configuration
+
+Customize defaults package-wide:
 
 ```r
-library(pharmhand)
+# Set your study's preferences once
+options(
+  pharmhand.trt_var = "ARM",         # Treatment variable
+  pharmhand.autofit = TRUE,          # Auto-fit table columns
+  pharmhand.conf_level = 0.95        # Confidence level
+)
 
+# All functions now use your preferences
+create_demographics_table(adsl)  # Uses ARM instead of TRT01P
+meta_analysis(yi, sei)              # Uses 95% CI
+```
+
+## Advanced: ADaMData Wrapper
+
+For population filtering and computed properties:
+
+```r
 # Wrap ADaM data with automatic population filtering
 adam_data <- ADaMData(
   data = adsl,

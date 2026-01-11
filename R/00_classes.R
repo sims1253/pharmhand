@@ -20,16 +20,6 @@ NULL
 #' @param trt_var Character string for treatment variable (default: "TRT01P")
 #' @param metadata List of additional metadata
 #'
-#' @usage ADaMData(
-#'   data = structure(list(), names = character(0),
-#'     row.names = integer(0), class = "data.frame"),
-#'   domain = "",
-#'   population = "FAS",
-#'   subject_var = "USUBJID",
-#'   trt_var = "TRT01P",
-#'   metadata = list()
-#' )
-#'
 #' @return An ADaMData object
 #' @export ADaMData
 ADaMData <- S7::new_class(
@@ -38,7 +28,7 @@ ADaMData <- S7::new_class(
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
-			default = data.frame(),
+			default = quote(data.frame()),
 			validator = function(value) {
 				admiraldev::assert_data_frame(value)
 				NULL
@@ -121,21 +111,16 @@ ADaMData <- S7::new_class(
 #' @param groupings List of grouping variables used
 #' @param metadata List of additional metadata
 #'
-#' @usage AnalysisResults(
-#'   stats = structure(list(), names = character(0),
-#'     row.names = integer(0), class = "data.frame"),
-#'   type = "",
-#'   groupings = list(),
-#'   metadata = list()
-#' )
-#'
 #' @return An AnalysisResults object
 #' @export AnalysisResults
 AnalysisResults <- S7::new_class(
 	"AnalysisResults",
 	package = "pharmhand",
 	properties = list(
-		stats = S7::new_property(S7::class_data.frame, default = data.frame()),
+		stats = S7::new_property(
+			S7::class_data.frame,
+			default = quote(data.frame())
+		),
 		type = S7::new_property(S7::class_character, default = ""),
 		groupings = S7::new_property(S7::class_list, default = list()),
 		metadata = S7::new_property(S7::class_list, default = list())
@@ -359,7 +344,7 @@ MetaResult <- S7::new_class(
 		),
 		heterogeneity = S7::new_property(
 			S7::class_list,
-			default = list(
+			default = quote(list(
 				Q = NA_real_,
 				Q_df = NA_integer_,
 				Q_pvalue = NA_real_,
@@ -367,7 +352,7 @@ MetaResult <- S7::new_class(
 				H2 = NA_real_,
 				tau2 = NA_real_,
 				tau = NA_real_
-			)
+			))
 		),
 		weights = S7::new_property(S7::class_any, default = NULL),
 		prediction_interval = S7::new_property(S7::class_any, default = NULL),
@@ -417,7 +402,7 @@ NMAResult <- S7::new_class(
 	properties = list(
 		comparisons = S7::new_property(
 			S7::class_data.frame,
-			default = data.frame(),
+			default = quote(data.frame()),
 			validator = function(value) {
 				admiraldev::assert_data_frame(value)
 				NULL
@@ -625,22 +610,6 @@ ClinicalContent <- S7::new_class(
 #' @param title Character string for table title
 #' @param metadata List of additional metadata
 #'
-#' @usage ClinicalTable(
-#'   type = character(0),
-#'   title = NULL,
-#'   metadata = list(),
-#'   data = (function (.data = list(), row.names = NULL) {
-#'     if (is.null(row.names)) {
-#'       list2DF(.data)
-#'     } else {
-#'       out <- list2DF(.data, length(row.names))
-#'       attr(out, "row.names") <- row.names
-#'       out
-#'     }
-#'   })(),
-#'   flextable = NULL
-#' )
-#'
 #' @return A ClinicalTable object
 #'
 #'
@@ -659,6 +628,7 @@ ClinicalTable <- S7::new_class(
 	properties = list(
 		data = S7::new_property(
 			class = S7::class_data.frame,
+			default = quote(data.frame()),
 			validator = function(value) {
 				admiraldev::assert_data_frame(value)
 				NULL
@@ -1006,7 +976,7 @@ SingleArmStudy <- S7::new_class(
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
-			default = data.frame(),
+			default = quote(data.frame()),
 			validator = function(value) {
 				admiraldev::assert_data_frame(value)
 				NULL
@@ -1065,7 +1035,7 @@ TwoArmStudy <- S7::new_class(
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
-			default = data.frame(),
+			default = quote(data.frame()),
 			validator = function(value) {
 				admiraldev::assert_data_frame(value)
 				NULL
@@ -1130,7 +1100,7 @@ MultiArmStudy <- S7::new_class(
 	properties = list(
 		data = S7::new_property(
 			S7::class_data.frame,
-			default = data.frame(),
+			default = quote(data.frame()),
 			validator = function(value) {
 				admiraldev::assert_data_frame(value)
 				NULL
@@ -1284,8 +1254,8 @@ MCIDResult <- S7::new_class(
 	package = "pharmhand",
 	properties = list(
 		anchor = S7::new_property(
-			S7::class_list,
-			default = NULL,
+			S7::class_any,
+			default = list(),
 			validator = function(value) {
 				if (!is.null(value) && !is.list(value)) {
 					return("anchor must be a list or NULL")
@@ -1294,8 +1264,8 @@ MCIDResult <- S7::new_class(
 			}
 		),
 		distribution = S7::new_property(
-			S7::class_list,
-			default = NULL,
+			S7::class_any,
+			default = list(),
 			validator = function(value) {
 				if (!is.null(value) && !is.list(value)) {
 					return("distribution must be a list or NULL")

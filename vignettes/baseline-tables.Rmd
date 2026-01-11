@@ -42,9 +42,25 @@ admh <- pharmaverseadam::admh
 adcm <- pharmaverseadam::adcm
 ```
 
-## ADaMData wrapper
+## Demographics table
 
-Wrap ADaM datasets in `ADaMData` before creating tables.
+The demographics table presents basic participant characteristics including age, sex, and ethnicity.
+
+### Simple approach: Pass data.frame directly
+
+```{r demographics-basic}
+# Simplest: pass data.frame directly (auto-coerced)
+demo_table <- create_demographics_table(adsl)
+
+# Display the table
+demo_table@flextable
+```
+
+The function automatically wraps the data.frame in an ADaMData object.
+
+### Advanced approach: Explicit ADaMData for population filtering
+
+For population filtering, create an ADaMData object explicitly:
 
 ```{r adam-data}
 # Wrap ADSL with population filtering
@@ -53,21 +69,12 @@ adam_data <- ADaMData(
   domain = "ADSL",
   population = "SAF"
 )
-```
 
-## Demographics table
-
-The demographics table presents basic participant characteristics including age, sex, and ethnicity.
-
-```{r demographics-basic}
-# Basic demographics table
-demo_table <- create_demographics_table(
+# Pass to table function
+demo_table_saf <- create_demographics_table(
   adsl_data = adam_data,
   trt_var = "TRT01P"
 )
-
-# Display the table
-demo_table@flextable
 ```
 
 Customize variable names to match your data structure:

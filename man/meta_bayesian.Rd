@@ -4,5 +4,5 @@
 \alias{meta_bayesian}
 \title{Bayesian Meta-Analysis Functions}
 \description{
-Interface for Bayesian meta-analysis using brms/rstan.
+Interface for Bayesian meta-analysis using brms with Stan.
 }

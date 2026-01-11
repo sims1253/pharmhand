@@ -10,6 +10,22 @@
 	cache_dir
 }
 
+options(mc.cores = 1)
+
+# Capture all warnings raised by an expression, while muffling them.
+# Useful for tests that need to assert warnings without producing WARN output.
+capture_muffled_warnings <- function(expr) {
+	warnings <- character()
+	value <- withCallingHandlers(
+		force(expr),
+		warning = function(w) {
+			warnings <<- c(warnings, conditionMessage(w))
+			invokeRestart("muffleWarning")
+		}
+	)
+	list(value = value, warnings = warnings)
+}
+
 #' Skip tests if brms is not available or functional
 #'
 #' Checks if brms is installed and can actually be loaded.
@@ -29,6 +45,71 @@ skip_if_brms_unavailable <- function() {
 			skip(paste("brms not functional:", conditionMessage(e)))
 		}
 	)
+}
+
+# ==============================================================================
+# Shared Test Fixtures - Reuse models across tests
+# ==============================================================================
+
+# Standard test data used across multiple tests
+.test_yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
+.test_sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
+
+# Cached shared result for tests that don't need specific configurations
+.shared_bayesian_result <- NULL
+.shared_bayesian_result_smd <- NULL
+
+#' Get shared Bayesian result for HR (fit once, reuse everywhere)
+#'
+#' Returns a cached bayesian_meta_result that is computed once per test session.
+#' This dramatically speeds up tests by avoiding redundant MCMC sampling.
+#'
+#' @return A bayesian_meta_result object
+get_shared_bayesian_result <- function() {
+	if (is.null(.shared_bayesian_result)) {
+		message("Fitting shared Bayesian model (HR, will be cached)...")
+		.shared_bayesian_result <<- bayesian_meta_analysis(
+			yi = .test_yi,
+			sei = .test_sei,
+			effect_measure = "hr",
+			backend = "cmdstanr",
+			warn_convergence = "never",
+			posterior_predictive = FALSE,
+			chains = 2,
+			cores = 1,
+			iter = 2000,
+			warmup = 1000,
+			seed = 42,
+			adapt_delta = 0.99
+		)
+	}
+	.shared_bayesian_result
+}
+
+#' Get shared Bayesian result for SMD (fit once, reuse everywhere)
+#'
+#' Returns a cached bayesian_meta_result for SMD effect measure.
+#'
+#' @return A bayesian_meta_result object
+get_shared_bayesian_result_smd <- function() {
+	if (is.null(.shared_bayesian_result_smd)) {
+		message("Fitting shared Bayesian model (SMD, will be cached)...")
+		.shared_bayesian_result_smd <<- bayesian_meta_analysis(
+			yi = .test_yi,
+			sei = .test_sei,
+			effect_measure = "smd",
+			backend = "cmdstanr",
+			warn_convergence = "never",
+			posterior_predictive = FALSE,
+			chains = 2,
+			cores = 1,
+			iter = 2000,
+			warmup = 1000,
+			seed = 43,
+			adapt_delta = 0.99
+		)
+	}
+	.shared_bayesian_result_smd
 }
 
 # Get a cached brms fit or create one
@@ -56,6 +137,9 @@ get_cached_bayesian_result <- function(
 		yi = yi,
 		sei = sei,
 		effect_measure = effect_measure,
+		backend = "cmdstanr",
+		warn_convergence = "never",
+		posterior_predictive = FALSE,
 		chains = 2,
 		cores = 1,
 		iter = 1000,

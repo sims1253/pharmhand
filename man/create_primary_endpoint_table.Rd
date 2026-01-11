@@ -8,9 +8,9 @@ create_primary_endpoint_table(
   advs,
   paramcd = "SYSBP",
   visit = "End of Treatment",
-  trt_var = "TRT01P",
+  trt_var = ph_default("trt_var"),
   title = "Primary Endpoint Summary",
-  autofit = TRUE
+  autofit = ph_default("autofit")
 )
 }
 \arguments{

@@ -1,21 +1,21 @@
 #' @title Bayesian Meta-Analysis Functions
 #' @name meta_bayesian
-#' @description Interface for Bayesian meta-analysis using brms/rstan.
+#' @description Interface for Bayesian meta-analysis using brms with Stan.
 NULL
 
 #' Bayesian Meta-Analysis
 #'
-#' Interface for Bayesian meta-analysis using brms/rstan when available.
+#' Interface for Bayesian meta-analysis using brms with a Stan backend.
 #' Provides guidance when dependencies are not installed.
 #'
 #' @details
-#' This function requires the brms and rstan packages for full Bayesian
-#' inference. If these are not installed, the function returns guidance
-#' on installation and falls back to frequentist meta-analysis via
-#' \code{\link{meta_analysis}}.
+#' This function requires the brms package and a Stan backend (cmdstanr or
+#' rstan) for full Bayesian inference. If these are not installed, the
+#' function returns guidance on installation and falls back to frequentist
+#' meta-analysis via \code{\link{meta_analysis}}.
 #'
 #' Install dependencies with:
-#' \code{install.packages(c("brms", "rstan"))}
+#' \code{install.packages(c("brms", "cmdstanr", "rstan"))}
 #'
 #' Note: rstan may require additional setup. See
 #' \url{https://mc-stan.org/users/interfaces/rstan} for details.
@@ -53,7 +53,12 @@ NULL
 #' @param max_treedepth Integer. Maximum tree depth for NUTS sampler.
 #'   Default: 12. Higher values allow more complex posterior geometry but
 #'   may indicate issues.
+#' @param backend Character. Which Stan backend to use: "auto" (prefer
+#'   cmdstanr when available), "cmdstanr", or "rstan".
+#' @param warn_convergence Character. Whether to emit convergence warnings:
+#'   "auto" (quiet under testthat), "always", or "never".
 #' @param ... Additional arguments passed to brms::brm
+#' @importFrom stats var
 #'
 #' @return A list with class "bayesian_meta_result" containing posterior_mean,
 #'   ci_95, tau_mean, tau_ci_95, n_studies, effect_measure, model_type, fit,
@@ -119,9 +124,16 @@ bayesian_meta_analysis <- function(
 	seed = NULL,
 	adapt_delta = 0.95,
 	max_treedepth = 12,
+	backend = c("auto", "cmdstanr", "rstan"),
+	warn_convergence = c("auto", "always", "never"),
 	...
 ) {
 	effect_measure <- match.arg(effect_measure)
+	backend <- match.arg(backend)
+	warn_convergence <- match.arg(warn_convergence)
+	dots <- list(...)
+	# Avoid collisions with brms::brm() arguments we manage explicitly
+	dots$backend <- NULL
 
 	# Check for brms availability
 	if (!requireNamespace("brms", quietly = TRUE)) {
@@ -158,6 +170,12 @@ bayesian_meta_analysis <- function(
 	}
 	if (!is.numeric(sei)) {
 		ph_abort("'sei' must be numeric")
+	}
+	if (anyNA(yi)) {
+		ph_abort("'yi' must not contain NA values")
+	}
+	if (anyNA(sei)) {
+		ph_abort("'sei' must not contain NA values")
 	}
 	if (length(yi) != length(sei)) {
 		ph_abort("'yi' and 'sei' must have the same length")
@@ -252,6 +270,75 @@ bayesian_meta_analysis <- function(
 		study = study_labels
 	)
 
+	# Determine whether to emit convergence warnings
+	in_testthat <- identical(Sys.getenv("TESTTHAT"), "true")
+	emit_convergence_warnings <- switch(
+		warn_convergence,
+		always = TRUE,
+		never = FALSE,
+		auto = !in_testthat
+	)
+
+	# Determine Stan backend (prefer cmdstanr when available)
+	cmdstanr_ok <- FALSE
+	if (
+		backend %in%
+			c("auto", "cmdstanr") &&
+			requireNamespace("cmdstanr", quietly = TRUE)
+	) {
+		cmdstanr_ok <- !is.na(tryCatch(
+			cmdstanr::cmdstan_version(),
+			error = function(e) NA
+		))
+	}
+
+	brms_backend <- "rstan"
+	if (backend == "rstan") {
+		brms_backend <- "rstan"
+	} else if (backend == "cmdstanr") {
+		brms_backend <- if (cmdstanr_ok) "cmdstanr" else "rstan"
+	} else {
+		brms_backend <- if (cmdstanr_ok) "cmdstanr" else "rstan"
+	}
+
+	# Helper: optionally muffle common sampler warnings to keep logs readable
+	is_sampler_diagnostic_warning <- function(msg) {
+		patterns <- c(
+			"The largest R-hat is NA",
+			"R-hat",
+			"Bulk Effective Samples Size",
+			"Tail Effective Samples Size",
+			"Examine the pairs\\(\\) plot",
+			"divergent transition",
+			"There were.*divergent",
+			"bfmi",
+			"Running the chains for more iterations may help"
+		)
+		any(vapply(
+			patterns,
+			function(p) grepl(p, msg, ignore.case = TRUE),
+			logical(1)
+		))
+	}
+
+	run_brm <- function(args) {
+		# When warn_convergence is not explicitly "always", muffle known sampler
+		# warnings.
+		if (warn_convergence == "always") {
+			return(do.call(brms::brm, args))
+		}
+
+		withCallingHandlers(
+			do.call(brms::brm, args),
+			warning = function(w) {
+				msg <- conditionMessage(w)
+				if (is_sampler_diagnostic_warning(msg)) {
+					invokeRestart("muffleWarning")
+				}
+			}
+		)
+	}
+
 	# Build brms formula
 	# Random-effects meta-analysis: yi ~ 1 + (1|study), with known SE
 	# This is equivalent to a Bayesian random-effects model
@@ -287,22 +374,25 @@ bayesian_meta_analysis <- function(
 
 		# Fit model with only prior samples (no likelihood)
 		fit_prior <- tryCatch(
-			brms::brm(
-				formula = formula,
-				data = data,
-				prior = priors,
-				chains = chains,
-				iter = iter,
-				warmup = warmup,
-				seed = seed,
-				refresh = 0,
-				sample_prior = "only",
-				control = list(
-					adapt_delta = adapt_delta,
-					max_treedepth = max_treedepth
+			run_brm(c(
+				list(
+					formula = formula,
+					data = data,
+					prior = priors,
+					chains = chains,
+					iter = iter,
+					warmup = warmup,
+					seed = seed,
+					refresh = 0,
+					sample_prior = "only",
+					control = list(
+						adapt_delta = adapt_delta,
+						max_treedepth = max_treedepth
+					),
+					backend = brms_backend
 				),
-				...
-			),
+				dots
+			)),
 			error = function(e) {
 				ph_abort(sprintf(
 					"Prior predictive sampling failed. Stan/brms error: %s",
@@ -319,7 +409,7 @@ bayesian_meta_analysis <- function(
 
 		# Create prior predictive summary
 		prior_predictive_result <- list(
-			summary = list(
+			prior_summary = list(
 				intercept_mean = mean(prior_intercept),
 				intercept_sd = sd(prior_intercept),
 				intercept_median = stats::median(prior_intercept),
@@ -328,35 +418,38 @@ bayesian_meta_analysis <- function(
 					c(0.025, 0.25, 0.5, 0.75, 0.975)
 				)
 			),
-			samples = prior_samples,
+			prior_samples = as.matrix(prior_samples),
 			n_studies = k,
 			effect_measure = effect_measure
 		)
 
 		ph_inform(sprintf(
 			"Prior predictive check complete. Prior mean for intercept: %.3f (SD: %.3f)",
-			prior_predictive_result$summary$intercept_mean,
-			prior_predictive_result$summary$intercept_sd
+			prior_predictive_result$prior_summary$intercept_mean,
+			prior_predictive_result$prior_summary$intercept_sd
 		))
 	}
 
 	# Fit model for posterior inference
 	fit <- tryCatch(
-		brms::brm(
-			formula = formula,
-			data = data,
-			prior = priors,
-			chains = chains,
-			iter = iter,
-			warmup = warmup,
-			seed = seed,
-			refresh = 0,
-			control = list(
-				adapt_delta = adapt_delta,
-				max_treedepth = max_treedepth
+		run_brm(c(
+			list(
+				formula = formula,
+				data = data,
+				prior = priors,
+				chains = chains,
+				iter = iter,
+				warmup = warmup,
+				seed = seed,
+				refresh = 0,
+				control = list(
+					adapt_delta = adapt_delta,
+					max_treedepth = max_treedepth
+				),
+				backend = brms_backend
 			),
-			...
-		),
+			dots
+		)),
 		error = function(e) {
 			ph_abort(paste0(
 				"Bayesian meta-analysis sampling failed. Stan/brms error: ",
@@ -398,16 +491,18 @@ bayesian_meta_analysis <- function(
 	if (length(energy_vals) > 0) {
 		# Group by chain and compute BFMI
 		n_chains <- chains
-		samples_per_chain <- length(energy_vals) / n_chains
+		base <- length(energy_vals) %/% n_chains
+		rem <- length(energy_vals) %% n_chains
 		bfmi_values <- vapply(
 			seq_len(n_chains),
 			function(i) {
-				idx <- ((i - 1) * samples_per_chain + 1):(i * samples_per_chain)
-				e <- energy_vals[idx]
+				start <- (i - 1) * base + min(i - 1, rem) + 1
+				end <- start + base - 1 + as.integer(i <= rem)
+				e <- energy_vals[start:end]
 				if (length(e) < 2) {
 					return(NA_real_)
 				}
-				var(diff(e)) / var(e)
+				stats::var(diff(e)) / stats::var(e)
 			},
 			numeric(1)
 		)
@@ -424,8 +519,8 @@ bayesian_meta_analysis <- function(
 	)
 
 	# Generate convergence warnings
-	if (max_rhat > 1.01) {
-		ph_inform(sprintf(
+	if (emit_convergence_warnings && max_rhat > 1.01) {
+		ph_warn(sprintf(
 			paste0(
 				"WARNING: Max Rhat = %.3f > 1.01. ",
 				"This indicates potential convergence issues."
@@ -434,22 +529,22 @@ bayesian_meta_analysis <- function(
 		))
 	}
 
-	if (min_bulk_ess < 400) {
-		ph_inform(sprintf(
+	if (emit_convergence_warnings && min_bulk_ess < 400) {
+		ph_warn(sprintf(
 			"WARNING: Min bulk ESS = %.0f < 400. Consider running more iterations.",
 			min_bulk_ess
 		))
 	}
 
-	if (min_tail_ess < 400) {
-		ph_inform(sprintf(
+	if (emit_convergence_warnings && min_tail_ess < 400) {
+		ph_warn(sprintf(
 			"WARNING: Min tail ESS = %.0f < 400. Consider running more iterations.",
 			min_tail_ess
 		))
 	}
 
-	if (divergent_transitions > 0) {
-		ph_inform(sprintf(
+	if (emit_convergence_warnings && divergent_transitions > 0) {
+		ph_warn(sprintf(
 			paste0(
 				"WARNING: %d divergent transitions detected. ",
 				"Consider increasing adapt_delta."
@@ -458,8 +553,8 @@ bayesian_meta_analysis <- function(
 		))
 	}
 
-	if (any(bfmi_values < 0.3, na.rm = TRUE)) {
-		ph_inform(sprintf(
+	if (emit_convergence_warnings && any(bfmi_values < 0.3, na.rm = TRUE)) {
+		ph_warn(sprintf(
 			paste0(
 				"WARNING: Low BFMI detected (min = %.3f). ",
 				"This may indicate computational issues."
@@ -502,16 +597,20 @@ bayesian_meta_analysis <- function(
 	if (posterior_predictive) {
 		ph_inform("Generating posterior predictive check...")
 
+		# Cap pp_ndraws to available draws to avoid validation error
+		max_draws <- nrow(as.matrix(fit))
+		actual_ndraws <- min(pp_ndraws, max_draws)
+
 		# Generate pp_check plot
 		pp_check_plot <- brms::pp_check(
 			fit,
 			type = pp_check_type,
-			ndraws = pp_ndraws
+			ndraws = actual_ndraws
 		)
 
 		# Calculate Bayesian p-value using a simple discrepancy measure
 		# Using the mean as the discrepancy function
-		y_rep <- brms::posterior_predict(fit, draw_ids = 1:pp_ndraws)
+		y_rep <- brms::posterior_predict(fit, draw_ids = 1:actual_ndraws)
 
 		# Calculate Bayesian p-value: proportion of y_rep >= y
 		# This is a one-sided p-value for the discrepancy measure
@@ -544,7 +643,8 @@ bayesian_meta_analysis <- function(
 			bayes_p_value = overall_bayes_p,
 			type = pp_check_type,
 			ndraws = pp_ndraws,
-			individual_p_values = bayes_p_value
+			individual_p_values = bayes_p_value,
+			pp_check_plot = pp_check_plot
 		)
 
 		ph_inform(sprintf(
@@ -601,7 +701,6 @@ bayesian_meta_analysis <- function(
 
 	if (posterior_predictive) {
 		result$posterior_predictive <- posterior_predictive_result
-		result$pp_check_plot <- pp_check_plot
 	}
 
 	class(result) <- c("bayesian_meta_result", class(result))
@@ -615,7 +714,7 @@ bayesian_meta_analysis <- function(
 #'
 #' @param bayesian_result A bayesian_meta_result object from
 #'   bayesian_meta_analysis()
-#' @param parameters Character vector of parameters to plot. Default:
+#' @param pars Character vector of parameters to plot. Default:
 #'   c("b_Intercept", "sd_study__Intercept")
 #' @param chains Integer. Number of chains to plot. Default: NULL (all chains)
 #' @param combine_plots Logical. If TRUE, combine all parameters into one plot.
@@ -633,7 +732,7 @@ bayesian_meta_analysis <- function(
 #' @export
 create_bayesian_trace_plots <- function(
 	bayesian_result,
-	parameters = c("b_Intercept", "sd_study__Intercept"),
+	pars = c("b_Intercept", "sd_study__Intercept"),
 	chains = NULL,
 	combine_plots = TRUE,
 	...
@@ -662,22 +761,28 @@ create_bayesian_trace_plots <- function(
 	}
 
 	# Validate parameters exist in the model
-	available_params <- brms::parnames(fit)
-	invalid_params <- parameters[!parameters %in% available_params]
+	available_params <- brms::variables(fit)
+	invalid_params <- pars[!pars %in% available_params]
 
 	if (length(invalid_params) > 0) {
 		ph_inform(sprintf(
 			"The following parameters are not in the model and will be skipped: %s",
 			paste(invalid_params, collapse = ", ")
 		))
-		parameters <- parameters[parameters %in% available_params]
+		pars <- pars[pars %in% available_params]
 
-		if (length(parameters) == 0) {
+		if (length(pars) == 0) {
 			ph_abort(
 				"None of the specified parameters are available in the model."
 			)
 		}
 	}
+
+	ph_inform(sprintf(
+		"Generating trace plots for %d parameter(s): %s",
+		length(pars),
+		paste(pars, collapse = ", ")
+	))
 
 	# Handle chains parameter
 	n_chains <- brms::nchains(fit)
@@ -697,12 +802,6 @@ create_bayesian_trace_plots <- function(
 		}
 	}
 
-	ph_inform(sprintf(
-		"Generating trace plots for %d parameter(s): %s",
-		length(parameters),
-		paste(parameters, collapse = ", ")
-	))
-
 	# Generate trace plots
 	if (combine_plots) {
 		# Combine all parameters into one plot
@@ -712,14 +811,15 @@ create_bayesian_trace_plots <- function(
 
 		plot(
 			fit,
-			pars = parameters,
+			variable = pars,
+			ask = FALSE,
 			...
 		)
 
 		# Try using mcmc_trace from bayesplot for better control
 		if (requireNamespace("bayesplot", quietly = TRUE)) {
 			# Get posterior draws
-			posterior <- brms::as_draws_df(fit, variable = parameters)
+			posterior <- brms::as_draws_df(fit, variable = pars)
 
 			# Filter chains if specified
 			if (!is.null(chains)) {
@@ -731,12 +831,12 @@ create_bayesian_trace_plots <- function(
 
 			# Create combined trace plot using bayesplot
 			if (is.null(chain_ids)) {
-				trace_plot <- bayesplot::mcmc_trace(posterior, pars = parameters)
+				trace_plot <- bayesplot::mcmc_trace(posterior, pars = pars)
 			} else {
 				trace_plot <- bayesplot::mcmc_trace(
 					posterior,
-					pars = parameters,
-					facet_args = list(nrow = length(parameters))
+					pars = pars,
+					facet_args = list(nrow = length(pars))
 				)
 			}
 
@@ -745,7 +845,7 @@ create_bayesian_trace_plots <- function(
 		} else {
 			# Fallback to brms::plot if bayesplot not available
 			# This will print directly to the graphics device
-			plot(fit, pars = parameters, ask = FALSE, ...)
+			plot(fit, pars = pars, ask = FALSE, ...)
 
 			ph_inform(paste0(
 				"Trace plots rendered using brms. Consider installing 'bayesplot' ",
@@ -766,18 +866,18 @@ create_bayesian_trace_plots <- function(
 		}
 
 		# Get posterior draws
-		posterior <- brms::as_draws_df(fit, variable = parameters)
+		posterior <- brms::as_draws_df(fit, variable = pars)
 
 		# Create individual plots for each parameter
-		plot_list <- lapply(parameters, function(param) {
+		plot_list <- lapply(pars, function(param) {
 			bayesplot::mcmc_trace(posterior, pars = param)
 		})
 
-		names(plot_list) <- parameters
+		names(plot_list) <- pars
 
 		ph_inform(sprintf(
 			"Generated %d individual trace plots",
-			length(parameters)
+			length(pars)
 		))
 
 		return(plot_list)
@@ -901,16 +1001,7 @@ prior_sensitivity_analysis <- function(
 
 	# Run bayesian_meta_analysis for each scenario
 	results_list <- list()
-	comparison_df <- data.frame(
-		scenario = character(),
-		posterior_mean = numeric(),
-		posterior_median = numeric(),
-		ci_95_lower = numeric(),
-		ci_95_upper = numeric(),
-		tau_mean = numeric(),
-		prob_positive = numeric(),
-		stringsAsFactors = FALSE
-	)
+	rows_list <- vector("list", length(prior_scenarios))
 
 	for (i in seq_along(prior_scenarios)) {
 		scenario_name <- scenario_names[i]
@@ -976,22 +1067,34 @@ prior_sensitivity_analysis <- function(
 
 		if (!is.null(result)) {
 			results_list[[scenario_name]] <- result
-
-			# Add to comparison dataframe
-			comparison_df <- rbind(
-				comparison_df,
-				data.frame(
-					scenario = scenario_name,
-					posterior_mean = result$posterior_mean,
-					posterior_median = result$posterior_median,
-					ci_95_lower = result$ci_95[1],
-					ci_95_upper = result$ci_95[2],
-					tau_mean = result$tau_mean,
-					prob_positive = result$prob_positive,
-					stringsAsFactors = FALSE
-				)
+			rows_list[[i]] <- data.frame(
+				scenario = scenario_name,
+				posterior_mean = result$posterior_mean,
+				posterior_median = result$posterior_median,
+				ci_95_lower = result$ci_95[1],
+				ci_95_upper = result$ci_95[2],
+				tau_mean = result$tau_mean,
+				prob_positive = result$prob_positive,
+				stringsAsFactors = FALSE
 			)
 		}
+	}
+
+	# Combine all rows at once
+	rows_list <- rows_list[!vapply(rows_list, is.null, logical(1))]
+	if (length(rows_list) > 0) {
+		comparison_df <- do.call(rbind, rows_list)
+	} else {
+		comparison_df <- data.frame(
+			scenario = character(),
+			posterior_mean = numeric(),
+			posterior_median = numeric(),
+			ci_95_lower = numeric(),
+			ci_95_upper = numeric(),
+			tau_mean = numeric(),
+			prob_positive = numeric(),
+			stringsAsFactors = FALSE
+		)
 	}
 
 	# Calculate sensitivity statistics
@@ -1081,6 +1184,7 @@ prior_sensitivity_analysis <- function(
 			ci_coverage_consistency = ci_coverage_pct,
 			ci_includes_threshold_count = sum(ci_includes_threshold),
 			total_scenarios = nrow(comparison_df),
+			robustness = robustness_interpretation,
 			robustness_interpretation = robustness_interpretation,
 			summary_text = summary_text
 		)
@@ -1295,10 +1399,10 @@ format_bayesian_result_iqwig <- function(
 	# Return formatted result list
 	result <- list(
 		estimate = estimate_formatted,
-		ci = ci_formatted,
+		ci_95 = ci_formatted,
 		tau = tau_formatted,
 		tau_ci = tau_ci_formatted,
-		probability = probability_text,
+		probability_statement = probability_text,
 		interpretation = interpretation_text,
 		full_text = full_text,
 		# Include raw values for further use
@@ -1450,8 +1554,8 @@ create_bayesian_forest_plot_iqwig <- function(
 		study_ci_upper_plot <- exp(study_ci_upper)
 
 		pooled_estimate_plot <- bayesian_result$posterior_median
-		pooled_ci_lower_plot <- exp(bayesian_result$ci_95[1])
-		pooled_ci_upper_plot <- exp(bayesian_result$ci_95[2])
+		pooled_ci_lower_plot <- bayesian_result$ci_95[1]
+		pooled_ci_upper_plot <- bayesian_result$ci_95[2]
 	} else {
 		study_yi_plot <- study_yi
 		study_ci_lower_plot <- study_ci_lower
@@ -1510,6 +1614,16 @@ create_bayesian_forest_plot_iqwig <- function(
 			pred_log_upper <- log(pooled_estimate_plot) +
 				2 * sqrt(tau_estimate^2 + mean(study_sei^2))
 			pred_interval <- c(exp(pred_log_lower), exp(pred_log_upper))
+		}
+	} else if (show_prediction_interval && !is_ratio) {
+		# Prediction interval for difference measures
+		tau_estimate <- bayesian_result$tau_mean
+		if (!is.na(tau_estimate) && tau_estimate > 0) {
+			pred_lower <- pooled_estimate_plot -
+				2 * sqrt(tau_estimate^2 + mean(study_sei^2))
+			pred_upper <- pooled_estimate_plot +
+				2 * sqrt(tau_estimate^2 + mean(study_sei^2))
+			pred_interval <- c(pred_lower, pred_upper)
 		}
 	}
 

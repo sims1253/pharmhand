@@ -2,15 +2,50 @@
 % Please edit documentation in R/reporting_engine.R
 \name{create_clinical_table}
 \alias{create_clinical_table}
-\title{Helper to create a ClinicalTable from AnalysisResults}
+\title{Create HTA-Style Table
+Create Clinical Table (Factory Function)}
 \usage{
-create_clinical_table(res, title = "")
+create_clinical_table(
+  data,
+  type,
+  title = NULL,
+  footnotes = character(),
+  metadata = list(),
+  col_widths = NULL,
+  autofit = ph_default("autofit")
+)
 }
 \arguments{
-\item{res}{AnalysisResults object}
+\item{data}{Data frame to display, or an \code{AnalysisResults} object (in which
+case \verb{@stats} is used).}
 
-\item{title}{Character string for table title}
+\item{type}{Character string for table type (e.g., "demographics", "ae_soc")}
+
+\item{title}{Table title}
+
+\item{footnotes}{Character vector of footnotes}
+
+\item{metadata}{List of additional metadata}
+
+\item{col_widths}{Named numeric vector of column widths (optional)}
+
+\item{autofit}{Logical, whether to autofit column widths}
+}
+\value{
+A ClinicalTable object
 }
 \description{
-Helper to create a ClinicalTable from AnalysisResults
+Convenience factory function that creates a properly formatted clinical
+table with flextable styling. Reduces boilerplate code across the package.
+}
+\examples{
+\dontrun{
+df <- data.frame(Treatment = c("A", "B"), N = c(100, 95))
+table <- create_clinical_table(
+  data = df,
+  type = "summary",
+  title = "Treatment Summary",
+  footnotes = "ITT Population"
+)
+}
 }

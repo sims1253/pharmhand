@@ -69,8 +69,9 @@ test_that("calculate_mcid wrapper works with both methods", {
 		method = "both"
 	)
 
-	expect_true("anchor" %in% names(result))
-	expect_true("distribution" %in% names(result))
+	expect_true(length(result@anchor) > 0)
+	expect_true(length(result@distribution) > 0)
+	expect_equal(result@method, "both")
 })
 
 test_that("create_ttd_analysis creates time-to-deterioration analysis", {
@@ -504,45 +505,25 @@ test_that("calculate_mcid with anchor only", {
 		method = "anchor"
 	)
 
-	expect_true("anchor" %in% names(result))
-	expect_false("distribution" %in% names(result))
+	expect_true(!is.null(result@anchor) && length(result@anchor) > 0)
+	expect_true(length(result@distribution) == 0) # Empty list, not populated
+	expect_equal(result@method, "anchor")
 })
 
 test_that("calculate_mcid with distribution only", {
 	data <- data.frame(
-		CHG = c(-5, -3, -4, -6, -2, 0, 2, 5, 3, 4),
-		BASE = abs(c(-5, -3, -4, -6, -2, 0, 2, 5, 3, 4)) + 50
+		CHG = c(-5, -3, -4, -6, -2, 0, 2, 5, 3, 4)
 	)
 
 	result <- calculate_mcid(
 		data = data,
 		score_var = "CHG",
-		baseline_var = "BASE",
 		method = "distribution"
 	)
 
-	expect_false("anchor" %in% names(result))
-	expect_true("distribution" %in% names(result))
-})
-
-test_that("calculate_mcid with both methods", {
-	data <- data.frame(
-		CHG = c(-5, -3, -4, -6, -2, 0, 2, 5, 3, 4),
-		PGIC = c(rep("Minimally Improved", 5), rep("No Change", 5)),
-		BASE = abs(c(-5, -3, -4, -6, -2, 0, 2, 5, 3, 4)) + 50
-	)
-
-	result <- calculate_mcid(
-		data = data,
-		score_var = "CHG",
-		anchor_var = "PGIC",
-		baseline_var = "BASE",
-		method = "both"
-	)
-
-	expect_true("anchor" %in% names(result))
-	expect_true("distribution" %in% names(result))
-	expect_equal(result$method, "both")
+	expect_true(length(result@anchor) == 0) # Empty list when not used
+	expect_true(length(result@distribution) > 0) # Populated
+	expect_equal(result@method, "distribution")
 })
 
 test_that("calculate_mcid requires anchor_var for anchor method", {
@@ -571,8 +552,8 @@ test_that("calculate_mcid uses score_var if baseline_var missing", {
 		method = "distribution"
 	)
 
-	expect_true("distribution" %in% names(result))
-	expect_true(!is.na(result$distribution$half_sd))
+	expect_true(!is.null(result@distribution))
+	expect_true(!is.na(result@distribution$half_sd))
 })
 
 # Edge Cases for TTD Analysis ----
