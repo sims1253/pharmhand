@@ -5,15 +5,7 @@
 # =============================================================================
 
 test_that("network_meta analyzes treatment network", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
-
-	result <- network_meta(nma_data, effect_measure = "hr")
+	result <- network_meta(.nma_test_data_3arm, effect_measure = "hr")
 
 	expect_true(S7::S7_inherits(result, NMAResult))
 	expect_true("comparisons" %in% names(S7::props(result)))
@@ -22,30 +14,15 @@ test_that("network_meta analyzes treatment network", {
 })
 
 test_that("network_meta handles incomplete networks", {
-	# Data with studies that may have incomplete information
-	incomplete_data <- data.frame(
-		study = c("S1", "S2", "S3", "S4"),
-		treat1 = c("A", "B", "A", "D"),
-		treat2 = c("B", "C", "C", "E"),
-		effect = log(c(0.75, 0.90, 0.80, 0.95)),
-		se = c(0.12, 0.15, 0.18, 0.20)
-	)
-
 	# Should still produce results even if network not fully connected
-	result <- network_meta(incomplete_data, effect_measure = "hr")
+	result <- network_meta(.nma_test_data_incomplete, effect_measure = "hr")
 
 	expect_true(S7::S7_inherits(result, NMAResult))
 	expect_true("network" %in% names(S7::props(result)))
 })
 
 test_that("network_meta handles custom reference treatment", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	result_ref_b <- network_meta(nma_data, reference = "B", effect_measure = "hr")
 
@@ -54,13 +31,7 @@ test_that("network_meta handles custom reference treatment", {
 })
 
 test_that("network_meta handles fixed-effect model", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	result <- network_meta(nma_data, effect_measure = "hr", model = "fixed")
 
@@ -73,13 +44,7 @@ test_that("network_meta handles fixed-effect model", {
 # =============================================================================
 
 test_that("create_network_plot creates visualization", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_res <- network_meta(nma_data, effect_measure = "hr")
 	plot <- create_network_plot(nma_res)
@@ -89,13 +54,7 @@ test_that("create_network_plot creates visualization", {
 })
 
 test_that("create_network_plot supports different layouts", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_res <- network_meta(nma_data, effect_measure = "hr")
 
@@ -113,13 +72,7 @@ test_that("create_network_plot supports different layouts", {
 # =============================================================================
 
 test_that("create_league_table creates ClinicalTable", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_res <- network_meta(nma_data, effect_measure = "hr")
 	table <- create_league_table(nma_res)
@@ -129,13 +82,7 @@ test_that("create_league_table creates ClinicalTable", {
 })
 
 test_that("create_league_table includes comparison matrix", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_res <- network_meta(nma_data, effect_measure = "hr")
 	table <- create_league_table(nma_res)
@@ -150,13 +97,7 @@ test_that("create_league_table includes comparison matrix", {
 # =============================================================================
 
 test_that("calculate_sucra computes treatment rankings", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_res <- network_meta(nma_data, effect_measure = "hr")
 	sucra <- calculate_sucra(nma_res)
@@ -172,13 +113,7 @@ test_that("calculate_sucra computes treatment rankings", {
 # =============================================================================
 
 test_that("node_splitting accepts valid nma_result input", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_result <- network_meta(nma_data, effect_measure = "hr")
 	ns_result <- node_splitting(nma_result)
@@ -268,13 +203,7 @@ test_that("node_splitting handles network with insufficient comparisons", {
 })
 
 test_that("node_splitting accepts custom conf_level parameter", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_result <- network_meta(nma_data, effect_measure = "hr")
 
@@ -289,13 +218,7 @@ test_that("node_splitting accepts custom conf_level parameter", {
 })
 
 test_that("node_splitting includes note about simplified implementation", {
-	nma_data <- data.frame(
-		study = c("S1", "S2", "S3"),
-		treat1 = c("A", "B", "A"),
-		treat2 = c("B", "C", "C"),
-		effect = log(c(0.75, 0.90, 0.80)),
-		se = c(0.12, 0.15, 0.18)
-	)
+	nma_data <- .nma_test_data_3arm
 
 	nma_result <- network_meta(nma_data, effect_measure = "hr")
 	ns_result <- node_splitting(nma_result)

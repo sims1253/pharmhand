@@ -79,13 +79,12 @@ network_meta <- function(
 	}
 
 	# Rename columns for internal use
-	df <- data.frame(
+	df <- tibble::tibble(
 		study = data[[study_var]],
 		treat1 = data[[treat1_var]],
 		treat2 = data[[treat2_var]],
 		effect = data[[effect_var]],
-		se = data[[se_var]],
-		stringsAsFactors = FALSE
+		se = data[[se_var]]
 	)
 
 	# Validate numeric columns
@@ -110,7 +109,7 @@ network_meta <- function(
 
 	# Build network structure
 	edges <- unique(df[, c("treat1", "treat2")])
-	edges$n_studies <- sapply(seq_len(nrow(edges)), function(i) {
+	edges$n_studies <- purrr::map_int(seq_len(nrow(edges)), function(i) {
 		sum(df$treat1 == edges$treat1[i] & df$treat2 == edges$treat2[i])
 	})
 
@@ -238,24 +237,23 @@ network_meta <- function(
 	alpha <- 1 - conf_level
 	z <- stats::qnorm(1 - alpha / 2)
 
-	comparison_table <- data.frame(
+	comparison_table <- tibble::tibble(
 		treatment = names(all_results),
 		vs = reference,
-		estimate = sapply(all_results, function(x) {
+		estimate = purrr::map_dbl(all_results, function(x) {
 			if (is_ratio) exp(x$estimate) else x$estimate
 		}),
-		ci_lower = sapply(all_results, function(x) {
+		ci_lower = purrr::map_dbl(all_results, function(x) {
 			val <- x$estimate - z * x$se
 			if (is_ratio) exp(val) else val
 		}),
-		ci_upper = sapply(all_results, function(x) {
+		ci_upper = purrr::map_dbl(all_results, function(x) {
 			val <- x$estimate + z * x$se
 			if (is_ratio) exp(val) else val
 		}),
-		se = sapply(all_results, function(x) x$se),
-		n_studies = sapply(all_results, function(x) x$n_studies),
-		evidence = sapply(all_results, function(x) x$evidence),
-		stringsAsFactors = FALSE
+		se = purrr::map_dbl(all_results, function(x) x$se),
+		n_studies = purrr::map_int(all_results, function(x) x$n_studies),
+		evidence = purrr::map_chr(all_results, function(x) x$evidence)
 	)
 
 	# Lower is typically better (HR/OR/RR < 1, or negative differences)
@@ -263,19 +261,18 @@ network_meta <- function(
 	comparison_table$rank <- rank(comparison_table$estimate)
 
 	# Add reference
-	ref_row <- data.frame(
+	ref_row <- tibble::tibble(
 		treatment = reference,
 		vs = reference,
 		estimate = if (is_ratio) 1 else 0,
 		ci_lower = if (is_ratio) 1 else 0,
 		ci_upper = if (is_ratio) 1 else 0,
 		se = 0,
-		n_studies = NA,
+		n_studies = NA_integer_,
 		evidence = "reference",
-		rank = NA,
-		stringsAsFactors = FALSE
+		rank = NA_integer_
 	)
-	comparison_table <- rbind(ref_row, comparison_table)
+	comparison_table <- dplyr::bind_rows(ref_row, comparison_table)
 
 	NMAResult(
 		comparisons = comparison_table,
@@ -384,10 +381,9 @@ node_splitting <- function(
 
 	if (length(results) == 0) {
 		return(list(
-			results = data.frame(
-				comparison = character(0),
-				direct_estimate = numeric(0),
-				stringsAsFactors = FALSE
+			results = tibble::tibble(
+				comparison = character(),
+				direct_estimate = numeric()
 			),
 			effect_measure = effect_measure,
 			note = "No comparisons with both direct and indirect evidence"
@@ -419,10 +415,8 @@ node_splitting <- function(
 #'   Set to NULL for non-deterministic results.
 #'
 #' @return List with rankings, SUCRA/P-scores, and rankogram data
-#' @note When `seed` is not NULL, the global random number generator state is
-#'   modified via `set.seed()`. If you need to preserve the RNG state, either
-#'   set `seed = NULL` and manage seeding externally, or save/restore
-#'   `.Random.seed` before and after calling this function.
+#' @note RNG state is isolated via `withr::with_seed` during simulation,
+#'   so calling this function does not alter the global RNG state.
 #' @export
 #' @examples
 #' # Calculate SUCRA rankings
@@ -476,21 +470,28 @@ calculate_sucra <- function(
 	rank_matrix <- matrix(0, nrow = n_sim, ncol = n_treat)
 	colnames(rank_matrix) <- treatments
 
-	if (!is.null(seed)) {
-		set.seed(seed)
-	}
-	for (sim in seq_len(n_sim)) {
-		# Sample from normal distribution
-		sampled <- stats::rnorm(n_treat, mean = estimates, sd = ses)
+	simulate_ranks <- function() {
+		rank_matrix_local <- rank_matrix
+		for (sim in seq_len(n_sim)) {
+			# Sample from normal distribution
+			sampled <- stats::rnorm(n_treat, mean = estimates, sd = ses)
 
-		# Rank (1 = best)
-		if (lower_better) {
-			ranks <- rank(sampled)
-		} else {
-			ranks <- rank(-sampled)
+			# Rank (1 = best)
+			if (lower_better) {
+				ranks <- rank(sampled)
+			} else {
+				ranks <- rank(-sampled)
+			}
+
+			rank_matrix_local[sim, ] <- ranks
 		}
+		rank_matrix_local
+	}
 
-		rank_matrix[sim, ] <- ranks
+	rank_matrix <- if (!is.null(seed)) {
+		withr::with_seed(seed, simulate_ranks())
+	} else {
+		simulate_ranks()
 	}
 
 	# Calculate ranking probabilities
@@ -735,9 +736,7 @@ create_league_table <- function(
 	}
 
 	# Convert to data frame
-	league_df <- as.data.frame(league_matrix)
-	league_df <- cbind(Treatment = rownames(league_df), league_df)
-	rownames(league_df) <- NULL
+	league_df <- tibble::as_tibble(league_matrix, rownames = "Treatment")
 
 	ClinicalTable(
 		data = league_df,

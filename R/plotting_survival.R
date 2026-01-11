@@ -289,14 +289,21 @@ create_km_plot <- function(
 		ggplot2::scale_y_continuous(
 			labels = function(x) paste0(round(x * 100, 1), "%"),
 			limits = c(0, 1)
-		) +
-		ggplot2::labs(
-			title = title,
-			x = xlab,
-			y = ylab,
-			color = "Treatment",
-			fill = "Treatment"
-		) +
+		)
+
+	# Set labels - only include fill if CI bands are shown
+	labs_list <- list(
+		title = title,
+		x = xlab,
+		y = ylab,
+		color = "Treatment"
+	)
+	if (show_ci) {
+		labs_list$fill <- "Treatment"
+	}
+
+	p <- p +
+		do.call(ggplot2::labs, labs_list) +
 		.pharmhand_theme(base_size = base_size) +
 		ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
@@ -655,14 +662,21 @@ create_ae_cumulative_incidence_plot <- function(
 		ggplot2::scale_y_continuous(
 			labels = function(x) paste0(round(x * 100, 1), "%"),
 			limits = c(0, 1)
-		) +
-		ggplot2::labs(
-			title = title,
-			x = xlab,
-			y = ylab,
-			color = "Treatment",
-			fill = "Treatment"
-		) +
+		)
+
+	# Set labels - only include fill if CI bands are shown
+	labs_list <- list(
+		title = title,
+		x = xlab,
+		y = ylab,
+		color = "Treatment"
+	)
+	if (show_ci) {
+		labs_list$fill <- "Treatment"
+	}
+
+	p <- p +
+		do.call(ggplot2::labs, labs_list) +
 		.pharmhand_theme(base_size = base_size) +
 		ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 

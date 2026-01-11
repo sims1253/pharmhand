@@ -169,7 +169,7 @@ write_docx_ClinicalReport <- S7::method(
 #' @param res AnalysisResults object
 #' @param title Character string for table title
 #' @export
-create_clinical_table <- function(res, title = "") {
+clinical_table_from_results <- function(res, title = "") {
 	ft <- as_flextable(res)
 	ClinicalTable(
 		data = res@stats,
@@ -508,6 +508,65 @@ theme_gba <- function(
 }
 
 #' Create HTA-Style Table
+#' Create Clinical Table (Factory Function)
+#'
+#' Convenience factory function that creates a properly formatted clinical
+#' table with flextable styling. Reduces boilerplate code across the package.
+#'
+#' @param data Data frame to display, or an `AnalysisResults` object (in which
+#'   case `@stats` is used).
+#' @param type Character string for table type (e.g., "demographics", "ae_soc")
+#' @param title Table title
+#' @param footnotes Character vector of footnotes
+#' @param metadata List of additional metadata
+#' @param col_widths Named numeric vector of column widths (optional)
+#' @param autofit Logical, whether to autofit column widths
+#'
+#' @return A ClinicalTable object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' df <- data.frame(Treatment = c("A", "B"), N = c(100, 95))
+#' table <- create_clinical_table(
+#'   data = df,
+#'   type = "summary",
+#'   title = "Treatment Summary",
+#'   footnotes = "ITT Population"
+#' )
+#' }
+create_clinical_table <- function(
+	data,
+	type,
+	title = NULL,
+	footnotes = character(),
+	metadata = list(),
+	col_widths = NULL,
+	autofit = ph_default("autofit")
+) {
+	if (S7::S7_inherits(data, AnalysisResults)) {
+		data <- data@stats
+	}
+
+	# Create flextable
+	ft <- create_hta_table(
+		data = data,
+		title = title,
+		footnotes = footnotes,
+		col_widths = col_widths,
+		autofit = autofit
+	)
+
+	# Wrap in ClinicalTable
+	ClinicalTable(
+		data = data,
+		flextable = ft,
+		type = type,
+		title = title,
+		metadata = metadata
+	)
+}
+
 #'
 #' Create a flextable formatted for HTA/AMNOG submissions.
 #'
@@ -524,7 +583,7 @@ create_hta_table <- function(
 	title = NULL,
 	footnotes = character(),
 	col_widths = NULL,
-	autofit = TRUE
+	autofit = ph_default("autofit")
 ) {
 	ft <- flextable::flextable(data)
 
@@ -662,4 +721,191 @@ layered_to_flextable <- function(x, style = "clinical", ...) {
 	}
 
 	ft
+}
+
+# =============================================================================
+# Workflow Helper Functions
+# =============================================================================
+
+#' Quick Demographics Report
+#'
+#' High-level convenience function to generate a demographics report from
+#' ADSL data in a single call. Creates demographics table and writes to Word.
+#'
+#' @param adsl_data Data frame or ADaMData object containing ADSL data
+#' @param output Character string output file path (e.g., "demographics.docx")
+#' @param title Character string report title
+#' @param trt_var Character string treatment variable name
+#' @param include_title Logical, include title page
+#' @param ... Additional arguments passed to create_demographics_table()
+#'
+#' @return Invisibly returns the ClinicalReport object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Quick demographics report in one line
+#' quick_demographics_report(adsl_df, "demo.docx")
+#'
+#' # With custom settings
+#' quick_demographics_report(
+#'   adsl_df,
+#'   "demo.docx",
+#'   title = "Study XYZ Demographics",
+#'   trt_var = "ARM"
+#' )
+#' }
+quick_demographics_report <- function(
+	adsl_data,
+	output,
+	title = "Demographics and Baseline Characteristics",
+	trt_var = ph_default("trt_var"),
+	include_title = TRUE,
+	...
+) {
+	# Auto-coerce if needed
+	if (is.data.frame(adsl_data) && !S7::S7_inherits(adsl_data, ADaMData)) {
+		adsl_data <- ADaMData(data = adsl_data, domain = "ADSL")
+	}
+
+	# Create demographics table
+	demo_table <- create_demographics_table(
+		adsl_data = adsl_data,
+		title = title,
+		trt_var = trt_var,
+		...
+	)
+
+	# Create report
+	report <- ClinicalReport(
+		study_id = "QUICK_REPORT",
+		study_title = title
+	)
+
+	# Add demographics section
+	section <- ReportSection(
+		title = title,
+		section_type = "demographics",
+		content = list(demo = demo_table)
+	)
+	report <- add_section(report, section)
+
+	# Write to Word
+	generate_word(report, output, include_title = include_title)
+
+	invisible(report)
+}
+
+#' Quick Safety Report
+#'
+#' High-level convenience function to generate a safety report from ADAE/ADSL
+#' data in a single call. Creates multiple safety tables and writes to Word.
+#'
+#' @param adae Data frame containing ADAE data
+#' @param adsl Data frame containing ADSL data (optional, for denominators)
+#' @param output Character string output file path (e.g., "safety.docx")
+#' @param title Character string report title
+#' @param trt_var Character string treatment variable name
+#' @param include_overview Logical, include AE overview table
+#' @param include_soc Logical, include SOC table
+#' @param include_soc_pt Logical, include SOC/PT hierarchical table
+#' @param include_sae Logical, include SAE table
+#' @param include_title Logical, include title page
+#' @param ... Additional arguments passed to table functions
+#'
+#' @return Invisibly returns the ClinicalReport object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Quick safety report with default tables
+#' quick_safety_report(adae_df, adsl_df, "safety.docx")
+#'
+#' # Custom configuration
+#' quick_safety_report(
+#'   adae_df, adsl_df,
+#'   "safety.docx",
+#'   title = "Study XYZ Safety Analysis",
+#'   include_soc_pt = FALSE
+#' )
+#' }
+quick_safety_report <- function(
+	adae,
+	adsl = NULL,
+	output,
+	title = "Safety Analysis",
+	trt_var = ph_default("trt_var"),
+	include_overview = TRUE,
+	include_soc = TRUE,
+	include_soc_pt = FALSE,
+	include_sae = TRUE,
+	include_title = TRUE,
+	...
+) {
+	# Create report
+	report <- ClinicalReport(
+		study_id = "QUICK_SAFETY",
+		study_title = title
+	)
+
+	content_list <- list()
+
+	# Add overview table
+	if (include_overview) {
+		content_list$overview <- create_ae_summary_table(
+			adae = adae,
+			adsl = adsl,
+			type = "overview",
+			trt_var = trt_var,
+			...
+		)
+	}
+
+	# Add SOC table
+	if (include_soc) {
+		content_list$soc <- create_ae_summary_table(
+			adae = adae,
+			adsl = adsl,
+			type = "soc",
+			trt_var = trt_var,
+			...
+		)
+	}
+
+	# Add SOC/PT table
+	if (include_soc_pt) {
+		content_list$soc_pt <- create_ae_summary_table(
+			adae = adae,
+			adsl = adsl,
+			type = "soc_pt",
+			trt_var = trt_var,
+			...
+		)
+	}
+
+	# Add SAE table
+	if (include_sae) {
+		content_list$sae <- create_ae_summary_table(
+			adae = adae,
+			adsl = adsl,
+			type = "sae",
+			trt_var = trt_var,
+			...
+		)
+	}
+
+	# Add safety section
+	if (length(content_list) > 0) {
+		section <- ReportSection(
+			title = "Adverse Events",
+			section_type = "safety",
+			content = content_list
+		)
+		report <- add_section(report, section)
+	}
+
+	# Write to Word
+	generate_word(report, output, include_title = include_title)
+
+	invisible(report)
 }

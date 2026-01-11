@@ -67,7 +67,7 @@ test_that("create_meta_forest_plot shows elements when enabled", {
 	expect_equal(plot_full@plot$labels$title, "Full Feature Plot")
 
 	# Size guide should be present when show_weights=TRUE
-	expect_true("size" %in% names(plot_full@plot$guides))
+	expect_true(!is.null(plot_full@plot$scales$get_scales("size")))
 
 	# Caption should be present when show_heterogeneity=TRUE
 	expect_true("caption" %in% names(plot_full@plot$labels))

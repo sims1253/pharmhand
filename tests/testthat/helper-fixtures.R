@@ -2,6 +2,121 @@
 #'
 #' Helper functions to create mock data for testing clinical study functions.
 
+# ==============================================================================
+# Shared Meta-Analysis Test Data
+# ==============================================================================
+
+# Standard meta-analysis test vectors for hazard ratio (HR) analyses
+.meta_yi_hr <- log(c(0.75, 0.82, 0.68, 0.91, 0.77))
+.meta_sei_hr <- c(0.12, 0.15, 0.18, 0.14, 0.11)
+
+# Standard meta-analysis test vectors for mean difference (MD) analyses
+.meta_yi_md <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+.meta_sei_md <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+# Smaller dataset for quick tests (3 studies)
+.meta_yi_hr_small <- log(c(0.75, 0.82, 0.68))
+.meta_sei_hr_small <- c(0.12, 0.15, 0.18)
+
+# Variable effect sizes for heterogeneity tests
+.meta_yi_md_variable <- c(0.5, 0.8, 0.3, 1.0, 0.6)
+.meta_sei_md_variable <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+
+# Different effect measures for testing
+.meta_yi_or <- c(0.3, 0.5, 0.7, 0.4, 0.6)
+.meta_sei_or <- c(0.15, 0.2, 0.18, 0.22, 0.17)
+
+# Standard NMA test data (3-arm network)
+.nma_test_data_3arm <- data.frame(
+	study = c("S1", "S2", "S3"),
+	treat1 = c("A", "B", "A"),
+	treat2 = c("B", "C", "C"),
+	effect = log(c(0.75, 0.90, 0.80)),
+	se = c(0.12, 0.15, 0.18),
+	stringsAsFactors = FALSE
+)
+
+# Incomplete network for edge case testing
+.nma_test_data_incomplete <- data.frame(
+	study = c("S1", "S2", "S3", "S4"),
+	treat1 = c("A", "B", "A", "D"),
+	treat2 = c("B", "C", "C", "E"),
+	effect = log(c(0.75, 0.90, 0.80, 0.95)),
+	se = c(0.12, 0.15, 0.18, 0.20),
+	stringsAsFactors = FALSE
+)
+
+# ==============================================================================
+# Shared Test Configuration Data
+# ==============================================================================
+
+# Cached shared test configuration
+.shared_test_config <- NULL
+
+#' Get shared test configuration (cached for performance)
+#'
+#' @return Test configuration list
+get_shared_test_config <- function() {
+	if (is.null(.shared_test_config)) {
+		.shared_test_config <<- create_test_config()
+	}
+	.shared_test_config
+}
+
+# ==============================================================================
+# Shared Mock Clinical Trial Data (Cached for Performance)
+# ==============================================================================
+
+# Cached shared datasets for common test scenarios
+.shared_adsl_10 <- NULL
+.shared_adae_10 <- NULL
+.shared_adsl_20 <- NULL
+
+#' Get shared ADSL dataset (cached for performance)
+#'
+#' @param n Number of subjects. Currently supports n=10 (cached) or custom sizes
+#' @return Mock ADSL data frame
+get_shared_adsl <- function(n = 10) {
+	if (n == 10 && is.null(.shared_adsl_10)) {
+		.shared_adsl_10 <<- create_mock_adsl(n = 10)
+	}
+	if (n == 10) {
+		return(.shared_adsl_10)
+	}
+
+	if (n == 20 && is.null(.shared_adsl_20)) {
+		.shared_adsl_20 <<- create_mock_adsl(n = 20)
+	}
+	if (n == 20) {
+		return(.shared_adsl_20)
+	}
+
+	# For non-standard sizes, create fresh
+	create_mock_adsl(n = n)
+}
+
+#' Get shared ADAE dataset (cached for performance)
+#'
+#' @param n Number of subjects. Currently supports n=10 (cached) or custom sizes
+#' @return Mock ADAE data frame
+get_shared_adae <- function(n = 10) {
+	if (n == 10 && is.null(.shared_adae_10)) {
+		set.seed(123) # Ensure reproducibility
+		.shared_adae_10 <<- create_mock_adae(n = 10)
+	}
+	if (n == 10) {
+		return(.shared_adae_10)
+	}
+
+	# For non-standard sizes, create fresh
+	set.seed(123)
+	create_mock_adae(n = n)
+}
+
+# ==============================================================================
+# Mock Clinical Trial Data Functions
+# ==============================================================================
+
 #' Create mock ADSL data
 #'
 #' @param n Integer specifying number of subjects. Default: 10

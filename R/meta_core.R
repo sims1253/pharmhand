@@ -122,58 +122,9 @@ meta_analysis <- function(
 	# H-squared
 	H2 <- Q / df
 
-	# Tau-squared estimation
+	# Tau-squared estimation using extracted helper
 	if (model == "random") {
-		tau2 <- switch(
-			method,
-			"DL" = {
-				# DerSimonian-Laird
-				c_val <- sum(wi) - sum(wi^2) / sum(wi)
-				max(0, (Q - df) / c_val)
-			},
-			"PM" = {
-				# Paule-Mandel (iterative)
-				pm_tau2 <- 0
-				for (iter in 1:100) {
-					wi_star <- 1 / (sei^2 + pm_tau2)
-					theta_star <- sum(wi_star * yi) / sum(wi_star)
-					Q_star <- sum(wi_star * (yi - theta_star)^2)
-					if (Q_star <= df) {
-						break
-					}
-					pm_tau2 <- pm_tau2 +
-						(Q_star - df) / sum(wi_star * (1 - wi_star / sum(wi_star)))
-					pm_tau2 <- max(0, pm_tau2)
-				}
-				pm_tau2
-			},
-			"REML" = {
-				# REML via Newton-Raphson iteration
-				tau2_reml <- max(0, (Q - df) / (sum(wi) - sum(wi^2) / sum(wi)))
-				converged <- FALSE
-				for (iter in 1:50) {
-					wi_star <- 1 / (sei^2 + tau2_reml)
-					theta_star <- sum(wi_star * yi) / sum(wi_star)
-					resid <- yi - theta_star
-					ll_deriv <- -0.5 * sum(wi_star) + 0.5 * sum(wi_star^2 * resid^2)
-					ll_deriv2 <- 0.5 * sum(wi_star^2) - sum(wi_star^3 * resid^2)
-					if (abs(ll_deriv2) < 1e-10) {
-						converged <- TRUE
-						break
-					}
-					tau2_new <- tau2_reml - ll_deriv / ll_deriv2
-					if (abs(tau2_new - tau2_reml) < 1e-8) {
-						converged <- TRUE
-						break
-					}
-					tau2_reml <- max(0, tau2_new)
-				}
-				if (!converged) {
-					ph_warn("REML estimation did not converge within 50 iterations")
-				}
-				tau2_reml
-			}
-		)
+		tau2 <- estimate_tau2(yi, sei, method, wi, theta_fe, Q, df)
 
 		# Random effects weights and estimate
 		wi_re <- 1 / (sei^2 + tau2)
@@ -305,6 +256,76 @@ meta_analysis <- function(
 # Helper Functions
 # =============================================================================
 
+#' Estimate Between-Study Variance (tau-squared)
+#'
+#' Internal function to estimate tau2 using various methods.
+#' Extracted to avoid duplication across meta_analysis() and
+#' calculate_heterogeneity().
+#'
+#' @param yi Numeric vector of effect estimates
+#' @param sei Numeric vector of standard errors
+#' @param method Character: "DL", "PM", or "REML"
+#' @param wi_fe Numeric vector of fixed-effect weights (1/sei^2)
+#' @param theta_fe Numeric fixed-effect estimate
+#' @param Q Numeric Q statistic
+#' @param df Integer degrees of freedom
+#'
+#' @return Numeric tau2 estimate
+#' @keywords internal
+estimate_tau2 <- function(yi, sei, method, wi_fe, theta_fe, Q, df) {
+	switch(
+		method,
+		"DL" = {
+			# DerSimonian-Laird
+			c_val <- sum(wi_fe) - sum(wi_fe^2) / sum(wi_fe)
+			max(0, (Q - df) / c_val)
+		},
+		"PM" = {
+			# Paule-Mandel (iterative)
+			pm_tau2 <- max(0, (Q - df) / (sum(wi_fe) - sum(wi_fe^2) / sum(wi_fe)))
+			for (iter in 1:100) {
+				wi_star <- 1 / (sei^2 + pm_tau2)
+				theta_star <- sum(wi_star * yi) / sum(wi_star)
+				Q_star <- sum(wi_star * (yi - theta_star)^2)
+				if (Q_star <= df) {
+					break
+				}
+				delta <- (Q_star - df) / sum(wi_star * (1 - wi_star / sum(wi_star)))
+				pm_tau2 <- max(0, pm_tau2 + delta)
+				if (abs(delta) < 1e-8) break
+			}
+			pm_tau2
+		},
+		"REML" = {
+			# REML via Newton-Raphson iteration
+			c_val <- sum(wi_fe) - sum(wi_fe^2) / sum(wi_fe)
+			tau2_reml <- max(0, (Q - df) / c_val)
+			converged <- FALSE
+			for (iter in 1:50) {
+				wi_star <- 1 / (sei^2 + tau2_reml)
+				theta_star <- sum(wi_star * yi) / sum(wi_star)
+				resid <- yi - theta_star
+				ll_deriv <- -0.5 * sum(wi_star) + 0.5 * sum(wi_star^2 * resid^2)
+				ll_deriv2 <- 0.5 * sum(wi_star^2) - sum(wi_star^3 * resid^2)
+				if (abs(ll_deriv2) < 1e-10) {
+					converged <- TRUE
+					break
+				}
+				tau2_new <- tau2_reml - ll_deriv / ll_deriv2
+				if (abs(tau2_new - tau2_reml) < 1e-8) {
+					converged <- TRUE
+					break
+				}
+				tau2_reml <- max(0, tau2_new)
+			}
+			if (!converged) {
+				ph_warn("REML estimation did not converge within 50 iterations")
+			}
+			tau2_reml
+		}
+	)
+}
+
 #' Calculate Heterogeneity Statistics
 #'
 #' Calculates Q, I2, tau2, and H2 statistics for meta-analysis heterogeneity.
@@ -382,48 +403,8 @@ calculate_heterogeneity <- function(
 	H2 <- Q / df
 	H <- sqrt(H2)
 
-	# Tau-squared (using specified method)
-	c_val <- sum(wi) - sum(wi^2) / sum(wi)
-	tau2_dl <- max(0, (Q - df) / c_val)
-
-	tau2 <- switch(
-		method,
-		"DL" = tau2_dl,
-		"PM" = {
-			pm_tau2 <- tau2_dl
-			for (iter in 1:100) {
-				wi_star <- 1 / (sei^2 + pm_tau2)
-				theta_star <- sum(wi_star * yi) / sum(wi_star)
-				Q_star <- sum(wi_star * (yi - theta_star)^2)
-				if (Q_star <= df) {
-					break
-				}
-				delta <- (Q_star - df) / sum(wi_star * (1 - wi_star / sum(wi_star)))
-				pm_tau2 <- max(0, pm_tau2 + delta)
-				if (abs(delta) < 1e-8) break
-			}
-			pm_tau2
-		},
-		"REML" = {
-			tau2_reml <- tau2_dl
-			for (iter in 1:50) {
-				wi_star <- 1 / (sei^2 + tau2_reml)
-				theta_star <- sum(wi_star * yi) / sum(wi_star)
-				resid <- yi - theta_star
-				ll_deriv <- -0.5 * sum(wi_star) + 0.5 * sum(wi_star^2 * resid^2)
-				ll_deriv2 <- 0.5 * sum(wi_star^2) - sum(wi_star^3 * resid^2)
-				if (abs(ll_deriv2) < 1e-10) {
-					break
-				}
-				tau2_new <- tau2_reml - ll_deriv / ll_deriv2
-				if (abs(tau2_new - tau2_reml) < 1e-8) {
-					break
-				}
-				tau2_reml <- max(0, tau2_new)
-			}
-			tau2_reml
-		}
-	)
+	# Tau-squared using extracted helper
+	tau2 <- estimate_tau2(yi, sei, method, wi, theta_fe, Q, df)
 
 	# Interpretation
 	i2_interpretation <- if (I2 < 25) {

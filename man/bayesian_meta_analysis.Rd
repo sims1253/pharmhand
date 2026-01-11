@@ -21,6 +21,8 @@ bayesian_meta_analysis(
   seed = NULL,
   adapt_delta = 0.95,
   max_treedepth = 12,
+  backend = c("auto", "cmdstanr", "rstan"),
+  warn_convergence = c("auto", "always", "never"),
   ...
 )
 }
@@ -74,6 +76,12 @@ sampling.}
 Default: 12. Higher values allow more complex posterior geometry but
 may indicate issues.}
 
+\item{backend}{Character. Which Stan backend to use: "auto" (prefer
+cmdstanr when available), "cmdstanr", or "rstan".}
+
+\item{warn_convergence}{Character. Whether to emit convergence warnings:
+"auto" (quiet under testthat), "always", or "never".}
+
 \item{...}{Additional arguments passed to brms::brm}
 }
 \value{
@@ -84,17 +92,17 @@ pp_check_plot. See Details for full descriptions. Returns installation
 guidance if brms is not installed.
 }
 \description{
-Interface for Bayesian meta-analysis using brms/rstan when available.
+Interface for Bayesian meta-analysis using brms with a Stan backend.
 Provides guidance when dependencies are not installed.
 }
 \details{
-This function requires the brms and rstan packages for full Bayesian
-inference. If these are not installed, the function returns guidance
-on installation and falls back to frequentist meta-analysis via
-\code{\link{meta_analysis}}.
+This function requires the brms package and a Stan backend (cmdstanr or
+rstan) for full Bayesian inference. If these are not installed, the
+function returns guidance on installation and falls back to frequentist
+meta-analysis via \code{\link{meta_analysis}}.
 
 Install dependencies with:
-\code{install.packages(c("brms", "rstan"))}
+\code{install.packages(c("brms", "cmdstanr", "rstan"))}
 
 Note: rstan may require additional setup. See
 \url{https://mc-stan.org/users/interfaces/rstan} for details.

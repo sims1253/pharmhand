@@ -77,8 +77,8 @@ test_that("calculate_ae_tte_data derives TRTDURD from TRTEDT/TRTSDT", {
 })
 
 test_that("calculate_ae_tte_data errors with missing ADAE columns", {
-	adsl <- create_mock_adsl()
-	adae <- create_mock_adae()
+	adsl <- get_shared_adsl()
+	adae <- get_shared_adae()
 
 	# Remove required column
 	adae_missing <- adae[, !(names(adae) %in% c("TRTEMFL"))]
@@ -90,7 +90,7 @@ test_that("calculate_ae_tte_data errors with missing ADAE columns", {
 })
 
 test_that("calculate_ae_tte_data errors with missing ADSL columns", {
-	adsl <- create_mock_adsl()
+	adsl <- get_shared_adsl()
 	adae <- data.frame(
 		USUBJID = c("SUBJ001"),
 		AEBODSYS = c("Nervous system"),
@@ -422,7 +422,7 @@ test_that("create_time_to_first_ae works without ae_filter", {
 })
 
 test_that("create_time_to_first_ae errors with missing required ADAE columns", {
-	adsl <- create_mock_adsl()
+	adsl <- get_shared_adsl()
 
 	adae <- data.frame(
 		USUBJID = c("SUBJ001"),

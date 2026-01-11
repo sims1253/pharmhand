@@ -18,7 +18,6 @@ NULL
 #'
 #' @export
 analyze <- S7::new_generic("analyze", "x")
-
 #' Convert analysis results to flextable
 #'
 #' Generic function for converting analysis results or clinical tables

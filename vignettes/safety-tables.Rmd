@@ -23,6 +23,32 @@ knitr::opts_chunk$set(
 
 `create_ae_summary_table()` makes safety tables for treatment-emergent adverse events (TEAEs).
 
+## Quick Safety Report
+
+Generate a complete safety report in one call:
+
+```{r quick-safety, eval=FALSE}
+# One-line safety report with multiple tables
+quick_safety_report(
+  adae = adae,
+  adsl = adsl,
+  output = "safety_report.docx",
+  title = "Safety Analysis",
+  include_overview = TRUE,   # AE overview table
+  include_soc = TRUE,         # SOC table
+  include_soc_pt = FALSE,     # Skip SOC/PT (large)
+  include_sae = TRUE          # SAE table
+)
+```
+
+The report automatically includes:
+- Overview of TEAEs, related AEs, SAEs, discontinuations
+- AEs by System Organ Class
+- Serious Adverse Events
+- Formatted Word document with proper styling
+
+For detailed control of individual tables, use the functions below.
+
 ## Table Types
 
 | Type | Description | Key Variables |

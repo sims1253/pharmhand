@@ -2,14 +2,14 @@
 % Please edit documentation in R/reporting_engine.R
 \name{create_hta_table}
 \alias{create_hta_table}
-\title{Create HTA-Style Table}
+\title{Create a flextable formatted for HTA/AMNOG submissions.}
 \usage{
 create_hta_table(
   data,
   title = NULL,
   footnotes = character(),
   col_widths = NULL,
-  autofit = TRUE
+  autofit = ph_default("autofit")
 )
 }
 \arguments{

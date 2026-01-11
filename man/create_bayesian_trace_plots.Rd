@@ -6,7 +6,7 @@
 \usage{
 create_bayesian_trace_plots(
   bayesian_result,
-  parameters = c("b_Intercept", "sd_study__Intercept"),
+  pars = c("b_Intercept", "sd_study__Intercept"),
   chains = NULL,
   combine_plots = TRUE,
   ...
@@ -16,7 +16,7 @@ create_bayesian_trace_plots(
 \item{bayesian_result}{A bayesian_meta_result object from
 bayesian_meta_analysis()}
 
-\item{parameters}{Character vector of parameters to plot. Default:
+\item{pars}{Character vector of parameters to plot. Default:
 c("b_Intercept", "sd_study__Intercept")}
 
 \item{chains}{Integer. Number of chains to plot. Default: NULL (all chains)}

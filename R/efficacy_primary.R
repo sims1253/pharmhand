@@ -28,9 +28,9 @@ create_primary_endpoint_table <- function(
 	advs,
 	paramcd = "SYSBP",
 	visit = "End of Treatment",
-	trt_var = "TRT01P",
+	trt_var = ph_default("trt_var"),
 	title = "Primary Endpoint Summary",
-	autofit = TRUE
+	autofit = ph_default("autofit")
 ) {
 	assert_data_frame(advs, "advs")
 
@@ -38,11 +38,15 @@ create_primary_endpoint_table <- function(
 	missing_cols <- setdiff(required_cols, names(advs))
 	if (length(missing_cols) > 0) {
 		ph_abort(
-			sprintf(
-				"'advs' is missing required columns: %s. Required: %s",
-				paste(missing_cols, collapse = ", "),
-				paste(required_cols, collapse = ", ")
-			)
+			"'advs' data frame is missing required columns.\n",
+			"  Missing: ",
+			paste(missing_cols, collapse = ", "),
+			"\n",
+			"  Required: ",
+			paste(required_cols, collapse = ", "),
+			"\n",
+			"  Available: ",
+			paste(names(advs), collapse = ", ")
 		)
 	}
 
@@ -114,22 +118,16 @@ create_primary_endpoint_table <- function(
 			values_from = "value"
 		)
 
-	# Styling
-	primary_ft <- create_hta_table(
-		primary_wide,
+	# Use factory function
+	create_clinical_table(
+		data = primary_wide,
+		type = "primary_endpoint",
 		title = title,
 		footnotes = c(
 			"Safety Population",
 			paste("Parameter:", paramcd, "at", visit)
 		),
+		metadata = list(param = paramcd, visit = visit),
 		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = primary_wide,
-		flextable = primary_ft,
-		type = "primary_endpoint",
-		title = title,
-		metadata = list(param = paramcd, visit = visit)
 	)
 }

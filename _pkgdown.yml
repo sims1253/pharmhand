@@ -157,9 +157,9 @@ reference:
   - create_ae_km_plot_for_soc
   - create_loglog_plot
   - create_mean_plot
+  - create_spider_plot
   - save_plot_as
   - save_as_png
-  - create_spider_plot
 
 - title: "Formatting"
   desc: >
@@ -182,6 +182,8 @@ reference:
   desc: >
     Word document generation and report output using officer/flextable.
   contents:
+  - quick_demographics_report
+  - quick_safety_report
   - generate_word
   - write_docx
   - write_docx_ClinicalReport
@@ -189,6 +191,8 @@ reference:
   - add_content
   - add_to_docx
   - create_study_report
+  - create_clinical_table
+  - create_hta_table
   - create_analysis_meta
   - apply_clinical_style
   - summarize_content

@@ -333,12 +333,20 @@ run_chef_pipeline <- function(
 	switch(
 		output_type,
 		"results" = results,
-		"table" = create_clinical_table(results, title = "HTA Analysis"),
+		"table" = create_clinical_table(
+			data = results@stats,
+			type = "hta_chef",
+			title = "HTA Analysis"
+		),
 		"report" = {
 			section <- ReportSection(
 				title = "HTA Analysis",
 				section_type = "hta",
-				content = list(create_clinical_table(results, title = "HTA Results"))
+				content = list(create_clinical_table(
+					data = results@stats,
+					type = "hta_chef",
+					title = "HTA Results"
+				))
 			)
 			ClinicalReport(
 				study_id = "HTA",

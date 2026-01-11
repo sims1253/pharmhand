@@ -72,21 +72,8 @@ test_that("bayesian_meta_analysis validates study_labels length", {
 test_that("bayesian_meta_analysis with brms returns bayesian_meta_result", {
 	skip_if_brms_unavailable()
 
-	# Use 8 studies with consistent effect sizes for stable MCMC
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
-
-	result <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2, # Use fewer chains for faster tests
-		cores = 1,
-		iter = 2000, # Use more iterations for better ESS
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared result to avoid redundant MCMC sampling
+	result <- get_shared_bayesian_result()
 
 	# Should return bayesian_meta_result class
 	expect_true("bayesian_meta_result" %in% class(result))
@@ -109,21 +96,8 @@ test_that("bayesian_meta_analysis with brms returns bayesian_meta_result", {
 test_that("bayesian_meta_analysis with brms stores fit object", {
 	skip_if_brms_unavailable()
 
-	# Use 8 studies with consistent effect sizes for stable MCMC
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
-
-	result <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared result to avoid redundant MCMC sampling
+	result <- get_shared_bayesian_result()
 
 	# Should contain the brms fit object
 	expect_true("fit" %in% names(result))
@@ -243,73 +217,97 @@ test_that("bayesian_meta_analysis includes convergence diagnostics", {
 test_that("bayesian_meta_analysis warns when Rhat > 1.01", {
 	skip_if_brms_unavailable()
 
-	# Use data that may cause convergence issues (smaller sample, fewer iterations)
+	# Use minimal iterations with fixed seed to reliably trigger Rhat warning
 	yi <- log(c(0.78, 0.82, 0.75))
 	sei <- c(0.10, 0.12, 0.11)
 
-	# Should issue warning when Rhat exceeds threshold
-	expect_warning(
-		bayesian_meta_analysis(
-			yi = yi,
-			sei = sei,
-			effect_measure = "hr",
-			chains = 2,
-			cores = 1,
-			iter = 500,
-			warmup = 200,
-			seed = 42,
-			adapt_delta = 0.95
-		),
-		"Rhat"
+	# Very few iterations (50 total, 25 warmup) reliably produces poor Rhat
+	# Disable posterior_predictive to avoid extra errors and suppress uncaptured
+	# warnings.
+	out <- capture_muffled_warnings(
+		suppressMessages(
+			bayesian_meta_analysis(
+				yi = yi,
+				sei = sei,
+				effect_measure = "hr",
+				backend = "cmdstanr",
+				warn_convergence = "always",
+				chains = 2,
+				cores = 1,
+				iter = 50,
+				warmup = 25,
+				seed = 123,
+				adapt_delta = 0.8,
+				posterior_predictive = FALSE
+			)
+		)
 	)
+	expect_true(any(grepl("Rhat", out$warnings, ignore.case = TRUE)))
 })
 
 test_that("bayesian_meta_analysis warns when ESS < 400", {
 	skip_if_brms_unavailable()
 
-	# Use data with fewer iterations to trigger low ESS warning
+	# Use minimal iterations to reliably trigger ESS warning
 	yi <- log(c(0.78, 0.82, 0.75))
 	sei <- c(0.10, 0.12, 0.11)
 
-	# Should issue warning when ESS is insufficient
-	expect_warning(
-		bayesian_meta_analysis(
-			yi = yi,
-			sei = sei,
-			effect_measure = "hr",
-			chains = 2,
-			cores = 1,
-			iter = 500,
-			warmup = 200,
-			seed = 42,
-			adapt_delta = 0.95
-		),
-		"ESS|effective sample"
+	# With only 100 total samples (50 post-warmup per chain = 100 total)
+	# ESS will definitely be < 400
+	# Disable posterior_predictive and suppress uncaptured warnings
+	out <- capture_muffled_warnings(
+		suppressMessages(
+			bayesian_meta_analysis(
+				yi = yi,
+				sei = sei,
+				effect_measure = "hr",
+				backend = "cmdstanr",
+				warn_convergence = "always",
+				chains = 2,
+				cores = 1,
+				iter = 100,
+				warmup = 50,
+				seed = 456,
+				adapt_delta = 0.95,
+				posterior_predictive = FALSE
+			)
+		)
 	)
+	expect_true(any(grepl(
+		"ESS|effective sample",
+		out$warnings,
+		ignore.case = TRUE
+	)))
 })
 
 test_that("bayesian_meta_analysis warns when divergent transitions > 0", {
 	skip_if_brms_unavailable()
 
-	# Use data designed to potentially cause divergences
+	# Use very low adapt_delta with minimal iterations to trigger divergences
 	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77))
 	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12)
 
-	# With low adapt_delta, should warn about divergent transitions
-	expect_warning(
-		bayesian_meta_analysis(
-			yi = yi,
-			sei = sei,
-			effect_measure = "hr",
-			chains = 2,
-			cores = 1,
-			iter = 500,
-			warmup = 200,
-			seed = 42,
-			adapt_delta = 0.80
-		),
-		"divergent"
+	# adapt_delta = 0.1 is very low and should reliably cause divergences
+	# Disable posterior_predictive and suppress uncaptured warnings
+	out <- capture_muffled_warnings(
+		suppressMessages(
+			bayesian_meta_analysis(
+				yi = yi,
+				sei = sei,
+				effect_measure = "hr",
+				backend = "cmdstanr",
+				warn_convergence = "always",
+				chains = 2,
+				cores = 1,
+				iter = 200,
+				warmup = 100,
+				seed = 789,
+				adapt_delta = 0.1,
+				posterior_predictive = FALSE
+			)
+		)
 	)
+	expect_true(any(grepl("diverg", out$warnings, ignore.case = TRUE)))
 })
 
 test_that("bayesian_meta_analysis accepts adapt_delta parameter", {
@@ -541,21 +539,8 @@ test_that("bayesian_meta_analysis supports different pp_check types", {
 test_that("create_bayesian_trace_plots generates plots", {
 	skip_if_brms_unavailable()
 
-	# Consistent test data
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
-
-	result <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared result to avoid redundant MCMC sampling
+	result <- get_shared_bayesian_result()
 
 	# Test that ggplot object is returned
 	trace_plot <- create_bayesian_trace_plots(result)
@@ -573,21 +558,8 @@ test_that("create_bayesian_trace_plots generates plots", {
 test_that("create_bayesian_trace_plots validates input", {
 	skip_if_brms_unavailable()
 
-	# Consistent test data
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
-
-	result <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared result to avoid redundant MCMC sampling
+	result <- get_shared_bayesian_result()
 
 	# Test error for non-bayesian_meta_result input
 	expect_error(
@@ -598,7 +570,7 @@ test_that("create_bayesian_trace_plots validates input", {
 	# Test error for invalid parameter names
 	expect_error(
 		create_bayesian_trace_plots(result, pars = "nonexistent_param"),
-		"not found|invalid"
+		"None of the specified parameters"
 	)
 
 	# Test error for invalid chain values
@@ -613,29 +585,19 @@ test_that("create_bayesian_trace_plots validates input", {
 	)
 })
 
-test_that("create_bayesian_trace_plots handles missing bayesplot", {
+test_that("create_bayesian_trace_plots works with bayesplot", {
 	skip_if_brms_unavailable()
 
-	# Consistent test data
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
+	# Use shared result to avoid redundant MCMC sampling
+	result <- get_shared_bayesian_result()
 
-	result <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
-
-	# Temporarily check behavior when bayesplot is not available
-	# The function should fall back to base plotting or issue a warning
-	if (!requireNamespace("bayesplot", quietly = TRUE)) {
-		# Should not error, should gracefully handle missing package
+	# Test that function works when bayesplot IS available
+	# (it should be since brms typically installs it)
+	if (requireNamespace("bayesplot", quietly = TRUE)) {
+		plots <- create_bayesian_trace_plots(result)
+		expect_true(inherits(plots, "list") || inherits(plots, "ggplot"))
+	} else {
+		# If bayesplot not available, should handle gracefully
 		expect_error(
 			create_bayesian_trace_plots(result),
 			NA
@@ -696,8 +658,14 @@ test_that("prior_sensitivity_analysis accepts custom scenarios", {
 
 	# Define custom scenarios
 	custom_scenarios <- list(
-		very_vague = list(prior_mu = list(mean = 0, sd = 10)),
-		very_informative = list(prior_mu = list(mean = -0.2, sd = 0.1))
+		very_vague = list(
+			prior_mu = list(mean = 0, sd = 10),
+			prior_tau = list(type = "half_cauchy", scale = 1.0)
+		),
+		very_informative = list(
+			prior_mu = list(mean = -0.2, sd = 0.1),
+			prior_tau = list(type = "half_cauchy", scale = 0.1)
+		)
 	)
 
 	# Run prior sensitivity analysis with custom scenarios
@@ -797,22 +765,8 @@ test_that("prior_sensitivity_analysis returns prior_sensitivity_result class", {
 test_that("format_bayesian_result_iqwig formats estimates", {
 	skip_if_brms_unavailable()
 
-	# Consistent test data
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
-
-	# Run analysis with ratio measure (HR)
-	result_hr <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared result to avoid redundant MCMC sampling
+	result_hr <- get_shared_bayesian_result()
 
 	iqwig_result <- format_bayesian_result_iqwig(result_hr)
 
@@ -821,18 +775,8 @@ test_that("format_bayesian_result_iqwig formats estimates", {
 	expect_true(is.character(iqwig_result$estimate))
 	expect_true(grepl("[0-9]", iqwig_result$estimate)) # Contains numbers
 
-	# Run analysis with difference measure (SMD)
-	result_smd <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "smd",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared SMD result to avoid redundant MCMC sampling
+	result_smd <- get_shared_bayesian_result_smd()
 
 	iqwig_result_smd <- format_bayesian_result_iqwig(result_smd)
 
@@ -844,21 +788,8 @@ test_that("format_bayesian_result_iqwig formats estimates", {
 test_that("format_bayesian_result_iqwig formats CI with semicolons", {
 	skip_if_brms_unavailable()
 
-	# Consistent test data
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
-
-	result <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared result to avoid redundant MCMC sampling
+	result <- get_shared_bayesian_result()
 
 	iqwig_result <- format_bayesian_result_iqwig(result)
 
@@ -875,22 +806,8 @@ test_that("format_bayesian_result_iqwig formats CI with semicolons", {
 test_that("format_bayesian_result_iqwig creates probability statements", {
 	skip_if_brms_unavailable()
 
-	# Consistent test data
-	yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
-	sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
-
-	# Test ratio measure (HR uses threshold = 1)
-	result_hr <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared result to avoid redundant MCMC sampling
+	result_hr <- get_shared_bayesian_result()
 
 	iqwig_hr <- format_bayesian_result_iqwig(result_hr)
 
@@ -902,18 +819,8 @@ test_that("format_bayesian_result_iqwig creates probability statements", {
 	# Test that threshold is 1 for ratios (HR)
 	expect_true(grepl("1", iqwig_hr$probability_statement, fixed = TRUE))
 
-	# Test difference measure (threshold = 0)
-	result_smd <- bayesian_meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "smd",
-		chains = 2,
-		cores = 1,
-		iter = 2000,
-		warmup = 1000,
-		seed = 42,
-		adapt_delta = 0.99
-	)
+	# Use shared SMD result to avoid redundant MCMC sampling
+	result_smd <- get_shared_bayesian_result_smd()
 
 	iqwig_smd <- format_bayesian_result_iqwig(result_smd)
 
@@ -1020,23 +927,23 @@ test_that("create_bayesian_forest_plot_iqwig generates ggplot", {
 	# Test that ClinicalPlot object is returned
 	iqwig_result <- format_bayesian_result_iqwig(result)
 	forest_plot <- create_bayesian_forest_plot_iqwig(result)
-	expect_true("ClinicalPlot" %in% class(forest_plot))
+	expect_true(S7::S7_inherits(forest_plot, ClinicalPlot))
 
 	# Test that studies are displayed
 	# The plot should contain study labels
 	# (ggplot object can be checked for layers)
-	expect_true("ggplot" %in% class(forest_plot))
+	expect_true("ggplot" %in% class(forest_plot@plot))
 
 	# Test that pooled estimate is shown
 	# The plot should have the pooled estimate element
-	expect_true("ggplot" %in% class(forest_plot))
+	expect_true("ggplot" %in% class(forest_plot@plot))
 
 	# Test that weights can be displayed
 	forest_plot_weighted <- create_bayesian_forest_plot_iqwig(
 		result,
 		show_weights = TRUE
 	)
-	expect_true("ClinicalPlot" %in% class(forest_plot_weighted))
+	expect_true(S7::S7_inherits(forest_plot_weighted, ClinicalPlot))
 })
 
 test_that("create_bayesian_forest_plot_iqwig uses IQWiG formatting", {
@@ -1063,13 +970,13 @@ test_that("create_bayesian_forest_plot_iqwig uses IQWiG formatting", {
 
 	# Test that subtitle includes heterogeneity
 	# (The subtitle should contain tau information)
-	expect_true("ggplot" %in% class(forest_plot))
+	expect_true("ggplot" %in% class(forest_plot@plot))
 
 	# Test that semicolons are used in labels
 	# IQWiG format requires semicolons for CIs
-	expect_true("ggplot" %in% class(forest_plot))
+	expect_true("ggplot" %in% class(forest_plot@plot))
 
 	# Test that log scale is used for ratios
 	# For HR (ratio measure), log scale should be used
-	expect_true("ggplot" %in% class(forest_plot))
+	expect_true("ggplot" %in% class(forest_plot@plot))
 })

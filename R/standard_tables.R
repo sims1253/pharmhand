@@ -140,17 +140,27 @@ create_hta_module4_table <- function(
 create_demographics_table <- function(
 	adsl_data,
 	title = "Demographics and Baseline Characteristics",
-	trt_var = "TRT01P",
+	trt_var = ph_default("trt_var"),
 	age_var = "AGE",
 	age_grp_var = "AGEGR1",
 	sex_var = "SEX",
 	race_var = "RACE",
 	ethnic_var = "ETHNIC",
 	country_var = "COUNTRY",
-	autofit = TRUE
+	autofit = ph_default("autofit")
 ) {
+	# Auto-coerce data.frame to ADaMData
+	if (is.data.frame(adsl_data) && !S7::S7_inherits(adsl_data, ADaMData)) {
+		ph_inform("Automatically wrapping data.frame in ADaMData object")
+		adsl_data <- ADaMData(data = adsl_data, domain = "ADSL")
+	}
+
 	if (!S7::S7_inherits(adsl_data, ADaMData)) {
-		ph_abort("'adsl_data' must be an ADaMData object")
+		ph_abort(
+			"'adsl_data' must be an ADaMData object or data.frame. ",
+			"Got: ",
+			class(adsl_data)[1]
+		)
 	}
 
 	adsl <- adsl_data@data
@@ -201,22 +211,17 @@ create_demographics_table <- function(
 		"Categorical variables presented as n (%)"
 	)
 
-	demo_ft <- create_hta_table(
-		demo_data,
-		title = title,
-		footnotes = footnotes,
-		autofit = autofit
-	)
-
-	ClinicalTable(
+	# Use factory function
+	create_clinical_table(
 		data = demo_data,
-		flextable = demo_ft,
 		type = "demographics",
 		title = title,
+		footnotes = footnotes,
 		metadata = list(
 			population = adsl_data@population,
 			n_subjects = nrow(adsl)
-		)
+		),
+		autofit = autofit
 	)
 }
 
