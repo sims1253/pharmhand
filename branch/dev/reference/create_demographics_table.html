@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,14 +49,14 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_demographics_table</span><span class="op">(</span></span>
 <span>  <span class="va">adsl_data</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Demographics and Baseline Characteristics"</span>,</span>
-<span>  trt_var <span class="op">=</span> <span class="st">"TRT01P"</span>,</span>
+<span>  trt_var <span class="op">=</span> <span class="fu"><a href="ph_default.html">ph_default</a></span><span class="op">(</span><span class="st">"trt_var"</span><span class="op">)</span>,</span>
 <span>  age_var <span class="op">=</span> <span class="st">"AGE"</span>,</span>
 <span>  age_grp_var <span class="op">=</span> <span class="st">"AGEGR1"</span>,</span>
 <span>  sex_var <span class="op">=</span> <span class="st">"SEX"</span>,</span>
 <span>  race_var <span class="op">=</span> <span class="st">"RACE"</span>,</span>
 <span>  ethnic_var <span class="op">=</span> <span class="st">"ETHNIC"</span>,</span>
 <span>  country_var <span class="op">=</span> <span class="st">"COUNTRY"</span>,</span>
-<span>  autofit <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  autofit <span class="op">=</span> <span class="fu"><a href="ph_default.html">ph_default</a></span><span class="op">(</span><span class="st">"autofit"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 

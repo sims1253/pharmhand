@@ -25,7 +25,11 @@ meta_analysis(
 
 - data:
 
-  Data frame with study-level summary statistics OR a StudySet object
+  Data frame with study-level summary statistics. StudySet input is
+  planned but not yet implemented: the current
+  `S7::S7_inherits(data, StudySet)` code path aborts with
+  `ph_abort("StudySet input not yet implemented")`. For now, provide
+  `yi` and `sei` directly.
 
 - yi:
 

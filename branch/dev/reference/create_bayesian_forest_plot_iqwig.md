@@ -88,6 +88,12 @@ create_bayesian_forest_plot_iqwig(
 
 A ClinicalPlot object containing the forest plot
 
+## Note
+
+The prediction interval shown (when enabled) is an approximation for
+visualization, based on the pooled effect and an average within-study
+variance term; it is not a full posterior predictive interval.
+
 ## Examples
 
 ``` r

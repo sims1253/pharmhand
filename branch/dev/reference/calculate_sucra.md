@@ -34,11 +34,10 @@ List with rankings, SUCRA/P-scores, and rankogram data
 
 ## Note
 
-When `seed` is not NULL, the global random number generator state is
-modified via [`set.seed()`](https://rdrr.io/r/base/Random.html). If you
-need to preserve the RNG state, either set `seed = NULL` and manage
-seeding externally, or save/restore `.Random.seed` before and after
-calling this function.
+RNG state is isolated via
+[`withr::with_seed`](https://withr.r-lib.org/reference/with_seed.html)
+during simulation, so calling this function does not alter the global
+RNG state.
 
 ## Examples
 
@@ -55,9 +54,9 @@ nma_result <- network_meta(nma_data, effect_measure = "hr")
 sucra <- calculate_sucra(nma_result)
 sucra$ranking
 #>   treatment mean_rank sucra prob_best prob_worst final_rank
-#> B         B     1.425 78.75     0.599      0.024          1
-#> C         C     1.759 62.05     0.391      0.150          2
-#> A         A     2.816  9.20     0.010      0.826          3
+#> B         B     1.432 78.40     0.585      0.017          1
+#> C         C     1.717 64.15     0.413      0.130          2
+#> A         A     2.851  7.45     0.002      0.853          3
 sucra$interpretation
-#> [1] "Treatment ranking by lower is better (SUCRA, %). Best: B (78.8%), Worst: A (9.2%)"
+#> [1] "Treatment ranking by lower is better (SUCRA, %). Best: B (78.4%), Worst: A (7.4%)"
 ```

@@ -11,17 +11,50 @@ tables and plots for Word documents.
 pak::pak("sims1253/pharmhand")
 ```
 
+Optional: Bayesian meta-analysis features require a Stan backend.
+
+``` r
+install.packages(
+  "cmdstanr",
+  repos = c("https://mc-stan.org/r-packages/", getOption("repos"))
+)
+cmdstanr::install_cmdstan()
+install.packages("brms")
+```
+
+## Quick Start
+
+Generate complete reports in a single call:
+
+``` r
+library(pharmhand)
+
+# One-line demographics report
+quick_demographics_report(adsl, "demographics.docx")
+
+# One-line safety report with multiple tables
+quick_safety_report(adae, adsl, "safety.docx")
+```
+
 ## Examples
 
 ### Demographics Table
 
 ``` r
-adam_data <- ADaMData(data = adsl, trt_var = "TRT01P")
-demo_table <- create_demographics_table(adam_data)
+# Simple: pass data.frame directly (auto-coerced)
+demo_table <- create_demographics_table(adsl)
 demo_table@flextable
 ```
 
 ![](reference/figures/README-demo-table-1.png)
+
+For advanced use with population filtering:
+
+``` r
+# Advanced: explicit ADaMData for population control
+adam_data <- ADaMData(data = adsl, population = "SAF", trt_var = "TRT01P")
+demo_table <- create_demographics_table(adam_data)
+```
 
 ### Kaplan-Meier Plot
 
@@ -40,11 +73,27 @@ km@plot
 
 ![](reference/figures/README-km-plot-1.png)
 
-## Quick Start
+## Configuration
+
+Customize defaults package-wide:
 
 ``` r
-library(pharmhand)
+# Set your study's preferences once
+options(
+  pharmhand.trt_var = "ARM",         # Treatment variable
+  pharmhand.autofit = TRUE,          # Auto-fit table columns
+  pharmhand.conf_level = 0.95        # Confidence level
+)
 
+# All functions now use your preferences
+create_demographics_table(adsl)  # Uses ARM instead of TRT01P
+```
+
+## Advanced: ADaMData Wrapper
+
+For population filtering and computed properties:
+
+``` r
 # Wrap ADaM data with automatic population filtering
 adam_data <- ADaMData(
   data = adsl,
@@ -143,7 +192,7 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
-nma_result$comparisons
+nma_result@comparisons
 ```
 
 ## Classes

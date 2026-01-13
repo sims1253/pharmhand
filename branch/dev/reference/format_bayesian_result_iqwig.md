@@ -64,9 +64,9 @@ A list with formatted strings for:
 
   Formatted point estimate
 
-- ci:
+- ci_95:
 
-  Formatted credible interval as "lower; upper" with brackets
+  Formatted 95% credible interval as "lower; upper" with brackets
 
 - tau:
 
@@ -76,7 +76,7 @@ A list with formatted strings for:
 
   Formatted heterogeneity CI
 
-- probability:
+- probability_statement:
 
   Probability statement string
 
@@ -87,6 +87,28 @@ A list with formatted strings for:
 - full_text:
 
   Complete formatted summary text
+
+- raw:
+
+  Raw values used to construct the formatted output, with fields:
+
+  - point_estimate
+
+  - ci_lower
+
+  - ci_upper
+
+  - tau
+
+  - tau_ci_lower
+
+  - tau_ci_upper
+
+  - effect_measure
+
+  - n_studies
+
+  - prob_beneficial
 
 ## Examples
 

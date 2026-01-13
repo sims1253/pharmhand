@@ -1,6 +1,84 @@
 # Changelog
 
-## pharmhand 0.3.3.9000
+## pharmhand 0.3.4.9000
+
+### Fixes and maintenance
+
+- Fixed
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
+  to accept `AnalysisResults` objects (uses `@stats`).
+- Improved Bayesian meta-analysis test performance and stability.
+- Cleaned up documentation/signature mismatches and `R CMD check`
+  issues.
+
+### Major Architecture Improvements
+
+#### Package-Wide Defaults System
+
+- **New defaults infrastructure**: Added centralized default parameter
+  system via
+  [`ph_default()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_default.md)
+  function
+  - Default values for common parameters (e.g., `trt_var = "TRT01P"`,
+    `autofit = TRUE`, `conf_level = 0.95`)
+  - Users can override via options: `options(pharmhand.trt_var = "ARM")`
+  - Reduces boilerplate across 40+ functions
+  - Improves consistency and maintainability
+
+#### Code Reusability Improvements
+
+- **New
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
+  factory function**: Reduces boilerplate for table creation
+  - Consolidates repeated pattern of creating flextable + wrapping in
+    ClinicalTable
+  - Used across 25+ table creation functions
+  - ~200 lines of duplicate code eliminated
+- **Extracted
+  [`estimate_tau2()`](https://sims1253.github.io/pharmhand/branch/dev/reference/estimate_tau2.md)
+  helper**: Eliminates duplication in meta-analysis functions
+  - Single implementation of DerSimonian-Laird, Paule-Mandel, and REML
+    methods
+  - Used by both
+    [`meta_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md)
+    and
+    [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_heterogeneity.md)
+  - ~100 lines of duplicate code eliminated
+
+#### Enhanced User Experience
+
+- **Automatic data.frame coercion**: User-facing functions now accept
+  data.frames directly
+  - [`create_demographics_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_demographics_table.md)
+    automatically wraps data.frames in ADaMData
+  - Eliminates need for users to manually create S7 objects
+  - Backward compatible with existing ADaMData inputs
+- **Improved error messages**: Context-rich error reporting throughout
+  - Error messages now show what was received vs. what was expected
+  - Available values suggested when appropriate (e.g., treatment arms)
+  - Missing column errors show available columns for easier debugging
+- **New workflow helpers**: High-level convenience functions for common
+  tasks
+  - [`quick_demographics_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/quick_demographics_report.md):
+    Generate demographics report in one call
+  - [`quick_safety_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/quick_safety_report.md):
+    Generate multi-table safety report in one call
+  - Ideal for quick analyses and prototyping
+
+#### API Consistency
+
+- **Standardized parameter names**: Using
+  [`ph_default()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_default.md)
+  across the package
+  - `trt_var` (not `treatment_var`) for treatment variable
+  - `conf_level` (not `ci_level` or `confidence_level`) for confidence
+    level
+  - `autofit` consistently for table formatting
+  - Reduces cognitive load for users
+- **Consistent return types**: All `create_*_table()` functions return
+  ClinicalTable objects
+  - Fixed inconsistencies where some returned bare flextables
+  - Enables consistent downstream processing
 
 ### Breaking Changes
 

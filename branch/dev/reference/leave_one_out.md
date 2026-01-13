@@ -6,7 +6,7 @@ to assess the influence of individual studies.
 ## Usage
 
 ``` r
-leave_one_out(meta_result = NULL, yi = NULL, sei = NULL)
+leave_one_out(meta_result = NULL, yi = NULL, sei = NULL, method = NULL)
 ```
 
 ## Arguments
@@ -22,6 +22,13 @@ leave_one_out(meta_result = NULL, yi = NULL, sei = NULL)
 - sei:
 
   Numeric vector of standard errors (optional if in meta_result)
+
+- method:
+
+  Character. Tau-squared estimation method for the leave-one-out refits:
+  "DL", "REML", or "PM". If `NULL` (default), uses
+  `meta_result@metadata$method` when available; otherwise defaults to
+  "DL".
 
 ## Value
 
@@ -47,6 +54,10 @@ A list with components:
 
   Model type (fixed/random)
 
+- method:
+
+  Tau-squared estimation method used
+
 ## Examples
 
 ``` r
@@ -56,18 +67,18 @@ sei <- c(0.12, 0.15, 0.18, 0.14, 0.11)
 meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
 loo <- leave_one_out(meta_res)
 loo$results
-#>   excluded_study   estimate         se   ci_lower    ci_upper I2
-#> 1        Study 1 -0.2255565 0.06917580 -0.3611386 -0.08997440  0
-#> 2        Study 2 -0.2491445 0.06537572 -0.3772785 -0.12101041  0
-#> 3        Study 3 -0.2230226 0.06355725 -0.3475925 -0.09845271  0
-#> 4        Study 4 -0.2739760 0.06631426 -0.4039496 -0.14400245  0
-#> 5        Study 5 -0.2324773 0.07146988 -0.3725557 -0.09239892  0
-#>   estimate_display ci_lower_display ci_upper_display pct_change
-#> 1        0.7980720        0.6968824        0.9139546   8.121456
-#> 2        0.7794674        0.6857251        0.8860247  -1.486912
-#> 3        0.8000967        0.7063866        0.9062386   9.153602
-#> 4        0.7603503        0.6676778        0.8658856 -11.601835
-#> 5        0.7925677        0.6889713        0.9117414   5.302315
+#>   excluded_study   estimate       se  ci_lower ci_upper I2 estimate_display
+#> 1        Study 1 -0.2349472 249.4553 -489.1584 488.6885  0        0.7906126
+#> 2        Study 2 -0.2572550 231.2617 -453.5218 453.0073  0        0.7731710
+#> 3        Study 3 -0.2104521 221.7938 -434.9184 434.4975  0        0.8102179
+#> 4        Study 4 -0.2832901 197.4333 -387.2455 386.6790  0        0.7533013
+#> 5        Study 5 -0.2415265 227.5301 -446.1924 445.7094  0        0.7854280
+#>   ci_lower_display ci_upper_display pct_change
+#> 1    3.640832e-213    1.716828e+212   4.296221
+#> 2    1.091392e-197    5.477348e+196  -4.790668
+#> 3    1.310196e-189    5.010342e+188  14.274094
+#> 4    6.628305e-169    8.561205e+167 -15.395834
+#> 5    1.663786e-194    3.707792e+193   1.616187
 loo$influential_studies
-#> [1] "Study 4"
+#> [1] "Study 3" "Study 4"
 ```

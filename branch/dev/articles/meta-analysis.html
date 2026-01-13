@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,13 +147,13 @@ sensitivity analysis to identify influential studies.</p>
 <code class="sourceCode R"><span><span class="va">loo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/leave_one_out.html">leave_one_out</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="va">loo</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"excluded_study"</span>, <span class="st">"estimate_display"</span>, <span class="st">"I2"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   excluded_study estimate_display I2</span></span>
-<span><span class="co">#&gt; 1        Study 1        0.7980720  0</span></span>
-<span><span class="co">#&gt; 2        Study 2        0.7794674  0</span></span>
-<span><span class="co">#&gt; 3        Study 3        0.8000967  0</span></span>
-<span><span class="co">#&gt; 4        Study 4        0.7603503  0</span></span>
-<span><span class="co">#&gt; 5        Study 5        0.7925677  0</span></span>
+<span><span class="co">#&gt; 1        Study 1        0.7906126  0</span></span>
+<span><span class="co">#&gt; 2        Study 2        0.7731710  0</span></span>
+<span><span class="co">#&gt; 3        Study 3        0.8102179  0</span></span>
+<span><span class="co">#&gt; 4        Study 4        0.7533013  0</span></span>
+<span><span class="co">#&gt; 5        Study 5        0.7854280  0</span></span>
 <span><span class="va">loo</span><span class="op">$</span><span class="va">influential_studies</span></span>
-<span><span class="co">#&gt; [1] "Study 4"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Study 3" "Study 4"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="forest-plot">Forest Plot<a class="anchor" aria-label="anchor" href="#forest-plot"></a>
@@ -240,11 +240,13 @@ meta-analysis for multiple treatments.</p>
 <span></span>
 <span><span class="va">nma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/network_meta.html">network_meta</a></span><span class="op">(</span><span class="va">nma_data</span>, effect_measure <span class="op">=</span> <span class="st">"hr"</span><span class="op">)</span></span>
 <span><span class="va">nma</span><span class="op">@</span><span class="va">comparisons</span></span>
-<span><span class="co">#&gt;   treatment vs estimate  ci_lower  ci_upper        se n_studies  evidence rank</span></span>
-<span><span class="co">#&gt; 1         A  A   1.0000 1.0000000 1.0000000 0.0000000        NA reference   NA</span></span>
-<span><span class="co">#&gt; B         B  A   0.7500 0.5928121 0.9488672 0.1200000         1    direct    2</span></span>
-<span><span class="co">#&gt; C         C  A   0.8000 0.5621778 1.1384298 0.1800000         1    direct    3</span></span>
-<span><span class="co">#&gt; D         D  A   0.6375 0.4441466 0.9150272 0.1843909         2  indirect    1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 9</span></span></span>
+<span><span class="co">#&gt;   treatment vs    estimate ci_lower ci_upper    se n_studies evidence   rank</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         A        1        1        1     0            <span style="color: #BB0000;">NA</span> reference    <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B         A        0.75     0.593    0.949 0.12          1 direct        2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> C         A        0.8      0.562    1.14  0.18          1 direct        3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> D         A        0.638    0.444    0.915 0.184         2 indirect      1</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="network-geometry-plot">Network Geometry Plot<a class="anchor" aria-label="anchor" href="#network-geometry-plot"></a>
@@ -265,13 +267,13 @@ rankings.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sucra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calculate_sucra.html">calculate_sucra</a></span><span class="op">(</span><span class="va">nma</span><span class="op">)</span></span>
 <span><span class="va">sucra</span><span class="op">$</span><span class="va">ranking</span></span>
-<span><span class="co">#&gt;   treatment mean_rank     sucra prob_best prob_worst final_rank</span></span>
-<span><span class="co">#&gt; D         D     1.591 80.300000     0.599      0.026          1</span></span>
-<span><span class="co">#&gt; B         B     2.135 62.166667     0.218      0.028          2</span></span>
-<span><span class="co">#&gt; C         C     2.482 50.600000     0.182      0.136          3</span></span>
-<span><span class="co">#&gt; A         A     3.792  6.933333     0.001      0.810          4</span></span>
+<span><span class="co">#&gt;   treatment mean_rank    sucra prob_best prob_worst final_rank</span></span>
+<span><span class="co">#&gt; D         D     1.614 79.53333     0.585      0.027          1</span></span>
+<span><span class="co">#&gt; B         B     2.141 61.96667     0.216      0.020          2</span></span>
+<span><span class="co">#&gt; C         C     2.422 52.60000     0.199      0.122          3</span></span>
+<span><span class="co">#&gt; A         A     3.823  5.90000     0.000      0.831          4</span></span>
 <span><span class="va">sucra</span><span class="op">$</span><span class="va">interpretation</span></span>
-<span><span class="co">#&gt; [1] "Treatment ranking by lower is better (SUCRA, %). Best: D (80.3%), Worst: A (6.9%)"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Treatment ranking by lower is better (SUCRA, %). Best: D (79.5%), Worst: A (5.9%)"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="league-table">League Table<a class="anchor" aria-label="anchor" href="#league-table"></a>
@@ -281,16 +283,13 @@ tables showing pairwise treatment comparisons.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">league</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_league_table.html">create_league_table</a></span><span class="op">(</span><span class="va">nma</span><span class="op">)</span></span>
 <span><span class="va">league</span><span class="op">@</span><span class="va">data</span></span>
-<span><span class="co">#&gt;   Treatment                  A                  B                 C</span></span>
-<span><span class="co">#&gt; 1         A                  A 1.33 (1.05, 1.69)* 1.25 (0.88, 1.78)</span></span>
-<span><span class="co">#&gt; 2         B 0.75 (0.59, 0.95)*                  B 0.94 (0.61, 1.43)</span></span>
-<span><span class="co">#&gt; 3         C  0.80 (0.56, 1.14)  1.07 (0.70, 1.63)                 C</span></span>
-<span><span class="co">#&gt; 4         D 0.64 (0.44, 0.92)*  0.85 (0.55, 1.31) 0.80 (0.48, 1.32)</span></span>
-<span><span class="co">#&gt;                    D</span></span>
-<span><span class="co">#&gt; 1 1.57 (1.09, 2.25)*</span></span>
-<span><span class="co">#&gt; 2  1.18 (0.76, 1.81)</span></span>
-<span><span class="co">#&gt; 3  1.25 (0.76, 2.08)</span></span>
-<span><span class="co">#&gt; 4                  D</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 5</span></span></span>
+<span><span class="co">#&gt;   Treatment A                  B                  C                 D           </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         A                  1.33 (1.05, 1.69)* 1.25 (0.88, 1.78) 1.57 (1.09,…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B         0.75 (0.59, 0.95)* B                  0.94 (0.61, 1.43) 1.18 (0.76,…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> C         0.80 (0.56, 1.14)  1.07 (0.70, 1.63)  C                 1.25 (0.76,…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> D         0.64 (0.44, 0.92)* 0.85 (0.55, 1.31)  0.80 (0.48, 1.32) D</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="transitivity-assessment">Transitivity Assessment<a class="anchor" aria-label="anchor" href="#transitivity-assessment"></a>
@@ -377,16 +376,16 @@ inconsistencies:</p>
 <code class="sourceCode R"><span><span class="co"># Node-splitting analysis on our NMA</span></span>
 <span><span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/node_splitting.html">node_splitting</a></span><span class="op">(</span><span class="va">nma</span><span class="op">)</span></span>
 <span><span class="va">ns</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt;   comparison direct_estimate direct_se n_direct indirect_available</span></span>
-<span><span class="co">#&gt; 1     A vs B          0.7500 0.1200000        1               TRUE</span></span>
-<span><span class="co">#&gt; 2     B vs C          0.8000 0.1800000        1               TRUE</span></span>
-<span><span class="co">#&gt; 3     A vs C          0.8000 0.1800000        1               TRUE</span></span>
-<span><span class="co">#&gt; 4     B vs D          0.6375 0.1843909        1               TRUE</span></span>
-<span><span class="co">#&gt;   inconsistency_p</span></span>
-<span><span class="co">#&gt; 1              NA</span></span>
-<span><span class="co">#&gt; 2              NA</span></span>
-<span><span class="co">#&gt; 3              NA</span></span>
-<span><span class="co">#&gt; 4              NA</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 17</span></span></span>
+<span><span class="co">#&gt;   comparison reference direct_estimate direct_se direct_ci_lower direct_ci_upper</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A vs B     A                    0.75      0.12           0.593           0.949</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B vs C     A                    0.9       0.15           0.671           1.21 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> A vs C     A                    0.8       0.18           0.562           1.14 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11 more variables: n_direct &lt;int&gt;, indirect_estimate &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   indirect_se &lt;dbl&gt;, indirect_ci_lower &lt;dbl&gt;, indirect_ci_upper &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   n_indirect &lt;int&gt;, bridge &lt;chr&gt;, inconsistency_z &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   inconsistency_p &lt;dbl&gt;, model &lt;chr&gt;, conf_level &lt;dbl&gt;</span></span></span>
 <span><span class="va">ns</span><span class="op">$</span><span class="va">note</span></span>
 <span><span class="co">#&gt; [1] "Full node-splitting requires re-analysis excluding direct evidence. Results shown are simplified."</span></span></code></pre></div>
 <p>Node-splitting helps identify specific comparisons where direct and

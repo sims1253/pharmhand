@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,6 +83,27 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"sims1253/pharmhand"</span><span class="op">)</span></span></code></pre></div>
+<p>Optional: Bayesian meta-analysis features require a Stan backend.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
+<span>  <span class="st">"cmdstanr"</span>,</span>
+<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://mc-stan.org/r-packages/"</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">cmdstanr</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/cmdstanr/reference/install_cmdstan.html" class="external-link">install_cmdstan</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"brms"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<p>Generate complete reports in a single call:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sims1253.github.io/pharmhand" class="external-link">pharmhand</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># One-line demographics report</span></span>
+<span><span class="fu"><a href="reference/quick_demographics_report.html">quick_demographics_report</a></span><span class="op">(</span><span class="va">adsl</span>, <span class="st">"demographics.docx"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># One-line safety report with multiple tables</span></span>
+<span><span class="fu"><a href="reference/quick_safety_report.html">quick_safety_report</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, <span class="st">"safety.docx"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -90,16 +111,21 @@
 <div class="section level3">
 <h3 id="demographics-table">Demographics Table<a class="anchor" aria-label="anchor" href="#demographics-table"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">adam_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ADaMData.html">ADaMData</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">adsl</span>, trt_var <span class="op">=</span> <span class="st">"TRT01P"</span><span class="op">)</span></span>
-<span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adam_data</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Simple: pass data.frame directly (auto-coerced)</span></span>
+<span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">)</span></span>
 <span><span class="va">demo_table</span><span class="op">@</span><span class="va">flextable</span></span></code></pre></div>
 <p><img src="reference/figures/README-demo-table-1.png" alt="" width="100%"></p>
+<p>For advanced use with population filtering:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Advanced: explicit ADaMData for population control</span></span>
+<span><span class="va">adam_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ADaMData.html">ADaMData</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">adsl</span>, population <span class="op">=</span> <span class="st">"SAF"</span>, trt_var <span class="op">=</span> <span class="st">"TRT01P"</span><span class="op">)</span></span>
+<span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adam_data</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="kaplan-meier-plot">Kaplan-Meier Plot<a class="anchor" aria-label="anchor" href="#kaplan-meier-plot"></a>
 </h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_km_plot.html">create_km_plot</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">adtte</span>,</span>
 <span>  time_var <span class="op">=</span> <span class="st">"AVAL"</span>,</span>
@@ -114,12 +140,26 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+<h2 id="configuration">Configuration<a class="anchor" aria-label="anchor" href="#configuration"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sims1253.github.io/pharmhand" class="external-link">pharmhand</a></span><span class="op">)</span></span>
+<p>Customize defaults package-wide:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set your study's preferences once</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>  pharmhand.trt_var <span class="op">=</span> <span class="st">"ARM"</span>,         <span class="co"># Treatment variable</span></span>
+<span>  pharmhand.autofit <span class="op">=</span> <span class="cn">TRUE</span>,          <span class="co"># Auto-fit table columns</span></span>
+<span>  pharmhand.conf_level <span class="op">=</span> <span class="fl">0.95</span>        <span class="co"># Confidence level</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Wrap ADaM data with automatic population filtering</span></span>
+<span><span class="co"># All functions now use your preferences</span></span>
+<span><span class="fu"><a href="reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">)</span>  <span class="co"># Uses ARM instead of TRT01P</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="advanced-adamdata-wrapper">Advanced: ADaMData Wrapper<a class="anchor" aria-label="anchor" href="#advanced-adamdata-wrapper"></a>
+</h2>
+<p>For population filtering and computed properties:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Wrap ADaM data with automatic population filtering</span></span>
 <span><span class="va">adam_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ADaMData.html">ADaMData</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">adsl</span>,</span>
 <span>  domain <span class="op">=</span> <span class="st">"ADSL"</span>,</span>
@@ -137,7 +177,7 @@
 <div class="section level3">
 <h3 id="efficacy-tables">Efficacy Tables<a class="anchor" aria-label="anchor" href="#efficacy-tables"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-to-event summary with median, HR, and landmarks</span></span>
 <span><span class="va">tte_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_tte_summary_table.html">create_tte_summary_table</a></span><span class="op">(</span></span>
 <span>  <span class="va">adtte</span>,</span>
@@ -158,7 +198,7 @@
 <div class="section level3">
 <h3 id="safety-tables">Safety Tables<a class="anchor" aria-label="anchor" href="#safety-tables"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># AE Overview, by SOC, most common</span></span>
 <span><span class="fu"><a href="reference/create_ae_summary_table.html">create_ae_summary_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"overview"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/create_ae_summary_table.html">create_ae_summary_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"soc"</span><span class="op">)</span></span>
@@ -167,7 +207,7 @@
 <div class="section level3">
 <h3 id="report-generation">Report Generation<a class="anchor" aria-label="anchor" href="#report-generation"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build and export a complete report</span></span>
 <span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ClinicalReport.html">ClinicalReport</a></span><span class="op">(</span></span>
 <span>  study_id <span class="op">=</span> <span class="st">"STUDY-001"</span>,</span>
@@ -184,7 +224,7 @@
 <div class="section level3">
 <h3 id="g-ba-module-4-compliance">G-BA Module 4 Compliance<a class="anchor" aria-label="anchor" href="#g-ba-module-4-compliance"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create and validate G-BA compliant tables</span></span>
 <span><span class="va">module4_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_hta_module4_table.html">create_hta_module4_table</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">module4_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/to_gba_template.html">to_gba_template</a></span><span class="op">(</span><span class="va">module4_table</span><span class="op">)</span></span>
@@ -193,7 +233,7 @@
 <div class="section level3">
 <h3 id="meta-analysis--evidence-synthesis">Meta-Analysis &amp; Evidence Synthesis<a class="anchor" aria-label="anchor" href="#meta-analysis--evidence-synthesis"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Random-effects meta-analysis</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/meta_analysis.html">meta_analysis</a></span><span class="op">(</span></span>
 <span>  yi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">0.82</span>, <span class="fl">0.68</span>, <span class="fl">0.91</span>, <span class="fl">0.77</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -218,7 +258,7 @@
 <span>  se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.12</span>, <span class="fl">0.15</span>, <span class="fl">0.18</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">nma_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/network_meta.html">network_meta</a></span><span class="op">(</span><span class="va">nma_data</span>, effect_measure <span class="op">=</span> <span class="st">"hr"</span><span class="op">)</span></span>
-<span><span class="va">nma_result</span><span class="op">$</span><span class="va">comparisons</span></span></code></pre></div>
+<span><span class="va">nma_result</span><span class="op">@</span><span class="va">comparisons</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

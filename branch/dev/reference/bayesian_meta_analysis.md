@@ -1,6 +1,6 @@
 # Bayesian Meta-Analysis
 
-Interface for Bayesian meta-analysis using brms/rstan when available.
+Interface for Bayesian meta-analysis using brms with a Stan backend.
 Provides guidance when dependencies are not installed.
 
 ## Usage
@@ -23,6 +23,8 @@ bayesian_meta_analysis(
   seed = NULL,
   adapt_delta = 0.95,
   max_treedepth = 12,
+  backend = c("auto", "cmdstanr", "rstan"),
+  warn_convergence = c("auto", "always", "never"),
   ...
 )
 ```
@@ -108,6 +110,16 @@ bayesian_meta_analysis(
   Integer. Maximum tree depth for NUTS sampler. Default: 12. Higher
   values allow more complex posterior geometry but may indicate issues.
 
+- backend:
+
+  Character. Which Stan backend to use: "auto" (prefer cmdstanr when
+  available), "cmdstanr", or "rstan".
+
+- warn_convergence:
+
+  Character. Whether to emit convergence warnings: "auto" (quiet under
+  testthat), "always", or "never".
+
 - ...:
 
   Additional arguments passed to brms::brm
@@ -122,12 +134,14 @@ guidance if brms is not installed.
 
 ## Details
 
-This function requires the brms and rstan packages for full Bayesian
-inference. If these are not installed, the function returns guidance on
-installation and falls back to frequentist meta-analysis via
+This function requires the brms package and a Stan backend (cmdstanr or
+rstan) for full Bayesian inference. If these are not installed, the
+function returns guidance on installation and falls back to frequentist
+meta-analysis via
 [`meta_analysis`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_analysis.md).
 
-Install dependencies with: `install.packages(c("brms", "rstan"))`
+Install dependencies with:
+`install.packages(c("brms", "cmdstanr", "rstan"))`
 
 Note: rstan may require additional setup. See
 <https://mc-stan.org/users/interfaces/rstan> for details.

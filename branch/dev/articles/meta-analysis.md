@@ -69,13 +69,13 @@ influential studies.
 loo <- leave_one_out(result)
 loo$results[, c("excluded_study", "estimate_display", "I2")]
 #>   excluded_study estimate_display I2
-#> 1        Study 1        0.7980720  0
-#> 2        Study 2        0.7794674  0
-#> 3        Study 3        0.8000967  0
-#> 4        Study 4        0.7603503  0
-#> 5        Study 5        0.7925677  0
+#> 1        Study 1        0.7906126  0
+#> 2        Study 2        0.7731710  0
+#> 3        Study 3        0.8102179  0
+#> 4        Study 4        0.7533013  0
+#> 5        Study 5        0.7854280  0
 loo$influential_studies
-#> [1] "Study 4"
+#> [1] "Study 3" "Study 4"
 ```
 
 ### Forest Plot
@@ -177,11 +177,13 @@ nma_data <- data.frame(
 
 nma <- network_meta(nma_data, effect_measure = "hr")
 nma@comparisons
-#>   treatment vs estimate  ci_lower  ci_upper        se n_studies  evidence rank
-#> 1         A  A   1.0000 1.0000000 1.0000000 0.0000000        NA reference   NA
-#> B         B  A   0.7500 0.5928121 0.9488672 0.1200000         1    direct    2
-#> C         C  A   0.8000 0.5621778 1.1384298 0.1800000         1    direct    3
-#> D         D  A   0.6375 0.4441466 0.9150272 0.1843909         2  indirect    1
+#> # A tibble: 4 × 9
+#>   treatment vs    estimate ci_lower ci_upper    se n_studies evidence   rank
+#>   <chr>     <chr>    <dbl>    <dbl>    <dbl> <dbl>     <int> <chr>     <dbl>
+#> 1 A         A        1        1        1     0            NA reference    NA
+#> 2 B         A        0.75     0.593    0.949 0.12          1 direct        2
+#> 3 C         A        0.8      0.562    1.14  0.18          1 direct        3
+#> 4 D         A        0.638    0.444    0.915 0.184         2 indirect      1
 ```
 
 ### Network Geometry Plot
@@ -208,13 +210,13 @@ for treatment rankings.
 ``` r
 sucra <- calculate_sucra(nma)
 sucra$ranking
-#>   treatment mean_rank     sucra prob_best prob_worst final_rank
-#> D         D     1.591 80.300000     0.599      0.026          1
-#> B         B     2.135 62.166667     0.218      0.028          2
-#> C         C     2.482 50.600000     0.182      0.136          3
-#> A         A     3.792  6.933333     0.001      0.810          4
+#>   treatment mean_rank    sucra prob_best prob_worst final_rank
+#> D         D     1.614 79.53333     0.585      0.027          1
+#> B         B     2.141 61.96667     0.216      0.020          2
+#> C         C     2.422 52.60000     0.199      0.122          3
+#> A         A     3.823  5.90000     0.000      0.831          4
 sucra$interpretation
-#> [1] "Treatment ranking by lower is better (SUCRA, %). Best: D (80.3%), Worst: A (6.9%)"
+#> [1] "Treatment ranking by lower is better (SUCRA, %). Best: D (79.5%), Worst: A (5.9%)"
 ```
 
 ### League Table
@@ -226,16 +228,13 @@ function creates league tables showing pairwise treatment comparisons.
 ``` r
 league <- create_league_table(nma)
 league@data
-#>   Treatment                  A                  B                 C
-#> 1         A                  A 1.33 (1.05, 1.69)* 1.25 (0.88, 1.78)
-#> 2         B 0.75 (0.59, 0.95)*                  B 0.94 (0.61, 1.43)
-#> 3         C  0.80 (0.56, 1.14)  1.07 (0.70, 1.63)                 C
-#> 4         D 0.64 (0.44, 0.92)*  0.85 (0.55, 1.31) 0.80 (0.48, 1.32)
-#>                    D
-#> 1 1.57 (1.09, 2.25)*
-#> 2  1.18 (0.76, 1.81)
-#> 3  1.25 (0.76, 2.08)
-#> 4                  D
+#> # A tibble: 4 × 5
+#>   Treatment A                  B                  C                 D           
+#>   <chr>     <chr>              <chr>              <chr>             <chr>       
+#> 1 A         A                  1.33 (1.05, 1.69)* 1.25 (0.88, 1.78) 1.57 (1.09,…
+#> 2 B         0.75 (0.59, 0.95)* B                  0.94 (0.61, 1.43) 1.18 (0.76,…
+#> 3 C         0.80 (0.56, 1.14)  1.07 (0.70, 1.63)  C                 1.25 (0.76,…
+#> 4 D         0.64 (0.44, 0.92)* 0.85 (0.55, 1.31)  0.80 (0.48, 1.32) D
 ```
 
 ### Transitivity Assessment
@@ -331,16 +330,16 @@ evidence for each comparison to identify potential inconsistencies:
 # Node-splitting analysis on our NMA
 ns <- node_splitting(nma)
 ns$results
-#>   comparison direct_estimate direct_se n_direct indirect_available
-#> 1     A vs B          0.7500 0.1200000        1               TRUE
-#> 2     B vs C          0.8000 0.1800000        1               TRUE
-#> 3     A vs C          0.8000 0.1800000        1               TRUE
-#> 4     B vs D          0.6375 0.1843909        1               TRUE
-#>   inconsistency_p
-#> 1              NA
-#> 2              NA
-#> 3              NA
-#> 4              NA
+#> # A tibble: 3 × 17
+#>   comparison reference direct_estimate direct_se direct_ci_lower direct_ci_upper
+#>   <chr>      <chr>               <dbl>     <dbl>           <dbl>           <dbl>
+#> 1 A vs B     A                    0.75      0.12           0.593           0.949
+#> 2 B vs C     A                    0.9       0.15           0.671           1.21 
+#> 3 A vs C     A                    0.8       0.18           0.562           1.14 
+#> # ℹ 11 more variables: n_direct <int>, indirect_estimate <dbl>,
+#> #   indirect_se <dbl>, indirect_ci_lower <dbl>, indirect_ci_upper <dbl>,
+#> #   n_indirect <int>, bridge <chr>, inconsistency_z <dbl>,
+#> #   inconsistency_p <dbl>, model <chr>, conf_level <dbl>
 ns$note
 #> [1] "Full node-splitting requires re-analysis excluding direct evidence. Results shown are simplified."
 ```

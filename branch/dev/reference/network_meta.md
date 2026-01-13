@@ -80,6 +80,10 @@ For ratio measures ("hr", "or", "rr"), effect estimates must be on the
 **log scale**. For difference measures ("rd", "md", "smd"), effect
 estimates must be on the **raw scale**.
 
+Indirect effects are estimated using a single-step Bucher chain via one
+intermediate treatment (chosen to minimize the indirect standard error).
+Multiple indirect paths are not combined.
+
 ## Examples
 
 ``` r
@@ -93,11 +97,13 @@ nma_data <- data.frame(
 )
 result <- network_meta(nma_data, effect_measure = "hr")
 result@comparisons
-#>   treatment vs estimate  ci_lower  ci_upper        se n_studies  evidence rank
-#> 1         A  A   1.0000 1.0000000 1.0000000 0.0000000        NA reference   NA
-#> B         B  A   0.7500 0.5928121 0.9488672 0.1200000         1    direct    2
-#> C         C  A   0.8000 0.5621778 1.1384298 0.1800000         1    direct    3
-#> D         D  A   0.6375 0.4441466 0.9150272 0.1843909         2  indirect    1
+#> # A tibble: 4 × 9
+#>   treatment vs    estimate ci_lower ci_upper    se n_studies evidence   rank
+#>   <chr>     <chr>    <dbl>    <dbl>    <dbl> <dbl>     <int> <chr>     <dbl>
+#> 1 A         A        1        1        1     0            NA reference    NA
+#> 2 B         A        0.75     0.593    0.949 0.12          1 direct        2
+#> 3 C         A        0.8      0.562    1.14  0.18          1 direct        3
+#> 4 D         A        0.638    0.444    0.915 0.184         2 indirect      1
 result@network$treatments
 #> [1] "A" "B" "C" "D"
 ```

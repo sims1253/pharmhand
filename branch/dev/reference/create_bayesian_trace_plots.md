@@ -7,7 +7,7 @@ Generate trace plots to visualize MCMC chain convergence
 ``` r
 create_bayesian_trace_plots(
   bayesian_result,
-  parameters = c("b_Intercept", "sd_study__Intercept"),
+  pars = c("b_Intercept", "sd_study__Intercept"),
   chains = NULL,
   combine_plots = TRUE,
   ...
@@ -20,7 +20,7 @@ create_bayesian_trace_plots(
 
   A bayesian_meta_result object from bayesian_meta_analysis()
 
-- parameters:
+- pars:
 
   Character vector of parameters to plot. Default: c("b_Intercept",
   "sd_study\_\_Intercept")
@@ -35,7 +35,7 @@ create_bayesian_trace_plots(
 
 - ...:
 
-  Additional arguments passed to brms::plot()
+  Additional arguments passed to plot()
 
 ## Value
 

@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,16 +93,54 @@ using S7 classes.</p>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"sims1253/pharmhand"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="core-workflow">Core workflow<a class="anchor" aria-label="anchor" href="#core-workflow"></a>
+<h2 id="quick-start-fastest-way">Quick Start (Fastest Way)<a class="anchor" aria-label="anchor" href="#quick-start-fastest-way"></a>
 </h2>
-<p>Wrap ADaM datasets in <code>ADaMData</code> objects, create tables
-and plots, then assemble reports.</p>
-<div class="section level3">
-<h3 id="wrap-adam-data">Wrap ADaM data<a class="anchor" aria-label="anchor" href="#wrap-adam-data"></a>
-</h3>
+<p>Generate complete reports in a single call:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sims1253.github.io/pharmhand" class="external-link">pharmhand</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Load example ADaM datasets</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pharmaverse.github.io/pharmaverseadam/" class="external-link">pharmaverseadam</a></span><span class="op">)</span></span>
+<span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu">pharmaverseadam</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/pharmaverseadam/reference/adsl.html" class="external-link">adsl</a></span></span>
+<span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="fu">pharmaverseadam</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/pharmaverseadam/reference/adae.html" class="external-link">adae</a></span></span>
+<span></span>
+<span><span class="co"># One-line demographics report</span></span>
+<span><span class="fu"><a href="../reference/quick_demographics_report.html">quick_demographics_report</a></span><span class="op">(</span><span class="va">adsl</span>, <span class="st">"demographics.docx"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># One-line safety report with multiple tables</span></span>
+<span><span class="fu"><a href="../reference/quick_safety_report.html">quick_safety_report</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, <span class="st">"safety.docx"</span>,</span>
+<span>                   include_overview <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                   include_soc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                   include_sae <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>That’s it! The functions automatically: - Accept data.frames directly
+(no S7 wrapping needed) - Use sensible defaults (configurable via
+<code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code>) - Create formatted Word documents with multiple
+tables</p>
+</div>
+<div class="section level2">
+<h2 id="core-workflow-detailed-control">Core Workflow (Detailed Control)<a class="anchor" aria-label="anchor" href="#core-workflow-detailed-control"></a>
+</h2>
+<p>For more control, build tables and reports step-by-step:</p>
+<div class="section level3">
+<h3 id="simple-pass-data-frames-directly">Simple: Pass data.frames directly<a class="anchor" aria-label="anchor" href="#simple-pass-data-frames-directly"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sims1253.github.io/pharmhand" class="external-link">pharmhand</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Most functions accept data.frames directly</span></span>
+<span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span></span>
+<span>  <span class="va">adsl</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"Table 1.1: Demographics and Baseline Characteristics"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">demo_table</span><span class="op">@</span><span class="va">flextable</span>    <span class="co"># Formatted flextable</span></span>
+<span><span class="va">demo_table</span><span class="op">@</span><span class="va">metadata</span>     <span class="co"># Analysis details</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="advanced-wrap-adam-data-for-population-filtering">Advanced: Wrap ADaM data for population filtering<a class="anchor" aria-label="anchor" href="#advanced-wrap-adam-data-for-population-filtering"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># For population filtering, wrap in ADaMData</span></span>
 <span><span class="va">adam_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ADaMData.html">ADaMData</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">adsl</span>,</span>
 <span>  domain <span class="op">=</span> <span class="st">"ADSL"</span>,</span>
@@ -111,25 +149,19 @@ and plots, then assemble reports.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">adam_data</span><span class="op">@</span><span class="va">filtered_data</span>  <span class="co"># Filtered to SAFFL == "Y"</span></span>
-<span><span class="va">adam_data</span><span class="op">@</span><span class="va">trt_n</span>          <span class="co"># Treatment group N's</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="create-tables">Create tables<a class="anchor" aria-label="anchor" href="#create-tables"></a>
-</h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span></span>
-<span>  adsl_data <span class="op">=</span> <span class="va">adam_data</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Table 1.1: Demographics and Baseline Characteristics"</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">adam_data</span><span class="op">@</span><span class="va">trt_n</span>          <span class="co"># Treatment group N's</span></span>
 <span></span>
-<span><span class="va">demo_table</span><span class="op">@</span><span class="va">flextable</span>    <span class="co"># Formatted flextable</span></span>
-<span><span class="va">demo_table</span><span class="op">@</span><span class="va">metadata</span>     <span class="co"># Analysis details</span></span></code></pre></div>
+<span><span class="co"># Pass to table functions</span></span>
+<span><span class="va">demo_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adam_data</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="create-plots">Create plots<a class="anchor" aria-label="anchor" href="#create-plots"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">km_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_km_plot.html">create_km_plot</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example data for Kaplan-Meier plots</span></span>
+<span><span class="va">adtte</span> <span class="op">&lt;-</span> <span class="fu">pharmaverseadam</span><span class="fu">::</span><span class="va">adtte</span></span>
+<span></span>
+<span><span class="va">km_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_km_plot.html">create_km_plot</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">adtte</span>,</span>
 <span>  time_var <span class="op">=</span> <span class="st">"AVAL"</span>,</span>
 <span>  event_var <span class="op">=</span> <span class="st">"CNSR"</span>,</span>
@@ -144,7 +176,7 @@ and plots, then assemble reports.</p>
 <div class="section level3">
 <h3 id="build-reports">Build reports<a class="anchor" aria-label="anchor" href="#build-reports"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ClinicalReport.html">ClinicalReport</a></span><span class="op">(</span></span>
 <span>  study_id <span class="op">=</span> <span class="st">"STUDY-001"</span>,</span>
 <span>  study_title <span class="op">=</span> <span class="st">"Phase III Clinical Trial"</span></span>
@@ -164,7 +196,7 @@ and plots, then assemble reports.</p>
 <div class="section level3">
 <h3 id="g-ba-module-4-compliance">G-BA Module 4 Compliance<a class="anchor" aria-label="anchor" href="#g-ba-module-4-compliance"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a Module 4 template table</span></span>
 <span><span class="va">module4_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_hta_module4_table.html">create_hta_module4_table</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -172,6 +204,31 @@ and plots, then assemble reports.</p>
 <span><span class="va">module4_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/to_gba_template.html">to_gba_template</a></span><span class="op">(</span><span class="va">module4_table</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/check_gba_compliance.html">check_gba_compliance</a></span><span class="op">(</span><span class="va">module4_table</span>, strict <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="configuration">Configuration<a class="anchor" aria-label="anchor" href="#configuration"></a>
+</h2>
+<p>Customize package defaults for your study:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set once at the start of your script</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>  pharmhand.trt_var <span class="op">=</span> <span class="st">"ARM"</span>,         <span class="co"># Treatment variable</span></span>
+<span>  pharmhand.autofit <span class="op">=</span> <span class="cn">TRUE</span>,          <span class="co"># Auto-fit columns</span></span>
+<span>  pharmhand.conf_level <span class="op">=</span> <span class="fl">0.95</span>,       <span class="co"># Confidence level</span></span>
+<span>  pharmhand.n_top <span class="op">=</span> <span class="fl">20</span>               <span class="co"># Top N for common AEs</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># All functions now use your preferences</span></span>
+<span><span class="fu"><a href="../reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">)</span>        <span class="co"># Uses ARM</span></span>
+<span><span class="fu"><a href="../reference/create_ae_summary_table.html">create_ae_summary_table</a></span><span class="op">(</span><span class="va">adae</span>, type <span class="op">=</span> <span class="st">"common"</span><span class="op">)</span>  <span class="co"># Shows top 20</span></span>
+<span><span class="fu"><a href="../reference/meta_analysis.html">meta_analysis</a></span><span class="op">(</span><span class="va">yi</span>, <span class="va">sei</span><span class="op">)</span>                 <span class="co"># Uses 95% CI</span></span></code></pre></div>
+<p>Available options: - <code>pharmhand.trt_var</code> - Treatment
+variable (default: “TRT01P”) - <code>pharmhand.subject_var</code> -
+Subject ID variable (default: “USUBJID”) -
+<code>pharmhand.autofit</code> - Auto-fit table columns (default: TRUE)
+- <code>pharmhand.conf_level</code> - Confidence level (default: 0.95) -
+<code>pharmhand.n_top</code> - Top N for common tables (default: 15) -
+<code>pharmhand.na_string</code> - NA display string (default: “–”)</p>
 </div>
 <div class="section level2">
 <h2 id="more-examples">More examples<a class="anchor" aria-label="anchor" href="#more-examples"></a>

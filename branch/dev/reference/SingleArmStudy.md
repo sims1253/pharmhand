@@ -15,8 +15,7 @@ SingleArmStudy(
   results = list(),
   risk_of_bias = NULL,
   metadata = list(),
-  data = structure(list(), names = character(0), row.names = integer(0), class =
-    "data.frame"),
+  data = data.frame(),
   treatment_var = "TRT01P"
 )
 ```

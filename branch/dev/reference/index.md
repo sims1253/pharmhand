@@ -190,9 +190,9 @@ tables.
 - [`create_region_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_region_table.md)
   : Create Enrollment by Region Table
 - [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
-  : Helper to create a ClinicalTable from AnalysisResults
+  : Create HTA-Style Table Create Clinical Table (Factory Function)
 - [`create_hta_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_table.md)
-  : Create HTA-Style Table
+  : Create a flextable formatted for HTA/AMNOG submissions.
 - [`create_hta_module4_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_module4_table.md)
   : Create Module 4 Table Template
 - [`calculate_baseline()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_baseline.md)
@@ -215,13 +215,13 @@ and other graphics.
   : Create Log-Log Survival Plot
 - [`create_mean_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_mean_plot.md)
   : Create Mean Plot with Confidence Intervals Over Time
+- [`create_spider_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_spider_plot.md)
+  : Create Spider Plot for Individual Trajectories
 - [`save_plot_as()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_plot_as.md)
   : Save ClinicalPlot to file
 - [`save_as_png()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_as_png.md)
   : Save ClinicalTable as PNG Saves a ClinicalTable's flextable to a PNG
   file.
-- [`create_spider_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_spider_plot.md)
-  : Create Spider Plot for Individual Trajectories
 
 ## Formatting
 
@@ -258,6 +258,10 @@ format specifications and composite formatters.
 
 Word document generation and report output using officer/flextable.
 
+- [`quick_demographics_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/quick_demographics_report.md)
+  : Quick Demographics Report
+- [`quick_safety_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/quick_safety_report.md)
+  : Quick Safety Report
 - [`generate_word()`](https://sims1253.github.io/pharmhand/branch/dev/reference/generate_word.md)
   : Generate a Word document from a ClinicalReport
 - [`write_docx()`](https://sims1253.github.io/pharmhand/branch/dev/reference/write_docx.md)
@@ -295,6 +299,8 @@ output rendering.
   : Convert analysis results to gt
 - [`as_gt_AnalysisResults()`](https://sims1253.github.io/pharmhand/branch/dev/reference/as_gt_AnalysisResults.md)
   : Convert AnalysisResults to gt (S7 Method)
+- [`clinical_table_from_results()`](https://sims1253.github.io/pharmhand/branch/dev/reference/clinical_table_from_results.md)
+  : Clinical table from analysis results
 - [`layered_to_flextable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/layered_to_flextable.md)
   : Convert LayeredTable to flextable
 

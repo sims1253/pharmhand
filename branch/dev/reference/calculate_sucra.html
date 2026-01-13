@@ -9,7 +9,7 @@ Ranking curve) or P-scores for treatments in network meta-analysis."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,10 +80,8 @@ Set to NULL for non-deterministic results.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>When <code>seed</code> is not NULL, the global random number generator state is
-modified via <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code>. If you need to preserve the RNG state, either
-set <code>seed = NULL</code> and manage seeding externally, or save/restore
-<code>.Random.seed</code> before and after calling this function.</p>
+    <p>RNG state is isolated via <code><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">withr::with_seed</a></code> during simulation,
+so calling this function does not alter the global RNG state.</p>
     </div>
 
     <div class="section level2">
@@ -100,11 +98,11 @@ set <code>seed = NULL</code> and manage seeding externally, or save/restore
 <span class="r-in"><span><span class="va">sucra</span> <span class="op">&lt;-</span> <span class="fu">calculate_sucra</span><span class="op">(</span><span class="va">nma_result</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sucra</span><span class="op">$</span><span class="va">ranking</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   treatment mean_rank sucra prob_best prob_worst final_rank</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> B         B     1.425 78.75     0.599      0.024          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> C         C     1.759 62.05     0.391      0.150          2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A         A     2.816  9.20     0.010      0.826          3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B         B     1.432 78.40     0.585      0.017          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C         C     1.717 64.15     0.413      0.130          2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A         A     2.851  7.45     0.002      0.853          3</span>
 <span class="r-in"><span><span class="va">sucra</span><span class="op">$</span><span class="va">interpretation</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Treatment ranking by lower is better (SUCRA, %). Best: B (78.8%), Worst: A (9.2%)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Treatment ranking by lower is better (SUCRA, %). Best: B (78.4%), Worst: A (7.4%)"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

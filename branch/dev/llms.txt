@@ -11,17 +11,50 @@ tables and plots for Word documents.
 pak::pak("sims1253/pharmhand")
 ```
 
+Optional: Bayesian meta-analysis features require a Stan backend.
+
+``` r
+install.packages(
+  "cmdstanr",
+  repos = c("https://mc-stan.org/r-packages/", getOption("repos"))
+)
+cmdstanr::install_cmdstan()
+install.packages("brms")
+```
+
+## Quick Start
+
+Generate complete reports in a single call:
+
+``` r
+library(pharmhand)
+
+# One-line demographics report
+quick_demographics_report(adsl, "demographics.docx")
+
+# One-line safety report with multiple tables
+quick_safety_report(adae, adsl, "safety.docx")
+```
+
 ## Examples
 
 ### Demographics Table
 
 ``` r
-adam_data <- ADaMData(data = adsl, trt_var = "TRT01P")
-demo_table <- create_demographics_table(adam_data)
+# Simple: pass data.frame directly (auto-coerced)
+demo_table <- create_demographics_table(adsl)
 demo_table@flextable
 ```
 
 ![](reference/figures/README-demo-table-1.png)
+
+For advanced use with population filtering:
+
+``` r
+# Advanced: explicit ADaMData for population control
+adam_data <- ADaMData(data = adsl, population = "SAF", trt_var = "TRT01P")
+demo_table <- create_demographics_table(adam_data)
+```
 
 ### Kaplan-Meier Plot
 
@@ -40,11 +73,27 @@ km@plot
 
 ![](reference/figures/README-km-plot-1.png)
 
-## Quick Start
+## Configuration
+
+Customize defaults package-wide:
 
 ``` r
-library(pharmhand)
+# Set your study's preferences once
+options(
+  pharmhand.trt_var = "ARM",         # Treatment variable
+  pharmhand.autofit = TRUE,          # Auto-fit table columns
+  pharmhand.conf_level = 0.95        # Confidence level
+)
 
+# All functions now use your preferences
+create_demographics_table(adsl)  # Uses ARM instead of TRT01P
+```
+
+## Advanced: ADaMData Wrapper
+
+For population filtering and computed properties:
+
+``` r
 # Wrap ADaM data with automatic population filtering
 adam_data <- ADaMData(
   data = adsl,
@@ -143,7 +192,7 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
-nma_result$comparisons
+nma_result@comparisons
 ```
 
 ## Classes
@@ -377,9 +426,9 @@ tables.
 - [`create_region_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_region_table.md)
   : Create Enrollment by Region Table
 - [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
-  : Helper to create a ClinicalTable from AnalysisResults
+  : Create HTA-Style Table Create Clinical Table (Factory Function)
 - [`create_hta_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_table.md)
-  : Create HTA-Style Table
+  : Create a flextable formatted for HTA/AMNOG submissions.
 - [`create_hta_module4_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_module4_table.md)
   : Create Module 4 Table Template
 - [`calculate_baseline()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_baseline.md)
@@ -402,13 +451,13 @@ and other graphics.
   : Create Log-Log Survival Plot
 - [`create_mean_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_mean_plot.md)
   : Create Mean Plot with Confidence Intervals Over Time
+- [`create_spider_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_spider_plot.md)
+  : Create Spider Plot for Individual Trajectories
 - [`save_plot_as()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_plot_as.md)
   : Save ClinicalPlot to file
 - [`save_as_png()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_as_png.md)
   : Save ClinicalTable as PNG Saves a ClinicalTable's flextable to a PNG
   file.
-- [`create_spider_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_spider_plot.md)
-  : Create Spider Plot for Individual Trajectories
 
 ## Formatting
 
@@ -445,6 +494,10 @@ format specifications and composite formatters.
 
 Word document generation and report output using officer/flextable.
 
+- [`quick_demographics_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/quick_demographics_report.md)
+  : Quick Demographics Report
+- [`quick_safety_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/quick_safety_report.md)
+  : Quick Safety Report
 - [`generate_word()`](https://sims1253.github.io/pharmhand/branch/dev/reference/generate_word.md)
   : Generate a Word document from a ClinicalReport
 - [`write_docx()`](https://sims1253.github.io/pharmhand/branch/dev/reference/write_docx.md)
@@ -482,6 +535,8 @@ output rendering.
   : Convert analysis results to gt
 - [`as_gt_AnalysisResults()`](https://sims1253.github.io/pharmhand/branch/dev/reference/as_gt_AnalysisResults.md)
   : Convert AnalysisResults to gt (S7 Method)
+- [`clinical_table_from_results()`](https://sims1253.github.io/pharmhand/branch/dev/reference/clinical_table_from_results.md)
+  : Clinical table from analysis results
 - [`layered_to_flextable()`](https://sims1253.github.io/pharmhand/branch/dev/reference/layered_to_flextable.md)
   : Convert LayeredTable to flextable
 

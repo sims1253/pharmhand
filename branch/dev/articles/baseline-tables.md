@@ -24,9 +24,79 @@ admh <- pharmaverseadam::admh
 adcm <- pharmaverseadam::adcm
 ```
 
-## ADaMData wrapper
+## Demographics table
 
-Wrap ADaM datasets in `ADaMData` before creating tables.
+The demographics table presents basic participant characteristics
+including age, sex, and ethnicity.
+
+### Simple approach: Pass data.frame directly
+
+``` r
+# Simplest: pass data.frame directly (auto-coerced)
+demo_table <- create_demographics_table(adsl)
+
+# Display the table
+demo_table@flextable
+```
+
+| Demographics and Baseline Characteristics       |     |      |     |        |      |      |          |             |        |       |       |     |                                  |                        |         |
+|-------------------------------------------------|-----|------|-----|--------|------|------|----------|-------------|--------|-------|-------|-----|----------------------------------|------------------------|---------|
+| TRT01P                                          | n   | mean | sd  | median | min  | max  | variable | layer_type  | AGEGR1 | N_tot | pct   | SEX | RACE                             | ETHNIC                 | COUNTRY |
+| Placebo                                         | 86  | 75.2 | 8.6 | 76.0   | 52.0 | 89.0 | AGE      | descriptive | --     | --    | --    | --  | --                               | --                     | --      |
+| Screen Failure                                  | 52  | 75.1 | 9.7 | 76.0   | 50.0 | 89.0 | AGE      | descriptive | --     | --    | --    | --  | --                               | --                     | --      |
+| Xanomeline High Dose                            | 84  | 74.4 | 7.9 | 76.0   | 56.0 | 88.0 | AGE      | descriptive | --     | --    | --    | --  | --                               | --                     | --      |
+| Xanomeline Low Dose                             | 84  | 75.7 | 8.3 | 77.5   | 51.0 | 88.0 | AGE      | descriptive | --     | --    | --    | --  | --                               | --                     | --      |
+| Placebo                                         | 14  | --   | --  | --     | --   | --   | AGEGR1   | count       | 18-64  | 86    | 16.3  | --  | --                               | --                     | --      |
+| Placebo                                         | 72  | --   | --  | --     | --   | --   | AGEGR1   | count       | \>64   | 86    | 83.7  | --  | --                               | --                     | --      |
+| Screen Failure                                  | 9   | --   | --  | --     | --   | --   | AGEGR1   | count       | 18-64  | 52    | 17.3  | --  | --                               | --                     | --      |
+| Screen Failure                                  | 43  | --   | --  | --     | --   | --   | AGEGR1   | count       | \>64   | 52    | 82.7  | --  | --                               | --                     | --      |
+| Xanomeline High Dose                            | 11  | --   | --  | --     | --   | --   | AGEGR1   | count       | 18-64  | 84    | 13.1  | --  | --                               | --                     | --      |
+| Xanomeline High Dose                            | 73  | --   | --  | --     | --   | --   | AGEGR1   | count       | \>64   | 84    | 86.9  | --  | --                               | --                     | --      |
+| Xanomeline Low Dose                             | 8   | --   | --  | --     | --   | --   | AGEGR1   | count       | 18-64  | 84    | 9.5   | --  | --                               | --                     | --      |
+| Xanomeline Low Dose                             | 76  | --   | --  | --     | --   | --   | AGEGR1   | count       | \>64   | 84    | 90.5  | --  | --                               | --                     | --      |
+| Placebo                                         | 53  | --   | --  | --     | --   | --   | SEX      | count       | --     | 86    | 61.6  | F   | --                               | --                     | --      |
+| Placebo                                         | 33  | --   | --  | --     | --   | --   | SEX      | count       | --     | 86    | 38.4  | M   | --                               | --                     | --      |
+| Screen Failure                                  | 36  | --   | --  | --     | --   | --   | SEX      | count       | --     | 52    | 69.2  | F   | --                               | --                     | --      |
+| Screen Failure                                  | 16  | --   | --  | --     | --   | --   | SEX      | count       | --     | 52    | 30.8  | M   | --                               | --                     | --      |
+| Xanomeline High Dose                            | 40  | --   | --  | --     | --   | --   | SEX      | count       | --     | 84    | 47.6  | F   | --                               | --                     | --      |
+| Xanomeline High Dose                            | 44  | --   | --  | --     | --   | --   | SEX      | count       | --     | 84    | 52.4  | M   | --                               | --                     | --      |
+| Xanomeline Low Dose                             | 50  | --   | --  | --     | --   | --   | SEX      | count       | --     | 84    | 59.5  | F   | --                               | --                     | --      |
+| Xanomeline Low Dose                             | 34  | --   | --  | --     | --   | --   | SEX      | count       | --     | 84    | 40.5  | M   | --                               | --                     | --      |
+| Placebo                                         | 8   | --   | --  | --     | --   | --   | RACE     | count       | --     | 86    | 9.3   | --  | BLACK OR AFRICAN AMERICAN        | --                     | --      |
+| Placebo                                         | 78  | --   | --  | --     | --   | --   | RACE     | count       | --     | 86    | 90.7  | --  | WHITE                            | --                     | --      |
+| Screen Failure                                  | 1   | --   | --  | --     | --   | --   | RACE     | count       | --     | 52    | 1.9   | --  | AMERICAN INDIAN OR ALASKA NATIVE | --                     | --      |
+| Screen Failure                                  | 2   | --   | --  | --     | --   | --   | RACE     | count       | --     | 52    | 3.8   | --  | ASIAN                            | --                     | --      |
+| Screen Failure                                  | 6   | --   | --  | --     | --   | --   | RACE     | count       | --     | 52    | 11.5  | --  | BLACK OR AFRICAN AMERICAN        | --                     | --      |
+| Screen Failure                                  | 43  | --   | --  | --     | --   | --   | RACE     | count       | --     | 52    | 82.7  | --  | WHITE                            | --                     | --      |
+| Xanomeline High Dose                            | 1   | --   | --  | --     | --   | --   | RACE     | count       | --     | 84    | 1.2   | --  | AMERICAN INDIAN OR ALASKA NATIVE | --                     | --      |
+| Xanomeline High Dose                            | 9   | --   | --  | --     | --   | --   | RACE     | count       | --     | 84    | 10.7  | --  | BLACK OR AFRICAN AMERICAN        | --                     | --      |
+| Xanomeline High Dose                            | 74  | --   | --  | --     | --   | --   | RACE     | count       | --     | 84    | 88.1  | --  | WHITE                            | --                     | --      |
+| Xanomeline Low Dose                             | 6   | --   | --  | --     | --   | --   | RACE     | count       | --     | 84    | 7.1   | --  | BLACK OR AFRICAN AMERICAN        | --                     | --      |
+| Xanomeline Low Dose                             | 78  | --   | --  | --     | --   | --   | RACE     | count       | --     | 84    | 92.9  | --  | WHITE                            | --                     | --      |
+| Placebo                                         | 3   | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 86    | 3.5   | --  | --                               | HISPANIC OR LATINO     | --      |
+| Placebo                                         | 83  | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 86    | 96.5  | --  | --                               | NOT HISPANIC OR LATINO | --      |
+| Screen Failure                                  | 5   | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 52    | 9.6   | --  | --                               | HISPANIC OR LATINO     | --      |
+| Screen Failure                                  | 47  | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 52    | 90.4  | --  | --                               | NOT HISPANIC OR LATINO | --      |
+| Xanomeline High Dose                            | 3   | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 84    | 3.6   | --  | --                               | HISPANIC OR LATINO     | --      |
+| Xanomeline High Dose                            | 81  | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 84    | 96.4  | --  | --                               | NOT HISPANIC OR LATINO | --      |
+| Xanomeline Low Dose                             | 6   | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 84    | 7.1   | --  | --                               | HISPANIC OR LATINO     | --      |
+| Xanomeline Low Dose                             | 78  | --   | --  | --     | --   | --   | ETHNIC   | count       | --     | 84    | 92.9  | --  | --                               | NOT HISPANIC OR LATINO | --      |
+| Placebo                                         | 86  | --   | --  | --     | --   | --   | COUNTRY  | count       | --     | 86    | 100.0 | --  | --                               | --                     | USA     |
+| Screen Failure                                  | 52  | --   | --  | --     | --   | --   | COUNTRY  | count       | --     | 52    | 100.0 | --  | --                               | --                     | USA     |
+| Xanomeline High Dose                            | 84  | --   | --  | --     | --   | --   | COUNTRY  | count       | --     | 84    | 100.0 | --  | --                               | --                     | USA     |
+| Xanomeline Low Dose                             | 84  | --   | --  | --     | --   | --   | COUNTRY  | count       | --     | 84    | 100.0 | --  | --                               | --                     | USA     |
+| FAS Population                                  |     |      |     |        |      |      |          |             |        |       |       |     |                                  |                        |         |
+| Age summarized as n, Mean (SD), Median, Min-Max |     |      |     |        |      |      |          |             |        |       |       |     |                                  |                        |         |
+| Categorical variables presented as n (%)        |     |      |     |        |      |      |          |             |        |       |       |     |                                  |                        |         |
+
+The function automatically wraps the data.frame in an ADaMData object.
+See
+[`?create_demographics_table`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_demographics_table.md)
+for full parameter documentation.
+
+### Advanced approach: Explicit ADaMData for population filtering
+
+For population filtering, create an ADaMData object explicitly:
 
 ``` r
 # Wrap ADSL with population filtering
@@ -35,22 +105,15 @@ adam_data <- ADaMData(
   domain = "ADSL",
   population = "SAF"
 )
-```
 
-## Demographics table
-
-The demographics table presents basic participant characteristics
-including age, sex, and ethnicity.
-
-``` r
-# Basic demographics table
-demo_table <- create_demographics_table(
+# Pass to table function
+demo_table_saf <- create_demographics_table(
   adsl_data = adam_data,
   trt_var = "TRT01P"
 )
 
 # Display the table
-demo_table@flextable
+demo_table_saf@flextable
 ```
 
 | Demographics and Baseline Characteristics       |     |      |     |        |      |      |          |             |        |       |       |     |                                  |                        |         |

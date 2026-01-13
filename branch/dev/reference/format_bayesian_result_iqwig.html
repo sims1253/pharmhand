@@ -13,7 +13,7 @@ specific decimal places, etc.)"><meta property="og:image" content="https://sims1
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,8 +113,9 @@ bayesian_meta_analysis()</p></dd>
 <dl><dt>estimate</dt>
 <dd><p>Formatted point estimate</p></dd>
 
-<dt>ci</dt>
-<dd><p>Formatted credible interval as "lower; upper" with brackets</p></dd>
+<dt>ci_95</dt>
+<dd><p>Formatted 95% credible interval as "lower; upper" with
+brackets</p></dd>
 
 <dt>tau</dt>
 <dd><p>Formatted heterogeneity estimate</p></dd>
@@ -122,7 +123,7 @@ bayesian_meta_analysis()</p></dd>
 <dt>tau_ci</dt>
 <dd><p>Formatted heterogeneity CI</p></dd>
 
-<dt>probability</dt>
+<dt>probability_statement</dt>
 <dd><p>Probability statement string</p></dd>
 
 <dt>interpretation</dt>
@@ -130,6 +131,18 @@ bayesian_meta_analysis()</p></dd>
 
 <dt>full_text</dt>
 <dd><p>Complete formatted summary text</p></dd>
+
+<dt>raw</dt>
+<dd><p>Raw values used to construct the formatted output, with fields:</p><ul><li><p>point_estimate</p></li>
+<li><p>ci_lower</p></li>
+<li><p>ci_upper</p></li>
+<li><p>tau</p></li>
+<li><p>tau_ci_lower</p></li>
+<li><p>tau_ci_upper</p></li>
+<li><p>effect_measure</p></li>
+<li><p>n_studies</p></li>
+<li><p>prob_beneficial</p></li>
+</ul></dd>
 
 </dl></div>
 
