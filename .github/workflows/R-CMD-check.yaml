@@ -52,6 +52,8 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          extra-repositories: |
+            https://stan-dev.r-universe.dev
           # BH and RcppEigen are header-only packages required for brms/rstan
           # compilation. They must be explicitly listed here because they need
           # to be installed before Suggests dependencies are compiled.

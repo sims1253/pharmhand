@@ -1,15 +1,7 @@
 # Tests for R/efficacy_cfb.R
 
 test_that("create_cfb_summary_table returns ClinicalTable", {
-	advs <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAM = c("Systolic Blood Pressure", "Systolic Blood Pressure"),
-		PARAMCD = c("SYSBP", "SYSBP"),
-		AVISIT = c("End of Treatment", "End of Treatment"),
-		AVAL = c(120, 140),
-		CHG = c(-5, -10)
-	)
+	advs <- fixture_advs_cfb()
 
 	tbl <- create_cfb_summary_table(advs, params = "SYSBP")
 
@@ -17,15 +9,7 @@ test_that("create_cfb_summary_table returns ClinicalTable", {
 })
 
 test_that("create_cfb_summary_table has correct type", {
-	advs <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAM = c("Systolic Blood Pressure", "Systolic Blood Pressure"),
-		PARAMCD = c("SYSBP", "SYSBP"),
-		AVISIT = c("End of Treatment", "End of Treatment"),
-		AVAL = c(120, 140),
-		CHG = c(-5, -10)
-	)
+	advs <- fixture_advs_cfb()
 
 	tbl <- create_cfb_summary_table(advs, params = "SYSBP")
 
@@ -33,15 +17,7 @@ test_that("create_cfb_summary_table has correct type", {
 })
 
 test_that("create_cfb_summary_table has expected columns", {
-	advs <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAM = c("Systolic Blood Pressure", "Systolic Blood Pressure"),
-		PARAMCD = c("SYSBP", "SYSBP"),
-		AVISIT = c("End of Treatment", "End of Treatment"),
-		AVAL = c(120, 140),
-		CHG = c(-5, -10)
-	)
+	advs <- fixture_advs_cfb()
 
 	tbl <- create_cfb_summary_table(advs, params = "SYSBP")
 
@@ -49,13 +25,7 @@ test_that("create_cfb_summary_table has expected columns", {
 })
 
 test_that("create_vs_by_visit_table returns ClinicalTable", {
-	advs <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAMCD = c("SYSBP", "SYSBP"),
-		AVISIT = c("Baseline", "Week 2"),
-		AVAL = c(120, 140)
-	)
+	advs <- fixture_advs_vs_by_visit()
 
 	tbl <- create_vs_by_visit_table(
 		advs,
@@ -66,13 +36,7 @@ test_that("create_vs_by_visit_table returns ClinicalTable", {
 })
 
 test_that("create_vs_by_visit_table has correct type", {
-	advs <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAMCD = c("SYSBP", "SYSBP"),
-		AVISIT = c("Baseline", "Week 2"),
-		AVAL = c(120, 140)
-	)
+	advs <- fixture_advs_vs_by_visit()
 
 	tbl <- create_vs_by_visit_table(
 		advs,
@@ -83,13 +47,7 @@ test_that("create_vs_by_visit_table has correct type", {
 })
 
 test_that("create_vs_by_visit_table has correct row count", {
-	advs <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAMCD = c("SYSBP", "SYSBP"),
-		AVISIT = c("Baseline", "Week 2"),
-		AVAL = c(120, 140)
-	)
+	advs <- fixture_advs_vs_by_visit()
 
 	tbl <- create_vs_by_visit_table(
 		advs,

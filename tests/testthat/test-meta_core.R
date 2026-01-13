@@ -251,6 +251,23 @@ test_that("meta_analysis calculates prediction intervals for random effects", {
 	expect_length(result@prediction_interval, 2)
 })
 
+test_that("meta_analysis warns when prediction interval df is very low (k=3)", {
+	yi <- c(0.2, 1.0, 0.0)
+	sei <- c(0.1, 0.1, 0.1)
+
+	expect_warning(
+		meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "md",
+			model = "random",
+			method = "DL",
+			prediction = TRUE
+		),
+		"Prediction interval uses very low degrees of freedom"
+	)
+})
+
 test_that("meta_analysis works with HR effect measure", {
 	yi <- .meta_yi_or
 	sei <- .meta_sei_or

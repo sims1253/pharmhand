@@ -1,14 +1,7 @@
 # Tests for R/efficacy_lab.R
 
 test_that("create_lab_summary_table returns ClinicalTable", {
-	adlb <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAM = c("Alanine Aminotransferase", "Alanine Aminotransferase"),
-		PARAMCD = c("ALT", "ALT"),
-		AVISIT = c("Week 24", "Week 24"),
-		AVAL = c(20, 30)
-	)
+	adlb <- fixture_adlb_lab_summary()
 
 	tbl <- create_lab_summary_table(adlb, params = "ALT")
 
@@ -16,14 +9,7 @@ test_that("create_lab_summary_table returns ClinicalTable", {
 })
 
 test_that("create_lab_summary_table has correct type", {
-	adlb <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		PARAM = c("Alanine Aminotransferase", "Alanine Aminotransferase"),
-		PARAMCD = c("ALT", "ALT"),
-		AVISIT = c("Week 24", "Week 24"),
-		AVAL = c(20, 30)
-	)
+	adlb <- fixture_adlb_lab_summary()
 
 	tbl <- create_lab_summary_table(adlb, params = "ALT")
 
@@ -31,14 +17,7 @@ test_that("create_lab_summary_table has correct type", {
 })
 
 test_that("create_lab_shift_table returns ClinicalTable", {
-	adlb <- data.frame(
-		USUBJID = c("01", "02", "03"),
-		TRT01P = c("A", "A", "B"),
-		PARAMCD = c("ALT", "ALT", "ALT"),
-		AVISIT = c("Week 24", "Week 24", "Week 24"),
-		BNRIND = c("NORMAL", "NORMAL", "HIGH"),
-		ANRIND = c("NORMAL", "HIGH", "HIGH")
-	)
+	adlb <- fixture_adlb_lab_shift()
 
 	tbl <- create_lab_shift_table(adlb)
 
@@ -46,14 +25,7 @@ test_that("create_lab_shift_table returns ClinicalTable", {
 })
 
 test_that("create_lab_shift_table has correct type", {
-	adlb <- data.frame(
-		USUBJID = c("01", "02", "03"),
-		TRT01P = c("A", "A", "B"),
-		PARAMCD = c("ALT", "ALT", "ALT"),
-		AVISIT = c("Week 24", "Week 24", "Week 24"),
-		BNRIND = c("NORMAL", "NORMAL", "HIGH"),
-		ANRIND = c("NORMAL", "HIGH", "HIGH")
-	)
+	adlb <- fixture_adlb_lab_shift()
 
 	tbl <- create_lab_shift_table(adlb)
 
@@ -61,14 +33,7 @@ test_that("create_lab_shift_table has correct type", {
 })
 
 test_that("create_lab_shift_table has expected columns", {
-	adlb <- data.frame(
-		USUBJID = c("01", "02", "03"),
-		TRT01P = c("A", "A", "B"),
-		PARAMCD = c("ALT", "ALT", "ALT"),
-		AVISIT = c("Week 24", "Week 24", "Week 24"),
-		BNRIND = c("NORMAL", "NORMAL", "HIGH"),
-		ANRIND = c("NORMAL", "HIGH", "HIGH")
-	)
+	adlb <- fixture_adlb_lab_shift()
 
 	tbl <- create_lab_shift_table(adlb)
 

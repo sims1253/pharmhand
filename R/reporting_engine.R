@@ -36,7 +36,7 @@ as_flextable_AnalysisResults <- S7::method(
 		# Hierarchy styling for SOC-PT
 		# Defensive check for "label" column
 		df_display <- if ("label" %in% names(df)) {
-			dplyr::select(df, -"label")
+			dplyr::select(df, -dplyr::all_of("label"))
 		} else {
 			df
 		}
@@ -164,11 +164,23 @@ write_docx_ClinicalReport <- S7::method(
 	invisible(x)
 }
 
-#' Helper to create a ClinicalTable from AnalysisResults
+#' Clinical table from analysis results
 #'
-#' @param res AnalysisResults object
-#' @param title Character string for table title
+#' Converts an `AnalysisResults` object into a `ClinicalTable` for reporting.
+#'
+#' @param res An `AnalysisResults` object with `@stats` (table data) and `@type`
+#'   (table type) slots.
+#' @param title Optional table title.
+#'
+#' @return A `ClinicalTable` object.
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Convert analysis results to clinical table
+#' results <- analyze_demographics(adsl_data)
+#' table <- clinical_table_from_results(results, title = "Demographics")
+#' }
 clinical_table_from_results <- function(res, title = "") {
 	ft <- as_flextable(res)
 	ClinicalTable(

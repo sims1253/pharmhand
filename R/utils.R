@@ -82,7 +82,7 @@ assert_column_exists <- function(data, col, data_arg = "data") {
 #' @return Character string for NA display
 #' @keywords internal
 get_na_string <- function() {
-	getOption("pharmhand.na_string", "--")
+	ph_default("na_string", "--")
 }
 
 # =============================================================================
@@ -100,7 +100,6 @@ get_na_string <- function() {
 	subject_var = "USUBJID",
 	autofit = TRUE,
 	conf_level = 0.95,
-	ci_level = 0.95,
 	na_string = "--",
 	population = "FAS",
 	n_top = 15,
@@ -131,18 +130,58 @@ get_na_string <- function() {
 #' ph_default("trt_var") # "ARM"
 #' }
 ph_default <- function(name, default = NULL) {
-	# Check option first (allows user override)
-	opt_value <- getOption(paste0("pharmhand.", name))
-	if (!is.null(opt_value)) {
-		return(opt_value)
-	}
+	assert_character_scalar(name, "name")
 
 	# Fall back to built-in default
 	builtin <- .PH_DEFAULTS[[name]]
+
+	# Check option first (allows user override), but validate type/shape.
+	opt_value <- getOption(paste0("pharmhand.", name))
+	if (!is.null(opt_value)) {
+		expected <- if (!is.null(builtin)) builtin else default
+
+		is_scalar_atomic <- function(x) {
+			is.atomic(x) && length(x) == 1
+		}
+
+		ok <- TRUE
+		if (!is.null(expected)) {
+			if (is.logical(expected) && is_scalar_atomic(expected)) {
+				ok <- is.logical(opt_value) &&
+					is_scalar_atomic(opt_value) &&
+					!is.na(opt_value)
+			} else if (is.numeric(expected) && is_scalar_atomic(expected)) {
+				ok <- is.numeric(opt_value) &&
+					is_scalar_atomic(opt_value) &&
+					!is.na(opt_value)
+			} else if (is.character(expected) && is_scalar_atomic(expected)) {
+				ok <- is.character(opt_value) &&
+					is_scalar_atomic(opt_value) &&
+					!is.na(opt_value)
+			} else {
+				ok <- inherits(opt_value, class(expected))
+			}
+		}
+
+		if (isTRUE(ok)) {
+			return(opt_value)
+		}
+
+		ph_warn(sprintf(
+			"Invalid option 'pharmhand.%s' (expected %s, got %s); using default",
+			name,
+			if (is.null(expected)) {
+				"<unknown>"
+			} else {
+				paste(class(expected), collapse = "/")
+			},
+			paste(class(opt_value), collapse = "/")
+		))
+	}
+
 	if (!is.null(builtin)) {
 		return(builtin)
 	}
 
-	# Use provided default or NULL
 	default
 }

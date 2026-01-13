@@ -4,7 +4,7 @@
 \alias{leave_one_out}
 \title{Perform Leave-One-Out Sensitivity Analysis}
 \usage{
-leave_one_out(meta_result = NULL, yi = NULL, sei = NULL)
+leave_one_out(meta_result = NULL, yi = NULL, sei = NULL, method = NULL)
 }
 \arguments{
 \item{meta_result}{A MetaResult object from meta_analysis()}
@@ -12,6 +12,10 @@ leave_one_out(meta_result = NULL, yi = NULL, sei = NULL)
 \item{yi}{Numeric vector of effect estimates (optional if in meta_result)}
 
 \item{sei}{Numeric vector of standard errors (optional if in meta_result)}
+
+\item{method}{Character. Tau-squared estimation method for the leave-one-out
+refits: "DL", "REML", or "PM". If \code{NULL} (default), uses
+\code{meta_result@metadata$method} when available; otherwise defaults to "DL".}
 }
 \value{
 A list with components:
@@ -21,6 +25,7 @@ A list with components:
 \item{n_influential}{Number of influential studies}
 \item{effect_measure}{Effect measure used}
 \item{model}{Model type (fixed/random)}
+\item{method}{Tau-squared estimation method used}
 }
 }
 \description{

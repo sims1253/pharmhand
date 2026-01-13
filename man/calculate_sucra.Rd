@@ -19,11 +19,19 @@ Default: TRUE for ratios}
 Set to NULL for non-deterministic results.}
 }
 \value{
-List with rankings, SUCRA/P-scores, and rankogram data
+List with rankings, SUCRA/P-scores, and rankogram data. When
+\code{n_treatments == 1}, the returned \code{sucra} value is set to \code{1.0} (the single
+treatment is trivially best).
 }
 \description{
 Calculates ranking probabilities and SUCRA (Surface Under Cumulative
 Ranking curve) or P-scores for treatments in network meta-analysis.
+}
+\details{
+The reference treatment is treated as the baseline in the output and is
+assigned an SE of 0. For any non-reference treatments with missing/invalid
+standard errors, the SE is imputed using the median of valid SE values.
+This imputation can affect ranking probabilities and SUCRA values.
 }
 \note{
 RNG state is isolated via \code{withr::with_seed} during simulation,

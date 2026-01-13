@@ -32,10 +32,26 @@ pharmhand creates clinical study tables and reports from ADaM datasets. It uses 
 pak::pak("sims1253/pharmhand")
 ```
 
+Optional: Bayesian meta-analysis features require a Stan backend.
+
+```r
+install.packages(
+  "cmdstanr",
+  repos = c("https://mc-stan.org/r-packages/", getOption("repos"))
+)
+cmdstanr::install_cmdstan()
+install.packages("brms")
+```
+
 ## Quick Start
 
 ```{r example-setup, include=FALSE}
-library(pharmhand)
+if (requireNamespace("devtools", quietly = TRUE)) {
+  devtools::load_all()
+} else {
+  library(pharmhand)
+}
+
 library(pharmaverseadam)
 
 adsl <- pharmaverseadam::adsl
@@ -103,7 +119,6 @@ options(
 
 # All functions now use your preferences
 create_demographics_table(adsl)  # Uses ARM instead of TRT01P
-meta_analysis(yi, sei)              # Uses 95% CI
 ```
 
 ## Advanced: ADaMData Wrapper
@@ -209,7 +224,7 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
-nma_result$comparisons
+nma_result@comparisons
 ```
 
 ## Classes

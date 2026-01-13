@@ -183,7 +183,7 @@ bayesian_meta_analysis <- function(
 	if (any(sei <= 0, na.rm = TRUE)) {
 		ph_abort("'sei' must contain only positive values")
 	}
-	if (!is.null(study_labels) && length(study_labels) != k) {
+	if (length(study_labels) != k) {
 		ph_abort(
 			sprintf("'study_labels' must have length %d to match 'yi'", k)
 		)
@@ -286,19 +286,18 @@ bayesian_meta_analysis <- function(
 			c("auto", "cmdstanr") &&
 			requireNamespace("cmdstanr", quietly = TRUE)
 	) {
-		cmdstanr_ok <- !is.na(tryCatch(
-			cmdstanr::cmdstan_version(),
-			error = function(e) NA
-		))
+		cmdstanr_ok <- tryCatch(
+			!is.na(cmdstanr::cmdstan_version()),
+			error = function(e) FALSE
+		)
 	}
 
-	brms_backend <- "rstan"
-	if (backend == "rstan") {
-		brms_backend <- "rstan"
-	} else if (backend == "cmdstanr") {
-		brms_backend <- if (cmdstanr_ok) "cmdstanr" else "rstan"
+	brms_backend <- if (backend == "rstan") {
+		"rstan"
+	} else if (cmdstanr_ok) {
+		"cmdstanr"
 	} else {
-		brms_backend <- if (cmdstanr_ok) "cmdstanr" else "rstan"
+		"rstan"
 	}
 
 	# Helper: optionally muffle common sampler warnings to keep logs readable
@@ -483,30 +482,42 @@ bayesian_meta_analysis <- function(
 		min_tail_ess <- min_bulk_ess
 	}
 
-	# Extract BFMI from nuts_params energy values
+	# Extract BFMI from nuts_params energy values (per chain)
 	np <- brms::nuts_params(fit)
-	# BFMI calculation: var(E - E_prev) / var(E) per chain
-	# If energy not available, set to NA
-	energy_vals <- np$Value[np$Parameter == "energy__"]
-	if (length(energy_vals) > 0) {
-		# Group by chain and compute BFMI
-		n_chains <- chains
-		base <- length(energy_vals) %/% n_chains
-		rem <- length(energy_vals) %% n_chains
-		bfmi_values <- vapply(
-			seq_len(n_chains),
-			function(i) {
-				start <- (i - 1) * base + min(i - 1, rem) + 1
-				end <- start + base - 1 + as.integer(i <= rem)
-				e <- energy_vals[start:end]
-				if (length(e) < 2) {
-					return(NA_real_)
-				}
-				stats::var(diff(e)) / stats::var(e)
-			},
-			numeric(1)
-		)
-		min_bfmi <- min(bfmi_values, na.rm = TRUE)
+	chain_col <- if (".chain" %in% names(np)) ".chain" else "Chain"
+	if (
+		chain_col %in%
+			names(np) &&
+			"Parameter" %in% names(np) &&
+			"Value" %in% names(np)
+	) {
+		energy_df <- np[np$Parameter == "energy__", c(chain_col, "Value")]
+		if (nrow(energy_df) > 0) {
+			energies_by_chain <- split(energy_df$Value, energy_df[[chain_col]])
+			bfmi_values <- vapply(
+				energies_by_chain,
+				function(energy) {
+					if (length(energy) < 2) {
+						return(NA_real_)
+					}
+					v_e <- stats::var(energy)
+					v_d <- stats::var(diff(energy))
+					if (!is.finite(v_e) || v_e <= 0 || !is.finite(v_d)) {
+						return(NA_real_)
+					}
+					v_d / v_e
+				},
+				numeric(1)
+			)
+			min_bfmi <- if (all(is.na(bfmi_values))) {
+				NA_real_
+			} else {
+				min(bfmi_values, na.rm = TRUE)
+			}
+		} else {
+			bfmi_values <- NA_real_
+			min_bfmi <- NA_real_
+		}
 	} else {
 		bfmi_values <- NA_real_
 		min_bfmi <- NA_real_
@@ -553,10 +564,10 @@ bayesian_meta_analysis <- function(
 		))
 	}
 
-	if (emit_convergence_warnings && any(bfmi_values < 0.3, na.rm = TRUE)) {
+	if (emit_convergence_warnings && any(bfmi_values < 0.2, na.rm = TRUE)) {
 		ph_warn(sprintf(
 			paste0(
-				"WARNING: Low BFMI detected (min = %.3f). ",
+				"WARNING: Low BFMI detected (min = %.3f < 0.2). ",
 				"This may indicate computational issues."
 			),
 			min_bfmi
@@ -574,7 +585,7 @@ bayesian_meta_analysis <- function(
 		bulk_ess_ok = min_bulk_ess >= 400,
 		tail_ess_ok = min_tail_ess >= 400,
 		no_divergences = divergent_transitions == 0,
-		bfmi_ok = all(bfmi_values >= 0.3, na.rm = TRUE)
+		bfmi_ok = all(bfmi_values >= 0.2, na.rm = TRUE)
 	)
 
 	# Summarize
@@ -610,7 +621,8 @@ bayesian_meta_analysis <- function(
 
 		# Calculate Bayesian p-value using a simple discrepancy measure
 		# Using the mean as the discrepancy function
-		y_rep <- brms::posterior_predict(fit, draw_ids = 1:actual_ndraws)
+		draw_ids <- seq_len(actual_ndraws)
+		y_rep <- brms::posterior_predict(fit, draw_ids = draw_ids)
 
 		# Calculate Bayesian p-value: proportion of y_rep >= y
 		# This is a one-sided p-value for the discrepancy measure
@@ -619,36 +631,50 @@ bayesian_meta_analysis <- function(
 			# y_rep is a matrix with ndraws x n observations
 			# For each observation, calculate proportion of y_rep >= observed y
 			y_obs <- data$yi
-			bayes_p_value <- numeric(length(y_obs))
+			if (actual_ndraws == 0) {
+				overall_bayes_p <- NA_real_
+				bayes_p_value <- rep(NA_real_, length(y_obs))
+				ph_warn(paste(
+					"Could not compute Bayesian p-value because no posterior draws were",
+					"available"
+				))
+			} else {
+				bayes_p_value <- numeric(length(y_obs))
 
-			for (i in seq_along(y_obs)) {
-				if (is.matrix(y_rep)) {
-					bayes_p_value[i] <- mean(y_rep[, i] >= y_obs[i])
-				} else {
-					bayes_p_value[i] <- mean(as.numeric(y_rep[, i]) >= y_obs[i])
+				for (i in seq_along(y_obs)) {
+					if (is.matrix(y_rep)) {
+						bayes_p_value[i] <- mean(y_rep[, i] >= y_obs[i])
+					} else {
+						bayes_p_value[i] <- mean(as.numeric(y_rep[, i]) >= y_obs[i])
+					}
 				}
-			}
 
-			# Overall Bayesian p-value is the mean of individual p-values
-			overall_bayes_p <- mean(bayes_p_value)
+				# Overall Bayesian p-value is the mean of individual p-values
+				overall_bayes_p <- mean(bayes_p_value)
+			}
 		} else {
 			# Fallback if y_rep format is unexpected
 			overall_bayes_p <- NA
-			ph_inform(
-				"Warning: Could not compute Bayesian p-value due to unexpected y_rep format"
+			ph_warn(
+				"Could not compute Bayesian p-value due to unexpected y_rep format"
 			)
 		}
 
 		posterior_predictive_result <- list(
 			bayes_p_value = overall_bayes_p,
 			type = pp_check_type,
-			ndraws = pp_ndraws,
+			ndraws = actual_ndraws,
 			individual_p_values = bayes_p_value,
 			pp_check_plot = pp_check_plot
 		)
 
 		ph_inform(sprintf(
-			"Posterior predictive check complete. Bayesian p-value: %.3f",
+			paste(
+				"Posterior predictive check complete.",
+				"Bayesian p-value (one-sided P(y_rep >= y_obs)) = %.3f.",
+				"Values near 0.5 suggest adequate fit; values near 0 or 1 suggest",
+				"misfit."
+			),
 			overall_bayes_p
 		))
 	}
@@ -719,7 +745,7 @@ bayesian_meta_analysis <- function(
 #' @param chains Integer. Number of chains to plot. Default: NULL (all chains)
 #' @param combine_plots Logical. If TRUE, combine all parameters into one plot.
 #'   Default: TRUE
-#' @param ... Additional arguments passed to brms::plot()
+#' @param ... Additional arguments passed to plot()
 #'
 #' @return A ggplot object or list of ggplot objects
 #'
@@ -804,37 +830,30 @@ create_bayesian_trace_plots <- function(
 
 	# Generate trace plots
 	if (combine_plots) {
-		# Combine all parameters into one plot
-		# brms::plot with ask = FALSE will return a combined plot
-		old_ask <- graphics::par(ask = FALSE)
-		on.exit(graphics::par(ask = old_ask), add = TRUE)
-
-		plot(
-			fit,
-			variable = pars,
-			ask = FALSE,
-			...
-		)
-
-		# Try using mcmc_trace from bayesplot for better control
+		# Prefer bayesplot (no graphics device side effects)
 		if (requireNamespace("bayesplot", quietly = TRUE)) {
-			# Get posterior draws
-			posterior <- brms::as_draws_df(fit, variable = pars)
+			posterior_draws <- brms::as_draws_df(fit, variable = pars)
+			posterior_sub <- posterior_draws
 
-			# Filter chains if specified
 			if (!is.null(chains)) {
-				# bayesplot mcmc_trace can handle subsetting
 				chain_ids <- seq_len(chains)
-			} else {
-				chain_ids <- NULL
+				if (!requireNamespace("posterior", quietly = TRUE)) {
+					ph_warn(
+						"Chain subsetting requires the 'posterior' package; using all chains"
+					)
+				} else {
+					posterior_sub <- posterior::subset_draws(
+						posterior_draws,
+						chain = chain_ids
+					)
+				}
 			}
 
-			# Create combined trace plot using bayesplot
-			if (is.null(chain_ids)) {
-				trace_plot <- bayesplot::mcmc_trace(posterior, pars = pars)
+			trace_plot <- if (is.null(chains)) {
+				bayesplot::mcmc_trace(posterior_sub, pars = pars)
 			} else {
-				trace_plot <- bayesplot::mcmc_trace(
-					posterior,
+				bayesplot::mcmc_trace(
+					posterior_sub,
 					pars = pars,
 					facet_args = list(nrow = length(pars))
 				)
@@ -842,19 +861,18 @@ create_bayesian_trace_plots <- function(
 
 			ph_inform("Trace plots generated successfully")
 			return(trace_plot)
-		} else {
-			# Fallback to brms::plot if bayesplot not available
-			# This will print directly to the graphics device
-			plot(fit, pars = pars, ask = FALSE, ...)
-
-			ph_inform(paste0(
-				"Trace plots rendered using brms. Consider installing 'bayesplot' ",
-				"for ggplot objects."
-			))
-
-			# Return invisible NULL since brms::plot doesn't return a ggplot
-			return(invisible(NULL))
 		}
+
+		# Fallback: brms plotting (side effects only when bayesplot is unavailable)
+		old_ask <- graphics::par(ask = FALSE)
+		on.exit(graphics::par(ask = old_ask), add = TRUE)
+		plot(fit, variable = pars, ask = FALSE, ...)
+
+		ph_inform(paste0(
+			"Trace plots rendered using brms. Consider installing 'bayesplot' ",
+			"for ggplot objects."
+		))
+		return(invisible(NULL))
 	} else {
 		# Return individual plots for each parameter
 
@@ -999,6 +1017,16 @@ prior_sensitivity_analysis <- function(
 		n_scenarios
 	))
 
+	# Derive decorrelated per-scenario seeds from the base seed.
+	# Avoids sequentially correlated seeds (e.g., seed + i).
+	scenario_seeds <- NULL
+	if (!is.null(seed)) {
+		scenario_seeds <- withr::with_seed(
+			seed,
+			sample.int(.Machine$integer.max, n_scenarios, replace = TRUE)
+		)
+	}
+
 	# Run bayesian_meta_analysis for each scenario
 	results_list <- list()
 	rows_list <- vector("list", length(prior_scenarios))
@@ -1015,27 +1043,44 @@ prior_sensitivity_analysis <- function(
 				is.null(scenario$prior_mu) ||
 				is.null(scenario$prior_tau)
 		) {
-			ph_inform(sprintf(
+			ph_warn(sprintf(
 				"    Warning: Skipping '%s' - invalid prior specification",
 				scenario_name
 			))
 			next
 		}
 
+		missing_defaults <- character()
+
 		# Set defaults for prior_mu if missing components
 		if (is.null(scenario$prior_mu$mean)) {
 			scenario$prior_mu$mean <- 0
+			missing_defaults <- c(missing_defaults, "prior_mu$mean=0")
 		}
 		if (is.null(scenario$prior_mu$sd)) {
 			scenario$prior_mu$sd <- 10
+			missing_defaults <- c(missing_defaults, "prior_mu$sd=10")
 		}
 
 		# Set defaults for prior_tau if missing components
 		if (is.null(scenario$prior_tau$type)) {
 			scenario$prior_tau$type <- "half_cauchy"
+			missing_defaults <- c(
+				missing_defaults,
+				"prior_tau$type='half_cauchy'"
+			)
 		}
 		if (is.null(scenario$prior_tau$scale)) {
 			scenario$prior_tau$scale <- 0.5
+			missing_defaults <- c(missing_defaults, "prior_tau$scale=0.5")
+		}
+
+		if (length(missing_defaults) > 0) {
+			ph_warn(sprintf(
+				"Scenario '%s': applied defaults for missing prior components: %s",
+				scenario_name,
+				paste(missing_defaults, collapse = ", ")
+			))
 		}
 
 		# Run the Bayesian analysis for this scenario
@@ -1050,7 +1095,7 @@ prior_sensitivity_analysis <- function(
 					prior_tau = scenario$prior_tau,
 					chains = chains,
 					iter = iter,
-					seed = seed + i, # Different seed for each scenario
+					seed = if (is.null(scenario_seeds)) NULL else scenario_seeds[i],
 					posterior_predictive = FALSE, # Disable for speed
 					...
 				)
@@ -1059,7 +1104,7 @@ prior_sensitivity_analysis <- function(
 				ph_inform(sprintf(
 					"    Error in scenario '%s': %s",
 					scenario_name,
-					e$message
+					conditionMessage(e)
 				))
 				NULL
 			}
@@ -1110,7 +1155,13 @@ prior_sensitivity_analysis <- function(
 	} else {
 		# Coefficient of variation across scenario estimates
 		mean_estimates <- comparison_df$posterior_mean
-		cv <- (sd(mean_estimates) / abs(mean(mean_estimates))) * 100
+		denom <- abs(mean(mean_estimates))
+		eps <- sqrt(.Machine$double.eps)
+		cv <- if (is.finite(denom) && denom > eps) {
+			(sd(mean_estimates) / denom) * 100
+		} else {
+			NA_real_
+		}
 
 		# Maximum difference between any two scenarios
 		max_diff <- max(comparison_df$posterior_mean) -
@@ -1133,14 +1184,18 @@ prior_sensitivity_analysis <- function(
 		ci_coverage_pct <- mean(ci_includes_threshold) * 100
 
 		# Determine robustness interpretation
-		if (cv < 5) {
-			robustness_interpretation <- "highly robust"
-		} else if (cv < 10) {
-			robustness_interpretation <- "moderately robust"
-		} else if (cv < 20) {
-			robustness_interpretation <- "somewhat sensitive to priors"
+		robustness_interpretation <- if (!is.na(cv) && is.finite(cv)) {
+			if (cv < 5) {
+				"highly robust"
+			} else if (cv < 10) {
+				"moderately robust"
+			} else if (cv < 20) {
+				"somewhat sensitive to priors"
+			} else {
+				"highly sensitive to priors"
+			}
 		} else {
-			robustness_interpretation <- "highly sensitive to priors"
+			"undefined (mean estimate is ~0)"
 		}
 
 		# CI consistency interpretation
@@ -1245,12 +1300,25 @@ prior_sensitivity_analysis <- function(
 #'
 #' @return A list with formatted strings for:
 #'   \item{estimate}{Formatted point estimate}
-#'   \item{ci}{Formatted credible interval as "lower; upper" with brackets}
+#'   \item{ci_95}{Formatted 95% credible interval as "lower; upper" with
+#'     brackets}
 #'   \item{tau}{Formatted heterogeneity estimate}
 #'   \item{tau_ci}{Formatted heterogeneity CI}
-#'   \item{probability}{Probability statement string}
+#'   \item{probability_statement}{Probability statement string}
 #'   \item{interpretation}{Text interpretation}
 #'   \item{full_text}{Complete formatted summary text}
+#'   \item{raw}{Raw values used to construct the formatted output, with fields:
+#'     \itemize{
+#'       \item point_estimate
+#'       \item ci_lower
+#'       \item ci_upper
+#'       \item tau
+#'       \item tau_ci_lower
+#'       \item tau_ci_upper
+#'       \item effect_measure
+#'       \item n_studies
+#'       \item prob_beneficial
+#'     }}
 #'
 #' @examples
 #' \dontrun{
@@ -1455,6 +1523,10 @@ format_bayesian_result_iqwig <- function(
 #'
 #' @return A ClinicalPlot object containing the forest plot
 #'
+#' @note The prediction interval shown (when enabled) is an approximation for
+#'   visualization, based on the pooled effect and an average within-study
+#'   variance term; it is not a full posterior predictive interval.
+#'
 #' @examples
 #' \dontrun{
 #' result <- bayesian_meta_analysis(yi = yi, sei = sei, study_labels = labels)
@@ -1544,8 +1616,9 @@ create_bayesian_forest_plot_iqwig <- function(
 	}
 
 	# Calculate study-specific estimates and CIs
-	study_ci_lower <- study_yi - 1.96 * study_sei
-	study_ci_upper <- study_yi + 1.96 * study_sei
+	z_crit <- stats::qnorm(0.975)
+	study_ci_lower <- study_yi - z_crit * study_sei
+	study_ci_upper <- study_yi + z_crit * study_sei
 
 	# Transform to original scale for ratios
 	if (is_ratio) {

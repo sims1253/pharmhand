@@ -63,6 +63,11 @@ Generates a forest plot formatted according to IQWiG guidelines with:
 \item Proper scaling and formatting
 }
 }
+\note{
+The prediction interval shown (when enabled) is an approximation for
+visualization, based on the pooled effect and an average within-study
+variance term; it is not a full posterior predictive interval.
+}
 \examples{
 \dontrun{
 result <- bayesian_meta_analysis(yi = yi, sei = sei, study_labels = labels)
