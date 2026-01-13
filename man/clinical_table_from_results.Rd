@@ -2,15 +2,26 @@
 % Please edit documentation in R/reporting_engine.R
 \name{clinical_table_from_results}
 \alias{clinical_table_from_results}
-\title{Helper to create a ClinicalTable from AnalysisResults}
+\title{Clinical table from analysis results}
 \usage{
 clinical_table_from_results(res, title = "")
 }
 \arguments{
-\item{res}{AnalysisResults object}
+\item{res}{An \code{AnalysisResults} object with \verb{@stats} (table data) and \verb{@type}
+(table type) slots.}
 
-\item{title}{Character string for table title}
+\item{title}{Optional table title.}
+}
+\value{
+A \code{ClinicalTable} object.
 }
 \description{
-Helper to create a ClinicalTable from AnalysisResults
+Converts an \code{AnalysisResults} object into a \code{ClinicalTable} for reporting.
+}
+\examples{
+\dontrun{
+# Convert analysis results to clinical table
+results <- analyze_demographics(adsl_data)
+table <- clinical_table_from_results(results, title = "Demographics")
+}
 }

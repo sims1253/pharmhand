@@ -4,6 +4,96 @@
 #'   rankings and league tables.
 NULL
 
+.extract_pairwise_data <- function(df, t1, t2) {
+	idx <- (df$treat1 == t1 & df$treat2 == t2) |
+		(df$treat1 == t2 & df$treat2 == t1)
+	if (!any(idx, na.rm = TRUE)) {
+		return(NULL)
+	}
+	studies <- df[idx, , drop = FALSE]
+	effects <- ifelse(studies$treat1 == t1, studies$effect, -studies$effect)
+	list(
+		effects = effects,
+		ses = studies$se,
+		n_studies = nrow(studies)
+	)
+}
+
+.pool_pairwise_effects <- function(effects, ses, model = c("fixed", "random")) {
+	model <- match.arg(model)
+	if (length(effects) != length(ses)) {
+		ph_abort("effects and ses must have the same length")
+	}
+	keep <- is.finite(effects) &
+		!is.na(effects) &
+		is.finite(ses) &
+		!is.na(ses) &
+		ses > 0
+	if (!all(keep)) {
+		ph_warn(sprintf(
+			"Dropping %d row(s) with missing/invalid effect or SE",
+			sum(!keep)
+		))
+	}
+	effects <- effects[keep]
+	ses <- ses[keep]
+	if (length(effects) == 0) {
+		ph_abort("No valid effect/SE values available")
+	}
+	if (length(effects) == 1) {
+		return(list(estimate = effects[1], se = ses[1], tau2 = 0))
+	}
+
+	wi_fe <- 1 / (ses^2)
+	theta_fe <- sum(wi_fe * effects) / sum(wi_fe)
+	se_fe <- sqrt(1 / sum(wi_fe))
+
+	if (model == "fixed") {
+		return(list(estimate = theta_fe, se = se_fe, tau2 = 0))
+	}
+
+	Q <- sum(wi_fe * (effects - theta_fe)^2)
+	df <- length(effects) - 1
+	tau2 <- estimate_tau2(effects, ses, "DL", wi_fe, theta_fe, Q, df)
+	wi_re <- 1 / (ses^2 + tau2)
+	theta_re <- sum(wi_re * effects) / sum(wi_re)
+	se_re <- sqrt(1 / sum(wi_re))
+
+	list(estimate = theta_re, se = se_re, tau2 = tau2)
+}
+
+.check_network_connectivity <- function(edges, treatments) {
+	if (length(treatments) == 0) {
+		return(FALSE)
+	}
+
+	adj <- stats::setNames(vector("list", length(treatments)), treatments)
+	for (i in seq_len(nrow(edges))) {
+		a <- as.character(edges$treat1[i])
+		b <- as.character(edges$treat2[i])
+		adj[[a]] <- unique(c(adj[[a]], b))
+		adj[[b]] <- unique(c(adj[[b]], a))
+	}
+
+	start <- treatments[1]
+	visited <- stats::setNames(rep(FALSE, length(treatments)), treatments)
+	queue <- start
+	visited[[start]] <- TRUE
+	while (length(queue) > 0) {
+		v <- queue[1]
+		queue <- queue[-1]
+		neighbors <- adj[[v]]
+		for (n in neighbors) {
+			if (!isTRUE(visited[[n]])) {
+				visited[[n]] <- TRUE
+				queue <- c(queue, n)
+			}
+		}
+	}
+
+	all(visited)
+}
+
 #'
 #' Conducts network meta-analysis (NMA) to compare multiple treatments
 #' simultaneously using direct and indirect evidence.
@@ -15,9 +105,6 @@ NULL
 #' @param treat1_var Character. Treatment 1 column. Default: "treat1"
 #' @param treat2_var Character. Treatment 2 column. Default: "treat2"
 #' @param effect_var Character. Effect estimate column. Default: "effect"
-#' @details For ratio measures ("hr", "or", "rr"), effect estimates must be on
-#'   the **log scale**. For difference measures ("rd", "md", "smd"), effect
-#'   estimates must be on the **raw scale**.
 #' @param se_var Character. Standard error column. Default: "se"
 #' @param reference Character. Reference treatment.
 #'   Default: first alphabetically
@@ -27,6 +114,15 @@ NULL
 #' @param method Character. NMA method: "bucher" (simple),
 #'   "graph" (not yet implemented, defaults to bucher)
 #' @param conf_level Numeric. Confidence level. Default: 0.95
+#'
+#' @details
+#' For ratio measures ("hr", "or", "rr"), effect estimates must be on
+#' the **log scale**. For difference measures ("rd", "md", "smd"), effect
+#' estimates must be on the **raw scale**.
+#'
+#' Indirect effects are estimated using a single-step Bucher chain via one
+#' intermediate treatment (chosen to minimize the indirect standard error).
+#' Multiple indirect paths are not combined.
 #'
 #' @return List with relative effects, rankings, and network structure
 #' @export
@@ -59,6 +155,13 @@ network_meta <- function(
 	effect_measure <- match.arg(effect_measure)
 	model <- match.arg(model)
 	method <- match.arg(method)
+
+	resolved_method <- if (method == "bucher") {
+		"bucher_chain"
+	} else {
+		ph_warn("method='graph' not yet implemented; using method='bucher'")
+		"bucher_chain"
+	}
 
 	admiraldev::assert_data_frame(data)
 
@@ -107,15 +210,22 @@ network_meta <- function(
 		ph_abort(sprintf("Reference treatment '%s' not in network", reference))
 	}
 
-	# Build network structure
-	edges <- unique(df[, c("treat1", "treat2")])
+	# Build network structure (treatments are undirected edges)
+	edges <- tibble::tibble(
+		treat1 = pmin(df$treat1, df$treat2),
+		treat2 = pmax(df$treat1, df$treat2)
+	)
+	edges <- unique(edges)
 	edges$n_studies <- purrr::map_int(seq_len(nrow(edges)), function(i) {
-		sum(df$treat1 == edges$treat1[i] & df$treat2 == edges$treat2[i])
+		a <- edges$treat1[i]
+		b <- edges$treat2[i]
+		sum(
+			(df$treat1 == a & df$treat2 == b) |
+				(df$treat1 == b & df$treat2 == a)
+		)
 	})
 
-	# Check connectivity (simplified - just check if all treatments appear)
-	connected_treatments <- unique(c(edges$treat1, edges$treat2))
-	if (length(connected_treatments) < n_treatments) {
+	if (!.check_network_connectivity(edges, treatments)) {
 		ph_warn("Network may not be fully connected")
 	}
 
@@ -152,27 +262,16 @@ network_meta <- function(
 				))
 			}
 
-			if (length(effects) == 1) {
-				est <- effects
-				se <- ses
-			} else {
-				# Check for zero or negative standard errors
-				if (any(ses <= 0, na.rm = TRUE)) {
-					ph_abort(
-						"Standard errors must be positive (got zero or negative values)"
-					)
-				}
-				# Simple inverse-variance pooling
-				wi <- 1 / ses^2
-				est <- sum(wi * effects) / sum(wi)
-				se <- sqrt(1 / sum(wi))
-			}
+			pooled <- .pool_pairwise_effects(effects, ses, model = model)
+			est <- pooled$estimate
+			se <- pooled$se
 
 			direct_results[[trt]] <- list(
 				estimate = est,
 				se = se,
 				n_studies = nrow(studies),
-				evidence = "direct"
+				evidence = "direct",
+				tau2 = pooled$tau2
 			)
 		}
 	}
@@ -180,52 +279,47 @@ network_meta <- function(
 	# For treatments without direct comparison to reference, use indirect
 	indirect_results <- list()
 	for (trt in setdiff(treatments, c(reference, names(direct_results)))) {
-		# Try to find indirect path through another treatment
+		# Try to find indirect path through another treatment. Use the bridge
+		# with the smallest indirect SE (single-step Bucher chain).
+		best <- NULL
 		for (bridge in names(direct_results)) {
-			# Check if trt vs bridge exists
 			bridge_studies <- df[
 				(df$treat1 == bridge & df$treat2 == trt) |
 					(df$treat1 == trt & df$treat2 == bridge),
 			]
-
-			if (nrow(bridge_studies) > 0) {
-				# Effect of bridge vs trt
-				effects <- ifelse(
-					bridge_studies$treat1 == bridge,
-					bridge_studies$effect,
-					-bridge_studies$effect
-				)
-				ses <- bridge_studies$se
-
-				if (length(effects) > 1) {
-					# Check for zero or negative standard errors
-					if (any(ses <= 0, na.rm = TRUE)) {
-						ph_abort(
-							"Standard errors must be positive (got zero or negative values)"
-						)
-					}
-					wi <- 1 / ses^2
-					bridge_est <- sum(wi * effects) / sum(wi)
-					bridge_se <- sqrt(1 / sum(wi))
-				} else {
-					bridge_est <- effects
-					bridge_se <- ses
-				}
-
-				# Indirect: ref vs trt = (ref vs bridge) + (bridge vs trt)
-				ref_bridge <- direct_results[[bridge]]
-				ind_est <- ref_bridge$estimate + bridge_est
-				ind_se <- sqrt(ref_bridge$se^2 + bridge_se^2)
-
-				indirect_results[[trt]] <- list(
-					estimate = ind_est,
-					se = ind_se,
-					n_studies = ref_bridge$n_studies + nrow(bridge_studies),
-					evidence = "indirect",
-					via = bridge
-				)
-				break
+			if (nrow(bridge_studies) == 0) {
+				next
 			}
+
+			# Effect of bridge vs trt
+			effects <- ifelse(
+				bridge_studies$treat1 == bridge,
+				bridge_studies$effect,
+				-bridge_studies$effect
+			)
+			ses <- bridge_studies$se
+			pooled_bridge <- .pool_pairwise_effects(effects, ses, model = model)
+			bridge_est <- pooled_bridge$estimate
+			bridge_se <- pooled_bridge$se
+
+			# Indirect: ref vs trt = (ref vs bridge) + (bridge vs trt)
+			ref_bridge <- direct_results[[bridge]]
+			ind_est <- ref_bridge$estimate + bridge_est
+			ind_se <- sqrt(ref_bridge$se^2 + bridge_se^2)
+
+			candidate <- list(
+				estimate = ind_est,
+				se = ind_se,
+				n_studies = ref_bridge$n_studies + nrow(bridge_studies),
+				evidence = "indirect",
+				via = bridge
+			)
+			if (is.null(best) || candidate$se < best$se) {
+				best <- candidate
+			}
+		}
+		if (!is.null(best)) {
+			indirect_results[[trt]] <- best
 		}
 	}
 
@@ -285,8 +379,20 @@ network_meta <- function(
 		model = model,
 		effect_measure = effect_measure,
 		conf_level = conf_level,
-		method = "bucher_chain",
-		n_studies = nrow(df)
+		method = resolved_method,
+		n_studies = nrow(df),
+		metadata = list(
+			data = df,
+			input = list(
+				study_var = study_var,
+				treat1_var = treat1_var,
+				treat2_var = treat2_var,
+				effect_var = effect_var,
+				se_var = se_var
+			),
+			method_requested = method,
+			method_resolved = resolved_method
+		)
 	)
 }
 
@@ -330,6 +436,24 @@ node_splitting <- function(
 	reference <- network$reference
 	effect_measure <- nma_result@effect_measure
 	is_ratio <- effect_measure %in% c("hr", "or", "rr")
+	model <- nma_result@model
+
+	if (is.null(data)) {
+		data <- nma_result@metadata$data
+	}
+	if (is.null(data) || !is.data.frame(data)) {
+		ph_abort(paste0(
+			"node_splitting requires the original NMA data: pass `data=` ",
+			"or use an NMAResult created by network_meta()"
+		))
+	}
+	if (!all(c("study", "treat1", "treat2", "effect", "se") %in% names(data))) {
+		ph_abort("data must contain columns: study, treat1, treat2, effect, se")
+	}
+
+	df <- tibble::as_tibble(data)
+	alpha <- 1 - conf_level
+	z <- stats::qnorm(1 - alpha / 2)
 
 	# For each comparison with both direct and indirect evidence
 	results <- list()
@@ -339,42 +463,80 @@ node_splitting <- function(
 		t2 <- edges$treat2[i]
 		n_direct <- edges$n_studies[i]
 
-		# Skip if only 1 study (can't split)
 		if (n_direct < 1) {
 			next
 		}
 
-		# Get comparison info from nma_result
-		comp_row <- nma_result@comparisons[
-			nma_result@comparisons$treatment == t2 &
-				nma_result@comparisons$vs == reference,
-		]
-
-		if (nrow(comp_row) == 0) {
+		pair_direct <- .extract_pairwise_data(df, t1, t2)
+		if (is.null(pair_direct)) {
 			next
 		}
+		direct_pooled <- .pool_pairwise_effects(
+			pair_direct$effects,
+			pair_direct$ses,
+			model = model
+		)
+		direct_est <- direct_pooled$estimate
+		direct_se <- direct_pooled$se
 
-		# For proper node-splitting, we'd need to re-run the analysis
-		# excluding direct evidence. Here we provide a simplified version.
+		best_ind <- NULL
+		for (bridge in setdiff(network$treatments, c(t1, t2))) {
+			pair_1 <- .extract_pairwise_data(df, t1, bridge)
+			pair_2 <- .extract_pairwise_data(df, bridge, t2)
+			if (is.null(pair_1) || is.null(pair_2)) {
+				next
+			}
+			p1 <- .pool_pairwise_effects(pair_1$effects, pair_1$ses, model = model)
+			p2 <- .pool_pairwise_effects(pair_2$effects, pair_2$ses, model = model)
+			ind_est <- p1$estimate + p2$estimate
+			ind_se <- sqrt(p1$se^2 + p2$se^2)
+			if (is.null(best_ind) || ind_se < best_ind$se) {
+				best_ind <- list(
+					estimate = ind_est,
+					se = ind_se,
+					bridge = bridge,
+					n_indirect = pair_1$n_studies + pair_2$n_studies
+				)
+			}
+		}
 
-		# Direct evidence (from the edge)
-		direct_est <- comp_row$estimate[1]
-		direct_se <- comp_row$se[1]
+		if (!is.null(best_ind)) {
+			direct_ci <- direct_est + c(-1, 1) * z * direct_se
+			ind_ci <- best_ind$estimate + c(-1, 1) * z * best_ind$se
+			if (is_ratio) {
+				direct_est_disp <- exp(direct_est)
+				direct_ci_disp <- exp(direct_ci)
+				ind_est_disp <- exp(best_ind$estimate)
+				ind_ci_disp <- exp(ind_ci)
+			} else {
+				direct_est_disp <- direct_est
+				direct_ci_disp <- direct_ci
+				ind_est_disp <- best_ind$estimate
+				ind_ci_disp <- ind_ci
+			}
 
-		# Check if there's potential indirect path
-		has_indirect <- comp_row$evidence[1] != "direct" ||
-			any(edges$n_studies[edges$treat1 != t1 | edges$treat2 != t2] > 0)
+			z_incon <- (direct_est - best_ind$estimate) /
+				sqrt(direct_se^2 + best_ind$se^2)
+			p_incon <- 2 * stats::pnorm(-abs(z_incon))
 
-		if (has_indirect) {
-			# Simplified: flag for manual review
-			results[[paste(t1, t2, sep = "_vs_")]] <- data.frame(
+			results[[paste(t1, t2, sep = "_vs_")]] <- tibble::tibble(
 				comparison = paste(t1, "vs", t2),
-				direct_estimate = direct_est,
+				reference = reference,
+				direct_estimate = direct_est_disp,
 				direct_se = direct_se,
+				direct_ci_lower = direct_ci_disp[1],
+				direct_ci_upper = direct_ci_disp[2],
 				n_direct = n_direct,
-				indirect_available = has_indirect,
-				inconsistency_p = NA_real_, # Would need full implementation
-				stringsAsFactors = FALSE
+				indirect_estimate = ind_est_disp,
+				indirect_se = best_ind$se,
+				indirect_ci_lower = ind_ci_disp[1],
+				indirect_ci_upper = ind_ci_disp[2],
+				n_indirect = best_ind$n_indirect,
+				bridge = best_ind$bridge,
+				inconsistency_z = z_incon,
+				inconsistency_p = p_incon,
+				model = model,
+				conf_level = conf_level
 			)
 		}
 	}
@@ -390,8 +552,7 @@ node_splitting <- function(
 		))
 	}
 
-	result_df <- do.call(rbind, results)
-	rownames(result_df) <- NULL
+	result_df <- dplyr::bind_rows(results)
 
 	list(
 		results = result_df,
@@ -414,7 +575,15 @@ node_splitting <- function(
 #' @param seed Integer or NULL. Random seed for reproducibility. Default: 42.
 #'   Set to NULL for non-deterministic results.
 #'
-#' @return List with rankings, SUCRA/P-scores, and rankogram data
+#' @details
+#' The reference treatment is treated as the baseline in the output and is
+#' assigned an SE of 0. For any non-reference treatments with missing/invalid
+#' standard errors, the SE is imputed using the median of valid SE values.
+#' This imputation can affect ranking probabilities and SUCRA values.
+#'
+#' @return List with rankings, SUCRA/P-scores, and rankogram data. When
+#'   `n_treatments == 1`, the returned `sucra` value is set to `1.0` (the single
+#'   treatment is trivially best).
 #' @note RNG state is isolated via `withr::with_seed` during simulation,
 #'   so calling this function does not alter the global RNG state.
 #' @export
@@ -455,15 +624,33 @@ calculate_sucra <- function(
 	estimates <- comparisons$estimate
 	ses <- comparisons$se
 
-	# Handle reference (no SE)
-	ref_idx <- which(ses == 0 | is.na(ses))
-	if (length(ref_idx) > 0) {
-		pos_ses <- ses[ses > 0 & !is.na(ses)]
-		if (length(pos_ses) > 0) {
-			ses[ref_idx] <- min(pos_ses, na.rm = TRUE) / 2
+	# Handle missing/invalid SEs.
+	# Keep the reference treatment SE at 0 (it is the baseline in our output);
+	# for any other treatments with missing/zero SE, impute from observed SEs.
+	ref_trt <- nma_result@network$reference
+	ref_idx <- which(treatments == ref_trt)
+	if (length(ref_idx) == 1) {
+		ses[ref_idx] <- 0
+	}
+
+	bad_idx <- setdiff(
+		which(is.na(ses) | !is.finite(ses) | ses <= 0),
+		ref_idx
+	)
+	if (length(bad_idx) > 0) {
+		pos_ses <- ses[ses > 0 & is.finite(ses)]
+		# Fallback when pos_ses is empty: use a small, finite epsilon.
+		imputed_se <- if (length(pos_ses) > 0) {
+			stats::median(pos_ses)
 		} else {
-			ses[ref_idx] <- 0.001
+			sqrt(.Machine$double.eps)
 		}
+		ses[bad_idx] <- imputed_se
+		ph_warn(sprintf(
+			"Imputed missing/invalid SE(s) with %.6g for: %s",
+			imputed_se,
+			paste(treatments[bad_idx], collapse = ", ")
+		))
 	}
 
 	# Simulate rankings
@@ -660,8 +847,9 @@ create_league_table <- function(
 	)
 
 	# Calculate dynamic SE floor based on data
-	min_se <- min(se_vs_ref[se_vs_ref > 0], na.rm = TRUE)
-	se_floor <- if (is.finite(min_se)) min_se / 100 else 0.001
+	positives <- se_vs_ref[se_vs_ref > 0 & is.finite(se_vs_ref)]
+	min_se <- if (length(positives) > 0) min(positives) else NA_real_
+	se_floor <- if (!is.na(min_se)) min_se / 100 else sqrt(.Machine$double.eps)
 
 	# Calculate all pairwise
 	for (i in seq_len(n_treat)) {

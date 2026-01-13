@@ -24,7 +24,7 @@ c("b_Intercept", "sd_study__Intercept")}
 \item{combine_plots}{Logical. If TRUE, combine all parameters into one plot.
 Default: TRUE}
 
-\item{...}{Additional arguments passed to brms::plot()}
+\item{...}{Additional arguments passed to plot()}
 }
 \value{
 A ggplot object or list of ggplot objects

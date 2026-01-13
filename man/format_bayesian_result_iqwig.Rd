@@ -39,12 +39,25 @@ bayesian_meta_analysis()}
 \value{
 A list with formatted strings for:
 \item{estimate}{Formatted point estimate}
-\item{ci}{Formatted credible interval as "lower; upper" with brackets}
+\item{ci_95}{Formatted 95\% credible interval as "lower; upper" with
+brackets}
 \item{tau}{Formatted heterogeneity estimate}
 \item{tau_ci}{Formatted heterogeneity CI}
-\item{probability}{Probability statement string}
+\item{probability_statement}{Probability statement string}
 \item{interpretation}{Text interpretation}
 \item{full_text}{Complete formatted summary text}
+\item{raw}{Raw values used to construct the formatted output, with fields:
+\itemize{
+\item point_estimate
+\item ci_lower
+\item ci_upper
+\item tau
+\item tau_ci_lower
+\item tau_ci_upper
+\item effect_measure
+\item n_studies
+\item prob_beneficial
+}}
 }
 \description{
 Formats a bayesian_meta_result object according to IQWiG Methods v8.0

@@ -32,6 +32,11 @@ Generate complete reports in a single call:
 ```{r eval=FALSE}
 library(pharmhand)
 
+# Load example ADaM datasets
+library(pharmaverseadam)
+adsl <- pharmaverseadam::adsl
+adae <- pharmaverseadam::adae
+
 # One-line demographics report
 quick_demographics_report(adsl, "demographics.docx")
 
@@ -87,6 +92,9 @@ demo_table <- create_demographics_table(adam_data)
 ### Create plots
 
 ```{r eval=FALSE}
+# Example data for Kaplan-Meier plots
+adtte <- pharmaverseadam::adtte
+
 km_plot <- create_km_plot(
   data = adtte,
   time_var = "AVAL",

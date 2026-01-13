@@ -27,6 +27,8 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          extra-repositories: |
+            https://stan-dev.r-universe.dev
           extra-packages: any::lintr, local::.
           needs: lint
 

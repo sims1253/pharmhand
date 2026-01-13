@@ -3,6 +3,8 @@ Title: Clinical Study Tables and Reports from ADaM Data
 Version: 0.3.4.9000
 Authors@R:
     person("Maximilian", "Scholz", , "dev.scholz@mailbox.org", role = c("aut", "cre"))
+Author: Maximilian Scholz [aut, cre]
+Maintainer: Maximilian Scholz <dev.scholz@mailbox.org>
 Description: Create clinical study tables and reports from ADaM datasets.
     Provides S7 classes for structured output and generates Word documents.
 License: GPL-3
@@ -23,11 +25,11 @@ Imports:
     admiraldev,
     yaml,
     gt,
-    ggplot2,
-    survival,
-    purrr,
-    tibble,
-    withr
+    ggplot2 (>= 3.3.0),
+    survival (>= 3.2-13),
+    purrr (>= 0.3.4),
+    tibble (>= 1.4.2),
+    withr (>= 2.5.0)
 Suggests:
     admiral,
     brms,
@@ -51,7 +53,10 @@ Suggests:
 Remotes:
     hta-pharma/chef,
     hta-pharma/chefStats,
-    hta-pharma/chefCriteria
+    hta-pharma/chefCriteria,
+    stan-dev/cmdstanr
+Additional_repositories:
+    https://stan-dev.r-universe.dev/
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/Needs/website: tidyverse/tidytemplate

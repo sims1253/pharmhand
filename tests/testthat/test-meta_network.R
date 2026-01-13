@@ -15,7 +15,15 @@ test_that("network_meta analyzes treatment network", {
 
 test_that("network_meta handles incomplete networks", {
 	# Should still produce results even if network not fully connected
-	result <- network_meta(.nma_test_data_incomplete, effect_measure = "hr")
+	out <- capture_muffled_warnings(
+		network_meta(.nma_test_data_incomplete, effect_measure = "hr")
+	)
+	expect_true(any(grepl(
+		"Network may not be fully connected",
+		out$warnings,
+		fixed = TRUE
+	)))
+	result <- out$value
 
 	expect_true(S7::S7_inherits(result, NMAResult))
 	expect_true("network" %in% names(S7::props(result)))
@@ -106,6 +114,27 @@ test_that("calculate_sucra computes treatment rankings", {
 	expect_true("ranking" %in% names(sucra))
 	expect_true("sucra" %in% names(sucra))
 	expect_equal(length(sucra$sucra), 3) # 3 treatments
+})
+
+test_that("calculate_sucra fallback when non-reference SEs are missing", {
+	nma_res <- network_meta(.nma_test_data_3arm, effect_measure = "hr")
+
+	is_ref <- nma_res@comparisons$evidence == "reference"
+	nma_res@comparisons$se[!is_ref] <- NA_real_
+
+	out <- capture_muffled_warnings(
+		calculate_sucra(nma_res, n_sim = 50, seed = 1)
+	)
+	expect_true(any(grepl(
+		"Imputed missing/invalid SE",
+		out$warnings,
+		fixed = TRUE
+	)))
+	sucra <- out$value
+
+	expect_equal(sucra$n_treatments, 3)
+	expect_equal(length(sucra$sucra), 3)
+	expect_true(all(is.finite(sucra$sucra)))
 })
 
 # =============================================================================

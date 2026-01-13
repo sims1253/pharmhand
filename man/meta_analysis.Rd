@@ -19,8 +19,11 @@ meta_analysis(
 )
 }
 \arguments{
-\item{data}{Data frame with study-level summary statistics OR a
-StudySet object}
+\item{data}{Data frame with study-level summary statistics.
+StudySet input is planned but not yet implemented: the current
+\code{S7::S7_inherits(data, StudySet)} code path aborts with
+\code{ph_abort("StudySet input not yet implemented")}.
+For now, provide \code{yi} and \code{sei} directly.}
 
 \item{yi}{Numeric vector of effect estimates (log scale for ratios)}
 

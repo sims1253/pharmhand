@@ -58,6 +58,10 @@ simultaneously using direct and indirect evidence.
 For ratio measures ("hr", "or", "rr"), effect estimates must be on
 the \strong{log scale}. For difference measures ("rd", "md", "smd"), effect
 estimates must be on the \strong{raw scale}.
+
+Indirect effects are estimated using a single-step Bucher chain via one
+intermediate treatment (chosen to minimize the indirect standard error).
+Multiple indirect paths are not combined.
 }
 \examples{
 # Network meta-analysis of 4 studies

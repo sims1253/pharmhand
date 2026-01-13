@@ -47,6 +47,58 @@
 )
 
 # ==============================================================================
+# Shared Efficacy Test Data
+# ==============================================================================
+
+fixture_adlb_lab_summary <- function() {
+	data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAM = c("Alanine Aminotransferase", "Alanine Aminotransferase"),
+		PARAMCD = c("ALT", "ALT"),
+		AVISIT = c("Week 24", "Week 24"),
+		AVAL = c(20, 30),
+		stringsAsFactors = FALSE
+	)
+}
+
+fixture_adlb_lab_shift <- function() {
+	data.frame(
+		USUBJID = c("01", "02", "03"),
+		TRT01P = c("A", "A", "B"),
+		PARAMCD = c("ALT", "ALT", "ALT"),
+		AVISIT = c("Week 24", "Week 24", "Week 24"),
+		BNRIND = c("NORMAL", "NORMAL", "HIGH"),
+		ANRIND = c("NORMAL", "HIGH", "HIGH"),
+		stringsAsFactors = FALSE
+	)
+}
+
+fixture_advs_cfb <- function() {
+	data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAM = c("Systolic Blood Pressure", "Systolic Blood Pressure"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("End of Treatment", "End of Treatment"),
+		AVAL = c(120, 140),
+		CHG = c(-5, -10),
+		stringsAsFactors = FALSE
+	)
+}
+
+fixture_advs_vs_by_visit <- function() {
+	data.frame(
+		USUBJID = c("01", "02"),
+		TRT01P = c("A", "B"),
+		PARAMCD = c("SYSBP", "SYSBP"),
+		AVISIT = c("Baseline", "Week 2"),
+		AVAL = c(120, 140),
+		stringsAsFactors = FALSE
+	)
+}
+
+# ==============================================================================
 # Shared Test Configuration Data
 # ==============================================================================
 

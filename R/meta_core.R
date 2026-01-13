@@ -9,8 +9,11 @@ NULL
 #' Conducts fixed-effect or random-effects meta-analysis on a set of studies.
 #' Supports binary, continuous, and time-to-event outcomes.
 #'
-#' @param data Data frame with study-level summary statistics OR a
-#'   StudySet object
+#' @param data Data frame with study-level summary statistics.
+#'   StudySet input is planned but not yet implemented: the current
+#'   `S7::S7_inherits(data, StudySet)` code path aborts with
+#'   `ph_abort("StudySet input not yet implemented")`.
+#'   For now, provide `yi` and `sei` directly.
 #' @param yi Numeric vector of effect estimates (log scale for ratios)
 #' @param sei Numeric vector of standard errors
 #' @param ni Numeric vector of sample sizes (optional)
@@ -176,7 +179,23 @@ meta_analysis <- function(
 	if (prediction && model == "random" && tau2 > 0 && k > 2) {
 		se_pred <- sqrt(se^2 + tau2)
 		# Always use t-distribution for prediction intervals
-		crit_pred <- stats::qt(1 - alpha / 2, df = k - 2)
+		df_pred <- k - 2
+		crit_pred <- stats::qt(1 - alpha / 2, df = df_pred)
+		if (df_pred <= 1) {
+			ph_warn(sprintf(
+				paste0(
+					"Prediction interval uses very low degrees of freedom ",
+					"(df = %d; k = %d) and may be unstable; ",
+					"k=%d, tau2=%.6g, se_pred=%.6g, crit_pred=%.6g"
+				),
+				df_pred,
+				k,
+				k,
+				tau2,
+				se_pred,
+				crit_pred
+			))
+		}
 		pred_interval <- c(theta - crit_pred * se_pred, theta + crit_pred * se_pred)
 	}
 
@@ -301,17 +320,25 @@ estimate_tau2 <- function(yi, sei, method, wi_fe, theta_fe, Q, df) {
 			c_val <- sum(wi_fe) - sum(wi_fe^2) / sum(wi_fe)
 			tau2_reml <- max(0, (Q - df) / c_val)
 			converged <- FALSE
+			last_iter <- 0L
+			last_delta <- NA_real_
+			last_ll_deriv <- NA_real_
+			last_ll_deriv2 <- NA_real_
 			for (iter in 1:50) {
 				wi_star <- 1 / (sei^2 + tau2_reml)
 				theta_star <- sum(wi_star * yi) / sum(wi_star)
 				resid <- yi - theta_star
 				ll_deriv <- -0.5 * sum(wi_star) + 0.5 * sum(wi_star^2 * resid^2)
 				ll_deriv2 <- 0.5 * sum(wi_star^2) - sum(wi_star^3 * resid^2)
+				last_iter <- iter
+				last_ll_deriv <- ll_deriv
+				last_ll_deriv2 <- ll_deriv2
 				if (abs(ll_deriv2) < 1e-10) {
 					converged <- TRUE
 					break
 				}
 				tau2_new <- tau2_reml - ll_deriv / ll_deriv2
+				last_delta <- abs(tau2_new - tau2_reml)
 				if (abs(tau2_new - tau2_reml) < 1e-8) {
 					converged <- TRUE
 					break
@@ -319,7 +346,18 @@ estimate_tau2 <- function(yi, sei, method, wi_fe, theta_fe, Q, df) {
 				tau2_reml <- max(0, tau2_new)
 			}
 			if (!converged) {
-				ph_warn("REML estimation did not converge within 50 iterations")
+				ph_warn(sprintf(
+					paste0(
+						"REML estimation did not converge within 50 iterations ",
+						"(iter=%d, final_delta=%.3g, tau2_reml=%.6g, ",
+						"ll_deriv=%.3g, ll_deriv2=%.3g)"
+					),
+					last_iter,
+					last_delta,
+					tau2_reml,
+					last_ll_deriv,
+					last_ll_deriv2
+				))
 			}
 			tau2_reml
 		}
@@ -365,6 +403,10 @@ calculate_heterogeneity <- function(
 	method = c("REML", "DL", "PM")
 ) {
 	method <- match.arg(method)
+
+	if (length(yi) == 0 || length(sei) == 0 || length(yi) != length(sei)) {
+		ph_abort("yi and sei must have the same non-zero length")
+	}
 
 	k <- length(yi)
 
@@ -442,6 +484,9 @@ calculate_heterogeneity <- function(
 #' @param meta_result A MetaResult object from meta_analysis()
 #' @param yi Numeric vector of effect estimates (optional if in meta_result)
 #' @param sei Numeric vector of standard errors (optional if in meta_result)
+#' @param method Character. Tau-squared estimation method for the leave-one-out
+#'   refits: "DL", "REML", or "PM". If `NULL` (default), uses
+#'   `meta_result@metadata$method` when available; otherwise defaults to "DL".
 #'
 #' @return A list with components:
 #' \describe{
@@ -450,6 +495,7 @@ calculate_heterogeneity <- function(
 #' \item{n_influential}{Number of influential studies}
 #' \item{effect_measure}{Effect measure used}
 #' \item{model}{Model type (fixed/random)}
+#' \item{method}{Tau-squared estimation method used}
 #' }
 #' @export
 #'
@@ -464,8 +510,13 @@ calculate_heterogeneity <- function(
 leave_one_out <- function(
 	meta_result = NULL,
 	yi = NULL,
-	sei = NULL
+	sei = NULL,
+	method = NULL
 ) {
+	if (!is.null(method)) {
+		method <- match.arg(method, choices = c("REML", "DL", "PM"))
+	}
+
 	# Extract from MetaResult if provided
 	if (!is.null(meta_result) && S7::S7_inherits(meta_result, MetaResult)) {
 		if (!is.null(meta_result@metadata$yi)) {
@@ -473,6 +524,9 @@ leave_one_out <- function(
 		}
 		if (!is.null(meta_result@metadata$sei)) {
 			sei <- meta_result@metadata$sei
+		}
+		if (is.null(method) && !is.null(meta_result@metadata$method)) {
+			method <- meta_result@metadata$method
 		}
 		study_labels <- meta_result@metadata$study_labels
 		effect_measure <- meta_result@effect_measure
@@ -488,6 +542,11 @@ leave_one_out <- function(
 		model <- "random"
 		original_estimate <- NA
 	}
+
+	if (is.null(method)) {
+		method <- "DL"
+	}
+	method <- match.arg(method, choices = c("REML", "DL", "PM"))
 
 	if (is.null(yi) || is.null(sei)) {
 		ph_abort("Effect estimates (yi) and standard errors (sei) required")
@@ -513,8 +572,7 @@ leave_one_out <- function(
 		theta_fe <- sum(wi * yi_loo) / sum(wi)
 		Q <- sum(wi * (yi_loo - theta_fe)^2)
 		df <- length(yi_loo) - 1
-		c_val <- sum(wi) - sum(wi^2) / sum(wi)
-		tau2 <- max(0, (Q - df) / c_val)
+		tau2 <- estimate_tau2(yi_loo, sei_loo, method, wi, theta_fe, Q, df)
 
 		if (model == "random") {
 			wi_re <- 1 / (sei_loo^2 + tau2)
@@ -581,6 +639,7 @@ leave_one_out <- function(
 		influential_studies = study_labels[influential],
 		n_influential = sum(influential),
 		effect_measure = effect_measure,
-		model = model
+		model = model,
+		method = method
 	)
 }

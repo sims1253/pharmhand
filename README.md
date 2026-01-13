@@ -26,6 +26,17 @@ tables and plots for Word documents.
 pak::pak("sims1253/pharmhand")
 ```
 
+Optional: Bayesian meta-analysis features require a Stan backend.
+
+``` r
+install.packages(
+  "cmdstanr",
+  repos = c("https://mc-stan.org/r-packages/", getOption("repos"))
+)
+cmdstanr::install_cmdstan()
+install.packages("brms")
+```
+
 ## Quick Start
 
 Generate complete reports in a single call:
@@ -91,7 +102,6 @@ options(
 
 # All functions now use your preferences
 create_demographics_table(adsl)  # Uses ARM instead of TRT01P
-meta_analysis(yi, sei)              # Uses 95% CI
 ```
 
 ## Advanced: ADaMData Wrapper
@@ -197,44 +207,44 @@ nma_data <- data.frame(
   se = c(0.12, 0.15, 0.18)
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
-nma_result$comparisons
+nma_result@comparisons
 ```
 
 ## Classes
 
-  - `ADaMData` - ADaM dataset wrapper with population filtering
-  - `Endpoint` / `HTAEndpoint` - Endpoint definitions for analyses
-  - `Study` - Base class with `SingleArmStudy`, `TwoArmStudy`,
-    `MultiArmStudy`
-  - `StudySet` - Collection of studies for evidence synthesis
-  - `ClinicalTable` - Table with formatting
-  - `ClinicalPlot` - Plot with export settings
-  - `ClinicalReport` - Report with sections
-  - `StudyResult` - Container for single-study results
-  - `StatResult` - Statistical result base class (`ComparisonResult`,
-    `MetaResult`)
-  - `EvidenceGrade` - IQWiG evidence grading result
+- `ADaMData` - ADaM dataset wrapper with population filtering
+- `Endpoint` / `HTAEndpoint` - Endpoint definitions for analyses
+- `Study` - Base class with `SingleArmStudy`, `TwoArmStudy`,
+  `MultiArmStudy`
+- `StudySet` - Collection of studies for evidence synthesis
+- `ClinicalTable` - Table with formatting
+- `ClinicalPlot` - Plot with export settings
+- `ClinicalReport` - Report with sections
+- `StudyResult` - Container for single-study results
+- `StatResult` - Statistical result base class (`ComparisonResult`,
+  `MetaResult`)
+- `EvidenceGrade` - IQWiG evidence grading result
 
 ## Related Packages
 
-  - [officer](https://davidgohel.github.io/officer/) - Word documents
-  - [flextable](https://davidgohel.github.io/flextable/) - Table
-    formatting
-  - [admiral](https://pharmaverse.github.io/admiral/) - ADaM datasets
-  - [survival](https://cran.r-project.org/package=survival) - Survival
-    analysis
-  - [chef](https://hta-pharma.github.io/chef/) - HTA analyses (optional)
+- [officer](https://davidgohel.github.io/officer/) - Word documents
+- [flextable](https://davidgohel.github.io/flextable/) - Table
+  formatting
+- [admiral](https://pharmaverse.github.io/admiral/) - ADaM datasets
+- [survival](https://cran.r-project.org/package=survival) - Survival
+  analysis
+- [chef](https://hta-pharma.github.io/chef/) - HTA analyses (optional)
 
 ## Learn More
 
-  - [Get
-    Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html)
-  - [Safety
-    Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html)
-  - [Efficacy
-    Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html)
-  - [Meta-Analysis](https://sims1253.github.io/pharmhand/articles/meta-analysis.html)
-  - [S7
-    Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html)
+- [Get
+  Started](https://sims1253.github.io/pharmhand/articles/pharmhand.html)
+- [Safety
+  Tables](https://sims1253.github.io/pharmhand/articles/safety-tables.html)
+- [Efficacy
+  Tables](https://sims1253.github.io/pharmhand/articles/efficacy-tables.html)
+- [Meta-Analysis](https://sims1253.github.io/pharmhand/articles/meta-analysis.html)
+- [S7
+  Architecture](https://sims1253.github.io/pharmhand/articles/s7-architecture.html)
 
 Browse the [full documentation](https://sims1253.github.io/pharmhand/).

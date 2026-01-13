@@ -57,6 +57,7 @@ demo_table@flextable
 ```
 
 The function automatically wraps the data.frame in an ADaMData object.
+See `?create_demographics_table` for full parameter documentation.
 
 ### Advanced approach: Explicit ADaMData for population filtering
 
@@ -75,6 +76,9 @@ demo_table_saf <- create_demographics_table(
   adsl_data = adam_data,
   trt_var = "TRT01P"
 )
+
+# Display the table
+demo_table_saf@flextable
 ```
 
 Customize variable names to match your data structure:

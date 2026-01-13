@@ -63,6 +63,7 @@ create_tte_summary_table <- function(
 ) {
 	# Calculate confidence interval percentage for dynamic column names
 	ci_pct <- round(conf_level * 100)
+	hr_col_name <- paste0("HR (", ci_pct, "% CI)")
 
 	# Get filtered data and treatment variable
 	df <- get_filtered_data(data)
@@ -117,10 +118,12 @@ create_tte_summary_table <- function(
 	# N and events
 	results$N <- as.integer(km_summary[, "records"])
 	results$Events <- as.integer(km_summary[, "events"])
-	results$Events_pct <- sprintf(
-		"%.1f",
-		results$Events / results$N * 100
+	events_pct <- ifelse(
+		!is.na(results$N) & results$N > 0,
+		results$Events / results$N * 100,
+		0
 	)
+	results$Events_pct <- sprintf("%.1f", events_pct)
 	results$`Events n (%)` <- paste0(
 		results$Events,
 		" (",
@@ -134,6 +137,7 @@ create_tte_summary_table <- function(
 	} else {
 		"*rmean"
 	}
+	time_summary_label <- if (median_col == "median") "Median" else "RMST"
 	# Find CI columns by pattern - more robust across survival versions
 	ci_lower_name <- grep("LCL$", colnames(km_summary), value = TRUE)[1]
 	ci_upper_name <- grep("UCL$", colnames(km_summary), value = TRUE)[1]
@@ -141,21 +145,22 @@ create_tte_summary_table <- function(
 		ph_abort("Could not find confidence interval columns in survfit output")
 	}
 
-	results$Median <- sprintf("%.1f", km_summary[, median_col])
-	results$Median_LCL <- sprintf("%.1f", km_summary[, ci_lower_name])
-	results$Median_UCL <- sprintf("%.1f", km_summary[, ci_upper_name])
-	median_col_name <- paste0("Median (", ci_pct, "% CI)")
-	results[[median_col_name]] <- ifelse(
-		is.na(km_summary[, median_col]),
+	time_summary_col_name <- paste0(time_summary_label, " (", ci_pct, "% CI)")
+
+	fmt_time <- function(x) {
+		ifelse(is.na(x) | !is.finite(x), "NE", sprintf("%.1f", x))
+	}
+	time_est <- km_summary[, median_col]
+	time_lcl <- km_summary[, ci_lower_name]
+	time_ucl <- km_summary[, ci_upper_name]
+	time_est_str <- fmt_time(time_est)
+	time_lcl_str <- fmt_time(time_lcl)
+	time_ucl_str <- fmt_time(time_ucl)
+
+	results[[time_summary_col_name]] <- ifelse(
+		time_est_str == "NE",
 		"NE",
-		paste0(
-			results$Median,
-			" (",
-			results$Median_LCL,
-			", ",
-			results$Median_UCL,
-			")"
-		)
+		paste0(time_est_str, " (", time_lcl_str, ", ", time_ucl_str, ")")
 	)
 
 	# Landmark estimates if requested
@@ -284,7 +289,6 @@ create_tte_summary_table <- function(
 		hr_table <- cox_summary$conf.int
 		hr_coefs <- cox_summary$coefficients
 
-		hr_col_name <- paste0("HR (", ci_pct, "% CI)")
 		results[[hr_col_name]] <- NA_character_
 		results$`p-value` <- NA_character_
 
@@ -295,8 +299,16 @@ create_tte_summary_table <- function(
 
 		# Build dynamic CI column names based on conf_level
 		# Format: "lower .95", "upper .95" for 95% CI
-		lower_col <- paste0("lower .", sub("^0\\.", "", format(conf_level)))
-		upper_col <- paste0("upper .", sub("^0\\.", "", format(conf_level)))
+		dec <- sub(
+			"^0\\.",
+			"",
+			format(conf_level, scientific = FALSE, trim = TRUE)
+		)
+		if (nchar(dec) == 1) {
+			dec <- paste0(dec, "0")
+		}
+		lower_col <- paste0("lower .", dec)
+		upper_col <- paste0("upper .", dec)
 
 		# Other groups get HR values
 		for (j in seq_len(nrow(hr_table))) {
@@ -318,12 +330,11 @@ create_tte_summary_table <- function(
 	}
 
 	# Select columns for display
-	median_col_name <- paste0("Median (", ci_pct, "% CI)")
 	display_cols <- c(
 		"Treatment",
 		"N",
 		"Events n (%)",
-		median_col_name
+		time_summary_col_name
 	)
 
 	# Add landmark columns if present
@@ -340,7 +351,6 @@ create_tte_summary_table <- function(
 	}
 
 	# Add HR columns if present
-	hr_col_name <- paste0("HR (", ci_pct, "% CI)")
 	if (hr_col_name %in% names(results)) {
 		display_cols <- c(display_cols, hr_col_name, "p-value")
 	}
@@ -370,6 +380,11 @@ create_tte_summary_table <- function(
 			paste("Time unit:", time_unit),
 			if (length(trt_levels) > 1) {
 				paste("HR reference group:", ref_group)
+			} else {
+				NULL
+			},
+			if (time_summary_label == "RMST") {
+				"RMST = Restricted mean survival time"
 			} else {
 				NULL
 			},

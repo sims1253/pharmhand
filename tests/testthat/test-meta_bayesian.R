@@ -906,6 +906,52 @@ test_that("format_bayesian_result_iqwig creates interpretation text", {
 })
 
 test_that("create_bayesian_forest_plot_iqwig generates ggplot", {
+	# Non-brms unit test: verify study CIs use qnorm(0.975) (no magic 1.96)
+	# using a minimal bayesian_meta_result stub.
+	study_df <- data.frame(
+		yi = c(log(0.8), log(1.2)),
+		sei = c(0.1, 0.2),
+		study_labels = c("S1", "S2"),
+		stringsAsFactors = FALSE
+	)
+
+	fake_result <- structure(
+		list(
+			posterior_mean = 1,
+			posterior_median = 1,
+			ci_95 = c(0.8, 1.2),
+			tau_mean = 0.1,
+			tau_ci_95 = c(0.05, 0.2),
+			n_studies = 2,
+			effect_measure = "hr",
+			metadata = list()
+		),
+		class = "bayesian_meta_result"
+	)
+
+	forest_plot <- create_bayesian_forest_plot_iqwig(
+		fake_result,
+		study_data = study_df,
+		show_prediction_interval = FALSE
+	)
+
+	expect_true(S7::S7_inherits(forest_plot, ClinicalPlot))
+
+	z <- stats::qnorm(0.975)
+	plot_data <- forest_plot@data
+	s1 <- plot_data[plot_data$study == "S1", ]
+
+	expect_equal(
+		s1$ci_lower,
+		exp(study_df$yi[1] - z * study_df$sei[1]),
+		tolerance = 1e-12
+	)
+	expect_equal(
+		s1$ci_upper,
+		exp(study_df$yi[1] + z * study_df$sei[1]),
+		tolerance = 1e-12
+	)
+
 	skip_if_brms_unavailable()
 
 	# Consistent test data

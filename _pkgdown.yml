@@ -191,8 +191,6 @@ reference:
   - add_content
   - add_to_docx
   - create_study_report
-  - create_clinical_table
-  - create_hta_table
   - create_analysis_meta
   - apply_clinical_style
   - summarize_content
@@ -206,6 +204,7 @@ reference:
   - as_flextable_AnalysisResults
   - as_gt
   - as_gt_AnalysisResults
+  - clinical_table_from_results
   - layered_to_flextable
 
 - title: "Layers System"
