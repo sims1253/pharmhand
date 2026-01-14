@@ -76,7 +76,16 @@ Set to NULL for non-deterministic results.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>List with rankings, SUCRA/P-scores, and rankogram data</p>
+    <p>List with rankings, SUCRA/P-scores, and rankogram data. When
+<code>n_treatments == 1</code>, the returned <code>sucra</code> value is set to <code>1.0</code> (the single
+treatment is trivially best).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The reference treatment is treated as the baseline in the output and is
+assigned an SE of 0. For any non-reference treatments with missing/invalid
+standard errors, the SE is imputed using the median of valid SE values.
+This imputation can affect ranking probabilities and SUCRA values.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>

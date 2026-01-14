@@ -30,7 +30,17 @@ calculate_sucra(nma_result, lower_better = NULL, n_sim = 1000, seed = 42)
 
 ## Value
 
-List with rankings, SUCRA/P-scores, and rankogram data
+List with rankings, SUCRA/P-scores, and rankogram data. When
+`n_treatments == 1`, the returned `sucra` value is set to `1.0` (the
+single treatment is trivially best).
+
+## Details
+
+The reference treatment is treated as the baseline in the output and is
+assigned an SE of 0. For any non-reference treatments with
+missing/invalid standard errors, the SE is imputed using the median of
+valid SE values. This imputation can affect ranking probabilities and
+SUCRA values.
 
 ## Note
 

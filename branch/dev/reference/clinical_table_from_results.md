@@ -23,3 +23,13 @@ clinical_table_from_results(res, title = "")
 ## Value
 
 A `ClinicalTable` object.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Convert analysis results to clinical table
+results <- analyze_demographics(adsl_data)
+table <- clinical_table_from_results(results, title = "Demographics")
+} # }
+```
