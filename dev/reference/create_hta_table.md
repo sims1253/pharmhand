@@ -1,4 +1,4 @@
-# Create HTA-Style Table
+# Create a flextable formatted for HTA/AMNOG submissions.
 
 Create a flextable formatted for HTA/AMNOG submissions.
 
@@ -10,7 +10,7 @@ create_hta_table(
   title = NULL,
   footnotes = character(),
   col_widths = NULL,
-  autofit = TRUE
+  autofit = ph_default("autofit")
 )
 ```
 

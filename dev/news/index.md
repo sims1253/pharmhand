@@ -1,5 +1,460 @@
 # Changelog
 
+## pharmhand 0.3.4.9000
+
+### Fixes and maintenance
+
+- Fixed
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_clinical_table.md)
+  to accept `AnalysisResults` objects (uses `@stats`).
+- Improved Bayesian meta-analysis test performance and stability.
+- Cleaned up documentation/signature mismatches and `R CMD check`
+  issues.
+
+### Major Architecture Improvements
+
+#### Package-Wide Defaults System
+
+- **New defaults infrastructure**: Added centralized default parameter
+  system via
+  [`ph_default()`](https://sims1253.github.io/pharmhand/dev/reference/ph_default.md)
+  function
+  - Default values for common parameters (e.g., `trt_var = "TRT01P"`,
+    `autofit = TRUE`, `conf_level = 0.95`)
+  - Users can override via options: `options(pharmhand.trt_var = "ARM")`
+  - Reduces boilerplate across 40+ functions
+  - Improves consistency and maintainability
+
+#### Code Reusability Improvements
+
+- **New
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_clinical_table.md)
+  factory function**: Reduces boilerplate for table creation
+  - Consolidates repeated pattern of creating flextable + wrapping in
+    ClinicalTable
+  - Used across 25+ table creation functions
+  - ~200 lines of duplicate code eliminated
+- **Extracted
+  [`estimate_tau2()`](https://sims1253.github.io/pharmhand/dev/reference/estimate_tau2.md)
+  helper**: Eliminates duplication in meta-analysis functions
+  - Single implementation of DerSimonian-Laird, Paule-Mandel, and REML
+    methods
+  - Used by both
+    [`meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/meta_analysis.md)
+    and
+    [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_heterogeneity.md)
+  - ~100 lines of duplicate code eliminated
+
+#### Enhanced User Experience
+
+- **Automatic data.frame coercion**: User-facing functions now accept
+  data.frames directly
+  - [`create_demographics_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_demographics_table.md)
+    automatically wraps data.frames in ADaMData
+  - Eliminates need for users to manually create S7 objects
+  - Backward compatible with existing ADaMData inputs
+- **Improved error messages**: Context-rich error reporting throughout
+  - Error messages now show what was received vs. what was expected
+  - Available values suggested when appropriate (e.g., treatment arms)
+  - Missing column errors show available columns for easier debugging
+- **New workflow helpers**: High-level convenience functions for common
+  tasks
+  - [`quick_demographics_report()`](https://sims1253.github.io/pharmhand/dev/reference/quick_demographics_report.md):
+    Generate demographics report in one call
+  - [`quick_safety_report()`](https://sims1253.github.io/pharmhand/dev/reference/quick_safety_report.md):
+    Generate multi-table safety report in one call
+  - Ideal for quick analyses and prototyping
+
+#### API Consistency
+
+- **Standardized parameter names**: Using
+  [`ph_default()`](https://sims1253.github.io/pharmhand/dev/reference/ph_default.md)
+  across the package
+  - `trt_var` (not `treatment_var`) for treatment variable
+  - `conf_level` (not `ci_level` or `confidence_level`) for confidence
+    level
+  - `autofit` consistently for table formatting
+  - Reduces cognitive load for users
+- **Consistent return types**: All `create_*_table()` functions return
+  ClinicalTable objects
+  - Fixed inconsistencies where some returned bare flextables
+  - Enables consistent downstream processing
+
+### Breaking Changes
+
+#### Source File Reorganization
+
+- **Efficacy module split**: `R/efficacy_tables.R` has been split into
+  focused modules:
+  - `R/efficacy_primary.R` - Primary endpoint tables
+    ([`create_primary_endpoint_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_primary_endpoint_table.md))
+  - `R/efficacy_cfb.R` - Change from baseline tables
+  - `R/efficacy_lab.R` - Laboratory tables
+  - `R/efficacy_tte.R` - Time-to-event tables
+  - `R/efficacy_responder.R` - Responder analysis tables
+  - `R/efficacy_subgroup.R` - Subgroup analysis tables
+- **Safety module split**: `R/safety_tables.R` has been split into
+  focused modules:
+  - `R/safety_summary.R` - AE summary tables
+    ([`create_ae_summary_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_summary_table.md))
+  - `R/safety_comparison.R` - AE comparison tables
+  - `R/safety_hierarchy.R` - SOC/PT hierarchy tables
+  - `R/safety_tte.R` - Safety time-to-event analysis
+  - `R/safety_exposure.R` - Exposure-adjusted analysis
+- **Migration guidance**: Users who previously sourced these files
+  directly should:
+  - Use the package namespace (e.g.,
+    [`pharmhand::create_primary_endpoint_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_primary_endpoint_table.md))
+  - Or source the new module files (e.g.,
+    `source('R/efficacy_primary.R')`)
+  - Update any direct imports to reference the new module names
+
+### Bug Fixes
+
+#### Robustness Improvements
+
+- Fixed
+  [`create_primary_endpoint_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_primary_endpoint_table.md)
+  to handle empty data or all-NA values gracefully, returning “-”
+  instead of NaN/Inf
+- Fixed `create_responder_analysis_table()` to compute response rate in
+  separate mutate step, avoiding fragile self-reference in summarise
+- Fixed
+  [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_tte_summary_table.md)
+  to correctly extract landmark survival estimates for each treatment
+  stratum instead of using first stratum for all
+- Fixed
+  [`create_tte_summary_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_tte_summary_table.md)
+  to use dynamic CI column names based on conf_level instead of
+  hardcoded “lower .95”/“upper .95”
+- Fixed
+  [`create_league_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_league_table.md)
+  to use NMA result’s stored confidence level when available
+- Fixed
+  [`leave_one_out()`](https://sims1253.github.io/pharmhand/dev/reference/leave_one_out.md)
+  to read ci_level from correct slot (<meta_result@ci>\_level instead of
+  [@metadata](https://github.com/metadata)\$conf_level)
+
+#### Input Validation
+
+- Require positive, non-missing standard errors in
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/dev/reference/eggers_test.md),
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/dev/reference/trim_and_fill.md),
+  [`meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/meta_analysis.md),
+  and
+  [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_heterogeneity.md)
+- Added `length(yi) == length(sei)` validation in
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/dev/reference/eggers_test.md)
+  and
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/dev/reference/trim_and_fill.md)
+- Added `anyNA(yi)` check in
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/dev/reference/eggers_test.md)
+  returning NA-filled result with clear interpretation
+- Added `anyNA(yi)` check in
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/dev/reference/trim_and_fill.md)
+  with error listing invalid indices
+
+#### Code Quality
+
+- Changed [`stop()`](https://rdrr.io/r/base/stop.html) to `ph_abort()`
+  in example script for consistent error handling
+- Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd
+- Added `:=` import from rlang to fix undefined global function warning
+- Fixed
+  [`create_mean_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_mean_plot.md)
+  n calculation to count non-missing values
+- Added guards for CI computation when n \<= 1 to avoid Inf values
+
+#### Plotting Fixes
+
+- Fixed `create_efficacy_waterfall_plot()` to compute category counts in
+  separate mutate step, avoiding fragile self-reference in summarise
+- Fixed
+  [`create_forest_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_forest_plot.md)
+  Cox model CI column extraction to use positional indexing instead of
+  fragile name construction
+- Fixed
+  [`create_km_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_km_plot.md)
+  risk table grid background by explicitly setting
+  panel.grid.major/minor to element_blank()
+- Fixed
+  [`safe_pct()`](https://sims1253.github.io/pharmhand/dev/reference/safe_pct.md)
+  division by zero in `safety_summary.R` by adding helper function
+  applied to 9 locations
+
+#### Bayesian Meta-Analysis Fixes
+
+- Fixed
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/bayesian_meta_analysis.md)
+  to use
+  [`brms::neff_ratio()`](https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html)
+  instead of non-exported `brms::ess_bulk()`/`brms::ess_tail()`
+- Fixed
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/bayesian_meta_analysis.md)
+  to compute BFMI from nuts_params energy values
+- Fixed
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/bayesian_meta_analysis.md)
+  to use
+  [`brms::nuts_params()`](https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html)
+  for divergent transitions instead of accessing internal
+  `fit$fit@sim$divergent__`
+- Added `tryCatch` wrapper around
+  [`brms::brm()`](https://paulbuerkner.com/brms/reference/brm.html)
+  calls for better error handling
+- Changed all brms tests to use `cores = 1` to avoid parallel rstan
+  issues in CI
+- Added `bayesplot` to Suggests, removed direct `rstan` dependency
+- Fixed roxygen documentation to avoid `\describe{}` block Rd parsing
+  issues
+- Added brms test caching helper to speed up test suite
+
+#### Documentation
+
+- Added [@title](https://github.com/title) tags and completed
+  [@return](https://github.com/return) documentation in `meta_bias.R`
+- Added within-study variation warning documentation in
+  [`assess_transitivity()`](https://sims1253.github.io/pharmhand/dev/reference/assess_transitivity.md)
+- Split long [@return](https://github.com/return) lines in
+  `safety_tte.R`
+- Added description field to meta-analysis vignette
+- Updated brms section in meta-analysis vignette with installation
+  guidance
+
+### Test Improvements
+
+- Refactored test-plotting_forest.R, test-efficacy_tte.R, and
+  test-efficacy_subgroup.R to use shared test fixtures
+- Included documentation examples to exported functions in efficacy and
+  safety modules
+- Updated `test-meta_bayesian.R` with 8-study test data and
+  `adapt_delta = 0.99` to prevent divergent transitions
+- Seeded RNG in 11 tests in `test-pro-analysis.R`
+- Applied [`set.seed()`](https://rdrr.io/r/base/Random.html) to
+  `test-efficacy_tte.R` before sample() call
+- Removed duplicate tests in `test-efficacy_responder.R` and
+  `test-efficacy_subgroup.R`
+
+## pharmhand 0.3.0.9000
+
+### Major Changes
+
+#### Test Suite Reorganization
+
+- **One-test-file-per-source-file convention**: Reorganized test files
+  to follow R testing best practices.
+  - Split `test-efficacy_tables.R` into `test-efficacy_cfb.R`,
+    `test-efficacy_lab.R`, `test-efficacy_primary.R`,
+    `test-efficacy_responder.R`, `test-efficacy_subgroup.R`, and
+    `test-efficacy_tte.R`
+  - Split `test-meta-analysis.R` into `test-meta_core.R`,
+    `test-meta_bayesian.R`, `test-meta_bias.R`, `test-meta_indirect.R`,
+    `test-meta_network.R`, and `test-meta_plots.R`
+  - Split `test-plotting.R` into `test-plotting_survival.R`,
+    `test-plotting_efficacy.R`, and `test-plotting_forest.R`
+  - Renamed `test-safety_tables.R` to `test-safety_summary.R` and
+    extracted `test-safety_comparison.R` and `test-safety_hierarchy.R`
+
+#### New Test Coverage
+
+- Added comprehensive tests for Configuration API (`test-config_api.R`)
+- Added comprehensive tests for Configuration Classes
+  (`test-config_classes.R`)
+
+### Bug Fixes
+
+#### Test Data Improvements
+
+- Fixed test data in safety TTE tests to use larger sample sizes (20+
+  subjects per arm) to avoid Cox model convergence issues
+- Fixed test data to avoid duplicate landmark timepoints in TTE summary
+  tests
+- Fixed test data for subgroup analysis to have adequate subjects per
+  subgroup (25+)
+- Fixed S7 class checks from `expect_s3_class()` to
+  [`S7::S7_inherits()`](https://rconsortium.github.io/S7/reference/S7_inherits.html)
+  for proper S7 class validation
+- Fixed error message regex patterns to match actual function outputs
+
+#### Source Code Fixes
+
+- Fixed `km_summary` matrix conversion in `efficacy_tte.R` to preserve
+  column names for single treatment arms
+- Fixed `pct` column warning in `safety_summary.R` by using proper
+  [`dplyr::mutate()`](https://dplyr.tidyverse.org/reference/mutate.html)
+  instead of for-loop assignment
+- Fixed `survfit` `n.censor` matrix handling in `plotting_survival.R` by
+  converting to vector
+- Fixed [`min()`](https://rdrr.io/r/base/Extremes.html) returning `-Inf`
+  in `pro_analysis.R` when no events present
+- Fixed S7 class checking in `config_api.R` to use
+  [`S7::S7_inherits()`](https://rconsortium.github.io/S7/reference/S7_inherits.html)
+  instead of [`inherits()`](https://rdrr.io/r/base/class.html)
+
+#### Test Cleanup
+
+- Removed tests for unimplemented `maic()` and `stc()` functions
+- Fixed missing `registry` variable in config API tests
+- Changed REML tests to use DerSimonian-Laird method to avoid
+  convergence warnings
+- Replaced `any(is.na())` with
+  [`anyNA()`](https://rdrr.io/r/base/NA.html) per jarl recommendations
+
+### Code Quality
+
+- All tests pass (1874 tests)
+- No warnings or skipped tests
+- lintr clean (line length compliance)
+- jarl check clean
+- devtools::check() passes with 0 errors, 0 warnings, 0 notes
+
+## pharmhand 0.2.3.9000
+
+### Documentation
+
+- Added runnable examples for all meta-analysis and network
+  meta-analysis functions including
+  [`meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/meta_analysis.md),
+  [`indirect_comparison()`](https://sims1253.github.io/pharmhand/dev/reference/indirect_comparison.md),
+  [`network_meta()`](https://sims1253.github.io/pharmhand/dev/reference/network_meta.md),
+  [`create_network_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_network_plot.md),
+  [`assess_transitivity()`](https://sims1253.github.io/pharmhand/dev/reference/assess_transitivity.md),
+  [`node_splitting()`](https://sims1253.github.io/pharmhand/dev/reference/node_splitting.md),
+  [`calculate_sucra()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_sucra.md),
+  and
+  [`create_league_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_league_table.md).
+
+## pharmhand 0.2.2.9000
+
+### Phase 2: Evidence Synthesis
+
+#### Meta-Analysis Functions
+
+- Added
+  [`meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/meta_analysis.md)
+  for fixed-effect and random-effects meta-analysis with support for
+  multiple tau² estimators (DerSimonian-Laird, REML, Paule-Mandel, ML)
+  and optional Knapp-Hartung adjustment.
+
+- Added
+  [`calculate_heterogeneity()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_heterogeneity.md)
+  for comprehensive heterogeneity assessment including Q, I², τ², and H²
+  statistics with interpretation.
+
+- Added
+  [`leave_one_out()`](https://sims1253.github.io/pharmhand/dev/reference/leave_one_out.md)
+  for sensitivity analysis identifying influential studies.
+
+- Added
+  [`create_meta_forest_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_meta_forest_plot.md)
+  for meta-analysis forest plots with study weights, heterogeneity
+  statistics, and prediction intervals.
+
+- Added
+  [`create_funnel_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_funnel_plot.md)
+  for publication bias visualization.
+
+- Added
+  [`eggers_test()`](https://sims1253.github.io/pharmhand/dev/reference/eggers_test.md)
+  for statistical assessment of funnel plot asymmetry.
+
+- Added
+  [`trim_and_fill()`](https://sims1253.github.io/pharmhand/dev/reference/trim_and_fill.md)
+  for Duval & Tweedie publication bias adjustment.
+
+#### Indirect Comparison
+
+- Added
+  [`indirect_comparison()`](https://sims1253.github.io/pharmhand/dev/reference/indirect_comparison.md)
+  using the Bucher method for anchored indirect treatment comparisons.
+
+- Added
+  [`compare_direct_indirect()`](https://sims1253.github.io/pharmhand/dev/reference/compare_direct_indirect.md)
+  for consistency testing between direct and indirect evidence.
+
+#### Network Meta-Analysis
+
+- Added
+  [`network_meta()`](https://sims1253.github.io/pharmhand/dev/reference/network_meta.md)
+  for network meta-analysis comparing multiple treatments.
+
+- Added
+  [`create_network_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_network_plot.md)
+  for network geometry visualization.
+
+- Added
+  [`assess_transitivity()`](https://sims1253.github.io/pharmhand/dev/reference/assess_transitivity.md)
+  for evaluating the transitivity assumption.
+
+- Added
+  [`node_splitting()`](https://sims1253.github.io/pharmhand/dev/reference/node_splitting.md)
+  for testing inconsistency between direct and indirect evidence.
+
+- Added
+  [`calculate_sucra()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_sucra.md)
+  for treatment ranking with SUCRA/P-scores.
+
+- Added
+  [`create_league_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_league_table.md)
+  for pairwise comparison tables.
+
+#### Bayesian Analysis
+
+- Added
+  [`bayesian_meta_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/bayesian_meta_analysis.md)
+  interface for Bayesian meta-analysis using brms when available, with
+  automatic fallback to frequentist methods.
+
+### Phase 1 Completion
+
+#### PRO Analysis
+
+- Added
+  [`calculate_mcid_anchor()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_mcid_anchor.md)
+  for anchor-based MCID calculation.
+
+- Added
+  [`calculate_mcid_distribution()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_mcid_distribution.md)
+  for distribution-based MCID (0.5 SD, 1 SEM, etc.).
+
+- Added
+  [`calculate_mcid()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_mcid.md)
+  wrapper combining both MCID approaches.
+
+- Added
+  [`create_ttd_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/create_ttd_analysis.md)
+  for time-to-deterioration analysis with Kaplan-Meier estimation.
+
+#### Visualization
+
+- Added
+  [`create_mean_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_mean_plot.md)
+  for longitudinal mean plots with confidence intervals.
+
+- Added
+  [`create_spider_plot()`](https://sims1253.github.io/pharmhand/dev/reference/create_spider_plot.md)
+  for individual patient trajectory visualization.
+
+#### Safety Analysis
+
+- Added
+  [`create_ae_hierarchy_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_ae_hierarchy_table.md)
+  for full MedDRA hierarchy analysis (SOC → HLGT → HLT → PT).
+
+#### Subgroup Analysis
+
+- Added
+  [`assess_iceman()`](https://sims1253.github.io/pharmhand/dev/reference/assess_iceman.md)
+  for ICEMAN criteria assessment of subgroup credibility.
+
+### S7 Classes
+
+- Added comprehensive tests for `MultiArmStudy` S7 class.
+
+### Documentation
+
+- Added extensive test coverage for meta-analysis functions.
+- Added tests for PRO analysis functions.
+
 ## pharmhand 0.2.1.9000
 
 ### Improvements

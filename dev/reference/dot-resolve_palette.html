@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Resolve color palette from parameter or options</h1>
-      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/master/R/plotting.R" class="external-link"><code>R/plotting.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/master/R/plotting_common.R" class="external-link"><code>R/plotting_common.R</code></a></small>
       <div class="d-none name"><code>dot-resolve_palette.Rd</code></div>
     </div>
 
@@ -49,8 +49,23 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.resolve_palette</span><span class="op">(</span>palette <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
-  </main></div>
+
+<dl><dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>
+<dd><p>Optional character vector of colors or a single string naming
+a palette. If NULL (default), uses the value of option "pharmhand.palette"
+or falls back to the default Okabe-Ito palette.</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A character vector of color hex codes.</p>
+    </div>
+
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

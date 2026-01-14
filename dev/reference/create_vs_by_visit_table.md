@@ -7,7 +7,6 @@ Create Vital Signs by Visit Table
 ``` r
 create_vs_by_visit_table(
   advs,
-  trt_n,
   paramcd = "SYSBP",
   visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
   trt_var = "TRT01P",
@@ -21,10 +20,6 @@ create_vs_by_visit_table(
 - advs:
 
   ADVS data frame
-
-- trt_n:
-
-  Treatment group counts
 
 - paramcd:
 

@@ -13,3 +13,7 @@ Create pharmhand plotting theme with consistent white background
 - base_size:
 
   Base font size for plot text elements (default: 11)
+
+## Value
+
+A ggplot2 theme object

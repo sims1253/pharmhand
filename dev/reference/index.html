@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,13 +134,6 @@
 
         <dt>
 
-          <code><a href="MetaResult.html">MetaResult()</a></code>
-
-        </dt>
-        <dd>MetaResult Class</dd>
-
-        <dt>
-
           <code><a href="PerformanceReport.html">PerformanceReport()</a></code>
 
         </dt>
@@ -166,6 +159,134 @@
 
         </dt>
         <dd>StudyResult Class</dd>
+      </dl></div><div class="section level2">
+      <h2 id="configuration">Configuration<a class="anchor" aria-label="anchor" href="#configuration"></a></h2>
+
+      <div class="section-desc"><p>Configuration classes and functions for managing clinical report settings, populations, subgroups, and SOC/PT configurations from YAML files or runtime.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="ConfigurationRegistry.html">ConfigurationRegistry()</a></code>
+
+        </dt>
+        <dd>ConfigurationRegistry Class</dd>
+
+        <dt>
+
+          <code><a href="PTConfig.html">PTConfig()</a></code>
+
+        </dt>
+        <dd>PTConfig Class</dd>
+
+        <dt>
+
+          <code><a href="PopulationConfig.html">PopulationConfig()</a></code>
+
+        </dt>
+        <dd>PopulationConfig Class</dd>
+
+        <dt>
+
+          <code><a href="SOCConfig.html">SOCConfig()</a></code>
+
+        </dt>
+        <dd>SOCConfig Class</dd>
+
+        <dt>
+
+          <code><a href="SubgroupConfig.html">SubgroupConfig()</a></code>
+
+        </dt>
+        <dd>SubgroupConfig Class</dd>
+
+        <dt>
+
+          <code><a href="config_api.html">config_api</a></code>
+
+        </dt>
+        <dd>Configuration API for Clinical Reports</dd>
+
+        <dt>
+
+          <code><a href="config_classes.html">config_classes</a></code>
+
+        </dt>
+        <dd>S7 Configuration Classes for Clinical Reports</dd>
+
+        <dt>
+
+          <code><a href="define_population_config.html">define_population_config()</a></code>
+
+        </dt>
+        <dd>Define or override a population configuration</dd>
+
+        <dt>
+
+          <code><a href="define_subgroup_config.html">define_subgroup_config()</a></code>
+
+        </dt>
+        <dd>Define or override a subgroup configuration</dd>
+
+        <dt>
+
+          <code><a href="get_performance_setting.html">get_performance_setting()</a></code>
+
+        </dt>
+        <dd>Get performance setting</dd>
+
+        <dt>
+
+          <code><a href="get_population_config.html">get_population_config()</a></code>
+
+        </dt>
+        <dd>Get population configuration</dd>
+
+        <dt>
+
+          <code><a href="get_subgroup_config.html">get_subgroup_config()</a></code>
+
+        </dt>
+        <dd>Get subgroup configuration</dd>
+
+        <dt>
+
+          <code><a href="list_populations.html">list_populations()</a></code>
+
+        </dt>
+        <dd>List available populations</dd>
+
+        <dt>
+
+          <code><a href="list_subgroups.html">list_subgroups()</a></code>
+
+        </dt>
+        <dd>List available subgroups</dd>
+
+        <dt>
+
+          <code><a href="load_config.html">load_config()</a></code>
+
+        </dt>
+        <dd>Load configuration from YAML file</dd>
+
+        <dt>
+
+          <code><a href="update_pt_config.html">update_pt_config()</a></code>
+
+        </dt>
+        <dd>Update PT configuration</dd>
+
+        <dt>
+
+          <code><a href="update_soc_config.html">update_soc_config()</a></code>
+
+        </dt>
+        <dd>Update SOC configuration</dd>
       </dl></div><div class="section level2">
       <h2 id="study-design-classes">Study Design Classes<a class="anchor" aria-label="anchor" href="#study-design-classes"></a></h2>
 
@@ -387,6 +508,13 @@
 
         <dt>
 
+          <code><a href="create_ae_hierarchy_table.html">create_ae_hierarchy_table()</a></code>
+
+        </dt>
+        <dd>Create AE Table with Full MedDRA Hierarchy</dd>
+
+        <dt>
+
           <code><a href="create_time_to_first_ae.html">create_time_to_first_ae()</a></code>
 
         </dt>
@@ -497,14 +625,14 @@
           <code><a href="create_clinical_table.html">create_clinical_table()</a></code>
 
         </dt>
-        <dd>Helper to create a ClinicalTable from AnalysisResults</dd>
+        <dd>Create HTA-Style Table Create Clinical Table (Factory Function)</dd>
 
         <dt>
 
           <code><a href="create_hta_table.html">create_hta_table()</a></code>
 
         </dt>
-        <dd>Create HTA-Style Table</dd>
+        <dd>Create a flextable formatted for HTA/AMNOG submissions.</dd>
 
         <dt>
 
@@ -563,6 +691,20 @@
 
         </dt>
         <dd>Create Log-Log Survival Plot</dd>
+
+        <dt>
+
+          <code><a href="create_mean_plot.html">create_mean_plot()</a></code>
+
+        </dt>
+        <dd>Create Mean Plot with Confidence Intervals Over Time</dd>
+
+        <dt>
+
+          <code><a href="create_spider_plot.html">create_spider_plot()</a></code>
+
+        </dt>
+        <dd>Create Spider Plot for Individual Trajectories</dd>
 
         <dt>
 
@@ -675,6 +817,20 @@
 
       <dl><dt>
 
+          <code><a href="quick_demographics_report.html">quick_demographics_report()</a></code>
+
+        </dt>
+        <dd>Quick Demographics Report</dd>
+
+        <dt>
+
+          <code><a href="quick_safety_report.html">quick_safety_report()</a></code>
+
+        </dt>
+        <dd>Quick Safety Report</dd>
+
+        <dt>
+
           <code><a href="generate_word.html">generate_word()</a></code>
 
         </dt>
@@ -779,6 +935,13 @@
 
         </dt>
         <dd>Convert AnalysisResults to gt (S7 Method)</dd>
+
+        <dt>
+
+          <code><a href="clinical_table_from_results.html">clinical_table_from_results()</a></code>
+
+        </dt>
+        <dd>Clinical table from analysis results</dd>
 
         <dt>
 
@@ -946,6 +1109,229 @@
 
         </dt>
         <dd>Calculate Response Comparison (OR, RR, or RD)</dd>
+
+        <dt>
+
+          <code><a href="assess_iceman.html">assess_iceman()</a></code>
+
+        </dt>
+        <dd>Assess Subgroup Credibility Using ICEMAN Criteria</dd>
+      </dl></div><div class="section level2">
+      <h2 id="pro-analysis">PRO Analysis<a class="anchor" aria-label="anchor" href="#pro-analysis"></a></h2>
+
+      <div class="section-desc"><p>Patient-Reported Outcomes analysis functions including minimal clinically important difference (MCID) and time-to-deterioration.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="MCIDResult.html">MCIDResult()</a></code>
+
+        </dt>
+        <dd>MCIDResult Class</dd>
+
+        <dt>
+
+          <code><a href="calculate_mcid.html">calculate_mcid()</a></code>
+
+        </dt>
+        <dd>Calculate MCID (Combined Approach)</dd>
+
+        <dt>
+
+          <code><a href="calculate_mcid_anchor.html">calculate_mcid_anchor()</a></code>
+
+        </dt>
+        <dd>Calculate MCID using Anchor-Based Method</dd>
+
+        <dt>
+
+          <code><a href="calculate_mcid_distribution.html">calculate_mcid_distribution()</a></code>
+
+        </dt>
+        <dd>Calculate MCID using Distribution-Based Methods</dd>
+
+        <dt>
+
+          <code><a href="create_ttd_analysis.html">create_ttd_analysis()</a></code>
+
+        </dt>
+        <dd>Create Time-to-Deterioration Analysis</dd>
+      </dl></div><div class="section level2">
+      <h2 id="meta-analysis">Meta-Analysis<a class="anchor" aria-label="anchor" href="#meta-analysis"></a></h2>
+
+      <div class="section-desc"><p>Functions for conducting meta-analyses including heterogeneity assessment, sensitivity analysis, and publication bias detection.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="meta_analysis.html">meta_analysis()</a></code>
+
+        </dt>
+        <dd>Perform Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="MetaResult.html">MetaResult()</a></code>
+
+        </dt>
+        <dd>MetaResult Class</dd>
+
+        <dt>
+
+          <code><a href="calculate_heterogeneity.html">calculate_heterogeneity()</a></code>
+
+        </dt>
+        <dd>Calculate Heterogeneity Statistics</dd>
+
+        <dt>
+
+          <code><a href="leave_one_out.html">leave_one_out()</a></code>
+
+        </dt>
+        <dd>Perform Leave-One-Out Sensitivity Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_meta_forest_plot.html">create_meta_forest_plot()</a></code>
+
+        </dt>
+        <dd>Create Forest Plot for Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_funnel_plot.html">create_funnel_plot()</a></code>
+
+        </dt>
+        <dd>Create Funnel Plot for Publication Bias Assessment</dd>
+
+        <dt>
+
+          <code><a href="eggers_test.html">eggers_test()</a></code>
+
+        </dt>
+        <dd>Egger's Test for Funnel Plot Asymmetry</dd>
+
+        <dt>
+
+          <code><a href="trim_and_fill.html">trim_and_fill()</a></code>
+
+        </dt>
+        <dd>Duval &amp; Tweedie Trim-and-Fill Publication Bias Adjustment</dd>
+
+        <dt>
+
+          <code><a href="bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code>
+
+        </dt>
+        <dd>Bayesian Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_bayesian_forest_plot_iqwig.html">create_bayesian_forest_plot_iqwig()</a></code>
+
+        </dt>
+        <dd>Create IQWiG-Compliant Forest Plot for Bayesian Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_bayesian_trace_plots.html">create_bayesian_trace_plots()</a></code>
+
+        </dt>
+        <dd>Create Trace Plots for Bayesian Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="format_bayesian_result_iqwig.html">format_bayesian_result_iqwig()</a></code>
+
+        </dt>
+        <dd>Format Bayesian Meta-Analysis Result for IQWiG Submission</dd>
+
+        <dt>
+
+          <code><a href="prior_sensitivity_analysis.html">prior_sensitivity_analysis()</a></code>
+
+        </dt>
+        <dd>Prior Sensitivity Analysis for Bayesian Meta-Analysis</dd>
+      </dl></div><div class="section level2">
+      <h2 id="network-meta-analysis">Network Meta-Analysis<a class="anchor" aria-label="anchor" href="#network-meta-analysis"></a></h2>
+
+      <div class="section-desc"><p>Indirect treatment comparison and network meta-analysis functions for comparing multiple treatments across studies.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="NMAResult.html">NMAResult()</a></code>
+
+        </dt>
+        <dd>NMAResult Class</dd>
+
+        <dt>
+
+          <code><a href="indirect_comparison.html">indirect_comparison()</a></code>
+
+        </dt>
+        <dd>Indirect Treatment Comparison (Bucher Method)</dd>
+
+        <dt>
+
+          <code><a href="compare_direct_indirect.html">compare_direct_indirect()</a></code>
+
+        </dt>
+        <dd>Compare Direct and Indirect Evidence</dd>
+
+        <dt>
+
+          <code><a href="network_meta.html">network_meta()</a></code>
+
+        </dt>
+        <dd>Conducts network meta-analysis (NMA) to compare multiple treatments simultaneously using direct and indirect evidence.</dd>
+
+        <dt>
+
+          <code><a href="create_network_plot.html">create_network_plot()</a></code>
+
+        </dt>
+        <dd>Visualize Network Geometry</dd>
+
+        <dt>
+
+          <code><a href="assess_transitivity.html">assess_transitivity()</a></code>
+
+        </dt>
+        <dd>Assess Transitivity for Indirect Comparisons</dd>
+
+        <dt>
+
+          <code><a href="node_splitting.html">node_splitting()</a></code>
+
+        </dt>
+        <dd>Separates direct and indirect evidence for each comparison and tests for inconsistency between them.</dd>
+
+        <dt>
+
+          <code><a href="calculate_sucra.html">calculate_sucra()</a></code>
+
+        </dt>
+        <dd>Calculates ranking probabilities and SUCRA (Surface Under Cumulative Ranking curve) or P-scores for treatments in network meta-analysis.</dd>
+
+        <dt>
+
+          <code><a href="create_league_table.html">create_league_table()</a></code>
+
+        </dt>
+        <dd>Generates a league table showing all pairwise treatment comparisons from a network meta-analysis.</dd>
       </dl></div><div class="section level2">
       <h2 id="gba-amnog-utilities">GBA/AMNOG Utilities<a class="anchor" aria-label="anchor" href="#gba-amnog-utilities"></a></h2>
 
@@ -1244,17 +1630,80 @@
 
         <dt>
 
-          <code><a href="efficacy_tables.html">efficacy_tables</a></code>
+          <code><a href="efficacy_primary.html">efficacy_primary</a></code>
 
         </dt>
-        <dd>Efficacy Analysis Tables</dd>
+        <dd>Primary Endpoint Tables</dd>
 
         <dt>
 
-          <code><a href="safety_tables.html">safety_tables</a></code>
+          <code><a href="efficacy_cfb.html">efficacy_cfb</a></code>
 
         </dt>
-        <dd>Safety Analysis Tables</dd>
+        <dd>Change from Baseline Tables</dd>
+
+        <dt>
+
+          <code><a href="efficacy_lab.html">efficacy_lab</a></code>
+
+        </dt>
+        <dd>Lab Summary Tables</dd>
+
+        <dt>
+
+          <code><a href="efficacy_tte.html">efficacy_tte</a></code>
+
+        </dt>
+        <dd>Time-to-Event Tables</dd>
+
+        <dt>
+
+          <code><a href="efficacy_responder.html">efficacy_responder</a></code>
+
+        </dt>
+        <dd>Responder Analysis Tables</dd>
+
+        <dt>
+
+          <code><a href="efficacy_subgroup.html">efficacy_subgroup</a></code>
+
+        </dt>
+        <dd>Subgroup Analysis Tables</dd>
+
+        <dt>
+
+          <code><a href="safety_summary.html">safety_summary</a></code>
+
+        </dt>
+        <dd>Adverse Event Summary Tables</dd>
+
+        <dt>
+
+          <code><a href="safety_tte.html">safety_tte</a></code>
+
+        </dt>
+        <dd>Adverse Event Time-to-Event Analysis</dd>
+
+        <dt>
+
+          <code><a href="safety_comparison.html">safety_comparison</a></code>
+
+        </dt>
+        <dd>Adverse Event Comparison Tables</dd>
+
+        <dt>
+
+          <code><a href="safety_exposure.html">safety_exposure</a></code>
+
+        </dt>
+        <dd>Exposure-Adjusted AE Analysis</dd>
+
+        <dt>
+
+          <code><a href="safety_hierarchy.html">safety_hierarchy</a></code>
+
+        </dt>
+        <dd>Adverse Event Hierarchy Tables</dd>
 
         <dt>
 
@@ -1279,10 +1728,80 @@
 
         <dt>
 
-          <code><a href="plotting.html">plotting</a></code>
+          <code><a href="plotting_common.html">plotting_common</a></code>
 
         </dt>
-        <dd>Clinical Plots</dd>
+        <dd>Plotting Common Utilities</dd>
+
+        <dt>
+
+          <code><a href="plotting_survival.html">plotting_survival</a></code>
+
+        </dt>
+        <dd>Survival Analysis Plots</dd>
+
+        <dt>
+
+          <code><a href="plotting_efficacy.html">plotting_efficacy</a></code>
+
+        </dt>
+        <dd>Efficacy Visualization Plots</dd>
+
+        <dt>
+
+          <code><a href="plotting_forest.html">plotting_forest</a></code>
+
+        </dt>
+        <dd>Forest Plots for Subgroup Analysis</dd>
+
+        <dt>
+
+          <code><a href="meta_core.html">meta_core</a></code>
+
+        </dt>
+        <dd>Meta-Analysis Core Functions</dd>
+
+        <dt>
+
+          <code><a href="meta_plots.html">meta_plots</a></code>
+
+        </dt>
+        <dd>Meta-Analysis Visualization Functions</dd>
+
+        <dt>
+
+          <code><a href="meta_indirect.html">meta_indirect</a></code>
+
+        </dt>
+        <dd>Indirect Comparison Functions</dd>
+
+        <dt>
+
+          <code><a href="meta_network.html">meta_network</a></code>
+
+        </dt>
+        <dd>Network Meta-Analysis Functions</dd>
+
+        <dt>
+
+          <code><a href="meta_bias.html">meta_bias</a></code>
+
+        </dt>
+        <dd>Publication Bias Assessment Functions</dd>
+
+        <dt>
+
+          <code><a href="meta_bayesian.html">meta_bayesian</a></code>
+
+        </dt>
+        <dd>Bayesian Meta-Analysis Functions</dd>
+
+        <dt>
+
+          <code><a href="pro_analysis.html">pro_analysis</a></code>
+
+        </dt>
+        <dd>PRO Analysis Functions</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Create Exposure-Adjusted AE Table</h1>
-      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/master/R/safety_tables.R" class="external-link"><code>R/safety_tables.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sims1253/pharmhand/blob/master/R/safety_exposure.R" class="external-link"><code>R/safety_exposure.R</code></a></small>
       <div class="d-none name"><code>create_ae_exposure_table.Rd</code></div>
     </div>
 
@@ -87,7 +87,9 @@
 
 
 <dt id="arg-time-unit">time_unit<a class="anchor" aria-label="anchor" href="#arg-time-unit"></a></dt>
-<dd><p>Character. "days", "weeks", "months" (default: "days")</p></dd>
+<dd><p>Character. Unit of the exposure_var values:
+"days" (default for TRTDURD), "weeks", or "months".
+Used to convert exposure to patient-years.</p></dd>
 
 
 <dt id="arg-per">per<a class="anchor" aria-label="anchor" href="#arg-per"></a></dt>

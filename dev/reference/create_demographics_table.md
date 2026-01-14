@@ -8,14 +8,14 @@ Standard demographics and baseline characteristics table.
 create_demographics_table(
   adsl_data,
   title = "Demographics and Baseline Characteristics",
-  trt_var = "TRT01P",
+  trt_var = ph_default("trt_var"),
   age_var = "AGE",
   age_grp_var = "AGEGR1",
   sex_var = "SEX",
   race_var = "RACE",
   ethnic_var = "ETHNIC",
   country_var = "COUNTRY",
-  autofit = TRUE
+  autofit = ph_default("autofit")
 )
 ```
 

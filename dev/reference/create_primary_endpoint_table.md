@@ -7,12 +7,11 @@ Create Primary Endpoint Summary Table
 ``` r
 create_primary_endpoint_table(
   advs,
-  trt_n,
   paramcd = "SYSBP",
   visit = "End of Treatment",
-  trt_var = "TRT01P",
+  trt_var = ph_default("trt_var"),
   title = "Primary Endpoint Summary",
-  autofit = TRUE
+  autofit = ph_default("autofit")
 )
 ```
 
@@ -21,10 +20,6 @@ create_primary_endpoint_table(
 - advs:
 
   ADVS data frame
-
-- trt_n:
-
-  Treatment group counts
 
 - paramcd:
 
@@ -49,3 +44,19 @@ create_primary_endpoint_table(
 ## Value
 
 ClinicalTable object
+
+## Examples
+
+``` r
+# Create primary endpoint summary
+advs <- data.frame(
+  USUBJID = c("01", "02", "03", "04"),
+  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  PARAMCD = rep("SYSBP", 4),
+  AVISIT = rep("End of Treatment", 4),
+  AVAL = c(120, 125, 118, 122)
+)
+table <- create_primary_endpoint_table(advs, paramcd = "SYSBP")
+table@type
+#> [1] "primary_endpoint"
+```

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,331 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.4.9000" id="pharmhand-0349000">pharmhand 0.3.4.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0349000"></a></h2>
+<div class="section level3">
+<h3 id="fixes-and-maintenance-0-3-4-9000">Fixes and maintenance<a class="anchor" aria-label="anchor" href="#fixes-and-maintenance-0-3-4-9000"></a></h3>
+<ul><li>Fixed <code><a href="../reference/create_clinical_table.html">create_clinical_table()</a></code> to accept <code>AnalysisResults</code> objects (uses <code>@stats</code>).</li>
+<li>Improved Bayesian meta-analysis test performance and stability.</li>
+<li>Cleaned up documentation/signature mismatches and <code>R CMD check</code> issues.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="major-architecture-improvements-0-3-4-9000">Major Architecture Improvements<a class="anchor" aria-label="anchor" href="#major-architecture-improvements-0-3-4-9000"></a></h3>
+<div class="section level4">
+<h4 id="package-wide-defaults-system-0-3-4-9000">Package-Wide Defaults System<a class="anchor" aria-label="anchor" href="#package-wide-defaults-system-0-3-4-9000"></a></h4>
+<ul><li>
+<strong>New defaults infrastructure</strong>: Added centralized default parameter system via <code><a href="../reference/ph_default.html">ph_default()</a></code> function
+<ul><li>Default values for common parameters (e.g., <code>trt_var = "TRT01P"</code>, <code>autofit = TRUE</code>, <code>conf_level = 0.95</code>)</li>
+<li>Users can override via options: <code>options(pharmhand.trt_var = "ARM")</code>
+</li>
+<li>Reduces boilerplate across 40+ functions</li>
+<li>Improves consistency and maintainability</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="code-reusability-improvements-0-3-4-9000">Code Reusability Improvements<a class="anchor" aria-label="anchor" href="#code-reusability-improvements-0-3-4-9000"></a></h4>
+<ul><li>
+<strong>New <code><a href="../reference/create_clinical_table.html">create_clinical_table()</a></code> factory function</strong>: Reduces boilerplate for table creation
+<ul><li>Consolidates repeated pattern of creating flextable + wrapping in ClinicalTable</li>
+<li>Used across 25+ table creation functions</li>
+<li>~200 lines of duplicate code eliminated</li>
+</ul></li>
+<li>
+<strong>Extracted <code><a href="../reference/estimate_tau2.html">estimate_tau2()</a></code> helper</strong>: Eliminates duplication in meta-analysis functions
+<ul><li>Single implementation of DerSimonian-Laird, Paule-Mandel, and REML methods</li>
+<li>Used by both <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code> and <code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code>
+</li>
+<li>~100 lines of duplicate code eliminated</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="enhanced-user-experience-0-3-4-9000">Enhanced User Experience<a class="anchor" aria-label="anchor" href="#enhanced-user-experience-0-3-4-9000"></a></h4>
+<ul><li>
+<strong>Automatic data.frame coercion</strong>: User-facing functions now accept data.frames directly
+<ul><li>
+<code><a href="../reference/create_demographics_table.html">create_demographics_table()</a></code> automatically wraps data.frames in ADaMData</li>
+<li>Eliminates need for users to manually create S7 objects</li>
+<li>Backward compatible with existing ADaMData inputs</li>
+</ul></li>
+<li>
+<strong>Improved error messages</strong>: Context-rich error reporting throughout
+<ul><li>Error messages now show what was received vs. what was expected</li>
+<li>Available values suggested when appropriate (e.g., treatment arms)</li>
+<li>Missing column errors show available columns for easier debugging</li>
+</ul></li>
+<li>
+<strong>New workflow helpers</strong>: High-level convenience functions for common tasks
+<ul><li>
+<code><a href="../reference/quick_demographics_report.html">quick_demographics_report()</a></code>: Generate demographics report in one call</li>
+<li>
+<code><a href="../reference/quick_safety_report.html">quick_safety_report()</a></code>: Generate multi-table safety report in one call</li>
+<li>Ideal for quick analyses and prototyping</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="api-consistency-0-3-4-9000">API Consistency<a class="anchor" aria-label="anchor" href="#api-consistency-0-3-4-9000"></a></h4>
+<ul><li>
+<strong>Standardized parameter names</strong>: Using <code><a href="../reference/ph_default.html">ph_default()</a></code> across the package
+<ul><li>
+<code>trt_var</code> (not <code>treatment_var</code>) for treatment variable</li>
+<li>
+<code>conf_level</code> (not <code>ci_level</code> or <code>confidence_level</code>) for confidence level</li>
+<li>
+<code>autofit</code> consistently for table formatting</li>
+<li>Reduces cognitive load for users</li>
+</ul></li>
+<li>
+<strong>Consistent return types</strong>: All <code>create_*_table()</code> functions return ClinicalTable objects
+<ul><li>Fixed inconsistencies where some returned bare flextables</li>
+<li>Enables consistent downstream processing</li>
+</ul></li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="breaking-changes-0-3-4-9000">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-4-9000"></a></h3>
+<div class="section level4">
+<h4 id="source-file-reorganization-0-3-4-9000">Source File Reorganization<a class="anchor" aria-label="anchor" href="#source-file-reorganization-0-3-4-9000"></a></h4>
+<ul><li>
+<strong>Efficacy module split</strong>: <code>R/efficacy_tables.R</code> has been split into focused modules:
+<ul><li>
+<code>R/efficacy_primary.R</code> - Primary endpoint tables (<code><a href="../reference/create_primary_endpoint_table.html">create_primary_endpoint_table()</a></code>)</li>
+<li>
+<code>R/efficacy_cfb.R</code> - Change from baseline tables</li>
+<li>
+<code>R/efficacy_lab.R</code> - Laboratory tables</li>
+<li>
+<code>R/efficacy_tte.R</code> - Time-to-event tables</li>
+<li>
+<code>R/efficacy_responder.R</code> - Responder analysis tables</li>
+<li>
+<code>R/efficacy_subgroup.R</code> - Subgroup analysis tables</li>
+</ul></li>
+<li>
+<strong>Safety module split</strong>: <code>R/safety_tables.R</code> has been split into focused modules:
+<ul><li>
+<code>R/safety_summary.R</code> - AE summary tables (<code><a href="../reference/create_ae_summary_table.html">create_ae_summary_table()</a></code>)</li>
+<li>
+<code>R/safety_comparison.R</code> - AE comparison tables</li>
+<li>
+<code>R/safety_hierarchy.R</code> - SOC/PT hierarchy tables</li>
+<li>
+<code>R/safety_tte.R</code> - Safety time-to-event analysis</li>
+<li>
+<code>R/safety_exposure.R</code> - Exposure-adjusted analysis</li>
+</ul></li>
+<li>
+<strong>Migration guidance</strong>: Users who previously sourced these files directly should:
+<ul><li>Use the package namespace (e.g., <code><a href="../reference/create_primary_endpoint_table.html">pharmhand::create_primary_endpoint_table()</a></code>)</li>
+<li>Or source the new module files (e.g., <code>source('R/efficacy_primary.R')</code>)</li>
+<li>Update any direct imports to reference the new module names</li>
+</ul></li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-4-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-4-9000"></a></h3>
+<div class="section level4">
+<h4 id="robustness-improvements-0-3-4-9000">Robustness Improvements<a class="anchor" aria-label="anchor" href="#robustness-improvements-0-3-4-9000"></a></h4>
+<ul><li>Fixed <code><a href="../reference/create_primary_endpoint_table.html">create_primary_endpoint_table()</a></code> to handle empty data or all-NA values gracefully, returning “-” instead of NaN/Inf</li>
+<li>Fixed <code>create_responder_analysis_table()</code> to compute response rate in separate mutate step, avoiding fragile self-reference in summarise</li>
+<li>Fixed <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> to correctly extract landmark survival estimates for each treatment stratum instead of using first stratum for all</li>
+<li>Fixed <code><a href="../reference/create_tte_summary_table.html">create_tte_summary_table()</a></code> to use dynamic CI column names based on conf_level instead of hardcoded “lower .95”/“upper .95”</li>
+<li>Fixed <code><a href="../reference/create_league_table.html">create_league_table()</a></code> to use NMA result’s stored confidence level when available</li>
+<li>Fixed <code><a href="../reference/leave_one_out.html">leave_one_out()</a></code> to read ci_level from correct slot (<a href="mailto:meta_result@ci" class="email">meta_result@ci</a>_level instead of <a href="https://github.com/metadata" class="external-link">@metadata</a>$conf_level)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="input-validation-0-3-4-9000">Input Validation<a class="anchor" aria-label="anchor" href="#input-validation-0-3-4-9000"></a></h4>
+<ul><li>Require positive, non-missing standard errors in <code><a href="../reference/eggers_test.html">eggers_test()</a></code>, <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code>, <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code>, and <code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code>
+</li>
+<li>Added <code>length(yi) == length(sei)</code> validation in <code><a href="../reference/eggers_test.html">eggers_test()</a></code> and <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code>
+</li>
+<li>Added <code>anyNA(yi)</code> check in <code><a href="../reference/eggers_test.html">eggers_test()</a></code> returning NA-filled result with clear interpretation</li>
+<li>Added <code>anyNA(yi)</code> check in <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code> with error listing invalid indices</li>
+</ul></div>
+<div class="section level4">
+<h4 id="code-quality-0-3-4-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-3-4-9000"></a></h4>
+<ul><li>Changed <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> to <code>ph_abort()</code> in example script for consistent error handling</li>
+<li>Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd</li>
+<li>Added <code>:=</code> import from rlang to fix undefined global function warning</li>
+<li>Fixed <code><a href="../reference/create_mean_plot.html">create_mean_plot()</a></code> n calculation to count non-missing values</li>
+<li>Added guards for CI computation when n &lt;= 1 to avoid Inf values</li>
+</ul></div>
+<div class="section level4">
+<h4 id="plotting-fixes-0-3-4-9000">Plotting Fixes<a class="anchor" aria-label="anchor" href="#plotting-fixes-0-3-4-9000"></a></h4>
+<ul><li>Fixed <code>create_efficacy_waterfall_plot()</code> to compute category counts in separate mutate step, avoiding fragile self-reference in summarise</li>
+<li>Fixed <code><a href="../reference/create_forest_plot.html">create_forest_plot()</a></code> Cox model CI column extraction to use positional indexing instead of fragile name construction</li>
+<li>Fixed <code><a href="../reference/create_km_plot.html">create_km_plot()</a></code> risk table grid background by explicitly setting panel.grid.major/minor to element_blank()</li>
+<li>Fixed <code><a href="../reference/safe_pct.html">safe_pct()</a></code> division by zero in <code>safety_summary.R</code> by adding helper function applied to 9 locations</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bayesian-meta-analysis-fixes-0-3-4-9000">Bayesian Meta-Analysis Fixes<a class="anchor" aria-label="anchor" href="#bayesian-meta-analysis-fixes-0-3-4-9000"></a></h4>
+<ul><li>Fixed <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> to use <code><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">brms::neff_ratio()</a></code> instead of non-exported <code>brms::ess_bulk()</code>/<code>brms::ess_tail()</code>
+</li>
+<li>Fixed <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> to compute BFMI from nuts_params energy values</li>
+<li>Fixed <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> to use <code><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">brms::nuts_params()</a></code> for divergent transitions instead of accessing internal <code>fit$fit@sim$divergent__</code>
+</li>
+<li>Added <code>tryCatch</code> wrapper around <code><a href="https://paulbuerkner.com/brms/reference/brm.html" class="external-link">brms::brm()</a></code> calls for better error handling</li>
+<li>Changed all brms tests to use <code>cores = 1</code> to avoid parallel rstan issues in CI</li>
+<li>Added <code>bayesplot</code> to Suggests, removed direct <code>rstan</code> dependency</li>
+<li>Fixed roxygen documentation to avoid <code>\describe{}</code> block Rd parsing issues</li>
+<li>Added brms test caching helper to speed up test suite</li>
+</ul></div>
+<div class="section level4">
+<h4 id="documentation-0-3-4-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3-4-9000"></a></h4>
+<ul><li>Added <a href="https://github.com/title" class="external-link">@title</a> tags and completed <a href="https://github.com/return" class="external-link">@return</a> documentation in <code>meta_bias.R</code>
+</li>
+<li>Added within-study variation warning documentation in <code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code>
+</li>
+<li>Split long <a href="https://github.com/return" class="external-link">@return</a> lines in <code>safety_tte.R</code>
+</li>
+<li>Added description field to meta-analysis vignette</li>
+<li>Updated brms section in meta-analysis vignette with installation guidance</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="test-improvements-0-3-4-9000">Test Improvements<a class="anchor" aria-label="anchor" href="#test-improvements-0-3-4-9000"></a></h3>
+<ul><li>Refactored test-plotting_forest.R, test-efficacy_tte.R, and test-efficacy_subgroup.R to use shared test fixtures</li>
+<li>Included documentation examples to exported functions in efficacy and safety modules</li>
+<li>Updated <code>test-meta_bayesian.R</code> with 8-study test data and <code>adapt_delta = 0.99</code> to prevent divergent transitions</li>
+<li>Seeded RNG in 11 tests in <code>test-pro-analysis.R</code>
+</li>
+<li>Applied <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to <code>test-efficacy_tte.R</code> before sample() call</li>
+<li>Removed duplicate tests in <code>test-efficacy_responder.R</code> and <code>test-efficacy_subgroup.R</code>
+</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0.9000" id="pharmhand-0309000">pharmhand 0.3.0.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0309000"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-0-3-0-9000">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-0-3-0-9000"></a></h3>
+<div class="section level4">
+<h4 id="test-suite-reorganization-0-3-0-9000">Test Suite Reorganization<a class="anchor" aria-label="anchor" href="#test-suite-reorganization-0-3-0-9000"></a></h4>
+<ul><li>
+<strong>One-test-file-per-source-file convention</strong>: Reorganized test files to follow R testing best practices.
+<ul><li>Split <code>test-efficacy_tables.R</code> into <code>test-efficacy_cfb.R</code>, <code>test-efficacy_lab.R</code>, <code>test-efficacy_primary.R</code>, <code>test-efficacy_responder.R</code>, <code>test-efficacy_subgroup.R</code>, and <code>test-efficacy_tte.R</code>
+</li>
+<li>Split <code>test-meta-analysis.R</code> into <code>test-meta_core.R</code>, <code>test-meta_bayesian.R</code>, <code>test-meta_bias.R</code>, <code>test-meta_indirect.R</code>, <code>test-meta_network.R</code>, and <code>test-meta_plots.R</code>
+</li>
+<li>Split <code>test-plotting.R</code> into <code>test-plotting_survival.R</code>, <code>test-plotting_efficacy.R</code>, and <code>test-plotting_forest.R</code>
+</li>
+<li>Renamed <code>test-safety_tables.R</code> to <code>test-safety_summary.R</code> and extracted <code>test-safety_comparison.R</code> and <code>test-safety_hierarchy.R</code>
+</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-test-coverage-0-3-0-9000">New Test Coverage<a class="anchor" aria-label="anchor" href="#new-test-coverage-0-3-0-9000"></a></h4>
+<ul><li>Added comprehensive tests for Configuration API (<code>test-config_api.R</code>)</li>
+<li>Added comprehensive tests for Configuration Classes (<code>test-config_classes.R</code>)</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-0-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0-9000"></a></h3>
+<div class="section level4">
+<h4 id="test-data-improvements-0-3-0-9000">Test Data Improvements<a class="anchor" aria-label="anchor" href="#test-data-improvements-0-3-0-9000"></a></h4>
+<ul><li>Fixed test data in safety TTE tests to use larger sample sizes (20+ subjects per arm) to avoid Cox model convergence issues</li>
+<li>Fixed test data to avoid duplicate landmark timepoints in TTE summary tests</li>
+<li>Fixed test data for subgroup analysis to have adequate subjects per subgroup (25+)</li>
+<li>Fixed S7 class checks from <code>expect_s3_class()</code> to <code><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7::S7_inherits()</a></code> for proper S7 class validation</li>
+<li>Fixed error message regex patterns to match actual function outputs</li>
+</ul></div>
+<div class="section level4">
+<h4 id="source-code-fixes-0-3-0-9000">Source Code Fixes<a class="anchor" aria-label="anchor" href="#source-code-fixes-0-3-0-9000"></a></h4>
+<ul><li>Fixed <code>km_summary</code> matrix conversion in <code>efficacy_tte.R</code> to preserve column names for single treatment arms</li>
+<li>Fixed <code>pct</code> column warning in <code>safety_summary.R</code> by using proper <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate()</a></code> instead of for-loop assignment</li>
+<li>Fixed <code>survfit</code> <code>n.censor</code> matrix handling in <code>plotting_survival.R</code> by converting to vector</li>
+<li>Fixed <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min()</a></code> returning <code>-Inf</code> in <code>pro_analysis.R</code> when no events present</li>
+<li>Fixed S7 class checking in <code>config_api.R</code> to use <code><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7::S7_inherits()</a></code> instead of <code><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits()</a></code>
+</li>
+</ul></div>
+<div class="section level4">
+<h4 id="test-cleanup-0-3-0-9000">Test Cleanup<a class="anchor" aria-label="anchor" href="#test-cleanup-0-3-0-9000"></a></h4>
+<ul><li>Removed tests for unimplemented <code>maic()</code> and <code>stc()</code> functions</li>
+<li>Fixed missing <code>registry</code> variable in config API tests</li>
+<li>Changed REML tests to use DerSimonian-Laird method to avoid convergence warnings</li>
+<li>Replaced <code>any(is.na())</code> with <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA()</a></code> per jarl recommendations</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="code-quality-0-3-0-9000">Code Quality<a class="anchor" aria-label="anchor" href="#code-quality-0-3-0-9000"></a></h3>
+<ul><li>All tests pass (1874 tests)</li>
+<li>No warnings or skipped tests</li>
+<li>lintr clean (line length compliance)</li>
+<li>jarl check clean</li>
+<li>devtools::check() passes with 0 errors, 0 warnings, 0 notes</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.3.9000" id="pharmhand-0239000">pharmhand 0.2.3.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0239000"></a></h2>
+<div class="section level3">
+<h3 id="documentation-0-2-3-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-3-9000"></a></h3>
+<ul><li>Added runnable examples for all meta-analysis and network meta-analysis functions including <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code>, <code><a href="../reference/indirect_comparison.html">indirect_comparison()</a></code>, <code><a href="../reference/network_meta.html">network_meta()</a></code>, <code><a href="../reference/create_network_plot.html">create_network_plot()</a></code>, <code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code>, <code><a href="../reference/node_splitting.html">node_splitting()</a></code>, <code><a href="../reference/calculate_sucra.html">calculate_sucra()</a></code>, and <code><a href="../reference/create_league_table.html">create_league_table()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.2.9000" id="pharmhand-0229000">pharmhand 0.2.2.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0229000"></a></h2>
+<div class="section level3">
+<h3 id="phase-evidence-synthesis-0-2-2-9000">Phase 2: Evidence Synthesis<a class="anchor" aria-label="anchor" href="#phase-evidence-synthesis-0-2-2-9000"></a></h3>
+<div class="section level4">
+<h4 id="meta-analysis-functions-0-2-2-9000">Meta-Analysis Functions<a class="anchor" aria-label="anchor" href="#meta-analysis-functions-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/meta_analysis.html">meta_analysis()</a></code> for fixed-effect and random-effects meta-analysis with support for multiple tau² estimators (DerSimonian-Laird, REML, Paule-Mandel, ML) and optional Knapp-Hartung adjustment.</p></li>
+<li><p>Added <code><a href="../reference/calculate_heterogeneity.html">calculate_heterogeneity()</a></code> for comprehensive heterogeneity assessment including Q, I², τ², and H² statistics with interpretation.</p></li>
+<li><p>Added <code><a href="../reference/leave_one_out.html">leave_one_out()</a></code> for sensitivity analysis identifying influential studies.</p></li>
+<li><p>Added <code><a href="../reference/create_meta_forest_plot.html">create_meta_forest_plot()</a></code> for meta-analysis forest plots with study weights, heterogeneity statistics, and prediction intervals.</p></li>
+<li><p>Added <code><a href="../reference/create_funnel_plot.html">create_funnel_plot()</a></code> for publication bias visualization.</p></li>
+<li><p>Added <code><a href="../reference/eggers_test.html">eggers_test()</a></code> for statistical assessment of funnel plot asymmetry.</p></li>
+<li><p>Added <code><a href="../reference/trim_and_fill.html">trim_and_fill()</a></code> for Duval &amp; Tweedie publication bias adjustment.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="indirect-comparison-0-2-2-9000">Indirect Comparison<a class="anchor" aria-label="anchor" href="#indirect-comparison-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/indirect_comparison.html">indirect_comparison()</a></code> using the Bucher method for anchored indirect treatment comparisons.</p></li>
+<li><p>Added <code><a href="../reference/compare_direct_indirect.html">compare_direct_indirect()</a></code> for consistency testing between direct and indirect evidence.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="network-meta-analysis-0-2-2-9000">Network Meta-Analysis<a class="anchor" aria-label="anchor" href="#network-meta-analysis-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/network_meta.html">network_meta()</a></code> for network meta-analysis comparing multiple treatments.</p></li>
+<li><p>Added <code><a href="../reference/create_network_plot.html">create_network_plot()</a></code> for network geometry visualization.</p></li>
+<li><p>Added <code><a href="../reference/assess_transitivity.html">assess_transitivity()</a></code> for evaluating the transitivity assumption.</p></li>
+<li><p>Added <code><a href="../reference/node_splitting.html">node_splitting()</a></code> for testing inconsistency between direct and indirect evidence.</p></li>
+<li><p>Added <code><a href="../reference/calculate_sucra.html">calculate_sucra()</a></code> for treatment ranking with SUCRA/P-scores.</p></li>
+<li><p>Added <code><a href="../reference/create_league_table.html">create_league_table()</a></code> for pairwise comparison tables.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="bayesian-analysis-0-2-2-9000">Bayesian Analysis<a class="anchor" aria-label="anchor" href="#bayesian-analysis-0-2-2-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/bayesian_meta_analysis.html">bayesian_meta_analysis()</a></code> interface for Bayesian meta-analysis using brms when available, with automatic fallback to frequentist methods.</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="phase-completion-0-2-2-9000">Phase 1 Completion<a class="anchor" aria-label="anchor" href="#phase-completion-0-2-2-9000"></a></h3>
+<div class="section level4">
+<h4 id="pro-analysis-0-2-2-9000">PRO Analysis<a class="anchor" aria-label="anchor" href="#pro-analysis-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/calculate_mcid_anchor.html">calculate_mcid_anchor()</a></code> for anchor-based MCID calculation.</p></li>
+<li><p>Added <code><a href="../reference/calculate_mcid_distribution.html">calculate_mcid_distribution()</a></code> for distribution-based MCID (0.5 SD, 1 SEM, etc.).</p></li>
+<li><p>Added <code><a href="../reference/calculate_mcid.html">calculate_mcid()</a></code> wrapper combining both MCID approaches.</p></li>
+<li><p>Added <code><a href="../reference/create_ttd_analysis.html">create_ttd_analysis()</a></code> for time-to-deterioration analysis with Kaplan-Meier estimation.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="visualization-0-2-2-9000">Visualization<a class="anchor" aria-label="anchor" href="#visualization-0-2-2-9000"></a></h4>
+<ul><li><p>Added <code><a href="../reference/create_mean_plot.html">create_mean_plot()</a></code> for longitudinal mean plots with confidence intervals.</p></li>
+<li><p>Added <code><a href="../reference/create_spider_plot.html">create_spider_plot()</a></code> for individual patient trajectory visualization.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="safety-analysis-0-2-2-9000">Safety Analysis<a class="anchor" aria-label="anchor" href="#safety-analysis-0-2-2-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/create_ae_hierarchy_table.html">create_ae_hierarchy_table()</a></code> for full MedDRA hierarchy analysis (SOC → HLGT → HLT → PT).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="subgroup-analysis-0-2-2-9000">Subgroup Analysis<a class="anchor" aria-label="anchor" href="#subgroup-analysis-0-2-2-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/assess_iceman.html">assess_iceman()</a></code> for ICEMAN criteria assessment of subgroup credibility.</li>
+</ul></div>
+</div>
+<div class="section level3">
+<h3 id="s7-classes-0-2-2-9000">S7 Classes<a class="anchor" aria-label="anchor" href="#s7-classes-0-2-2-9000"></a></h3>
+<ul><li>Added comprehensive tests for <code>MultiArmStudy</code> S7 class.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-2-2-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-2-2-9000"></a></h3>
+<ul><li>Added extensive test coverage for meta-analysis functions.</li>
+<li>Added tests for PRO analysis functions.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1.9000" id="pharmhand-0219000">pharmhand 0.2.1.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0219000"></a></h2>
 <div class="section level3">

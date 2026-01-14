@@ -7,7 +7,6 @@ Create Laboratory Summary Table
 ``` r
 create_lab_summary_table(
   adlb,
-  trt_n,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -21,10 +20,6 @@ create_lab_summary_table(
 - adlb:
 
   ADLB data frame
-
-- trt_n:
-
-  Treatment group counts
 
 - params:
 
@@ -49,3 +44,20 @@ create_lab_summary_table(
 ## Value
 
 ClinicalTable object
+
+## Examples
+
+``` r
+# Create lab summary table
+adlb <- data.frame(
+  USUBJID = c("01", "02", "03", "04"),
+  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  PARAMCD = rep("HGB", 4),
+  PARAM = rep("Hemoglobin", 4),
+  AVISIT = rep("Week 24", 4),
+  AVAL = c(14.2, 13.8, 14.5, 14.1)
+)
+table <- create_lab_summary_table(adlb, params = "HGB", visit = "Week 24")
+table@type
+#> [1] "lab_summary"
+```

@@ -3,14 +3,13 @@
 Generates a summary table showing change from baseline statistics for
 vital signs or other continuous parameters. The table displays mean
 change, standard deviation, and other descriptive statistics by
-treatment group for a analysis visit.
+treatment group for an analysis visit.
 
 ## Usage
 
 ``` r
 create_cfb_summary_table(
   advs,
-  trt_n,
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
   trt_var = "TRT01P",
@@ -27,12 +26,6 @@ create_cfb_summary_table(
   include: USUBJID, PARAMCD (parameter code), PARAM (parameter name),
   AVISIT (analysis visit), CHG (change from baseline), and the treatment
   variable (typically TRT01P).
-
-- trt_n:
-
-  A data frame or named vector containing treatment group counts. If a
-  data frame, should contain treatment variable column and N column.
-  Used for displaying "N=X" in column headers.
 
 - params:
 
@@ -64,3 +57,20 @@ create_cfb_summary_table(
 A ClinicalTable S7 object with the formatted change-from-baseline
 summary statistics table. The object includes the underlying data frame,
 a formatted flextable for rendering, and metadata about the analysis.
+
+## Examples
+
+``` r
+# Create change from baseline summary
+advs <- data.frame(
+  USUBJID = c("01", "02", "03", "04"),
+  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  PARAMCD = rep("SYSBP", 4),
+  PARAM = rep("Systolic Blood Pressure", 4),
+  AVISIT = rep("End of Treatment", 4),
+  CHG = c(-2.5, -3.1, -8.2, -7.5)
+)
+table <- create_cfb_summary_table(advs, params = "SYSBP")
+table@type
+#> [1] "cfb"
+```

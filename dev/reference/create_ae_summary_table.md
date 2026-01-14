@@ -10,18 +10,19 @@ create_ae_summary_table(
   adsl = NULL,
   type = c("overview", "soc", "soc_pt", "pt", "common", "severity", "relationship",
     "sae", "discontinuation", "deaths", "comparison"),
-  trt_var = "TRT01P",
-  n_top = 15,
+  trt_var = ph_default("trt_var"),
+  n_top = ph_default("n_top"),
   soc = NULL,
   title = NULL,
-  autofit = TRUE,
+  autofit = ph_default("autofit"),
   ref_group = NULL,
   by = "pt",
   threshold = 0,
   sort_by = "incidence",
-  conf_level = 0.95,
+  conf_level = ph_default("conf_level"),
   include_nnh = TRUE,
-  soc_order = NULL
+  soc_order = NULL,
+  severity_levels = c("MILD", "MODERATE", "SEVERE")
 )
 ```
 
@@ -110,6 +111,11 @@ create_ae_summary_table(
 
   For type="soc" or type="soc_pt", custom ordering of SOCs (character
   vector). If NULL, SOCs are sorted alphabetically (default: NULL)
+
+- severity_levels:
+
+  For type="severity", severity levels ordering (character vector).
+  Default: c("MILD", "MODERATE", "SEVERE")
 
 ## Value
 
