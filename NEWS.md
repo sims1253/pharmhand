@@ -51,6 +51,14 @@
 * Evaluates: study limitations, inconsistency, imprecision, indirectness, publication bias.
 * Integrates with RoB 2 assessments for study quality evaluation.
 
+### Evidence Summary Tables
+
+* Added `create_evidence_summary_table()` for IQWiG-formatted evidence summary tables.
+* Added `create_study_characteristics_table()` for G-BA Module 4 study characteristics.
+* Added `export_evidence_table()` for multi-format export (Word, HTML, Excel).
+* Includes: endpoint, N studies, effect estimate, CI, p-value, I², RoB summary, evidence grade.
+* Supports German/English bilingual output with IQWiG-compliant formatting.
+
 # pharmhand 0.3.4.9000
 
 ## Fixes and maintenance

@@ -322,6 +322,9 @@ reference:
   - grade_evidence
   - assess_evidence_domains
   - format_evidence_grade
+  - create_evidence_summary_table
+  - create_study_characteristics_table
+  - export_evidence_table
 
 - title: "GBA/AMNOG Utilities"
   desc: >
@@ -413,6 +416,7 @@ reference:
   - meta_bias_adjusted
   - pro_analysis
   - evidence_grading
+  - evidence_summary_tables
 
 # Articles/vignettes structure
 articles:
