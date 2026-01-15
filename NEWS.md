@@ -1,3 +1,17 @@
+# pharmhand 0.4.0.9000
+
+## Phase 3: Quality Assessment
+
+### Risk of Bias Assessment (RoB 2)
+
+* Added `RoB2Result` S7 class for storing RoB 2 assessment results.
+* Added `assess_rob2()` for single-study risk of bias assessment using Cochrane RoB 2 tool.
+* Added `assess_rob2_batch()` for batch processing multiple studies from a data frame.
+* Added `rob2_summary()` for creating summary tables of RoB 2 assessments.
+* Implements all 5 RoB 2 domains: randomization, deviations, missing data, measurement, selection.
+* Automatic overall judgment calculation following RoB 2 algorithm.
+* Reference: IQWiG Allgemeine Methoden Section 10.1.4.
+
 # pharmhand 0.3.4.9000
 
 ## Fixes and maintenance

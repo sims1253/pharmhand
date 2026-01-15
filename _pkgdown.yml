@@ -290,6 +290,16 @@ reference:
   - calculate_sucra
   - create_league_table
 
+- title: "Bias Assessment"
+  desc: >
+    Functions for assessing risk of bias in clinical studies using
+    standardized tools (RoB 2 for RCTs, ROBINS-I for observational studies).
+  contents:
+  - RoB2Result
+  - assess_rob2
+  - assess_rob2_batch
+  - rob2_summary
+
 - title: "GBA/AMNOG Utilities"
   desc: >
     Functions for German Health Technology Assessment (G-BA/AMNOG)
@@ -374,6 +384,7 @@ reference:
   - meta_network
   - meta_bias
   - meta_bayesian
+  - bias_rob2
   - pro_analysis
 
 # Articles/vignettes structure
