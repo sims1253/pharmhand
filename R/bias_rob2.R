@@ -466,7 +466,7 @@ assess_rob2_batch <- function(data, .suppress_messages = FALSE) {
 
 		# Call assess_rob2 for each study
 		if (!.suppress_messages) {
-			message(sprintf("Assessing study: %s", row$study_id))
+			ph_inform(sprintf("Assessing study: %s", row$study_id))
 		}
 
 		assess_rob2(

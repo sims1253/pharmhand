@@ -299,6 +299,12 @@ reference:
   - assess_rob2
   - assess_rob2_batch
   - rob2_summary
+  - ROBINSIResult
+  - assess_robins_i
+  - assess_robins_i_batch
+  - robins_i_summary
+  - robins_i_plot
+  - robins_i_to_df
 
 - title: "GBA/AMNOG Utilities"
   desc: >
@@ -385,6 +391,7 @@ reference:
   - meta_bias
   - meta_bayesian
   - bias_rob2
+  - bias_robins_i
   - pro_analysis
 
 # Articles/vignettes structure

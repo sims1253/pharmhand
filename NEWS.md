@@ -12,6 +12,18 @@
 * Automatic overall judgment calculation following RoB 2 algorithm.
 * Reference: IQWiG Allgemeine Methoden Section 10.1.4.
 
+### Risk of Bias Assessment (ROBINS-I)
+
+* Added `ROBINSIResult` S7 class for storing ROBINS-I assessment results.
+* Added `assess_robins_i()` for single-study risk of bias assessment using ROBINS-I tool.
+* Added `assess_robins_i_batch()` for batch processing multiple studies from a data frame.
+* Added `robins_i_summary()` for creating summary tables of ROBINS-I assessments.
+* Implements all 7 ROBINS-I domains: confounding, participant selection, 
+  classification of interventions, deviations, missing data, outcome 
+  measurement, selection of reported result.
+* Supports 5-level judgments: Low, Moderate, Serious, Critical, No information.
+* Reference: IQWiG Allgemeine Methoden Section 10.1.4.
+
 # pharmhand 0.3.4.9000
 
 ## Fixes and maintenance

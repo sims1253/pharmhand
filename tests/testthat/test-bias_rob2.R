@@ -218,7 +218,8 @@ test_that("assess_rob2 auto-calculates overall as High with 2+ Some concerns", {
 	expect_equal(result@overall, "High")
 })
 
-test_that("assess_rob2 auto-calculates overall as Some concerns with 1 Some concerns", {
+test_that("assess_rob2 auto-calculates overall as Some concerns with
+           1 Some concerns", {
 	# Exactly 1 Some concerns -> Some concerns
 	result <- assess_rob2(
 		study_id = "STUDY001",
@@ -475,14 +476,16 @@ test_that(".generate_rob2_justification returns correct text for High
 	expect_true(grepl("2.*domains.*Some concerns", just))
 })
 
-test_that(".generate_rob2_justification returns correct text for High with both", {
+test_that(".generate_rob2_justification returns correct text for High with
+           both", {
 	judgments <- c("High", "Some concerns", "Some concerns", "Low", "Low")
 	just <- .generate_rob2_justification(judgments, "High")
 	expect_true(grepl("randomization", just, ignore.case = TRUE))
 	expect_true(grepl("2.*domains.*Some concerns", just))
 })
 
-test_that(".generate_rob2_justification returns correct text for Some concerns", {
+test_that(".generate_rob2_justification returns correct text for Some
+           concerns", {
 	judgments <- c("Low", "Some concerns", "Low", "Low", "Low")
 	just <- .generate_rob2_justification(judgments, "Some concerns")
 	expect_true(grepl("deviations.*Some concerns", just, ignore.case = TRUE))
@@ -609,7 +612,8 @@ test_that("assess_rob2_batch rejects data frame without study_id column", {
 	)
 })
 
-test_that("assess_rob2_batch rejects data frame without required domain columns", {
+test_that("assess_rob2_batch rejects data frame without required domain
+           columns", {
 	data_missing_domain <- data.frame(
 		study_id = "STUDY001",
 		d1_randomization = "Low",
