@@ -314,6 +314,15 @@ reference:
   - save_rob_plot
   - rob_data_to_tidy
 
+- title: "Evidence Grading"
+  desc: >
+    IQWiG evidence grading functions for assessing certainty of evidence
+    using Beleg/Hinweis/Anhaltspunkt system.
+  contents:
+  - grade_evidence
+  - assess_evidence_domains
+  - format_evidence_grade
+
 - title: "GBA/AMNOG Utilities"
   desc: >
     Functions for German Health Technology Assessment (G-BA/AMNOG)
@@ -403,6 +412,7 @@ reference:
   - meta_bias
   - meta_bias_adjusted
   - pro_analysis
+  - evidence_grading
 
 # Articles/vignettes structure
 articles:

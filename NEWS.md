@@ -42,6 +42,15 @@
 * Supports three adjustment methods: weight_downgrade, exclude_high, selection_model.
 * Integrates with RoB 2 and ROBINS-I assessment results.
 
+### IQWiG Evidence Grading
+
+* Added `grade_evidence()` for assessing evidence certainty using IQWiG methodology.
+* Added `assess_evidence_domains()` for evaluating individual evidence domains.
+* Added `format_evidence_grade()` for German (Beleg/Hinweis/Anhaltspunkt) or English output.
+* Implements IQWiG 3.1.4 evidence grading: Beleg (Proof), Hinweis (Indication), Anhaltspunkt (Hint), Kein Beleg (No proof).
+* Evaluates: study limitations, inconsistency, imprecision, indirectness, publication bias.
+* Integrates with RoB 2 assessments for study quality evaluation.
+
 # pharmhand 0.3.4.9000
 
 ## Fixes and maintenance
