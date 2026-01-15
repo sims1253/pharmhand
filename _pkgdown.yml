@@ -305,6 +305,10 @@ reference:
   - robins_i_summary
   - robins_i_plot
   - robins_i_to_df
+  - create_rob_traffic_light_plot
+  - create_rob_summary_plot
+  - save_rob_plot
+  - rob_data_to_tidy
 
 - title: "GBA/AMNOG Utilities"
   desc: >
@@ -388,10 +392,11 @@ reference:
   - meta_plots
   - meta_indirect
   - meta_network
-  - meta_bias
   - meta_bayesian
   - bias_rob2
   - bias_robins_i
+  - bias_plots
+  - meta_bias
   - pro_analysis
 
 # Articles/vignettes structure
