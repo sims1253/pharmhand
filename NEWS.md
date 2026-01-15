@@ -18,11 +18,20 @@
 * Added `assess_robins_i()` for single-study risk of bias assessment using ROBINS-I tool.
 * Added `assess_robins_i_batch()` for batch processing multiple studies from a data frame.
 * Added `robins_i_summary()` for creating summary tables of ROBINS-I assessments.
-* Implements all 7 ROBINS-I domains: confounding, participant selection, 
-  classification of interventions, deviations, missing data, outcome 
+* Implements all 7 ROBINS-I domains: confounding, participant selection,
+  classification of interventions, deviations, missing data, outcome
   measurement, selection of reported result.
 * Supports 5-level judgments: Low, Moderate, Serious, Critical, No information.
 * Reference: IQWiG Allgemeine Methoden Section 10.1.4.
+
+### Risk of Bias Visualization
+
+* Added `create_rob_traffic_light_plot()` for traffic light visualization of domain-level judgments.
+* Added `create_rob_summary_plot()` for stacked bar plot summaries of bias assessments.
+* Added `save_rob_plot()` for exporting plots to PNG, SVG, PDF, and other formats.
+* Added `rob_data_to_tidy()` for converting assessment results to tidy data frames.
+* Supports both RoB 2 and ROBINS-I assessment results.
+* Uses standard risk of bias color scheme (green/yellow/red/gray).
 
 # pharmhand 0.3.4.9000
 
