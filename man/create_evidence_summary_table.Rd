@@ -17,8 +17,8 @@ create_evidence_summary_table(
 )
 }
 \arguments{
-\item{endpoints}{List of named elements containing endpoint data. Each element
-should be a list with components:
+\item{endpoints}{List of named elements containing endpoint data.
+Each element should be a list with components:
 \itemize{
 \item \code{result}: MetaResult or ComparisonResult object with effect estimate,
 confidence interval, p-value, and study count
@@ -31,7 +31,8 @@ confidence interval, p-value, and study count
 \item{title}{Table title (default: "Evidence Summary")}
 
 \item{columns}{Character vector of column names to include. Default columns:
-"Endpoint", "N Studies", "Effect (95\% CI)", "p-value", "I2", "RoB", "Grade".}
+"Endpoint", "N Studies", "Effect (95\% CI)", "p-value", "I2", "RoB",
+"Grade".}
 
 \item{conf_level}{Numeric confidence level for CIs (default: 0.95)}
 
@@ -45,7 +46,8 @@ Default: "en".}
 \item{autofit}{Logical, whether to autofit column widths (default: TRUE).}
 }
 \value{
-A ClinicalTable object containing the formatted evidence summary table.
+A ClinicalTable object containing the formatted evidence summary
+table.
 }
 \description{
 Creates a formatted evidence summary table displaying study results,

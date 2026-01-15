@@ -14,14 +14,4 @@
 \description{
 Print Method for EvidenceGrade
 }
-\examples{
-\dontrun{
-grade <- EvidenceGrade(
-  grade = "indication",
-  grade_de = "Hinweis",
-  direction = "benefit",
-  n_studies = 5L
-)
-print(grade)
-}
-}
+\keyword{internal}

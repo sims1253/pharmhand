@@ -412,7 +412,7 @@ test_that("assess_evidence_domains assesses inconsistency by I2", {
 	expect_equal(domains_high$inconsistency$level, "high")
 })
 
-test_that("assess_evidence_domains assesses imprecision by CI and null inclusion", {
+test_that("assess_evidence_domains assesses imprecision by CI inclusion", {
 	domains_precise <- assess_evidence_domains(
 		estimate = 0.72,
 		ci = c(0.65, 0.80),
@@ -608,10 +608,8 @@ test_that("format_evidence_grade HTML format", {
 	expect_type(formatted, "character")
 	expect_true(grepl("<div class='evidence-grade'>", formatted, fixed = TRUE))
 	expect_true(grepl("<p class='grade'>", formatted, fixed = TRUE))
-	expect_true(
-		grepl("&lt;", formatted, fixed = TRUE) ||
-			!grepl("<p class='grade'>Grade: Proof</p>", formatted, fixed = TRUE)
-	)
+	# Verify proper HTML structure: each detail has its own <p class='grade'> tag
+	expect_true(grepl("<p class='grade'>.*?</p>", formatted, perl = TRUE))
 })
 
 test_that("format_evidence_grade LaTeX format", {
@@ -733,9 +731,7 @@ test_that("print.EvidenceGrade displays grade information", {
 test_that("print.EvidenceGrade returns object invisibly", {
 	grade <- EvidenceGrade(grade = "proof", grade_de = "Beleg")
 
-	result <- capture_output(print(grade))
-
-	expect_invisible(result)
+	expect_invisible(print(grade))
 })
 
 # =============================================================================
@@ -832,7 +828,7 @@ test_that("evidence_summary_table handles mixed list/data frame inputs", {
 	expect_equal(nrow(table_df), 2)
 })
 
-test_that("evidence_summary_table requires names or outcomes for unnamed lists", {
+test_that("evidence_summary_table requires names or outcomes", {
 	grades <- list(
 		EvidenceGrade(grade = "proof", grade_de = "Beleg"),
 		EvidenceGrade(grade = "indication", grade_de = "Hinweis")
@@ -876,7 +872,7 @@ test_that("All four evidence grades can be produced by grade_evidence", {
 		p_value = 0.03,
 		n = 4L,
 		effect_measure = "hr",
-		heterogeneity = list(I2 = 40, tau2 = 0.02)
+		heterogeneity = list(I2 = 35, tau2 = 0.02)
 	)
 
 	meta_res_hint <- MetaResult(

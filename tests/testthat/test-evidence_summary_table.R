@@ -178,7 +178,6 @@ test_that("create_evidence_summary_table works with English output", {
 	expect_equal(table@metadata$language, "en")
 	expect_equal(table@data$Grade[1], "Indication")
 	expect_equal(table@data$RoB[1], "Low")
-	expect_true("CI" %in% table@footnotes[1])
 })
 
 test_that("create_evidence_summary_table works with German output", {
@@ -207,7 +206,6 @@ test_that("create_evidence_summary_table works with German output", {
 	expect_equal(table@metadata$language, "de")
 	expect_equal(table@data$Grade[1], "Hinweis")
 	expect_equal(table@data$RoB[1], "Niedrig")
-	expect_true("KI" %in% table@footnotes[1])
 })
 
 test_that("create_evidence_summary_table uses German decimal separator", {

@@ -98,7 +98,7 @@ test_that("generate_evidence_narrative includes evidence grade when provided", {
 	expect_true(grepl("benefit", narrative, fixed = TRUE))
 })
 
-test_that("generate_evidence_narrative includes heterogeneity for meta-analysis", {
+test_that("generate_evidence_narrative includes heterogeneity info", {
 	result <- .fixture_meta_result()
 	narrative <- generate_evidence_narrative(
 		endpoint = "Overall Survival",
@@ -136,7 +136,7 @@ test_that("generate_evidence_narrative handles significant effect correctly", {
 	expect_true(grepl("significant", narrative, ignore.case = TRUE))
 })
 
-test_that("generate_evidence_narrative handles non-significant effect correctly", {
+test_that("generate_evidence_narrative handles non-significant effect", {
 	result <- MetaResult(
 		estimate = 0.95,
 		ci = c(0.75, 1.20),
@@ -169,8 +169,8 @@ test_that("generate_evidence_narrative formats CI correctly", {
 		template = "plain"
 	)
 
-	expect_true(grepl("\\[", narrative, fixed = TRUE))
-	expect_true(grepl("\\]", narrative, fixed = TRUE))
+	expect_true(grepl("[", narrative, fixed = TRUE))
+	expect_true(grepl("]", narrative, fixed = TRUE))
 	expect_true(grepl("0.62", narrative, fixed = TRUE))
 	expect_true(grepl("0.90", narrative, fixed = TRUE))
 })
@@ -211,7 +211,7 @@ test_that("generate_evidence_narrative formats very small p-values", {
 # generate_evidence_narrative() with ComparisonResult
 # =============================================================================
 
-test_that("generate_evidence_narrative works with ComparisonResult (single study)", {
+test_that("generate_evidence_narrative works with ComparisonResult", {
 	result <- .fixture_comparison_result()
 	narrative <- generate_evidence_narrative(
 		endpoint = "Progression-Free Survival",
@@ -225,7 +225,7 @@ test_that("generate_evidence_narrative works with ComparisonResult (single study
 	expect_true(grepl("245 patients", narrative, fixed = TRUE))
 })
 
-test_that("generate_evidence_narrative uses result@n for n_patients when not specified", {
+test_that("generate_evidence_narrative uses result@n when not specified", {
 	result <- .fixture_comparison_result()
 	narrative <- generate_evidence_narrative(
 		endpoint = "Progression-Free Survival",
@@ -236,7 +236,7 @@ test_that("generate_evidence_narrative uses result@n for n_patients when not spe
 	expect_true(grepl("245 patients", narrative, fixed = TRUE))
 })
 
-test_that("generate_evidence_narrative single study uses single_study template", {
+test_that("generate_evidence_narrative uses single_study template", {
 	result <- .fixture_comparison_result()
 	narrative <- generate_evidence_narrative(
 		endpoint = "Progression-Free Survival",
@@ -329,7 +329,7 @@ test_that("generate_evidence_narrative works with plain template", {
 	expect_true(grepl("N=", narrative, fixed = TRUE))
 })
 
-test_that("generate_evidence_narrative templates format heterogeneity correctly", {
+test_that("generate_evidence_narrative templates format heterogeneity", {
 	result_low_i2 <- MetaResult(
 		estimate = 0.75,
 		ci = c(0.62, 0.90),
@@ -349,7 +349,7 @@ test_that("generate_evidence_narrative templates format heterogeneity correctly"
 	expect_true(grepl("low", narrative, ignore.case = TRUE))
 })
 
-test_that("generate_evidence_narrative templates format evidence grades correctly", {
+test_that("generate_evidence_narrative templates format evidence grades", {
 	result <- .fixture_meta_result()
 	grade_proof <- EvidenceGrade(
 		grade = "proof",
@@ -681,10 +681,10 @@ test_that("narrative_template returns custom template string", {
 	expect_equal(result, custom_template)
 })
 
-test_that("narrative_template warns about custom template without placeholders", {
-	expect_warning(
+test_that("narrative_template errors on custom template without placeholders", {
+	expect_error(
 		narrative_template("No placeholders here"),
-		"does not contain any placeholders"
+		"Template 'No placeholders here' not found"
 	)
 })
 
@@ -728,15 +728,15 @@ test_that("generate_evidence_narrative rejects invalid result type", {
 	)
 })
 
-test_that("generate_evidence_narrative requires n_patients", {
-	expect_error(
-		generate_evidence_narrative(
-			endpoint = "OS",
-			result = .fixture_comparison_result(),
-			n_patients = NULL
-		),
-		"n_patients is required"
+test_that("generate_evidence_narrative uses result@n for ComparisonResult", {
+	result <- .fixture_comparison_result()
+	narrative <- generate_evidence_narrative(
+		endpoint = "Progression-Free Survival",
+		result = result,
+		template = "clinical"
 	)
+
+	expect_true(grepl("245 patients", narrative, fixed = TRUE))
 })
 
 test_that("generate_evidence_narrative rejects invalid template", {
@@ -796,7 +796,7 @@ test_that("generate_full_evidence_report rejects non-list endpoints", {
 	)
 })
 
-test_that("generate_full_evidence_report rejects endpoint missing required fields", {
+test_that("generate_full_evidence_report rejects missing required fields", {
 	result <- .fixture_meta_result()
 	endpoints <- list(
 		list(endpoint = "OS", result = result)
@@ -929,7 +929,7 @@ test_that("generate_evidence_narrative handles single study in meta-analysis", {
 	expect_true(nchar(narrative) > 0)
 })
 
-test_that("generate_evidence_narrative infers direction from estimate when not provided", {
+test_that("generate_evidence_narrative infers direction from estimate", {
 	result <- MetaResult(
 		estimate = 0.75,
 		ci = c(0.62, 0.90),
@@ -974,7 +974,7 @@ test_that("generate_evidence_narrative handles different effect measures", {
 	}
 })
 
-test_that("generate_full_evidence_report handles endpoints without evidence_grade", {
+test_that("generate_full_evidence_report handles endpoints missing grade", {
 	result <- .fixture_meta_result()
 	endpoints <- list(
 		list(
@@ -998,7 +998,7 @@ test_that("generate_full_evidence_report handles endpoints without evidence_grad
 	expect_s3_class(doc, "rdocx")
 })
 
-test_that("generate_full_evidence_report handles endpoints without rob_results", {
+test_that("generate_full_evidence_report handles endpoints missing RoB", {
 	result <- .fixture_meta_result()
 	endpoints <- list(
 		list(

@@ -904,6 +904,7 @@ Study <- S7::new_class(
 		),
 		study_title = S7::new_property(
 			S7::class_character,
+			default = "",
 			validator = function(value) {
 				admiraldev::assert_character_scalar(value)
 				NULL

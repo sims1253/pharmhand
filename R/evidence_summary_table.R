@@ -4,6 +4,7 @@
 #' and health technology assessment submissions.
 #'
 #' @name evidence_summary_tables
+#' @importFrom dplyr bind_rows
 NULL
 
 #' Create Evidence Summary Table
@@ -12,8 +13,8 @@ NULL
 #' effect estimates, heterogeneity statistics, risk of bias assessments,
 #' and evidence grades for multiple endpoints.
 #'
-#' @param endpoints List of named elements containing endpoint data. Each element
-#'   should be a list with components:
+#' @param endpoints List of named elements containing endpoint data.
+#'   Each element should be a list with components:
 #'   - `result`: MetaResult or ComparisonResult object with effect estimate,
 #'     confidence interval, p-value, and study count
 #'   - `grade`: EvidenceGrade object with evidence assessment
@@ -22,7 +23,8 @@ NULL
 #'   - `label`: Character string for endpoint display name (optional)
 #' @param title Table title (default: "Evidence Summary")
 #' @param columns Character vector of column names to include. Default columns:
-#'   "Endpoint", "N Studies", "Effect (95% CI)", "p-value", "I2", "RoB", "Grade".
+#'   "Endpoint", "N Studies", "Effect (95% CI)", "p-value", "I2", "RoB",
+#'   "Grade".
 #' @param conf_level Numeric confidence level for CIs (default: 0.95)
 #' @param language Output language: "en" for English, "de" for German.
 #'   Default: "en".
@@ -30,7 +32,8 @@ NULL
 #' @param col_widths Named numeric vector of column widths (in inches).
 #' @param autofit Logical, whether to autofit column widths (default: TRUE).
 #'
-#' @return A ClinicalTable object containing the formatted evidence summary table.
+#' @return A ClinicalTable object containing the formatted evidence summary
+#'   table.
 #'
 #' @export
 #'
@@ -185,11 +188,8 @@ create_evidence_summary_table <- function(
 		row_data
 	})
 
-	# Convert to data frame
-	result_df <- as.data.frame(
-		do.call(rbind.data.frame, table_data),
-		stringsAsFactors = FALSE
-	)
+	# Convert to data frame using dplyr::bind_rows for proper column preservation
+	result_df <- dplyr::bind_rows(table_data)
 	rownames(result_df) <- NULL
 
 	# Handle column subsetting
@@ -249,7 +249,8 @@ create_evidence_summary_table <- function(
 #' @param title Table title (default: "Study Characteristics")
 #' @param columns Character vector of column names. Default columns:
 #'   "Study", "Design", "N", "Treatment", "Comparator", "Population".
-#' @param include_metadata Logical, include study metadata columns (default: TRUE).
+#' @param include_metadata Logical, include study metadata columns
+#'   (default: TRUE).
 #' @param footnotes Character vector of footnotes to add.
 #' @param col_widths Named numeric vector of column widths (in inches).
 #' @param autofit Logical, whether to autofit column widths (default: TRUE).
@@ -364,11 +365,8 @@ create_study_characteristics_table <- function(
 		)
 	})
 
-	# Convert to data frame
-	result_df <- as.data.frame(
-		do.call(rbind.data.frame, study_rows),
-		stringsAsFactors = FALSE
-	)
+	# Convert to data frame using dplyr::bind_rows for proper column preservation
+	result_df <- dplyr::bind_rows(study_rows)
 	rownames(result_df) <- NULL
 
 	# Apply column subsetting
@@ -413,16 +411,18 @@ create_study_characteristics_table <- function(
 #'
 #' @param table ClinicalTable object from [create_evidence_summary_table()]
 #'   or [create_study_characteristics_table()].
-#' @param file Character string for output file path. Extension determines format:
+#' @param file Character string for output file path. Extension
+#'   determines format:
 #'   - `.docx`: Microsoft Word document
 #'   - `.html`: HTML file
 #'   - `.xlsx`: Microsoft Excel file
 #' @param title Character string for document title (used in Word/HTML exports).
 #' @param ... Additional arguments passed to export functions:
-#'   - For Word: `template` (officer template path), `header_footer` (list with
-#'     header/footer text)
-#'   - For HTML: `css` (custom CSS string), `standalone` (wrap in HTML boilerplate)
-#'   - For Excel: `sheet_name` (worksheet name), `append` (logical for appending)
+#'   - For Word: `template` (officer template path), `header_footer`
+#'     (list with header/footer text)
+#'   - For HTML: `css` (custom CSS string), `standalone`
+#'     (wrap in HTML boilerplate)
+#'   - For Excel: `sheet_name` (worksheet name), `append` (logical)
 #'
 #' @return Invisible NULL. Writes file to disk.
 #'
@@ -546,18 +546,8 @@ export_evidence_table <- function(
 
 #' @keywords internal
 .format_rob_summary <- function(rob, grade, language) {
-	# If grade is provided, extract RoB from domains
-	if (!is.null(grade) && S7::S7_inherits(grade, EvidenceGrade)) {
-		if (
-			length(grade@domains) > 0 &&
-				!is.null(grade@domains$limitations)
-		) {
-			rob_level <- grade@domains$limitations$level
-		} else {
-			rob_level <- "unknown"
-		}
-	} else if (!is.null(rob)) {
-		# Extract from RoB object(s)
+	# If rob is provided, extract from RoB object(s) first
+	if (!is.null(rob)) {
 		if (S7::S7_inherits(rob, RoB2Result)) {
 			rob_level <- tolower(rob@overall)
 		} else if (is.list(rob) && length(rob) > 0) {
@@ -574,6 +564,16 @@ export_evidence_table <- function(
 				character(1)
 			)
 			rob_level <- names(sort(table(levels), decreasing = TRUE))[1]
+		} else {
+			rob_level <- "unknown"
+		}
+		# Otherwise, if grade is provided, extract RoB from domains
+	} else if (!is.null(grade) && S7::S7_inherits(grade, EvidenceGrade)) {
+		if (
+			length(grade@domains) > 0 &&
+				!is.null(grade@domains$limitations)
+		) {
+			rob_level <- grade@domains$limitations$level
 		} else {
 			rob_level <- "unknown"
 		}
@@ -657,8 +657,8 @@ export_evidence_table <- function(
 
 	# Add title and table
 	doc <- doc |>
-		officer::body_add_title(title, style = "Heading 1") |>
-		officer::body_add_flextable(ft)
+		officer::body_add_par(title, style = "heading 1") |>
+		flextable::body_add_flextable(ft)
 
 	# Save
 	print(doc, target = file)
@@ -676,8 +676,8 @@ export_evidence_table <- function(
 		footnotes = args$footnotes
 	)
 
-	# Convert to HTML
-	html_content <- flextable::htmltools_value(ft)
+	# Convert to HTML and ensure it's character
+	html_content <- as.character(flextable::htmltools_value(ft))
 
 	# Wrap in standalone HTML if requested
 	if (isTRUE(args$standalone)) {
@@ -731,12 +731,7 @@ export_evidence_table <- function(
 
 	# Use writexl for Excel export (requires writexl package)
 	if (requireNamespace("writexl", quietly = TRUE)) {
-		sheet_name <- args$sheet_name %||% "Evidence Summary"
-		writexl::write_xlsx(
-			excel_data,
-			path = file,
-			sheet_name = sheet_name
-		)
+		writexl::write_xlsx(excel_data, path = file)
 	} else {
 		# Fallback to openxlsx if available
 		if (requireNamespace("openxlsx", quietly = TRUE)) {
@@ -823,10 +818,7 @@ create_rob_summary_table <- function(
 		row
 	})
 
-	result_df <- as.data.frame(
-		do.call(rbind.data.frame, summary_data),
-		stringsAsFactors = FALSE
-	)
+	result_df <- dplyr::bind_rows(summary_data)
 	rownames(result_df) <- NULL
 
 	# Default footnotes

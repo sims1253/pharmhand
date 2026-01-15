@@ -320,6 +320,7 @@ test_that("save_rob_plot saves PDF file", {
 })
 
 test_that("save_rob_plot saves SVG file", {
+	skip_if_not_installed("svglite")
 	result <- create_rob2_result("STUDY001")
 	plot <- create_rob_traffic_light_plot(list(result))
 

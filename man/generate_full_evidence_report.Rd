@@ -18,8 +18,8 @@ generate_full_evidence_report(
 \arguments{
 \item{endpoints}{List or data frame containing endpoint data. Each element
 should have: endpoint (name), result (MetaResult/ComparisonResult),
-evidence_grade (EvidenceGrade, optional), rob_results (RoB2Result, optional),
-n_patients (integer).}
+evidence_grade (EvidenceGrade, optional), rob_results (RoB2Result,
+optional), n_patients (integer).}
 
 \item{title}{Character. Report title.}
 

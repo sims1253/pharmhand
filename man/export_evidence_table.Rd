@@ -10,7 +10,8 @@ export_evidence_table(table, file, title = NULL, ...)
 \item{table}{ClinicalTable object from \code{\link[=create_evidence_summary_table]{create_evidence_summary_table()}}
 or \code{\link[=create_study_characteristics_table]{create_study_characteristics_table()}}.}
 
-\item{file}{Character string for output file path. Extension determines format:
+\item{file}{Character string for output file path. Extension
+determines format:
 \itemize{
 \item \code{.docx}: Microsoft Word document
 \item \code{.html}: HTML file
@@ -21,10 +22,11 @@ or \code{\link[=create_study_characteristics_table]{create_study_characteristics
 
 \item{...}{Additional arguments passed to export functions:
 \itemize{
-\item For Word: \code{template} (officer template path), \code{header_footer} (list with
-header/footer text)
-\item For HTML: \code{css} (custom CSS string), \code{standalone} (wrap in HTML boilerplate)
-\item For Excel: \code{sheet_name} (worksheet name), \code{append} (logical for appending)
+\item For Word: \code{template} (officer template path), \code{header_footer}
+(list with header/footer text)
+\item For HTML: \code{css} (custom CSS string), \code{standalone}
+(wrap in HTML boilerplate)
+\item For Excel: \code{sheet_name} (worksheet name), \code{append} (logical)
 }}
 }
 \value{
