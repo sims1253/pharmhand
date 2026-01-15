@@ -274,6 +274,10 @@ reference:
   - create_bayesian_trace_plots
   - format_bayesian_result_iqwig
   - prior_sensitivity_analysis
+  - bias_adjusted_meta
+  - rob_sensitivity_analysis
+  - calculate_rob_weights
+  - summarize_bias_adjusted
 
 - title: "Network Meta-Analysis"
   desc: >
@@ -397,6 +401,7 @@ reference:
   - bias_robins_i
   - bias_plots
   - meta_bias
+  - meta_bias_adjusted
   - pro_analysis
 
 # Articles/vignettes structure
