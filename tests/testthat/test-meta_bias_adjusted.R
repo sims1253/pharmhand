@@ -47,7 +47,7 @@ test_that("calculate_rob_weights applies correct multipliers for RoB 2 Low", {
 	expect_true(rob_weights$multipliers["Study 1"] == 1)
 })
 
-test_that("calculate_rob_weights applies correct multipliers for RoB 2 concerns", {
+test_that("calculate_rob_weights applies multipliers for RoB 2 concerns", {
 	meta_res <- meta_analysis(
 		yi = .meta_yi_hr,
 		sei = .meta_sei_hr,
@@ -484,7 +484,7 @@ test_that("rob_sensitivity_analysis calculates percent change from original", {
 	expect_true("pct_change_from_original" %in% names(sensitivity$results))
 })
 
-test_that("rob_sensitivity_analysis handles scenarios with insufficient studies", {
+test_that("rob_sensitivity_analysis handles insufficient studies", {
 	meta_res <- meta_analysis(
 		yi = c(0.5, 0.8),
 		sei = c(0.1, 0.2),

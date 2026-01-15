@@ -669,60 +669,24 @@ save_rob_plot <- function(
 	# Get the ggplot object
 	ggplot_obj <- plot@plot
 
-	# Determine file extension
-	ext <- tolower(tools::file_ext(filename))
-
-	# Map extensions to device types
-	raster_formats <- c("png", "tiff", "tif", "jpeg", "jpg", "bmp")
-	vector_formats <- c("svg", "pdf", "wmf")
-
-	# Set device based on extension
-	if (ext %in% raster_formats) {
-		device <- NULL
-	} else if (ext %in% vector_formats) {
-		device <- NULL
-	} else {
-		# Default to PNG for unknown extensions
-		device <- "png"
-		filename <- paste0(filename, ".png")
-		ph_inform(sprintf(
-			"Unknown file extension '%s', saving as PNG instead",
-			ext
-		))
+	# Validate ggplot object is not NULL
+	if (is.null(ggplot_obj)) {
+		ph_abort("plot object is NULL - cannot save empty plot")
 	}
 
-	invisible(
-		tryCatch(
-			{
-				if (device %in% raster_formats) {
-					ggplot2::ggsave(
-						filename = filename,
-						plot = ggplot_obj,
-						width = width,
-						height = height,
-						dpi = dpi,
-						units = "in",
-						...
-					)
-				} else {
-					ggplot2::ggsave(
-						filename = filename,
-						plot = ggplot_obj,
-						width = width,
-						height = height,
-						units = "in",
-						...
-					)
-				}
-
-				ph_inform(sprintf("Plot saved to: %s", filename))
-				filename
-			},
-			error = function(e) {
-				ph_abort(sprintf("Failed to save plot: %s", e$message))
-			}
-		)
+	# Save with ggsave - direct call without tryCatch to ensure errors propagate
+	ggplot2::ggsave(
+		filename = filename,
+		plot = ggplot_obj,
+		width = width,
+		height = height,
+		dpi = dpi,
+		units = "in",
+		...
 	)
+
+	ph_inform(sprintf("Plot saved to: %s", filename))
+	invisible(filename)
 }
 
 

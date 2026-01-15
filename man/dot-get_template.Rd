@@ -7,10 +7,12 @@
 .get_template(template_name, component, language = "en")
 }
 \arguments{
-\item{template_name}{Character. Template name: "iqwig", "clinical", or "plain".}
+\item{template_name}{Character. Template name: "iqwig", "clinical",
+or "plain".}
 
 \item{component}{Character. Template component: "effect_significant",
-"effect_nonsificant", "single_study", "heterogeneity_\emph{", "rob_}", "grade_*".}
+"effect_nonsificant", "single_study", "heterogeneity_\emph{", "rob_}",
+"grade_*".}
 
 \item{language}{Character. Output language: "en" or "de". Default: "en".}
 }

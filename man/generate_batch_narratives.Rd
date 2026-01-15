@@ -13,8 +13,8 @@ generate_batch_narratives(
 }
 \arguments{
 \item{data}{Data frame with columns: endpoint, estimate, ci_lower, ci_upper,
-p_value, n_studies, n_patients, effect_measure, heterogeneity_i2 (optional),
-grade (optional), direction (optional).}
+p_value, n_studies, n_patients, effect_measure, heterogeneity_i2
+(optional), grade (optional), direction (optional).}
 
 \item{template}{Character. Template name. Default: "iqwig".}
 

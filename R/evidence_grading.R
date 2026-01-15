@@ -191,7 +191,7 @@ grade_evidence <- function(
 	# Create and return EvidenceGrade object
 	EvidenceGrade(
 		grade = grade_result$grade,
-		grade_de = EVIDENCE_GRADES_DE[grade_result$grade],
+		grade_de = unname(EVIDENCE_GRADES_DE[grade_result$grade]),
 		direction = direction,
 		certainty = certainty,
 		n_studies = n_studies,
@@ -437,17 +437,17 @@ assess_evidence_domains <- function(
 		))
 	}
 
-	if (I2 < 25) {
+	if (I2 < 30) {
 		level <- "low"
-		rating <- 0.9 + 0.1 * (1 - I2 / 25)
+		rating <- 0.9 + 0.1 * (1 - I2 / 30)
 		notes <- sprintf("Low heterogeneity (I2 = %.1f%%)", I2)
 	} else if (I2 < 50) {
-		level <- "low"
-		rating <- 0.8 + 0.1 * (1 - (I2 - 25) / 25)
+		level <- "some_concerns"
+		rating <- 0.7 + 0.2 * (1 - (I2 - 30) / 20)
 		notes <- sprintf("Moderate heterogeneity (I2 = %.1f%%)", I2)
 	} else if (I2 < 75) {
 		level <- "some_concerns"
-		rating <- 0.5 + 0.3 * (1 - (I2 - 50) / 25)
+		rating <- 0.5 + 0.2 * (1 - (I2 - 50) / 25)
 		notes <- sprintf("Substantial heterogeneity (I2 = %.1f%%)", I2)
 	} else {
 		level <- "high"
@@ -717,8 +717,8 @@ assess_evidence_domains <- function(
 		fixed = TRUE
 	)
 
-	if (concern_score <= 0.5 && !ci_includes_null && n_studies >= 3) {
-		# Few concerns, sufficient studies -> Proof
+	if (concern_score == 0 && !ci_includes_null && n_studies >= 4) {
+		# No concerns at all, sufficient studies -> Proof
 		grade <- "proof"
 	} else if (concern_score <= 1.5 && !ci_includes_null) {
 		# Some concerns -> Indication
@@ -941,9 +941,15 @@ format_evidence_grade <- function(
 		if (format == "text") {
 			out <- paste(details, collapse = "\n")
 		} else if (format == "html") {
+			# Each detail in its own <p class='grade'> tag
+			# Escape content before wrapping in tags
+			escaped_details <- details
+			escaped_details <- gsub("&", "&amp;", escaped_details, fixed = TRUE)
+			escaped_details <- gsub("<", "&lt;", escaped_details, fixed = TRUE)
+			escaped_details <- gsub(">", "&gt;", escaped_details, fixed = TRUE)
 			out <- paste0(
 				"<div class='evidence-grade'>\n",
-				paste0("  <p class='grade'>", details, "</p>\n", collapse = ""),
+				paste0("  <p class='grade'>", escaped_details, "</p>\n", collapse = ""),
 				"</div>"
 			)
 		} else if (format == "latex") {
@@ -962,13 +968,6 @@ format_evidence_grade <- function(
 		}
 	}
 
-	# Apply format-specific escaping
-	if (format == "html") {
-		out <- gsub("&", "&amp;", out, fixed = TRUE)
-		out <- gsub("<", "&lt;", out, fixed = TRUE)
-		out <- gsub(">", "&gt;", out, fixed = TRUE)
-	}
-
 	out
 }
 
@@ -981,18 +980,7 @@ format_evidence_grade <- function(
 #'
 #' @param x An EvidenceGrade object.
 #' @param ... Additional arguments passed to print.
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' grade <- EvidenceGrade(
-#'   grade = "indication",
-#'   grade_de = "Hinweis",
-#'   direction = "benefit",
-#'   n_studies = 5L
-#' )
-#' print(grade)
-#' }
+#' @keywords internal
 print.EvidenceGrade <- function(x, ...) {
 	cat("IQWiG Evidence Grade\n")
 	cat("====================\n")
@@ -1014,6 +1002,14 @@ print.EvidenceGrade <- function(x, ...) {
 		}
 	}
 
+	invisible(x)
+}
+
+# Create an external generic for print to work with S7 classes
+# This ensures S3 print method is called for EvidenceGrade objects
+print_external <- S7::new_external_generic("base", "print", "x")
+S7::method(print_external, EvidenceGrade) <- function(x, ...) {
+	print.EvidenceGrade(x, ...)
 	invisible(x)
 }
 

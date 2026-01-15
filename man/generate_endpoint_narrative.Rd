@@ -22,7 +22,8 @@ generate_endpoint_narrative(
 
 \item{evidence_grade}{An EvidenceGrade object (optional).}
 
-\item{rob_results}{List of RoB2Result objects or single RoB2Result (optional).}
+\item{rob_results}{List of RoB2Result objects or single RoB2Result
+(optional).}
 
 \item{n_patients}{Integer. Total number of patients.}
 
@@ -60,7 +61,7 @@ grade <- EvidenceGrade(
 
 # German IQWiG style
 narrative <- generate_endpoint_narrative(
-  endpoint = "Gesamtüberleben",
+  endpoint = "Gesamt\u00fcberleben",
   result = meta_res,
   evidence_grade = grade,
   n_patients = 2125,

@@ -68,7 +68,7 @@ grade <- EvidenceGrade(
 
 # Generate German narrative (IQWiG style)
 narrative <- generate_evidence_narrative(
-  endpoint = "Gesamtüberleben",
+  endpoint = "Gesamt\u00fcberleben",
   result = meta_res,
   grade = grade,
   n_patients = 1245,

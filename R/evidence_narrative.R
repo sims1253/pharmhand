@@ -32,32 +32,58 @@ NARRATIVE_TEMPLATES <- list(
 	# German IQWiG style template
 	"iqwig" = list(
 		effect_significant = paste0(
-			"Für den Endpunkt {endpoint} zeigt die Metaanalyse von {n_studies} Studien ",
-			"(N={n_patients}) einen statistisch signifikanten Effekt zugunsten der ",
-			"Prüfintervention ({effect_measure_label} {estimate} [{ci_level}%-KI: {ci_formatted}; p={p_formatted}]). "
+			"F\u00fcr den Endpunkt {endpoint} zeigt die Metaanalyse von ",
+			"{n_studies} Studien (N={n_patients}) einen statistisch signifikanten ",
+			"Effekt zugunsten der Pr\u00fcfintervention ({effect_measure_label} ",
+			"{estimate} [{ci_level}%-KI: {ci_formatted}; p={p_formatted}]). "
 		),
 		effect_nonsignificant = paste0(
-			"Für den Endpunkt {endpoint} zeigt die Metaanalyse von {n_studies} Studien ",
-			"(N={n_patients}) keinen statistisch signifikanten Effekt ({effect_measure_label} {estimate} ",
-			"[{ci_level}%-KI: {ci_formatted}; p={p_formatted}]). "
+			"F\u00fcr den Endpunkt {endpoint} zeigt die Metaanalyse von ",
+			"{n_studies} Studien (N={n_patients}) keinen statistisch signifikanten ",
+			"Effekt ({effect_measure_label} {estimate} [{ci_level}%-KI: ",
+			"{ci_formatted}; p={p_formatted}]). "
 		),
 		single_study = paste0(
-			"Für den Endpunkt {endpoint} zeigt die Studie mit {n_patients} Patienten ",
-			"einen {effect_direction_adj} Effekt ({effect_measure_label} {estimate} ",
-			"[{ci_level}%-KI: {ci_formatted}; p={p_formatted}]). "
+			"F\u00fcr den Endpunkt {endpoint} zeigt die Studie mit {n_patients} ",
+			"Patienten einen {effect_direction_adj} Effekt ({effect_measure_label} ",
+			"{estimate} [{ci_level}%-KI: {ci_formatted}; p={p_formatted}]). "
 		),
-		heterogeneity_low = "Die Heterogenität zwischen den Studien war gering (I²={i2}%).",
-		heterogeneity_moderate = "Die Heterogenität zwischen den Studien war mäßig (I²={i2}%).",
-		heterogeneity_substantial = "Die Heterogenität zwischen den Studien war substantiell (I²={i2}%).",
-		heterogeneity_considerable = "Die Heterogenität zwischen den Studien war beträchtlich (I²={i2}%).",
-		heterogeneity_single = "Die Heterogenität kann bei einer einzelnen Studie nicht beurteilt werden.",
+		heterogeneity_low = paste0(
+			"Die Heterogenit\u00e4t zwischen den Studien war ",
+			"gering (I\u00b2={i2}%)."
+		),
+		heterogeneity_moderate = paste0(
+			"Die Heterogenit\u00e4t zwischen den Studien war ",
+			"m\u00e4\u00dfig (I\u00b2={i2}%)."
+		),
+		heterogeneity_substantial = paste0(
+			"Die Heterogenit\u00e4t zwischen den Studien war ",
+			"substantiell (I\u00b2={i2}%)."
+		),
+		heterogeneity_considerable = paste0(
+			"Die Heterogenit\u00e4t zwischen den Studien war ",
+			"betr\u00e4chtlich (I\u00b2={i2}%)."
+		),
+		heterogeneity_single = paste0(
+			"Die Heterogenit\u00e4t kann bei einer einzelnen ",
+			"Studie nicht beurteilt werden."
+		),
 		rob_low = "Das Verzerrungsrisiko wurde als niedrig bewertet.",
 		rob_moderate = "Das Verzerrungsrisiko wurde als moderat bewertet.",
 		rob_high = "Das Verzerrungsrisiko wurde als hoch bewertet.",
 		rob_unknown = "Das Verzerrungsrisiko wurde nicht systematisch beurteilt.",
-		grade_proof = "Es ergibt sich ein Beleg für einen {effect_direction_adj} Nutzen.",
-		grade_indication = "Es ergibt sich ein Hinweis auf einen {effect_direction_adj} Nutzen.",
-		grade_hint = "Es ergibt sich ein Anhaltspunkt für einen {effect_direction_adj} Nutzen.",
+		grade_proof = paste0(
+			"Es ergibt sich ein Beleg f\u00fcr einen ",
+			"{effect_direction_adj} Nutzen."
+		),
+		grade_indication = paste0(
+			"Es ergibt sich ein Hinweis auf einen ",
+			"{effect_direction_adj} Nutzen."
+		),
+		grade_hint = paste0(
+			"Es ergibt sich ein Anhaltspunkt f\u00fcr einen ",
+			"{effect_direction_adj} Nutzen."
+		),
 		grade_none = "Es ergibt sich kein {effect_direction_adj} Nutzen.",
 		effect_direction_benefit = "positiven",
 		effect_direction_harm = "negativen",
@@ -68,31 +94,45 @@ NARRATIVE_TEMPLATES <- list(
 	"clinical" = list(
 		effect_significant = paste0(
 			"For the endpoint {endpoint}, the meta-analysis of {n_studies} studies ",
-			"(N={n_patients}) demonstrated a statistically significant {effect_direction_adj} effect ",
-			"in favor of the investigational intervention ({effect_measure_label} {estimate} ",
-			"[{ci_level}% CI: {ci_formatted}; p={p_formatted}]. "
+			"(N={n_patients}) demonstrated a statistically significant ",
+			"{effect_direction_adj} effect in favor of the investigational ",
+			"intervention ({effect_measure_label} {estimate} [{ci_level}% CI: ",
+			"{ci_formatted}; p={p_formatted}]. "
 		),
 		effect_nonsignificant = paste0(
 			"For the endpoint {endpoint}, the meta-analysis of {n_studies} studies ",
-			"(N={n_patients}) did not demonstrate a statistically significant effect ",
-			"({effect_measure_label} {estimate} [{ci_level}% CI: {ci_formatted}; p={p_formatted}]. "
+			"(N={n_patients}) did not demonstrate a statistically significant ",
+			"effect ({effect_measure_label} {estimate} [{ci_level}% CI: ",
+			"{ci_formatted}; p={p_formatted}]. "
 		),
 		single_study = paste0(
 			"For the endpoint {endpoint}, the study with {n_patients} patients ",
 			"showed a {effect_direction_adj} effect ({effect_measure_label} {estimate} ",
 			"[{ci_level}% CI: {ci_formatted}; p={p_formatted}]. "
 		),
-		heterogeneity_low = "The heterogeneity between studies was low (I²={i2}%).",
-		heterogeneity_moderate = "The heterogeneity between studies was moderate (I²={i2}%).",
-		heterogeneity_substantial = "The heterogeneity between studies was substantial (I²={i2}%).",
-		heterogeneity_considerable = "The heterogeneity between studies was considerable (I²={i2}%).",
-		heterogeneity_single = "Heterogeneity could not be assessed with a single study.",
+		heterogeneity_low = paste0(
+			"The heterogeneity between studies was low (I\u00b2={i2}%)."
+		),
+		heterogeneity_moderate = paste0(
+			"The heterogeneity between studies was moderate (I\u00b2={i2}%)."
+		),
+		heterogeneity_substantial = paste0(
+			"The heterogeneity between studies was substantial (I\u00b2={i2}%)."
+		),
+		heterogeneity_considerable = paste0(
+			"The heterogeneity between studies was considerable (I\u00b2={i2}%)."
+		),
+		heterogeneity_single = paste0(
+			"Heterogeneity could not be assessed with a single study."
+		),
 		rob_low = "The risk of bias was rated as low.",
 		rob_moderate = "Some concerns were identified regarding risk of bias.",
 		rob_high = "The risk of bias was rated as high.",
 		rob_unknown = "Risk of bias was not systematically assessed.",
 		grade_proof = "This provides proof of {effect_direction_adj} benefit.",
-		grade_indication = "This provides an indication of {effect_direction_adj} benefit.",
+		grade_indication = paste0(
+			"This provides an indication of {effect_direction_adj} benefit."
+		),
 		grade_hint = "This provides a hint of {effect_direction_adj} benefit.",
 		grade_none = "No {effect_direction_adj} benefit was demonstrated.",
 		effect_direction_benefit = "favorable",
@@ -103,20 +143,23 @@ NARRATIVE_TEMPLATES <- list(
 	# Plain/minimal style template
 	"plain" = list(
 		effect_significant = paste0(
-			"{endpoint}: {n_studies} studies, N={n_patients}. ",
-			"Effect: {effect_measure_label} {estimate} [{ci_level}% CI: {ci_formatted}]; p={p_formatted}. "
+			"{endpoint}: {n_studies} studies, N={n_patients}. Effect: ",
+			"{effect_measure_label} {estimate} [{ci_level}% CI: {ci_formatted}]; ",
+			"p={p_formatted}. "
 		),
 		effect_nonsignificant = paste0(
-			"{endpoint}: {n_studies} studies, N={n_patients}. ",
-			"Effect: {effect_measure_label} {estimate} [{ci_level}% CI: {ci_formatted}]; p={p_formatted}. Not significant. "
+			"{endpoint}: {n_studies} studies, N={n_patients}. Effect: ",
+			"{effect_measure_label} {estimate} [{ci_level}% CI: {ci_formatted}]; ",
+			"p={p_formatted}. Not significant. "
 		),
 		single_study = paste0(
-			"{endpoint}: {n_patients} patients. Effect: {effect_measure_label} {estimate} [{ci_level}% CI: {ci_formatted}]. "
+			"{endpoint}: {n_patients} patients. Effect: {effect_measure_label} ",
+			"{estimate} [{ci_level}% CI: {ci_formatted}]. "
 		),
-		heterogeneity_low = "Low heterogeneity (I²={i2}%).",
-		heterogeneity_moderate = "Moderate heterogeneity (I²={i2}%).",
-		heterogeneity_substantial = "Substantial heterogeneity (I²={i2}%).",
-		heterogeneity_considerable = "Considerable heterogeneity (I²={i2}%).",
+		heterogeneity_low = "Low heterogeneity (I\u00b2={i2}%).",
+		heterogeneity_moderate = "Moderate heterogeneity (I\u00b2={i2}%).",
+		heterogeneity_substantial = "Substantial heterogeneity (I\u00b2={i2}%).",
+		heterogeneity_considerable = "Considerable heterogeneity (I\u00b2={i2}%).",
 		heterogeneity_single = "Heterogeneity: N/A (single study).",
 		rob_low = "Risk of bias: low.",
 		rob_moderate = "Risk of bias: some concerns.",
@@ -137,9 +180,11 @@ NARRATIVE_TEMPLATES <- list(
 #'
 #' Retrieves a named template component for narrative generation.
 #'
-#' @param template_name Character. Template name: "iqwig", "clinical", or "plain".
+#' @param template_name Character. Template name: "iqwig", "clinical",
+#'   or "plain".
 #' @param component Character. Template component: "effect_significant",
-#'   "effect_nonsificant", "single_study", "heterogeneity_*", "rob_*", "grade_*".
+#'   "effect_nonsificant", "single_study", "heterogeneity_*", "rob_*",
+#'   "grade_*".
 #' @param language Character. Output language: "en" or "de". Default: "en".
 #'
 #' @return Character string template.
@@ -216,9 +261,14 @@ narrative_template <- function(
 		return(.get_template(template, component, language))
 	}
 
-	# If template is a custom string, validate it contains placeholders
+	# Check if template name looks like it might be a template reference
+	# (doesn't contain placeholders and isn't in predefined list)
 	if (!grepl("\\{[^}]+\\}", template)) {
-		ph_warn("Custom template does not contain any placeholders")
+		ph_abort(sprintf(
+			"Template '%s' not found. Available: %s",
+			template,
+			paste(names(NARRATIVE_TEMPLATES), collapse = ", ")
+		))
 	}
 
 	template
@@ -289,15 +339,23 @@ narrative_template <- function(
 #'
 #' @param ci Numeric vector of length 2: c(lower, upper).
 #' @param decimals Integer. Number of decimal places.
+#' @param language Character. Language: "en" or "de".
 #'
 #' @return Formatted CI string.
 #'
 #' @keywords internal
-.format_ci <- function(ci, decimals = 2) {
+.format_ci <- function(ci, decimals = 2, language = "en") {
 	if (length(ci) != 2 || anyNA(ci)) {
 		return("NA")
 	}
-	sprintf("%.2f; %.2f", ci[1], ci[2])
+	if (language == "de") {
+		# German: comma as decimal separator
+		formatted <- sprintf("%.2f; %.2f", ci[1], ci[2])
+		formatted <- gsub("\\.", ",", formatted)
+		formatted
+	} else {
+		sprintf("%.2f; %.2f", ci[1], ci[2])
+	}
 }
 
 
@@ -415,8 +473,8 @@ narrative_template <- function(
 	dir_text <- if (language == "de") {
 		switch(
 			direction,
-			benefit = "günstigen",
-			harm = "schädlichen",
+			benefit = "g\u00fcnstigen",
+			harm = "sch\u00e4dlichen",
 			neutral = "keinen"
 		)
 	} else {
@@ -481,7 +539,7 @@ narrative_template <- function(
 #'
 #' # Generate German narrative (IQWiG style)
 #' narrative <- generate_evidence_narrative(
-#'   endpoint = "Gesamtüberleben",
+#'   endpoint = "Gesamt\u00fcberleben",
 #'   result = meta_res,
 #'   grade = grade,
 #'   n_patients = 1245,
@@ -569,7 +627,7 @@ generate_evidence_narrative <- function(
 	}
 
 	# Format numbers
-	ci_formatted <- .format_ci(ci)
+	ci_formatted <- .format_ci(ci, language = language)
 	p_formatted <- .format_p_value(p_value)
 	ci_level_pct <- round(ci_level * 100)
 
@@ -617,15 +675,31 @@ generate_evidence_narrative <- function(
 		effect_template <- templates$single_study
 	}
 
+	# Format numbers (German uses locale-aware formatting)
+	if (language == "de") {
+		# German: period as thousands separator, comma as decimal
+		n_patients_formatted <- formatC(
+			n_patients,
+			format = "d",
+			big.mark = ".",
+			decimal.mark = ","
+		)
+		estimate_formatted <- gsub("\\.", ",", sprintf("%.2f", estimate))
+	} else {
+		# English: comma as thousands separator
+		n_patients_formatted <- formatC(n_patients, format = "d", big.mark = ",")
+		estimate_formatted <- sprintf("%.2f", estimate)
+	}
+
 	narrative_parts <- c(
 		narrative_parts,
 		glue::glue(
 			effect_template,
 			endpoint = endpoint,
 			n_studies = n_studies,
-			n_patients = format(n_patients, big.mark = ","),
+			n_patients = n_patients_formatted,
 			effect_measure_label = effect_measure_label,
-			estimate = sprintf("%.2f", estimate),
+			estimate = estimate_formatted,
 			ci_level = ci_level_pct,
 			ci_formatted = ci_formatted,
 			p_formatted = p_formatted,
@@ -681,7 +755,8 @@ generate_evidence_narrative <- function(
 #' @param endpoint Character. Name of the endpoint.
 #' @param result A MetaResult or ComparisonResult object.
 #' @param evidence_grade An EvidenceGrade object (optional).
-#' @param rob_results List of RoB2Result objects or single RoB2Result (optional).
+#' @param rob_results List of RoB2Result objects or single RoB2Result
+#'   (optional).
 #' @param n_patients Integer. Total number of patients.
 #' @param template Character. Template name. Default: "iqwig".
 #' @param language Character. Output language. Default: "en".
@@ -712,7 +787,7 @@ generate_evidence_narrative <- function(
 #'
 #' # German IQWiG style
 #' narrative <- generate_endpoint_narrative(
-#'   endpoint = "Gesamtüberleben",
+#'   endpoint = "Gesamt\u00fcberleben",
 #'   result = meta_res,
 #'   evidence_grade = grade,
 #'   n_patients = 2125,
@@ -770,8 +845,8 @@ generate_endpoint_narrative <- function(
 #'
 #' @param endpoints List or data frame containing endpoint data. Each element
 #'   should have: endpoint (name), result (MetaResult/ComparisonResult),
-#'   evidence_grade (EvidenceGrade, optional), rob_results (RoB2Result, optional),
-#'   n_patients (integer).
+#'   evidence_grade (EvidenceGrade, optional), rob_results (RoB2Result,
+#'   optional), n_patients (integer).
 #' @param title Character. Report title.
 #' @param subtitle Character. Report subtitle (optional).
 #' @param author Character. Author name (optional).
@@ -845,9 +920,9 @@ generate_full_evidence_report <- function(
 
 	# Add title page
 	if (language == "de") {
-		doc <- officer::body_add_par(doc, title, style = "Title")
+		doc <- officer::body_add_par(doc, title, style = "heading 1")
 		if (!is.null(subtitle)) {
-			doc <- officer::body_add_par(doc, subtitle, style = "Subtitle")
+			doc <- officer::body_add_par(doc, subtitle, style = "heading 2")
 		}
 		if (!is.null(author)) {
 			doc <- officer::body_add_par(
@@ -859,9 +934,9 @@ generate_full_evidence_report <- function(
 		doc <- officer::body_add_par(doc, paste0("Datum: ", date), style = "Normal")
 		doc <- officer::body_add_break(doc)
 	} else {
-		doc <- officer::body_add_par(doc, title, style = "Title")
+		doc <- officer::body_add_par(doc, title, style = "heading 1")
 		if (!is.null(subtitle)) {
-			doc <- officer::body_add_par(doc, subtitle, style = "Subtitle")
+			doc <- officer::body_add_par(doc, subtitle, style = "heading 2")
 		}
 		if (!is.null(author)) {
 			doc <- officer::body_add_par(
@@ -1034,7 +1109,7 @@ generate_full_evidence_report <- function(
 			paste0(
 				"Von den %d analysierten Endpunkten zeigten %d einen statistisch ",
 				"signifikanten Effekt. Die Evidenzgraduierung ergab %d Beleg(e), ",
-				"%d Hinweis(e) und %d Anhaltspunkt(e) für einen Zusatznutzen."
+				"%d Hinweis(e) und %d Anhaltspunkt(e) f\u00fcr einen Zusatznutzen."
 			),
 			length(endpoints),
 			n_significant,
@@ -1045,9 +1120,9 @@ generate_full_evidence_report <- function(
 	} else {
 		conclusion_text <- sprintf(
 			paste0(
-				"Of the %d endpoints analyzed, %d demonstrated a statistically significant ",
-				"effect. Evidence grading identified %d proof(s), %d indication(s), and ",
-				"%d hint(s) of benefit."
+				"Of the %d endpoints analyzed, %d demonstrated a statistically ",
+				"significant effect. Evidence grading identified %d proof(s), ",
+				"%d indication(s), and %d hint(s) of benefit."
 			),
 			length(endpoints),
 			n_significant,
@@ -1111,8 +1186,8 @@ export_narrative <- function(narrative, path, append = FALSE) {
 #' Generates narratives for multiple endpoints at once from a data frame.
 #'
 #' @param data Data frame with columns: endpoint, estimate, ci_lower, ci_upper,
-#'   p_value, n_studies, n_patients, effect_measure, heterogeneity_i2 (optional),
-#'   grade (optional), direction (optional).
+#'   p_value, n_studies, n_patients, effect_measure, heterogeneity_i2
+#'   (optional), grade (optional), direction (optional).
 #' @param template Character. Template name. Default: "iqwig".
 #' @param language Character. Output language. Default: "en".
 #' @param ci_level Numeric. Confidence level. Default: 0.95.

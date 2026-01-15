@@ -625,7 +625,10 @@ bias_adjusted_meta <- function(
 	valid_methods <- c("weight_downgrade", "exclude_high", "selection_model")
 	if (length(method) != 1 || !method %in% valid_methods) {
 		ph_abort(
-			"method must be one of 'weight_downgrade', 'exclude_high', or 'selection_model'"
+			paste0(
+				"method must be one of 'weight_downgrade', 'exclude_high', ",
+				"or 'selection_model'"
+			)
 		)
 	}
 

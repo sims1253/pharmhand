@@ -23,7 +23,8 @@ with study-level characteristics.}
 \item{columns}{Character vector of column names. Default columns:
 "Study", "Design", "N", "Treatment", "Comparator", "Population".}
 
-\item{include_metadata}{Logical, include study metadata columns (default: TRUE).}
+\item{include_metadata}{Logical, include study metadata columns
+(default: TRUE).}
 
 \item{footnotes}{Character vector of footnotes to add.}
 

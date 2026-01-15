@@ -4,12 +4,14 @@
 \alias{.format_ci}
 \title{Format Confidence Interval}
 \usage{
-.format_ci(ci, decimals = 2)
+.format_ci(ci, decimals = 2, language = "en")
 }
 \arguments{
 \item{ci}{Numeric vector of length 2: c(lower, upper).}
 
 \item{decimals}{Integer. Number of decimal places.}
+
+\item{language}{Character. Language: "en" or "de".}
 }
 \value{
 Formatted CI string.
