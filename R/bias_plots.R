@@ -678,22 +678,9 @@ save_rob_plot <- function(
 
 	# Set device based on extension
 	if (ext %in% raster_formats) {
-		device <- switch(
-			ext,
-			"png" = "png",
-			"tiff" = ,
-			"tif" = "tiff",
-			"jpeg" = ,
-			"jpg" = "jpeg",
-			"bmp" = "bmp"
-		)
+		device <- NULL
 	} else if (ext %in% vector_formats) {
-		device <- switch(
-			ext,
-			"svg" = "svg",
-			"pdf" = "pdf",
-			"wmf" = "wmf"
-		)
+		device <- NULL
 	} else {
 		# Default to PNG for unknown extensions
 		device <- "png"

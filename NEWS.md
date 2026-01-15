@@ -28,10 +28,19 @@
 
 * Added `create_rob_traffic_light_plot()` for traffic light visualization of domain-level judgments.
 * Added `create_rob_summary_plot()` for stacked bar plot summaries of bias assessments.
-* Added `save_rob_plot()` for exporting plots to PNG, SVG, PDF, and other formats.
+* Added `save_rob_plot()` for exporting plots to PNG, SVG, PDF and other formats.
 * Added `rob_data_to_tidy()` for converting assessment results to tidy data frames.
 * Supports both RoB 2 and ROBINS-I assessment results.
 * Uses standard risk of bias color scheme (green/yellow/red/gray).
+
+### Bias-Adjusted Meta-Analysis
+
+* Added `bias_adjusted_meta()` for meta-analysis with risk of bias adjustments.
+* Added `rob_sensitivity_analysis()` for sensitivity analysis across RoB scenarios.
+* Added `calculate_rob_weights()` for computing RoB-adjusted study weights.
+* Added `summarize_bias_adjusted()` for comparing original and adjusted estimates.
+* Supports three adjustment methods: weight_downgrade, exclude_high, selection_model.
+* Integrates with RoB 2 and ROBINS-I assessment results.
 
 # pharmhand 0.3.4.9000
 
