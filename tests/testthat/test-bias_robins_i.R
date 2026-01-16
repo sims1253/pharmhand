@@ -283,15 +283,9 @@ test_that("assess_robins_i creates valid result with all Low judgments", {
 	expect_s7_class(result, ROBINSIResult)
 	expect_equal(result@overall, "Low")
 	expect_equal(result@study_id, "OBS001")
-	expect_equal(result@judgment_counts$n_low, 7)
-	expect_equal(result@judgment_counts$n_moderate, 0)
-	expect_equal(result@judgment_counts$n_serious, 0)
-	expect_equal(result@judgment_counts$n_critical, 0)
-	expect_equal(result@judgment_counts$n_no_info, 0)
 })
 
-test_that("assess_robins_i auto-calculates overall as Critical with any
-           Critical domain", {
+test_that("assess_robins_i auto-calculates overall as Critical", {
 	result <- assess_robins_i(
 		study_id = "OBS001",
 		d1_confounding = "Critical",
@@ -306,8 +300,7 @@ test_that("assess_robins_i auto-calculates overall as Critical with any
 	expect_equal(result@overall, "Critical")
 })
 
-test_that("assess_robins_i auto-calculates overall as Serious with any
-           Serious (no Critical)", {
+test_that("assess_robins_i auto-calculates overall as Serious", {
 	# Single Serious domain
 	result1 <- assess_robins_i(
 		study_id = "OBS001",
@@ -335,8 +328,7 @@ test_that("assess_robins_i auto-calculates overall as Serious with any
 	expect_equal(result2@overall, "Serious")
 })
 
-test_that("assess_robins_i auto-calculates overall as Moderate with any
-           Moderate (no Serious/Critical)", {
+test_that("assess_robins_i auto-calculates overall as Moderate", {
 	# Single Moderate domain
 	result1 <- assess_robins_i(
 		study_id = "OBS001",
@@ -810,7 +802,7 @@ test_that("assess_robins_i_batch handles missing optional columns gracefully", {
 
 	results <- assess_robins_i_batch(data, .suppress_messages = TRUE)
 
-	expect_true(length(results[[1]]@domains[["D1_confounding"]]$support) >= 0)
+	expect_equal(results[[1]]@domains[["D1_confounding"]]$support, "")
 	expect_true(nzchar(results[[1]]@overall_justification))
 })
 

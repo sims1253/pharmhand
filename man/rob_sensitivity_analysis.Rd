@@ -52,7 +52,7 @@ rob_results <- list(
   assess_rob2("Study 2", "Low", "Low", "Low", "Low", "Low"),
   assess_rob2("Study 3", "High", "Low", "Low", "Low", "Low"),
   assess_rob2("Study 4", "Low", "Low", "Low", "Low", "Low"),
-  assess_rob2("Study 5", "Low", "Low", " concerns", "LowLow", "Some")
+  assess_rob2("Study 5", "Low", "Low", "Some concerns", "Low", "Low")
 )
 
 # Perform RoB sensitivity analysis

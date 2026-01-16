@@ -441,6 +441,15 @@ assess_robins_i <- function(
 }
 
 
+#' @keywords internal
+.get_optional_col <- function(row, col_name, default = "") {
+	if (col_name %in% names(row) && !is.na(row[[col_name]])) {
+		return(as.character(row[[col_name]]))
+	}
+	return(default)
+}
+
+
 #' Assess Multiple Studies with ROBINS-I
 #'
 #' Performs ROBINS-I risk of bias assessment for multiple non-randomized studies
@@ -521,41 +530,13 @@ assess_robins_i_batch <- function(data, .suppress_messages = FALSE) {
 		row <- data[i, ]
 
 		# Get support columns if present
-		d1_support <- if ("d1_support" %in% names(row) && !is.na(row$d1_support)) {
-			row$d1_support
-		} else {
-			""
-		}
-		d2_support <- if ("d2_support" %in% names(row) && !is.na(row$d2_support)) {
-			row$d2_support
-		} else {
-			""
-		}
-		d3_support <- if ("d3_support" %in% names(row) && !is.na(row$d3_support)) {
-			row$d3_support
-		} else {
-			""
-		}
-		d4_support <- if ("d4_support" %in% names(row) && !is.na(row$d4_support)) {
-			row$d4_support
-		} else {
-			""
-		}
-		d5_support <- if ("d5_support" %in% names(row) && !is.na(row$d5_support)) {
-			row$d5_support
-		} else {
-			""
-		}
-		d6_support <- if ("d6_support" %in% names(row) && !is.na(row$d6_support)) {
-			row$d6_support
-		} else {
-			""
-		}
-		d7_support <- if ("d7_support" %in% names(row) && !is.na(row$d7_support)) {
-			row$d7_support
-		} else {
-			""
-		}
+		d1_support <- .get_optional_col(row, "d1_support")
+		d2_support <- .get_optional_col(row, "d2_support")
+		d3_support <- .get_optional_col(row, "d3_support")
+		d4_support <- .get_optional_col(row, "d4_support")
+		d5_support <- .get_optional_col(row, "d5_support")
+		d6_support <- .get_optional_col(row, "d6_support")
+		d7_support <- .get_optional_col(row, "d7_support")
 
 		# Get optional parameters
 		outcome <- if ("outcome" %in% names(row) && !is.na(row$outcome)) {

@@ -253,7 +253,7 @@ calculate_rob_weights <- function(
 #'   assess_rob2("Study 2", "Low", "Low", "Low", "Low", "Low"),
 #'   assess_rob2("Study 3", "High", "Low", "Low", "Low", "Low"),
 #'   assess_rob2("Study 4", "Low", "Low", "Low", "Low", "Low"),
-#'   assess_rob2("Study 5", "Low", "Low", " concerns", "LowLow", "Some")
+#'   assess_rob2("Study 5", "Low", "Low", "Some concerns", "Low", "Low")
 #' )
 #'
 #' # Perform RoB sensitivity analysis
@@ -621,16 +621,11 @@ bias_adjusted_meta <- function(
 		ph_abort("rob_results must be a non-empty list of RoB results")
 	}
 
-	# Validate method parameter
-	valid_methods <- c("weight_downgrade", "exclude_high", "selection_model")
-	if (length(method) != 1 || !method %in% valid_methods) {
-		ph_abort(
-			paste0(
-				"method must be one of 'weight_downgrade', 'exclude_high', ",
-				"or 'selection_model'"
-			)
-		)
-	}
+	# Validate method parameter using match.arg
+	method <- match.arg(
+		method,
+		choices = c("weight_downgrade", "exclude_high", "selection_model")
+	)
 
 	# Extract data
 	yi <- meta_result@metadata$yi
@@ -855,10 +850,12 @@ bias_adjusted_meta <- function(
 		}
 
 		# Validate tau2 - cap extreme values
-		# Cap tau2 at a reasonable multiple of the average variance
+		# Cap tau2 at a reasonable multiple of average variance
 		avg_var <- mean(sei_incl^2)
 		max_tau2 <- 10 * avg_var # Cap at 10x average variance
-		if (is.na(tau2) || tau2 < 0 || !is.finite(tau2) || tau2 > max_tau2) {
+		if (is.na(tau2)) {
+			tau2 <- 0
+		} else if (tau2 < 0 || !is.finite(tau2) || tau2 > max_tau2) {
 			tau2 <- min(max(tau2, 0), max_tau2)
 		}
 
@@ -1143,7 +1140,9 @@ bias_adjusted_meta <- function(
 		# Validate tau2 - cap extreme values
 		avg_var <- mean(sei_incl^2)
 		max_tau2 <- 10 * avg_var
-		if (is.na(tau2) || tau2 < 0 || !is.finite(tau2) || tau2 > max_tau2) {
+		if (is.na(tau2)) {
+			tau2 <- 0
+		} else if (tau2 < 0 || !is.finite(tau2) || tau2 > max_tau2) {
 			tau2 <- min(max(tau2, 0), max_tau2)
 		}
 

@@ -288,27 +288,15 @@ narrative_template <- function(
 #'
 #' @keywords internal
 .format_effect_measure <- function(effect_measure, language = "en") {
-	labels <- if (language == "de") {
-		c(
-			hr = "HR",
-			or = "OR",
-			rr = "RR",
-			rd = "RD",
-			md = "MD",
-			smd = "SMD",
-			irr = "IRR"
-		)
-	} else {
-		c(
-			hr = "HR",
-			or = "OR",
-			rr = "RR",
-			rd = "RD",
-			md = "MD",
-			smd = "SMD",
-			irr = "IRR"
-		)
-	}
+	labels <- c(
+		hr = "HR",
+		or = "OR",
+		rr = "RR",
+		rd = "RD",
+		md = "MD",
+		smd = "SMD",
+		irr = "IRR"
+	)
 
 	labels[effect_measure] %||% effect_measure
 }
@@ -702,8 +690,7 @@ generate_evidence_narrative <- function(
 			estimate = estimate_formatted,
 			ci_level = ci_level_pct,
 			ci_formatted = ci_formatted,
-			p_formatted = p_formatted,
-			.effective = FALSE
+			p_formatted = p_formatted
 		)
 	)
 
@@ -720,7 +707,7 @@ generate_evidence_narrative <- function(
 
 		narrative_parts <- c(
 			narrative_parts,
-			glue::glue(het_template, i2 = sprintf("%.1f", i2), .effective = FALSE)
+			glue::glue(het_template, i2 = sprintf("%.1f", i2))
 		)
 	}
 
@@ -736,8 +723,7 @@ generate_evidence_narrative <- function(
 			narrative_parts,
 			glue::glue(
 				grade_template,
-				effect_direction_adj = effect_direction_adj,
-				.effective = FALSE
+				effect_direction_adj = effect_direction_adj
 			)
 		)
 	}
@@ -1168,7 +1154,7 @@ export_narrative <- function(narrative, path, append = FALSE) {
 		# Write list with names as headers
 		for (name in names(narrative)) {
 			if (nzchar(name)) {
-				cat(paste0("=== ", name, " ===\n"), file = path, append = TRUE)
+				cat(paste0("=== ", name, " ===\n"), file = path, append = append)
 			}
 			cat(narrative[[name]], file = path, append = TRUE)
 			cat("\n\n", file = path, append = TRUE)
@@ -1248,19 +1234,11 @@ generate_batch_narratives <- function(
 		row <- data[i, ]
 
 		# Create pseudo-result object
-		result <- list(
+		result <- ComparisonResult(
 			estimate = row$estimate,
 			ci = c(row$ci_lower, row$ci_upper),
 			p_value = row$p_value,
-			n = row$n_studies,
-			effect_measure = row$effect_measure,
-			heterogeneity = list(
-				I2 = if ("heterogeneity_i2" %in% names(row)) {
-					row$heterogeneity_i2
-				} else {
-					NA_real_
-				}
-			)
+			effect_measure = row$effect_measure
 		)
 
 		# Create pseudo-grade if present
