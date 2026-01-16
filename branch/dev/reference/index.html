@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1260,6 +1260,34 @@
 
         </dt>
         <dd>Prior Sensitivity Analysis for Bayesian Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="bias_adjusted_meta.html">bias_adjusted_meta()</a></code>
+
+        </dt>
+        <dd>Bias-Adjusted Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="rob_sensitivity_analysis.html">rob_sensitivity_analysis()</a></code>
+
+        </dt>
+        <dd>Sensitivity Analysis Across Risk of Bias Scenarios</dd>
+
+        <dt>
+
+          <code><a href="calculate_rob_weights.html">calculate_rob_weights()</a></code>
+
+        </dt>
+        <dd>Calculate Study Weights Based on Risk of Bias</dd>
+
+        <dt>
+
+          <code><a href="summarize_bias_adjusted.html">summarize_bias_adjusted()</a></code>
+
+        </dt>
+        <dd>Summarize Bias-Adjusted Meta-Analysis Results</dd>
       </dl></div><div class="section level2">
       <h2 id="network-meta-analysis">Network Meta-Analysis<a class="anchor" aria-label="anchor" href="#network-meta-analysis"></a></h2>
 
@@ -1332,6 +1360,227 @@
 
         </dt>
         <dd>Generates a league table showing all pairwise treatment comparisons from a network meta-analysis.</dd>
+      </dl></div><div class="section level2">
+      <h2 id="bias-assessment">Bias Assessment<a class="anchor" aria-label="anchor" href="#bias-assessment"></a></h2>
+
+      <div class="section-desc"><p>Functions for assessing risk of bias in clinical studies using standardized tools (RoB 2 for RCTs, ROBINS-I for observational studies).</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="RoB2Result.html">RoB2Result()</a></code>
+
+        </dt>
+        <dd>RoB2Result S7 Class</dd>
+
+        <dt>
+
+          <code><a href="assess_rob2.html">assess_rob2()</a></code>
+
+        </dt>
+        <dd>Assess Risk of Bias using RoB 2</dd>
+
+        <dt>
+
+          <code><a href="assess_rob2_batch.html">assess_rob2_batch()</a></code>
+
+        </dt>
+        <dd>Assess Multiple Studies with RoB 2</dd>
+
+        <dt>
+
+          <code><a href="rob2_summary.html">rob2_summary()</a></code>
+
+        </dt>
+        <dd>Create Summary Table of RoB 2 Assessments</dd>
+
+        <dt>
+
+          <code><a href="ROBINSIResult.html">ROBINSIResult()</a></code>
+
+        </dt>
+        <dd>ROBINSIResult S7 Class</dd>
+
+        <dt>
+
+          <code><a href="assess_robins_i.html">assess_robins_i()</a></code>
+
+        </dt>
+        <dd>Assess Risk of Bias using ROBINS-I</dd>
+
+        <dt>
+
+          <code><a href="assess_robins_i_batch.html">assess_robins_i_batch()</a></code>
+
+        </dt>
+        <dd>Assess Multiple Studies with ROBINS-I</dd>
+
+        <dt>
+
+          <code><a href="robins_i_summary.html">robins_i_summary()</a></code>
+
+        </dt>
+        <dd>Create Summary Table of ROBINS-I Assessments</dd>
+
+        <dt>
+
+          <code><a href="robins_i_plot.html">robins_i_plot()</a></code>
+
+        </dt>
+        <dd>Create ROBINS-I Summary Plot</dd>
+
+        <dt>
+
+          <code><a href="robins_i_to_df.html">robins_i_to_df()</a></code>
+
+        </dt>
+        <dd>Export ROBINS-I Assessment to Data Frame</dd>
+
+        <dt>
+
+          <code><a href="create_rob_traffic_light_plot.html">create_rob_traffic_light_plot()</a></code>
+
+        </dt>
+        <dd>Create Traffic Light Plot for Risk of Bias</dd>
+
+        <dt>
+
+          <code><a href="create_rob_summary_plot.html">create_rob_summary_plot()</a></code>
+
+        </dt>
+        <dd>Create Summary Plot for Risk of Bias</dd>
+
+        <dt>
+
+          <code><a href="save_rob_plot.html">save_rob_plot()</a></code>
+
+        </dt>
+        <dd>Save Risk of Bias Plot</dd>
+
+        <dt>
+
+          <code><a href="rob_data_to_tidy.html">rob_data_to_tidy()</a></code>
+
+        </dt>
+        <dd>Export Risk of Bias Data to Tidy Format</dd>
+      </dl></div><div class="section level2">
+      <h2 id="evidence-grading">Evidence Grading<a class="anchor" aria-label="anchor" href="#evidence-grading"></a></h2>
+
+      <div class="section-desc"><p>IQWiG evidence grading functions for assessing certainty of evidence using Beleg/Hinweis/Anhaltspunkt system.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="grade_evidence.html">grade_evidence()</a></code>
+
+        </dt>
+        <dd>Grade Evidence According to IQWiG Criteria</dd>
+
+        <dt>
+
+          <code><a href="assess_evidence_domains.html">assess_evidence_domains()</a></code>
+
+        </dt>
+        <dd>Assess Individual IQWiG Evidence Domains</dd>
+
+        <dt>
+
+          <code><a href="format_evidence_grade.html">format_evidence_grade()</a></code>
+
+        </dt>
+        <dd>Format Evidence Grade for Display</dd>
+
+        <dt>
+
+          <code><a href="evidence_summary_table.html">evidence_summary_table()</a></code>
+
+        </dt>
+        <dd>Create Evidence Summary Table</dd>
+
+        <dt>
+
+          <code><a href="create_evidence_summary_table.html">create_evidence_summary_table()</a></code>
+
+        </dt>
+        <dd>Create Evidence Summary Table</dd>
+
+        <dt>
+
+          <code><a href="create_study_characteristics_table.html">create_study_characteristics_table()</a></code>
+
+        </dt>
+        <dd>Create Study Characteristics Table</dd>
+
+        <dt>
+
+          <code><a href="export_evidence_table.html">export_evidence_table()</a></code>
+
+        </dt>
+        <dd>Export Evidence Table</dd>
+
+        <dt>
+
+          <code><a href="create_rob_summary_table.html">create_rob_summary_table()</a></code>
+
+        </dt>
+        <dd>Create Risk of Bias Summary Table</dd>
+
+        <dt>
+
+          <code><a href="evidence_narrative.html">evidence_narrative</a></code>
+
+        </dt>
+        <dd>Evidence Narrative Generation</dd>
+
+        <dt>
+
+          <code><a href="generate_evidence_narrative.html">generate_evidence_narrative()</a></code>
+
+        </dt>
+        <dd>Generate Evidence Narrative</dd>
+
+        <dt>
+
+          <code><a href="generate_endpoint_narrative.html">generate_endpoint_narrative()</a></code>
+
+        </dt>
+        <dd>Generate Endpoint-Specific Narrative</dd>
+
+        <dt>
+
+          <code><a href="generate_batch_narratives.html">generate_batch_narratives()</a></code>
+
+        </dt>
+        <dd>Generate Batch Narratives</dd>
+
+        <dt>
+
+          <code><a href="generate_full_evidence_report.html">generate_full_evidence_report()</a></code>
+
+        </dt>
+        <dd>Generate Full Evidence Report</dd>
+
+        <dt>
+
+          <code><a href="export_narrative.html">export_narrative()</a></code>
+
+        </dt>
+        <dd>Export Narrative to Text File</dd>
+
+        <dt>
+
+          <code><a href="narrative_template.html">narrative_template()</a></code>
+
+        </dt>
+        <dd>Narrative Template</dd>
       </dl></div><div class="section level2">
       <h2 id="gba-amnog-utilities">GBA/AMNOG Utilities<a class="anchor" aria-label="anchor" href="#gba-amnog-utilities"></a></h2>
 
@@ -1784,13 +2033,6 @@
 
         <dt>
 
-          <code><a href="meta_bias.html">meta_bias</a></code>
-
-        </dt>
-        <dd>Publication Bias Assessment Functions</dd>
-
-        <dt>
-
           <code><a href="meta_bayesian.html">meta_bayesian</a></code>
 
         </dt>
@@ -1798,10 +2040,59 @@
 
         <dt>
 
+          <code><a href="bias_rob2.html">bias_rob2</a></code>
+
+        </dt>
+        <dd>Risk of Bias 2 (RoB 2) Assessment for RCTs</dd>
+
+        <dt>
+
+          <code><a href="bias_robins_i.html">bias_robins_i</a></code>
+
+        </dt>
+        <dd>ROBINS-I (Risk Of Bias In Non-randomized Studies - of Interventions)</dd>
+
+        <dt>
+
+          <code><a href="bias_plots.html">bias_plots</a></code>
+
+        </dt>
+        <dd>Risk of Bias Visualization Functions</dd>
+
+        <dt>
+
+          <code><a href="meta_bias.html">meta_bias</a></code>
+
+        </dt>
+        <dd>Publication Bias Assessment Functions</dd>
+
+        <dt>
+
+          <code><a href="meta_bias_adjusted.html">meta_bias_adjusted</a></code>
+
+        </dt>
+        <dd>Bias-Adjusted Meta-Analysis Functions</dd>
+
+        <dt>
+
           <code><a href="pro_analysis.html">pro_analysis</a></code>
 
         </dt>
         <dd>PRO Analysis Functions</dd>
+
+        <dt>
+
+          <code><a href="evidence_grading.html">evidence_grading</a></code>
+
+        </dt>
+        <dd>IQWiG Evidence Grading Implementation</dd>
+
+        <dt>
+
+          <code><a href="evidence_summary_tables.html">evidence_summary_tables</a></code>
+
+        </dt>
+        <dd>Evidence Summary Tables</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

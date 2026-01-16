@@ -408,6 +408,14 @@ assessment, sensitivity analysis, and publication bias detection.
   : Format Bayesian Meta-Analysis Result for IQWiG Submission
 - [`prior_sensitivity_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/prior_sensitivity_analysis.md)
   : Prior Sensitivity Analysis for Bayesian Meta-Analysis
+- [`bias_adjusted_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bias_adjusted_meta.md)
+  : Bias-Adjusted Meta-Analysis
+- [`rob_sensitivity_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/rob_sensitivity_analysis.md)
+  : Sensitivity Analysis Across Risk of Bias Scenarios
+- [`calculate_rob_weights()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_rob_weights.md)
+  : Calculate Study Weights Based on Risk of Bias
+- [`summarize_bias_adjusted()`](https://sims1253.github.io/pharmhand/branch/dev/reference/summarize_bias_adjusted.md)
+  : Summarize Bias-Adjusted Meta-Analysis Results
 
 ## Network Meta-Analysis
 
@@ -436,6 +444,76 @@ comparing multiple treatments across studies.
 - [`create_league_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_league_table.md)
   : Generates a league table showing all pairwise treatment comparisons
   from a network meta-analysis.
+
+## Bias Assessment
+
+Functions for assessing risk of bias in clinical studies using
+standardized tools (RoB 2 for RCTs, ROBINS-I for observational studies).
+
+- [`RoB2Result()`](https://sims1253.github.io/pharmhand/branch/dev/reference/RoB2Result.md)
+  : RoB2Result S7 Class
+- [`assess_rob2()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_rob2.md)
+  : Assess Risk of Bias using RoB 2
+- [`assess_rob2_batch()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_rob2_batch.md)
+  : Assess Multiple Studies with RoB 2
+- [`rob2_summary()`](https://sims1253.github.io/pharmhand/branch/dev/reference/rob2_summary.md)
+  : Create Summary Table of RoB 2 Assessments
+- [`ROBINSIResult()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ROBINSIResult.md)
+  : ROBINSIResult S7 Class
+- [`assess_robins_i()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_robins_i.md)
+  : Assess Risk of Bias using ROBINS-I
+- [`assess_robins_i_batch()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_robins_i_batch.md)
+  : Assess Multiple Studies with ROBINS-I
+- [`robins_i_summary()`](https://sims1253.github.io/pharmhand/branch/dev/reference/robins_i_summary.md)
+  : Create Summary Table of ROBINS-I Assessments
+- [`robins_i_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/robins_i_plot.md)
+  : Create ROBINS-I Summary Plot
+- [`robins_i_to_df()`](https://sims1253.github.io/pharmhand/branch/dev/reference/robins_i_to_df.md)
+  : Export ROBINS-I Assessment to Data Frame
+- [`create_rob_traffic_light_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_rob_traffic_light_plot.md)
+  : Create Traffic Light Plot for Risk of Bias
+- [`create_rob_summary_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_rob_summary_plot.md)
+  : Create Summary Plot for Risk of Bias
+- [`save_rob_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_rob_plot.md)
+  : Save Risk of Bias Plot
+- [`rob_data_to_tidy()`](https://sims1253.github.io/pharmhand/branch/dev/reference/rob_data_to_tidy.md)
+  : Export Risk of Bias Data to Tidy Format
+
+## Evidence Grading
+
+IQWiG evidence grading functions for assessing certainty of evidence
+using Beleg/Hinweis/Anhaltspunkt system.
+
+- [`grade_evidence()`](https://sims1253.github.io/pharmhand/branch/dev/reference/grade_evidence.md)
+  : Grade Evidence According to IQWiG Criteria
+- [`assess_evidence_domains()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_evidence_domains.md)
+  : Assess Individual IQWiG Evidence Domains
+- [`format_evidence_grade()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_evidence_grade.md)
+  : Format Evidence Grade for Display
+- [`evidence_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/evidence_summary_table.md)
+  : Create Evidence Summary Table
+- [`create_evidence_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_evidence_summary_table.md)
+  : Create Evidence Summary Table
+- [`create_study_characteristics_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_study_characteristics_table.md)
+  : Create Study Characteristics Table
+- [`export_evidence_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/export_evidence_table.md)
+  : Export Evidence Table
+- [`create_rob_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_rob_summary_table.md)
+  : Create Risk of Bias Summary Table
+- [`evidence_narrative`](https://sims1253.github.io/pharmhand/branch/dev/reference/evidence_narrative.md)
+  : Evidence Narrative Generation
+- [`generate_evidence_narrative()`](https://sims1253.github.io/pharmhand/branch/dev/reference/generate_evidence_narrative.md)
+  : Generate Evidence Narrative
+- [`generate_endpoint_narrative()`](https://sims1253.github.io/pharmhand/branch/dev/reference/generate_endpoint_narrative.md)
+  : Generate Endpoint-Specific Narrative
+- [`generate_batch_narratives()`](https://sims1253.github.io/pharmhand/branch/dev/reference/generate_batch_narratives.md)
+  : Generate Batch Narratives
+- [`generate_full_evidence_report()`](https://sims1253.github.io/pharmhand/branch/dev/reference/generate_full_evidence_report.md)
+  : Generate Full Evidence Report
+- [`export_narrative()`](https://sims1253.github.io/pharmhand/branch/dev/reference/export_narrative.md)
+  : Export Narrative to Text File
+- [`narrative_template()`](https://sims1253.github.io/pharmhand/branch/dev/reference/narrative_template.md)
+  : Narrative Template
 
 ## GBA/AMNOG Utilities
 
@@ -578,9 +656,21 @@ Internal package documentation for architecture and modules.
   : Indirect Comparison Functions
 - [`meta_network`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_network.md)
   : Network Meta-Analysis Functions
-- [`meta_bias`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_bias.md)
-  : Publication Bias Assessment Functions
 - [`meta_bayesian`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_bayesian.md)
   : Bayesian Meta-Analysis Functions
+- [`bias_rob2`](https://sims1253.github.io/pharmhand/branch/dev/reference/bias_rob2.md)
+  : Risk of Bias 2 (RoB 2) Assessment for RCTs
+- [`bias_robins_i`](https://sims1253.github.io/pharmhand/branch/dev/reference/bias_robins_i.md)
+  : ROBINS-I (Risk Of Bias In Non-randomized Studies - of Interventions)
+- [`bias_plots`](https://sims1253.github.io/pharmhand/branch/dev/reference/bias_plots.md)
+  : Risk of Bias Visualization Functions
+- [`meta_bias`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_bias.md)
+  : Publication Bias Assessment Functions
+- [`meta_bias_adjusted`](https://sims1253.github.io/pharmhand/branch/dev/reference/meta_bias_adjusted.md)
+  : Bias-Adjusted Meta-Analysis Functions
 - [`pro_analysis`](https://sims1253.github.io/pharmhand/branch/dev/reference/pro_analysis.md)
   : PRO Analysis Functions
+- [`evidence_grading`](https://sims1253.github.io/pharmhand/branch/dev/reference/evidence_grading.md)
+  : IQWiG Evidence Grading Implementation
+- [`evidence_summary_tables`](https://sims1253.github.io/pharmhand/branch/dev/reference/evidence_summary_tables.md)
+  : Evidence Summary Tables

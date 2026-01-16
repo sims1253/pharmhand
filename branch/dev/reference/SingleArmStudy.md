@@ -8,7 +8,7 @@ Inherits from Study.
 ``` r
 SingleArmStudy(
   study_id = character(0),
-  study_title = character(0),
+  study_title = "",
   design = "single-arm",
   population = "ITT",
   endpoints = list(),

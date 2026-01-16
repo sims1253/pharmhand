@@ -1,0 +1,62 @@
+# Generate Batch Narratives
+
+Generates narratives for multiple endpoints at once from a data frame.
+
+## Usage
+
+``` r
+generate_batch_narratives(
+  data,
+  template = "iqwig",
+  language = c("en", "de"),
+  ci_level = 0.95
+)
+```
+
+## Arguments
+
+- data:
+
+  Data frame with columns: endpoint, estimate, ci_lower, ci_upper,
+  p_value, n_studies, n_patients, effect_measure, heterogeneity_i2
+  (optional), grade (optional), direction (optional).
+
+- template:
+
+  Character. Template name. Default: "iqwig".
+
+- language:
+
+  Character. Output language. Default: "en".
+
+- ci_level:
+
+  Numeric. Confidence level. Default: 0.95.
+
+## Value
+
+Character vector of narratives, named by endpoint.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Create data frame with results
+results_df <- data.frame(
+  endpoint = c("OS", "PFS", "ORR"),
+  estimate = c(0.75, 0.82, 1.45),
+  ci_lower = c(0.60, 0.70, 1.20),
+  ci_upper = c(0.94, 0.96, 1.75),
+  p_value = c(0.012, 0.025, 0.001),
+  n_studies = c(3, 3, 4),
+  n_patients = c(1245, 1200, 1500),
+  effect_measure = c("hr", "hr", "rr"),
+  heterogeneity_i2 = c(25, 35, 45),
+  grade = c("indication", "hint", "proof")
+)
+
+# Generate all narratives
+narratives <- generate_batch_narratives(results_df)
+print(narratives)
+} # }
+```

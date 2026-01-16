@@ -1,5 +1,114 @@
 # Changelog
 
+## pharmhand 0.4.0.9000
+
+### Phase 3: Quality Assessment
+
+#### Risk of Bias Assessment (RoB 2)
+
+- Added `RoB2Result` S7 class for storing RoB 2 assessment results.
+- Added
+  [`assess_rob2()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_rob2.md)
+  for single-study risk of bias assessment using Cochrane RoB 2 tool.
+- Added
+  [`assess_rob2_batch()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_rob2_batch.md)
+  for batch processing multiple studies from a data frame.
+- Added
+  [`rob2_summary()`](https://sims1253.github.io/pharmhand/branch/dev/reference/rob2_summary.md)
+  for creating summary tables of RoB 2 assessments.
+- Implements all 5 RoB 2 domains: randomization, deviations, missing
+  data, measurement, selection.
+- Automatic overall judgment calculation following RoB 2 algorithm.
+- Reference: IQWiG Allgemeine Methoden Section 10.1.4.
+
+#### Risk of Bias Assessment (ROBINS-I)
+
+- Added `ROBINSIResult` S7 class for storing ROBINS-I assessment
+  results.
+- Added
+  [`assess_robins_i()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_robins_i.md)
+  for single-study risk of bias assessment using ROBINS-I tool.
+- Added
+  [`assess_robins_i_batch()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_robins_i_batch.md)
+  for batch processing multiple studies from a data frame.
+- Added
+  [`robins_i_summary()`](https://sims1253.github.io/pharmhand/branch/dev/reference/robins_i_summary.md)
+  for creating summary tables of ROBINS-I assessments.
+- Implements all 7 ROBINS-I domains: confounding, participant selection,
+  classification of interventions, deviations, missing data, outcome
+  measurement, selection of reported result.
+- Supports 5-level judgments: Low, Moderate, Serious, Critical, No
+  information.
+- Reference: IQWiG Allgemeine Methoden Section 10.1.4.
+
+#### Risk of Bias Visualization
+
+- Added
+  [`create_rob_traffic_light_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_rob_traffic_light_plot.md)
+  for traffic light visualization of domain-level judgments.
+- Added
+  [`create_rob_summary_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_rob_summary_plot.md)
+  for stacked bar plot summaries of bias assessments.
+- Added
+  [`save_rob_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/save_rob_plot.md)
+  for exporting plots to PNG, SVG, PDF and other formats.
+- Added
+  [`rob_data_to_tidy()`](https://sims1253.github.io/pharmhand/branch/dev/reference/rob_data_to_tidy.md)
+  for converting assessment results to tidy data frames.
+- Supports both RoB 2 and ROBINS-I assessment results.
+- Uses standard risk of bias color scheme (green/yellow/red/gray).
+
+#### Bias-Adjusted Meta-Analysis
+
+- Added
+  [`bias_adjusted_meta()`](https://sims1253.github.io/pharmhand/branch/dev/reference/bias_adjusted_meta.md)
+  for meta-analysis with risk of bias adjustments.
+- Added
+  [`rob_sensitivity_analysis()`](https://sims1253.github.io/pharmhand/branch/dev/reference/rob_sensitivity_analysis.md)
+  for sensitivity analysis across RoB scenarios.
+- Added
+  [`calculate_rob_weights()`](https://sims1253.github.io/pharmhand/branch/dev/reference/calculate_rob_weights.md)
+  for computing RoB-adjusted study weights.
+- Added
+  [`summarize_bias_adjusted()`](https://sims1253.github.io/pharmhand/branch/dev/reference/summarize_bias_adjusted.md)
+  for comparing original and adjusted estimates.
+- Supports three adjustment methods: weight_downgrade, exclude_high,
+  selection_model.
+- Integrates with RoB 2 and ROBINS-I assessment results.
+
+#### IQWiG Evidence Grading
+
+- Added
+  [`grade_evidence()`](https://sims1253.github.io/pharmhand/branch/dev/reference/grade_evidence.md)
+  for assessing evidence certainty using IQWiG methodology.
+- Added
+  [`assess_evidence_domains()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assess_evidence_domains.md)
+  for evaluating individual evidence domains.
+- Added
+  [`format_evidence_grade()`](https://sims1253.github.io/pharmhand/branch/dev/reference/format_evidence_grade.md)
+  for German (Beleg/Hinweis/Anhaltspunkt) or English output.
+- Implements IQWiG 3.1.4 evidence grading: Beleg (Proof), Hinweis
+  (Indication), Anhaltspunkt (Hint), Kein Beleg (No proof).
+- Evaluates: study limitations, inconsistency, imprecision,
+  indirectness, publication bias.
+- Integrates with RoB 2 assessments for study quality evaluation.
+
+#### Evidence Summary Tables
+
+- Added
+  [`create_evidence_summary_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_evidence_summary_table.md)
+  for IQWiG-formatted evidence summary tables.
+- Added
+  [`create_study_characteristics_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_study_characteristics_table.md)
+  for G-BA Module 4 study characteristics.
+- Added
+  [`export_evidence_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/export_evidence_table.md)
+  for multi-format export (Word, HTML, Excel).
+- Includes: endpoint, N studies, effect estimate, CI, p-value, I², RoB
+  summary, evidence grade.
+- Supports German/English bilingual output with IQWiG-compliant
+  formatting.
+
 ## pharmhand 0.3.4.9000
 
 ### Fixes and maintenance
