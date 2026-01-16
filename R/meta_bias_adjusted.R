@@ -1079,7 +1079,8 @@ bias_adjusted_meta <- function(
 	p_values <- 2 * stats::pnorm(-abs(z_scores))
 
 	# Calculate selection probability based on p-value
-	# This models publication bias: studies with significant results (p < selection_alpha)
+	# This models publication bias: studies with significant results
+	# (p < selection_alpha)
 	# are more likely to be published. We account for this by giving them higher
 	# selection probability in the model (rather than down-weighting them).
 	# The adjustment is that non-significant studies get reduced weight (0.5) to
