@@ -325,6 +325,14 @@ reference:
   - create_evidence_summary_table
   - create_study_characteristics_table
   - export_evidence_table
+  - create_rob_summary_table
+  - evidence_narrative
+  - generate_evidence_narrative
+  - generate_endpoint_narrative
+  - generate_batch_narratives
+  - generate_full_evidence_report
+  - export_narrative
+  - narrative_template
 
 - title: "GBA/AMNOG Utilities"
   desc: >
@@ -345,6 +353,7 @@ reference:
   - theme_gba
   - theme_iqwig
   - to_gba_template
+
 
 - title: "Localization"
   desc: >

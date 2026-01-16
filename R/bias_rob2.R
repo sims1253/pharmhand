@@ -304,7 +304,7 @@ assess_rob2 <- function(
 	for (i in seq_along(ROB2_DOMAINS)) {
 		domains[[ROB2_DOMAINS[i]]] <- list(
 			judgment = judgments[i],
-			support = supports[i] %||% ""
+			support = supports[i]
 		)
 	}
 
@@ -335,6 +335,15 @@ assess_rob2 <- function(
 		outcome = outcome,
 		metadata = metadata
 	)
+}
+
+
+#' @keywords internal
+.get_optional_col <- function(row, col_name, default = "") {
+	if (col_name %in% names(row) && !is.na(row[[col_name]])) {
+		return(as.character(row[[col_name]]))
+	}
+	return(default)
 }
 
 
@@ -412,31 +421,11 @@ assess_rob2_batch <- function(data, .suppress_messages = FALSE) {
 		row <- data[i, ]
 
 		# Get support columns if present
-		d1_support <- if ("d1_support" %in% names(row) && !is.na(row$d1_support)) {
-			row$d1_support
-		} else {
-			""
-		}
-		d2_support <- if ("d2_support" %in% names(row) && !is.na(row$d2_support)) {
-			row$d2_support
-		} else {
-			""
-		}
-		d3_support <- if ("d3_support" %in% names(row) && !is.na(row$d3_support)) {
-			row$d3_support
-		} else {
-			""
-		}
-		d4_support <- if ("d4_support" %in% names(row) && !is.na(row$d4_support)) {
-			row$d4_support
-		} else {
-			""
-		}
-		d5_support <- if ("d5_support" %in% names(row) && !is.na(row$d5_support)) {
-			row$d5_support
-		} else {
-			""
-		}
+		d1_support <- .get_optional_col(row, "d1_support")
+		d2_support <- .get_optional_col(row, "d2_support")
+		d3_support <- .get_optional_col(row, "d3_support")
+		d4_support <- .get_optional_col(row, "d4_support")
+		d5_support <- .get_optional_col(row, "d5_support")
 
 		# Get optional parameters
 		outcome <- if ("outcome" %in% names(row) && !is.na(row$outcome)) {

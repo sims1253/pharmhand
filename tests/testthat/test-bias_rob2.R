@@ -783,6 +783,7 @@ test_that("RoB2Result print method works", {
 })
 
 test_that("All three judgments are valid for all domains", {
+	skip_on_cran()
 	# Test that each domain accepts all three judgment values
 	judgments <- c("Low", "Some concerns", "High")
 

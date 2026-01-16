@@ -756,12 +756,13 @@ test_that("evidence_summary_table works with EvidenceGrade objects", {
 		)
 	)
 
-	table_df <- evidence_summary_table(grades, language = "en")
+	table_df <- evidence_summary_table(grades)
 
 	expect_s3_class(table_df, "data.frame")
 	expect_equal(nrow(table_df), 2)
-	expect_equal(ncol(table_df), 6)
+	expect_equal(ncol(table_df), 7)
 	expect_equal(table_df$outcome, c("OS", "PFS"))
+	expect_equal(table_df$grade, c("proof", "indication"))
 	expect_equal(table_df$grade_en, c("proof", "indication"))
 	expect_equal(table_df$grade_de, c("Beleg", "Hinweis"))
 })
@@ -908,7 +909,7 @@ test_that("All four evidence grades can be produced by grade_evidence", {
 
 	grade_proof <- grade_evidence(
 		meta_res_proof,
-		rob_results = rob_results_low[1:6],
+		rob_results = rob_results_low,
 		direction = "benefit"
 	)
 

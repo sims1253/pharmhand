@@ -266,10 +266,7 @@ assess_evidence_domains <- function(
 	# Inconsistency (Heterogeneity)
 	inconsistency <- .assess_inconsistency(
 		heterogeneity = heterogeneity,
-		n_studies = n_studies,
-		ci = ci,
-		ci_level = ci_level,
-		effect_measure = effect_measure
+		n_studies = n_studies
 	)
 
 	# Imprecision (Confidence Interval Width)
@@ -405,10 +402,7 @@ assess_evidence_domains <- function(
 #' @keywords internal
 .assess_inconsistency <- function(
 	heterogeneity,
-	n_studies,
-	ci,
-	ci_level,
-	effect_measure
+	n_studies
 ) {
 	I2 <- heterogeneity$I2 %||% NA_real_
 	tau2 <- heterogeneity$tau2 %||% NA_real_
@@ -495,9 +489,11 @@ assess_evidence_domains <- function(
 	}
 
 	# Assess precision based on CI width and whether CI includes null
-	ci_includes_null <- (ci[1] < 1 && ci[2] > 1) ||
-		(ci[1] < 0 && ci[2] > 0) ||
-		(ci[1] < 0 && ci[2] < 0 && ci[1] * ci[2] > 0)
+	if (effect_measure %in% c("hr", "or", "rr")) {
+		ci_includes_null <- (ci[1] < 1 && ci[2] > 1)
+	} else {
+		ci_includes_null <- (ci[1] < 0 && ci[2] > 0)
+	}
 
 	if (ci_includes_null) {
 		# CI includes null - imprecise
@@ -998,7 +994,11 @@ print.EvidenceGrade <- function(x, ...) {
 		cat("\nDomain assessments:\n")
 		for (d in names(x@domains)) {
 			domain <- x@domains[[d]]
-			cat(sprintf("  %s: %s (rating=%.2f)\n", d, domain$level, domain$rating))
+			if (is.na(domain$rating)) {
+				cat(sprintf("  %s: %s (not assessed)\n", d, domain$level))
+			} else {
+				cat(sprintf("  %s: %s (rating=%.2f)\n", d, domain$level, domain$rating))
+			}
 		}
 	}
 
@@ -1073,8 +1073,11 @@ evidence_summary_table <- function(
 	grade_data <- lapply(seq_along(grades), function(i) {
 		g <- grades[[i]]
 		if (S7::S7_inherits(g, EvidenceGrade)) {
+			# Select grade based on language parameter
+			grade_display <- if (language == "de") g@grade_de else g@grade
 			list(
 				outcome = out_names[i],
+				grade = grade_display,
 				grade_en = g@grade,
 				grade_de = g@grade_de,
 				certainty = g@certainty,
@@ -1082,10 +1085,15 @@ evidence_summary_table <- function(
 				direction = g@direction
 			)
 		} else {
+			# Select grade based on language parameter
+			grade_val <- g$grade %||% NA_character_
+			grade_de_val <- g$grade_de %||% NA_character_
+			grade_display <- if (language == "de") grade_de_val else grade_val
 			list(
 				outcome = out_names[i],
-				grade_en = g$grade %||% NA_character_,
-				grade_de = g$grade_de %||% NA_character_,
+				grade = grade_display,
+				grade_en = grade_val,
+				grade_de = grade_de_val,
 				certainty = g$certainty %||% NA_real_,
 				n_studies = g$n_studies %||% NA_integer_,
 				direction = g$direction %||% NA_character_

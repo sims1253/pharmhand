@@ -218,7 +218,7 @@ create_rob_traffic_light_plot <- function(
 	)
 
 	# Create judgment factor with all levels
-	all_judgments <- unique(c(colors, names(colors)))
+	all_judgments <- unique(c(names(colors), plot_df$judgment))
 	plot_df$judgment <- factor(
 		plot_df$judgment,
 		levels = all_judgments,
@@ -294,7 +294,7 @@ create_rob_traffic_light_plot <- function(
 		)
 		overall_plot_df$domain_label <- factor(
 			overall_plot_df$domain_label,
-			levels = c("Overall", levels(plot_df$domain_label)),
+			levels = c(levels(plot_df$domain_label), "Overall"),
 			ordered = TRUE
 		)
 

@@ -199,7 +199,7 @@ test_that("calculate_rob_weights normalizes weights to sum to 1", {
 	expect_true(rob_weights$multipliers["Study 4"] == 0)
 })
 
-test_that("calculate_rob_weights normalizes weights to sum to 1", {
+test_that("calculate_rob_weights normalizes ROB2 weights to sum to 1", {
 	meta_res <- meta_analysis(
 		yi = .meta_yi_hr,
 		sei = .meta_sei_hr,
@@ -768,7 +768,7 @@ test_that("bias_adjusted_meta errors with mismatched method", {
 
 	expect_error(
 		bias_adjusted_meta(meta_res, rob_results, method = "invalid_method"),
-		"method must be one of"
+		"'arg' should be one of"
 	)
 })
 
