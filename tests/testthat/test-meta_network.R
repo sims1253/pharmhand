@@ -304,7 +304,10 @@ test_that("create_network_plot handles disconnected components", {
 		se = c(0.12, 0.15)
 	)
 
-	nma_res <- network_meta(disconnected_data, effect_measure = "hr")
+	expect_warning(
+		nma_res <- network_meta(disconnected_data, effect_measure = "hr"),
+		"not be fully connected"
+	)
 	plot <- create_network_plot(nma_res)
 
 	expect_s7_class(plot, ClinicalPlot)

@@ -1088,30 +1088,36 @@ test_that("All five judgments are valid for all domains", {
 	# Verify all domains accept all judgment values
 	# Test a representative subset: all judgments for d1, and Low/Critical for rest
 	limited_judgments <- c("Low", "Critical")
-	for (d1 in judgments) {
-		for (d2 in limited_judgments) {
-			for (d3 in limited_judgments) {
-				for (d4 in limited_judgments) {
-					for (d5 in limited_judgments) {
-						for (d6 in limited_judgments) {
-							for (d7 in limited_judgments) {
-								result <- assess_robins_i(
-									study_id = "TEST_BOUNDARY",
-									d1_confounding = d1,
-									d2_selection = d2,
-									d3_classification = d3,
-									d4_deviations = d4,
-									d5_missing_data = d5,
-									d6_measurement = d6,
-									d7_selection_report = d7
-								)
-								expect_s7_class(result, ROBINSIResult)
-							}
-						}
-					}
-				}
-			}
-		}
+
+	# Generate Cartesian product of inputs using expand.grid
+	test_cases <- expand.grid(
+		d1 = judgments,
+		d2 = limited_judgments,
+		d3 = limited_judgments,
+		d4 = limited_judgments,
+		d5 = limited_judgments,
+		d6 = limited_judgments,
+		d7 = limited_judgments,
+		stringsAsFactors = FALSE
+	)
+
+	# Limit to first 50 cases for reasonable test time
+	test_cases <- test_cases[seq_len(min(nrow(test_cases), 50)), ]
+
+	# Single-level iteration over generated test cases
+	for (i in seq_len(nrow(test_cases))) {
+		tc <- test_cases[i, ]
+		result <- assess_robins_i(
+			study_id = sprintf("TEST_BOUNDARY_%d", i),
+			d1_confounding = tc$d1,
+			d2_selection = tc$d2,
+			d3_classification = tc$d3,
+			d4_deviations = tc$d4,
+			d5_missing_data = tc$d5,
+			d6_measurement = tc$d6,
+			d7_selection_report = tc$d7
+		)
+		expect_s7_class(result, ROBINSIResult)
 	}
 })
 

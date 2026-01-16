@@ -608,6 +608,14 @@ print.RoB2Result <- function(x, ...) {
 	invisible(x)
 }
 
+# S7 external generic for print - consistent with EvidenceGrade pattern
+print_rob2_external <- S7::new_external_generic("base", "print", "x")
+
+S7::method(print_rob2_external, RoB2Result) <- function(x, ...) {
+	print.RoB2Result(x, ...)
+	invisible(x)
+}
+
 
 #' Internal Helper: Calculate Overall RoB 2 Judgment
 #'

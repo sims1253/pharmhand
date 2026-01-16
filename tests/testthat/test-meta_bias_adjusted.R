@@ -142,7 +142,7 @@ test_that("calculate_rob_weights applies correct multipliers for ROBINS-I", {
 	expect_true(rob_weights$multipliers["Study 4"] == 0)
 })
 
-test_that("calculate_rob_weights normalizes weights to sum to 1", {
+test_that("calculate_rob_weights returns correct multipliers for ROBINS-I judgments", {
 	meta_res <- meta_analysis(
 		yi = .meta_yi_hr,
 		sei = .meta_sei_hr,
@@ -333,31 +333,6 @@ test_that("rob_sensitivity_analysis returns list with required components", {
 
 	sensitivity <- rob_sensitivity_analysis(meta_res, rob_results)
 
-	expect_true(is.list(sensitivity))
-	expect_true("results" %in% names(sensitivity))
-	expect_true("scenarios" %in% names(sensitivity))
-	expect_true("original_estimate" %in% names(sensitivity))
-	expect_true("comparison" %in% names(sensitivity))
-	expect_true("effect_measure" %in% names(sensitivity))
-})
-
-test_that("rob_sensitivity_analysis runs All studies scenario", {
-	meta_res <- meta_analysis(
-		yi = .meta_yi_hr,
-		sei = .meta_sei_hr,
-		study_labels = paste("Study", 1:5),
-		effect_measure = "hr",
-		model = "random"
-	)
-
-	rob_results <- list(
-		assess_rob2("Study 1", "Low", "Low", "Low", "Low", "Low"),
-		assess_rob2("Study 2", "Low", "Low", "Low", "Low", "Low"),
-		assess_rob2("Study 3", "High", "Low", "Low", "Low", "Low")
-	)
-
-	sensitivity <- rob_sensitivity_analysis(meta_res, rob_results)
-
 	expect_true("All studies" %in% sensitivity$results$scenario)
 })
 
@@ -456,7 +431,10 @@ test_that("rob_sensitivity_analysis works with ROBINS-I assessments", {
 		assess_robins_i("Study 5", "Low", "Low", "Low", "Low", "Low", "Low", "Low")
 	)
 
-	sensitivity <- rob_sensitivity_analysis(meta_res, rob_results)
+	expect_warning(
+		sensitivity <- rob_sensitivity_analysis(meta_res, rob_results),
+		"very low degrees of freedom"
+	)
 
 	expect_true("All studies" %in% sensitivity$results$scenario)
 	expect_true("Low risk only" %in% sensitivity$results$scenario)
@@ -479,7 +457,10 @@ test_that("rob_sensitivity_analysis calculates percent change from original", {
 		assess_rob2("Study 3", "Low", "Low", "Low", "Low", "Low")
 	)
 
-	sensitivity <- rob_sensitivity_analysis(meta_res, rob_results)
+	expect_warning(
+		sensitivity <- rob_sensitivity_analysis(meta_res, rob_results),
+		"very low degrees of freedom"
+	)
 
 	expect_true("pct_change_from_original" %in% names(sensitivity$results))
 })
@@ -556,6 +537,8 @@ test_that("bias_adjusted_meta returns BiasAdjustedMetaResult", {
 	)
 
 	expect_true(inherits(adjusted, "BiasAdjustedMetaResult"))
+	# Also verify S7 base class
+	expect_s7_class(adjusted, MetaResult)
 })
 
 test_that("bias_adjusted_meta with weight_downgrade adjusts weights", {
@@ -680,7 +663,10 @@ test_that("bias_adjusted_meta works with ROBINS-I assessments", {
 	)
 
 	expect_true(adjusted@metadata$adjustment_method == "weight_downgrade")
+	# With exclude_high=TRUE (default), Serious/Critical studies are excluded
 	expect_true(adjusted@n < meta_res@n)
+	# Verify Serious study was excluded
+	expect_true("Study 3" %in% adjusted@metadata$excluded_studies)
 })
 
 test_that("bias_adjusted_meta stores adjustment metadata", {

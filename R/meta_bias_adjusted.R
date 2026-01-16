@@ -772,6 +772,10 @@ bias_adjusted_meta <- function(
 		)
 	)
 
+	# Note: We use S3 class "tacking" here for backward compatibility with print
+	# method dispatch (print.BiasAdjustedMetaResult). MetaResult is an S7 class,
+	# and creating a formal S7 subclass would require more complex setup. The S3
+	# class is prepended to allow S3 dispatch to work while preserving S7 behavior.
 	class(adjusted_result) <- c("BiasAdjustedMetaResult", class(adjusted_result))
 
 	adjusted_result
@@ -1075,7 +1079,11 @@ bias_adjusted_meta <- function(
 	p_values <- 2 * stats::pnorm(-abs(z_scores))
 
 	# Calculate selection probability based on p-value
-	# Studies with p < selection_alpha have higher probability of being selected
+	# This models publication bias: studies with significant results (p < selection_alpha)
+	# are more likely to be published. We account for this by giving them higher
+	# selection probability in the model (rather than down-weighting them).
+	# The adjustment is that non-significant studies get reduced weight (0.5) to
+	# reflect their lower publication probability in the observed sample.
 	selection_prob <- ifelse(p_values < selection_alpha, 1, 0.5)
 
 	# Combine selection probability with RoB weight

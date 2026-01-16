@@ -732,7 +732,7 @@ test_that("Complete ROBINS-I workflow: assess -> plot -> save -> tidy", {
 
 	withr::with_tempdir({
 		filename <- "robinsi_workflow.pdf"
-		output <- save_rob_plot(summary_plot, filename)
+		output <- suppressWarnings(save_rob_plot(summary_plot, filename))
 		expect_true(file.exists(output))
 	})
 })

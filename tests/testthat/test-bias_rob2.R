@@ -631,7 +631,7 @@ test_that("assess_rob2_batch rejects data frame without required domain
 test_that("assess_rob2_batch rejects non-data-frame input", {
 	expect_error(
 		assess_rob2_batch(list(study_id = "S1")),
-		class = "error"
+		regexp = "must be class.*data\\.frame"
 	)
 })
 

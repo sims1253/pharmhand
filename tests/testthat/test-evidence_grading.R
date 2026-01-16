@@ -252,7 +252,7 @@ test_that("grade_evidence rejects non-MetaResult/ComparisonResult", {
 test_that("grade_evidence handles CI including null for proof downgrade", {
 	meta_res <- MetaResult(
 		estimate = 0.85,
-		ci = c(0.98, 1.25),
+		ci = c(0.70, 1.02),
 		p_value = 0.08,
 		n = 5L,
 		effect_measure = "hr",
@@ -303,7 +303,7 @@ test_that("assess_evidence_domains returns all five domains", {
 	)
 
 	for (d in names(domains)) {
-		expect_true(d %in% names(domains))
+		expect_true(is.list(domains[[d]]))
 		expect_true("level" %in% names(domains[[d]]))
 		expect_true("rating" %in% names(domains[[d]]))
 		expect_true("notes" %in% names(domains[[d]]))
@@ -426,7 +426,7 @@ test_that("assess_evidence_domains assesses imprecision by CI inclusion", {
 
 	domains_wide <- assess_evidence_domains(
 		estimate = 0.85,
-		ci = c(0.98, 1.25),
+		ci = c(0.70, 1.02),
 		p_value = 0.08,
 		heterogeneity = list(),
 		rob_results = NULL,

@@ -359,31 +359,8 @@ assess_robins_i <- function(
 	}
 	admiraldev::assert_character_scalar(study_id)
 
-	# Validate domain judgments are not NULL (before c() drops them)
-	if (is.null(d1_confounding)) {
-		ph_abort("D1_confounding judgment is required")
-	}
-	if (is.null(d2_selection)) {
-		ph_abort("D2_selection judgment is required")
-	}
-	if (is.null(d3_classification)) {
-		ph_abort("D3_classification judgment is required")
-	}
-	if (is.null(d4_deviations)) {
-		ph_abort("D4_deviations judgment is required")
-	}
-	if (is.null(d5_missing_data)) {
-		ph_abort("D5_missing_data judgment is required")
-	}
-	if (is.null(d6_measurement)) {
-		ph_abort("D6_measurement judgment is required")
-	}
-	if (is.null(d7_selection_report)) {
-		ph_abort("D7_selection_report judgment is required")
-	}
-
-	# Collect domain judgments
-	judgments <- c(
+	# Use lists to preserve NULL values (c() drops NULLs)
+	judgments <- list(
 		d1 = d1_confounding,
 		d2 = d2_selection,
 		d3 = d3_classification,
@@ -393,11 +370,22 @@ assess_robins_i <- function(
 		d7 = d7_selection_report
 	)
 
+	# Collect supporting text
+	supports <- list(
+		d1 = d1_support,
+		d2 = d2_support,
+		d3 = d3_support,
+		d4 = d4_support,
+		d5 = d5_support,
+		d6 = d6_support,
+		d7 = d7_support
+	)
+
 	# Validate all judgments
 	for (i in seq_along(ROBINSI_DOMAINS)) {
 		domain_name <- ROBINSI_DOMAINS[i]
 		judgment <- judgments[[i]]
-		if (is.null(judgment) || is.na(judgment) || judgment == "") {
+		if (is.null(judgment) || is.na(judgment) || identical(judgment, "")) {
 			ph_abort(sprintf("%s judgment is required", domain_name))
 		}
 		if (!judgment %in% ROBINSI_JUDGMENTS) {
@@ -409,23 +397,16 @@ assess_robins_i <- function(
 		}
 	}
 
-	# Collect supporting text
-	supports <- c(
-		d1 = d1_support,
-		d2 = d2_support,
-		d3 = d3_support,
-		d4 = d4_support,
-		d5 = d5_support,
-		d6 = d6_support,
-		d7 = d7_support
-	)
-
 	# Build domains list
 	domains <- list()
 	for (i in seq_along(ROBINSI_DOMAINS)) {
+		support_val <- supports[[i]]
+		if (is.null(support_val) || is.na(support_val)) {
+			support_val <- ""
+		}
 		domains[[ROBINSI_DOMAINS[i]]] <- list(
 			judgment = judgments[[i]],
-			support = supports[[i]] %||% ""
+			support = support_val
 		)
 	}
 
@@ -669,7 +650,7 @@ robins_i_summary <- function(results, include_justification = FALSE) {
 	}
 
 	if (length(results) == 0) {
-		return(data.frame(
+		empty_df <- data.frame(
 			study_id = character(),
 			outcome = character(),
 			intervention = character(),
@@ -683,7 +664,11 @@ robins_i_summary <- function(results, include_justification = FALSE) {
 			d7_selection_report = character(),
 			overall = character(),
 			stringsAsFactors = FALSE
-		))
+		)
+		if (include_justification) {
+			empty_df$overall_justification <- character()
+		}
+		return(empty_df)
 	}
 
 	# Check all elements are ROBINSIResult
@@ -1030,7 +1015,7 @@ robins_i_plot <- function(
 #'
 #' @param result A ROBINSIResult object.
 #' @param wide_format Logical. If TRUE, returns wide format with one row per
-#'   domain. If FALSE, returns long format. Default: FALSE.
+#'   study. If FALSE, returns long format. Default: FALSE.
 #'
 #' @return A data frame with assessment details.
 #' @export

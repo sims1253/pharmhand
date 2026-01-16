@@ -8,7 +8,14 @@ test_that("create_meta_forest_plot creates ClinicalPlot", {
 	yi <- log(c(0.75, 0.82, 0.68))
 	sei <- c(0.12, 0.15, 0.18)
 
-	meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+	expect_warning(
+		meta_res <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr"
+		),
+		"low degrees of freedom"
+	)
 	plot <- create_meta_forest_plot(meta_res)
 
 	expect_s7_class(plot, ClinicalPlot)
@@ -19,7 +26,14 @@ test_that("create_meta_forest_plot supports customization", {
 	yi <- log(c(0.75, 0.82, 0.68))
 	sei <- c(0.12, 0.15, 0.18)
 
-	meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+	expect_warning(
+		meta_res <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr"
+		),
+		"low degrees of freedom"
+	)
 
 	plot_custom <- create_meta_forest_plot(
 		meta_res,
@@ -49,7 +63,14 @@ test_that("create_meta_forest_plot shows elements when enabled", {
 	yi <- log(c(0.75, 0.82, 0.68))
 	sei <- c(0.12, 0.15, 0.18)
 
-	meta_res <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+	expect_warning(
+		meta_res <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr"
+		),
+		"low degrees of freedom"
+	)
 
 	# Create with prediction interval for testing
 	meta_res@prediction_interval <- c(0.5, 1.2)

@@ -229,7 +229,10 @@ test_that("meta_analysis accepts data frame input", {
 		sei = c(0.12, 0.15, 0.18)
 	)
 
-	result <- meta_analysis(data = df, effect_measure = "hr")
+	expect_warning(
+		result <- meta_analysis(data = df, effect_measure = "hr"),
+		"low degrees of freedom"
+	)
 
 	expect_s7_class(result, MetaResult)
 	expect_equal(result@n, 3L)
@@ -392,11 +395,14 @@ test_that("meta_analysis stores individual study results", {
 	yi <- .meta_yi_hr_small
 	sei <- .meta_sei_hr_small
 
-	result <- meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		study_labels = c("Study 1", "Study 2", "Study 3")
+	expect_warning(
+		result <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr",
+			study_labels = c("Study 1", "Study 2", "Study 3")
+		),
+		"low degrees of freedom"
 	)
 
 	expect_true(is.list(result@study_results))
@@ -407,11 +413,14 @@ test_that("meta_analysis stores study results as ComparisonResult", {
 	yi <- .meta_yi_hr_small
 	sei <- .meta_sei_hr_small
 
-	result <- meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		study_labels = c("Study 1", "Study 2", "Study 3")
+	expect_warning(
+		result <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr",
+			study_labels = c("Study 1", "Study 2", "Study 3")
+		),
+		"low degrees of freedom"
 	)
 
 	expect_true(all(sapply(result@study_results, function(x) {
@@ -423,11 +432,14 @@ test_that("meta_analysis labels study results correctly", {
 	yi <- .meta_yi_hr_small
 	sei <- .meta_sei_hr_small
 
-	result <- meta_analysis(
-		yi = yi,
-		sei = sei,
-		effect_measure = "hr",
-		study_labels = c("Study 1", "Study 2", "Study 3")
+	expect_warning(
+		result <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr",
+			study_labels = c("Study 1", "Study 2", "Study 3")
+		),
+		"low degrees of freedom"
 	)
 
 	expect_equal(names(result@study_results), c("Study 1", "Study 2", "Study 3"))
@@ -437,7 +449,14 @@ test_that("meta_analysis stores study weights", {
 	yi <- .meta_yi_hr_small
 	sei <- .meta_sei_hr_small
 
-	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+	expect_warning(
+		result <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr"
+		),
+		"low degrees of freedom"
+	)
 
 	expect_true(!is.null(result@weights))
 	expect_length(result@weights, 3)
@@ -447,7 +466,14 @@ test_that("meta_analysis has positive study weights", {
 	yi <- .meta_yi_hr_small
 	sei <- .meta_sei_hr_small
 
-	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+	expect_warning(
+		result <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr"
+		),
+		"low degrees of freedom"
+	)
 
 	expect_true(all(result@weights > 0))
 })
@@ -456,7 +482,14 @@ test_that("meta_analysis study weights sum to 1", {
 	yi <- .meta_yi_hr_small
 	sei <- .meta_sei_hr_small
 
-	result <- meta_analysis(yi = yi, sei = sei, effect_measure = "hr")
+	expect_warning(
+		result <- meta_analysis(
+			yi = yi,
+			sei = sei,
+			effect_measure = "hr"
+		),
+		"low degrees of freedom"
+	)
 
 	expect_equal(sum(result@weights), 1, tolerance = 0.001)
 })

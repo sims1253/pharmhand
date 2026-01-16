@@ -543,7 +543,12 @@ assess_evidence_domains <- function(
 		}
 	}
 
-	list(level = level, rating = rating, notes = notes)
+	list(
+		level = level,
+		rating = rating,
+		notes = notes,
+		ci_includes_null = ci_includes_null
+	)
 }
 
 
@@ -707,11 +712,7 @@ assess_evidence_domains <- function(
 	# None (Kein Beleg): Major issues or no effect
 
 	# Special case: if CI includes null, downgrade at least one level
-	ci_includes_null <- grepl(
-		"CI includes null",
-		domains$imprecision$notes,
-		fixed = TRUE
-	)
+	ci_includes_null <- domains$imprecision$ci_includes_null
 
 	if (concern_score == 0 && !ci_includes_null && n_studies >= 4) {
 		# No concerns at all, sufficient studies -> Proof
@@ -727,8 +728,8 @@ assess_evidence_domains <- function(
 		grade <- "none"
 	}
 
-	# Additional check: if direction is "none" (no effect), downgrade to none
-	if (direction == "none" && grade != "none") {
+	# Additional check: if direction is "none" (no effect) AND CI includes null, downgrade to none
+	if (direction == "none" && ci_includes_null && grade != "none") {
 		grade <- "none"
 	}
 
