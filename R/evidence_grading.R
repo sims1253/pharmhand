@@ -522,7 +522,8 @@ assess_evidence_domains <- function(
 
 		is_wide <- FALSE
 		if (effect_measure %in% c("hr", "or", "rr")) {
-			is_wide <- ci_ratio > 2.5 || ci_ratio < 0.4
+			# Wide CI if upper/lower ratio > 2.5 (effect could be much larger/smaller)
+			is_wide <- ci_ratio > 2.5
 		} else {
 			is_wide <- abs(ci_width) > 2 * abs(estimate)
 		}
@@ -712,7 +713,7 @@ assess_evidence_domains <- function(
 	# None (Kein Beleg): Major issues or no effect
 
 	# Special case: if CI includes null, downgrade at least one level
-	ci_includes_null <- domains$imprecision$ci_includes_null
+	ci_includes_null <- isTRUE(domains$imprecision$ci_includes_null)
 
 	if (concern_score == 0 && !ci_includes_null && n_studies >= 4) {
 		# No concerns at all, sufficient studies -> Proof
@@ -744,19 +745,31 @@ assess_evidence_domains <- function(
 
 #' @keywords internal
 .calculate_certainty <- function(domains, grade, n_studies) {
-	# Get domain ratings (NA treated as 1)
+	# Helper to safely extract rating from domain
+	get_rating <- function(domain) {
+		if (is.null(domain) || is.null(domain$rating) || is.na(domain$rating)) {
+			return(NA_real_)
+		}
+		domain$rating
+	}
+
+	# Get domain ratings
 	ratings <- c(
-		domains$limitations$rating %||% 1,
-		domains$inconsistency$rating %||% 1,
-		domains$imprecision$rating %||% 1,
-		domains$indirectness$rating %||% 1,
-		domains$publication_bias$rating %||% 1
+		get_rating(domains$limitations),
+		get_rating(domains$inconsistency),
+		get_rating(domains$imprecision),
+		get_rating(domains$indirectness),
+		get_rating(domains$publication_bias)
 	)
 
 	# Calculate geometric mean of ratings
-	certainty_prod <- prod(ratings, na.rm = TRUE)
 	n_valid <- sum(!is.na(ratings))
-	certainty <- if (n_valid > 0) certainty_prod^(1 / n_valid) else 0.5
+	if (n_valid == 0) {
+		certainty <- 0.5 # Default when no valid ratings
+	} else {
+		certainty_prod <- prod(ratings, na.rm = TRUE)
+		certainty <- certainty_prod^(1 / n_valid)
+	}
 
 	# Adjust for number of studies
 	study_bonus <- min(0.15, 0.03 * (n_studies - 1))

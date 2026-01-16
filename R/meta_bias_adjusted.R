@@ -84,6 +84,29 @@ calculate_rob_weights <- function(
 	weight_serious = 0.25,
 	weight_critical = 0
 ) {
+	# Validate weight parameters
+	if (!is.numeric(weight_high) || weight_high < 0 || weight_high > 1) {
+		ph_abort("weight_high must be a number between 0 and 1")
+	}
+	if (
+		!is.numeric(weight_concerns) || weight_concerns < 0 || weight_concerns > 1
+	) {
+		ph_abort("weight_concerns must be a number between 0 and 1")
+	}
+	if (
+		!is.numeric(weight_moderate) || weight_moderate < 0 || weight_moderate > 1
+	) {
+		ph_abort("weight_moderate must be a number between 0 and 1")
+	}
+	if (!is.numeric(weight_serious) || weight_serious < 0 || weight_serious > 1) {
+		ph_abort("weight_serious must be a number between 0 and 1")
+	}
+	if (
+		!is.numeric(weight_critical) || weight_critical < 0 || weight_critical > 1
+	) {
+		ph_abort("weight_critical must be a number between 0 and 1")
+	}
+
 	# Validate inputs
 	if (!S7::S7_inherits(meta_result, MetaResult)) {
 		ph_abort("meta_result must be a MetaResult object")
@@ -161,7 +184,14 @@ calculate_rob_weights <- function(
 					"Low" = 1,
 					"Some concerns" = weight_concerns,
 					"High" = weight_high,
-					1 # Default to full weight if unknown
+					{
+						ph_warn(sprintf(
+							"Unknown RoB2 judgment '%s' for study %s, using full weight",
+							rob_info$judgment,
+							study_id
+						))
+						1
+					}
 				)
 			} else if (rob_info$type == "ROBINSI") {
 				# ROBINS-I judgments: Low, Moderate, Serious, Critical, No information
@@ -172,7 +202,14 @@ calculate_rob_weights <- function(
 					"Serious" = weight_serious,
 					"Critical" = weight_critical,
 					"No information" = 0.5, # Default partial weight
-					1 # Default to full weight if unknown
+					{
+						ph_warn(sprintf(
+							"Unknown ROBINS-I judgment '%s' for study %s, using full weight",
+							rob_info$judgment,
+							study_id
+						))
+						1
+					}
 				)
 			}
 		} else {
@@ -394,28 +431,40 @@ rob_sensitivity_analysis <- function(
 			),
 			list(
 				name = "Low risk only",
-				include = sapply(study_labels, function(s) {
-					id <- which(names(rob_map) == s)
-					if (length(id) > 0) rob_map[[s]] == "Low" else FALSE
-				})
+				include = vapply(
+					study_labels,
+					function(s) {
+						id <- which(names(rob_map) == s)
+						if (length(id) > 0) rob_map[[s]] == "Low" else FALSE
+					},
+					FUN.VALUE = logical(1)
+				)
 			),
 			list(
 				name = "Low + Some concerns",
-				include = sapply(study_labels, function(s) {
-					id <- which(names(rob_map) == s)
-					if (length(id) > 0) {
-						rob_map[[s]] %in% c("Low", "Some concerns")
-					} else {
-						FALSE
-					}
-				})
+				include = vapply(
+					study_labels,
+					function(s) {
+						id <- which(names(rob_map) == s)
+						if (length(id) > 0) {
+							rob_map[[s]] %in% c("Low", "Some concerns")
+						} else {
+							FALSE
+						}
+					},
+					FUN.VALUE = logical(1)
+				)
 			),
 			list(
 				name = "Excluding High risk",
-				include = sapply(study_labels, function(s) {
-					id <- which(names(rob_map) == s)
-					if (length(id) > 0) rob_map[[s]] != "High" else TRUE
-				})
+				include = vapply(
+					study_labels,
+					function(s) {
+						id <- which(names(rob_map) == s)
+						if (length(id) > 0) rob_map[[s]] == "Low" else FALSE
+					},
+					FUN.VALUE = logical(1)
+				)
 			)
 		)
 	} else {
@@ -427,32 +476,44 @@ rob_sensitivity_analysis <- function(
 			),
 			list(
 				name = "Low risk only",
-				include = sapply(study_labels, function(s) {
-					id <- which(names(rob_map) == s)
-					if (length(id) > 0) rob_map[[s]] == "Low" else FALSE
-				})
+				include = vapply(
+					study_labels,
+					function(s) {
+						id <- which(names(rob_map) == s)
+						if (length(id) > 0) rob_map[[s]] == "Low" else FALSE
+					},
+					FUN.VALUE = logical(1)
+				)
 			),
 			list(
 				name = "Low + Moderate",
-				include = sapply(study_labels, function(s) {
-					id <- which(names(rob_map) == s)
-					if (length(id) > 0) {
-						rob_map[[s]] %in% c("Low", "Moderate")
-					} else {
-						FALSE
-					}
-				})
+				include = vapply(
+					study_labels,
+					function(s) {
+						id <- which(names(rob_map) == s)
+						if (length(id) > 0) {
+							rob_map[[s]] %in% c("Low", "Moderate")
+						} else {
+							FALSE
+						}
+					},
+					FUN.VALUE = logical(1)
+				)
 			),
 			list(
 				name = "Excluding Serious/Critical",
-				include = sapply(study_labels, function(s) {
-					id <- which(names(rob_map) == s)
-					if (length(id) > 0) {
-						!rob_map[[s]] %in% c("Serious", "Critical")
-					} else {
-						TRUE
-					}
-				})
+				include = vapply(
+					study_labels,
+					function(s) {
+						id <- which(names(rob_map) == s)
+						if (length(id) > 0) {
+							!rob_map[[s]] %in% c("Serious", "Critical")
+						} else {
+							TRUE
+						}
+					},
+					FUN.VALUE = logical(1)
+				)
 			)
 		)
 	}
@@ -1323,7 +1384,8 @@ print.BiasAdjustedMetaResult <- function(x, ...) {
 	cat(sprintf("Effect Measure: %s\n", x@effect_measure))
 	cat(sprintf("Studies included: %d\n", x@n))
 	cat(sprintf("\nPooled Estimate: %.3f\n", x@estimate))
-	cat(sprintf("95%% CI: [%.3f, %.3f]\n", x@ci[1], x@ci[2]))
+	ci_pct <- if (!is.null(x@ci_level)) round(x@ci_level * 100) else 95
+	cat(sprintf("%d%% CI: [%.3f, %.3f]\n", ci_pct, x@ci[1], x@ci[2]))
 	cat(sprintf("P-value: %.4f\n", x@p_value))
 
 	if (!is.null(x@heterogeneity)) {

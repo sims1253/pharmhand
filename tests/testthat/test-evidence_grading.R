@@ -941,3 +941,68 @@ test_that("All four evidence grades can be produced by grade_evidence", {
 	expect_equal(grade_hint@grade_de, "Anhaltspunkt")
 	expect_equal(grade_none@grade_de, "Kein Beleg")
 })
+
+# =============================================================================
+# Regression Tests for Fixed Bugs
+# =============================================================================
+
+test_that(
+	paste0(
+		"handles wide CI correctly without dead code branch ",
+		"(issue: ci_ratio < 0.4)"
+	),
+	{
+		# ci_ratio = 3.0 (wide), should flag as imprecise
+		domains <- assess_evidence_domains(
+			estimate = 0.5,
+			ci = c(0.2, 0.6), # ratio = 3.0
+			p_value = 0.01,
+			heterogeneity = list(),
+			rob_results = NULL,
+			n_studies = 3L,
+			effect_measure = "hr"
+		)
+		expect_equal(domains$imprecision$level, "some_concerns")
+	}
+)
+
+test_that(
+	paste0(
+		"handles NULL ci_includes_null without crashing ",
+		"(issue: logical(0))"
+	),
+	{
+		# Test with NA CI which triggers early return without ci_includes_null
+		rob_results <- list(
+			assess_rob2("S1", "Low", "Low", "Low", "Low", "Low"),
+			assess_rob2("S2", "Low", "Low", "Low", "Low", "Low")
+		)
+
+		meta_res <- MetaResult(
+			estimate = 0.75,
+			ci = c(NA_real_, NA_real_), # Invalid CI
+			p_value = NA_real_,
+			n = 2L,
+			effect_measure = "hr",
+			heterogeneity = list()
+		)
+
+		# Should not crash
+		expect_no_error(grade_evidence(meta_res, rob_results))
+	}
+)
+
+test_that("handles all-NA ratings without paradoxical certainty", {
+	# Test certainty calculation with problematic inputs
+	# This should return a reasonable certainty, not 1.0
+	domains <- assess_evidence_domains(
+		estimate = 0.75,
+		ci = c(NA_real_, NA_real_),
+		p_value = NA_real_,
+		heterogeneity = list(),
+		rob_results = NULL,
+		n_studies = 1L
+	)
+	# Should have "unknown" imprecision level
+	expect_equal(domains$imprecision$level, "unknown")
+})

@@ -142,62 +142,86 @@ test_that("calculate_rob_weights applies correct multipliers for ROBINS-I", {
 	expect_true(rob_weights$multipliers["Study 4"] == 0)
 })
 
-test_that("calculate_rob_weights returns correct multipliers for ROBINS-I judgments", {
-	meta_res <- meta_analysis(
-		yi = .meta_yi_hr,
-		sei = .meta_sei_hr,
-		study_labels = paste("Study", 1:5),
-		effect_measure = "hr"
-	)
+test_that(
+	paste0(
+		"calculate_rob_weights returns correct multipliers ",
+		"for ROBINS-I judgments"
+	),
+	{
+		meta_res <- meta_analysis(
+			yi = .meta_yi_hr,
+			sei = .meta_sei_hr,
+			study_labels = paste("Study", 1:5),
+			effect_measure = "hr"
+		)
 
-	rob_results <- list(
-		assess_robins_i("Study 1", "Low", "Low", "Low", "Low", "Low", "Low", "Low"),
-		assess_robins_i(
-			"Study 2",
-			"Moderate",
-			"Low",
-			"Low",
-			"Low",
-			"Low",
-			"Low",
-			"Low"
-		),
-		assess_robins_i(
-			"Study 3",
-			"Serious",
-			"Low",
-			"Low",
-			"Low",
-			"Low",
-			"Low",
-			"Low"
-		),
-		assess_robins_i(
-			"Study 4",
-			"Critical",
-			"Low",
-			"Low",
-			"Low",
-			"Low",
-			"Low",
-			"Low"
-		),
-		assess_robins_i("Study 5", "Low", "Low", "Low", "Low", "Low", "Low", "Low")
-	)
+		rob_results <- list(
+			assess_robins_i(
+				"Study 1",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low"
+			),
+			assess_robins_i(
+				"Study 2",
+				"Moderate",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low"
+			),
+			assess_robins_i(
+				"Study 3",
+				"Serious",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low"
+			),
+			assess_robins_i(
+				"Study 4",
+				"Critical",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low"
+			),
+			assess_robins_i(
+				"Study 5",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low",
+				"Low"
+			)
+		)
 
-	rob_weights <- calculate_rob_weights(
-		meta_res,
-		rob_results,
-		weight_moderate = 0.75,
-		weight_serious = 0.25,
-		weight_critical = 0
-	)
+		rob_weights <- calculate_rob_weights(
+			meta_res,
+			rob_results,
+			weight_moderate = 0.75,
+			weight_serious = 0.25,
+			weight_critical = 0
+		)
 
-	expect_true(rob_weights$multipliers["Study 1"] == 1)
-	expect_true(rob_weights$multipliers["Study 2"] == 0.75)
-	expect_true(rob_weights$multipliers["Study 3"] == 0.25)
-	expect_true(rob_weights$multipliers["Study 4"] == 0)
-})
+		expect_true(rob_weights$multipliers["Study 1"] == 1)
+		expect_true(rob_weights$multipliers["Study 2"] == 0.75)
+		expect_true(rob_weights$multipliers["Study 3"] == 0.25)
+		expect_true(rob_weights$multipliers["Study 4"] == 0)
+	}
+)
 
 test_that("calculate_rob_weights normalizes ROB2 weights to sum to 1", {
 	meta_res <- meta_analysis(
@@ -948,4 +972,58 @@ test_that("bias_adjusted_meta works with mixed RoB results", {
 	)
 
 	expect_true(adjusted@metadata$adjustment_method == "weight_downgrade")
+})
+
+# =============================================================================
+# Regression Tests for Fixed Bugs
+# =============================================================================
+
+test_that(
+	paste0(
+		"vapply handles empty study_labels without type error ",
+		"(issue: sapply)"
+	),
+	{
+		# Create meta result with explicit empty labels
+		meta_res <- meta_analysis(
+			yi = c(0.5, 0.6, 0.7),
+			sei = c(0.1, 0.15, 0.12),
+			study_labels = c("S1", "S2", "S3"),
+			effect_measure = "hr"
+		)
+
+		rob_results <- list(
+			assess_rob2("S1", "Low", "Low", "Low", "Low", "Low"),
+			assess_rob2("S2", "High", "Low", "Low", "Low", "Low"),
+			assess_rob2("S3", "Low", "Low", "Low", "Low", "Low")
+		)
+
+		# Should complete without type errors
+		expect_no_error(
+			rob_sensitivity_analysis(meta_res, rob_results)
+		)
+	}
+)
+
+test_that("rejects invalid weight parameters", {
+	meta_res <- meta_analysis(
+		yi = c(0.5, 0.6, 0.7),
+		sei = c(0.1, 0.15, 0.12),
+		effect_measure = "hr"
+	)
+
+	rob_results <- list(
+		assess_rob2("Study 1", "Low", "Low", "Low", "Low", "Low"),
+		assess_rob2("Study 2", "High", "Low", "Low", "Low", "Low"),
+		assess_rob2("Study 3", "Low", "Low", "Low", "Low", "Low")
+	)
+
+	expect_error(
+		calculate_rob_weights(meta_res, rob_results, weight_high = -1),
+		"between 0 and 1"
+	)
+	expect_error(
+		calculate_rob_weights(meta_res, rob_results, weight_concerns = 2),
+		"between 0 and 1"
+	)
 })

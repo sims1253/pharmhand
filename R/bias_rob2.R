@@ -355,15 +355,6 @@ assess_rob2 <- function(
 }
 
 
-#' @keywords internal
-.get_optional_col <- function(row, col_name, default = "") {
-	if (col_name %in% names(row) && !is.na(row[[col_name]])) {
-		return(as.character(row[[col_name]]))
-	}
-	return(default)
-}
-
-
 #' Assess Multiple Studies with RoB 2
 #'
 #' Performs RoB 2 risk of bias assessment for multiple studies
