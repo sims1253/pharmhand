@@ -751,6 +751,14 @@ rob_data_to_tidy <- function(results, wide_format = FALSE) {
 		)
 	}
 
+	# Also reject mixed inputs (both RoB2 and ROBINS-I)
+	if (is_rob2 && is_robinsi) {
+		ph_abort(
+			"Mixed RoB2Result and ROBINSIResult inputs not supported. ",
+			"Use only one tool type."
+		)
+	}
+
 	if (isTRUE(wide_format)) {
 		# Wide format: one row per study
 		wide_list <- lapply(results, function(r) {

@@ -97,13 +97,13 @@ NARRATIVE_TEMPLATES <- list(
 			"(N={n_patients}) demonstrated a statistically significant ",
 			"{effect_direction_adj} effect in favor of the investigational ",
 			"intervention ({effect_measure_label} {estimate} [{ci_level}% CI: ",
-			"{ci_formatted}; p={p_formatted}]. "
+			"{ci_formatted}; p={p_formatted}]). "
 		),
 		effect_nonsignificant = paste0(
 			"For the endpoint {endpoint}, the meta-analysis of {n_studies} studies ",
 			"(N={n_patients}) did not demonstrate a statistically significant ",
 			"effect ({effect_measure_label} {estimate} [{ci_level}% CI: ",
-			"{ci_formatted}; p={p_formatted}]. "
+			"{ci_formatted}; p={p_formatted}]). "
 		),
 		single_study = paste0(
 			"For the endpoint {endpoint}, the study with {n_patients} patients ",
@@ -1090,6 +1090,21 @@ generate_full_evidence_report <- function(
 		logical(1)
 	))
 
+	n_hints <- sum(vapply(
+		endpoints,
+		function(e) {
+			if (
+				!is.null(e$evidence_grade) &&
+					S7::S7_inherits(e$evidence_grade, EvidenceGrade)
+			) {
+				e$evidence_grade@grade == "hint"
+			} else {
+				FALSE
+			}
+		},
+		logical(1)
+	))
+
 	if (language == "de") {
 		conclusion_text <- sprintf(
 			paste0(
@@ -1101,7 +1116,7 @@ generate_full_evidence_report <- function(
 			n_significant,
 			n_proof,
 			n_indication,
-			n_significant - n_proof - n_indication
+			n_hints
 		)
 	} else {
 		conclusion_text <- sprintf(
@@ -1114,7 +1129,7 @@ generate_full_evidence_report <- function(
 			n_significant,
 			n_proof,
 			n_indication,
-			n_significant - n_proof - n_indication
+			n_hints
 		)
 	}
 
