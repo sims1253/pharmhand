@@ -445,15 +445,6 @@ assess_robins_i <- function(
 }
 
 
-#' @keywords internal
-.get_optional_col <- function(row, col_name, default = "") {
-	if (col_name %in% names(row) && !is.na(row[[col_name]])) {
-		return(as.character(row[[col_name]]))
-	}
-	return(default)
-}
-
-
 #' Assess Multiple Studies with ROBINS-I
 #'
 #' Performs ROBINS-I risk of bias assessment for multiple non-randomized studies

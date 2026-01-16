@@ -185,3 +185,24 @@ ph_default <- function(name, default = NULL) {
 
 	default
 }
+
+# =============================================================================
+# Data Frame Utilities
+# =============================================================================
+
+#' Get Optional Column Value
+#'
+#' Safely extract a column value, returning a default if not present or NA.
+#'
+#' @param row A data frame row or named list
+#' @param col_name Character. Column name to extract.
+#' @param default Default value if column missing or NA. Default: ""
+#'
+#' @return The column value or default
+#' @keywords internal
+.get_optional_col <- function(row, col_name, default = "") {
+	if (col_name %in% names(row) && !is.na(row[[col_name]])) {
+		return(as.character(row[[col_name]]))
+	}
+	return(default)
+}

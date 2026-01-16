@@ -1016,3 +1016,37 @@ test_that("generate_full_evidence_report handles endpoints missing RoB", {
 
 	expect_s3_class(doc, "rdocx")
 })
+
+# =============================================================================
+# Regression Tests for Fixed Bugs
+# =============================================================================
+
+test_that(
+	paste0(
+		"uses MetaResult for multi-study analyses in batch ",
+		"(issue: n_studies)"
+	),
+	{
+		data <- data.frame(
+			endpoint = c("OS", "PFS"),
+			estimate = c(0.75, 0.80),
+			ci_lower = c(0.60, 0.65),
+			ci_upper = c(0.93, 0.98),
+			p_value = c(0.008, 0.04),
+			effect_measure = c("hr", "hr"),
+			n_studies = c(5L, 3L), # Multi-study - use integer literals
+			n_patients = c(1000, 800),
+			stringsAsFactors = FALSE
+		)
+
+		narratives <- generate_batch_narratives(data)
+
+		# Should mention the number of studies (German output:
+		# "5 Studien", "3 Studien")
+		expect_true(any(grepl(
+			"5 Studien|3 Studien|5 studies|3 studies",
+			narratives,
+			ignore.case = TRUE
+		)))
+	}
+)

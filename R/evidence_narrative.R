@@ -1166,19 +1166,25 @@ generate_full_evidence_report <- function(
 #' }
 export_narrative <- function(narrative, path, append = FALSE) {
 	if (is.list(narrative)) {
+		first_write <- TRUE
 		# Write list with names as headers
 		for (name in names(narrative)) {
+			# Use append parameter only for first write, TRUE thereafter
+			use_append <- if (first_write) append else TRUE
+			first_write <- FALSE
+
 			if (nzchar(name)) {
-				cat(paste0("=== ", name, " ===\n"), file = path, append = append)
+				cat(paste0("=== ", name, " ===\n"), file = path, append = use_append)
+				use_append <- TRUE # Content always appends after header
 			}
-			cat(narrative[[name]], file = path, append = TRUE)
+			cat(narrative[[name]], file = path, append = use_append)
 			cat("\n\n", file = path, append = TRUE)
 		}
 	} else {
 		cat(narrative, file = path, append = append)
 	}
 
-	invisible(NULL)
+	invisible(path)
 }
 
 
@@ -1248,13 +1254,24 @@ generate_batch_narratives <- function(
 	narratives <- lapply(seq_len(nrow(data)), function(i) {
 		row <- data[i, ]
 
-		# Create pseudo-result object
-		result <- ComparisonResult(
-			estimate = row$estimate,
-			ci = c(row$ci_lower, row$ci_upper),
-			p_value = row$p_value,
-			effect_measure = row$effect_measure
-		)
+		# Use MetaResult when n_studies > 1, otherwise ComparisonResult
+		if (!is.null(row$n_studies) && !is.na(row$n_studies) && row$n_studies > 1) {
+			result <- MetaResult(
+				estimate = row$estimate,
+				ci = c(row$ci_lower, row$ci_upper),
+				p_value = row$p_value,
+				n = as.integer(row$n_studies),
+				effect_measure = row$effect_measure,
+				heterogeneity = list() # No heterogeneity data from batch
+			)
+		} else {
+			result <- ComparisonResult(
+				estimate = row$estimate,
+				ci = c(row$ci_lower, row$ci_upper),
+				p_value = row$p_value,
+				effect_measure = row$effect_measure
+			)
+		}
 
 		# Create pseudo-grade if present
 		grade <- NULL
