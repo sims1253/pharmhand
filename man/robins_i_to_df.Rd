@@ -10,7 +10,7 @@ robins_i_to_df(result, wide_format = FALSE)
 \item{result}{A ROBINSIResult object.}
 
 \item{wide_format}{Logical. If TRUE, returns wide format with one row per
-domain. If FALSE, returns long format. Default: FALSE.}
+study. If FALSE, returns long format. Default: FALSE.}
 }
 \value{
 A data frame with assessment details.

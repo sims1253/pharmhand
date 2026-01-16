@@ -728,7 +728,8 @@ assess_evidence_domains <- function(
 		grade <- "none"
 	}
 
-	# Additional check: if direction is "none" (no effect) AND CI includes null, downgrade to none
+	# Additional check: if direction is "none" (no effect) AND CI includes null,
+	# downgrade to none
 	if (direction == "none" && ci_includes_null && grade != "none") {
 		grade <- "none"
 	}
