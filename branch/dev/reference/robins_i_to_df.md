@@ -17,7 +17,7 @@ robins_i_to_df(result, wide_format = FALSE)
 
 - wide_format:
 
-  Logical. If TRUE, returns wide format with one row per domain. If
+  Logical. If TRUE, returns wide format with one row per study. If
   FALSE, returns long format. Default: FALSE.
 
 ## Value
