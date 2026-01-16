@@ -359,6 +359,29 @@ assess_robins_i <- function(
 	}
 	admiraldev::assert_character_scalar(study_id)
 
+	# Validate domain judgments are not NULL (before c() drops them)
+	if (is.null(d1_confounding)) {
+		ph_abort("D1_confounding judgment is required")
+	}
+	if (is.null(d2_selection)) {
+		ph_abort("D2_selection judgment is required")
+	}
+	if (is.null(d3_classification)) {
+		ph_abort("D3_classification judgment is required")
+	}
+	if (is.null(d4_deviations)) {
+		ph_abort("D4_deviations judgment is required")
+	}
+	if (is.null(d5_missing_data)) {
+		ph_abort("D5_missing_data judgment is required")
+	}
+	if (is.null(d6_measurement)) {
+		ph_abort("D6_measurement judgment is required")
+	}
+	if (is.null(d7_selection_report)) {
+		ph_abort("D7_selection_report judgment is required")
+	}
+
 	# Collect domain judgments
 	judgments <- c(
 		d1 = d1_confounding,
@@ -371,16 +394,16 @@ assess_robins_i <- function(
 	)
 
 	# Validate all judgments
-	for (i in seq_along(judgments)) {
-		domain_name <- names(judgments)[i]
-		judgment <- judgments[i]
+	for (i in seq_along(ROBINSI_DOMAINS)) {
+		domain_name <- ROBINSI_DOMAINS[i]
+		judgment <- judgments[[i]]
 		if (is.null(judgment) || is.na(judgment) || judgment == "") {
-			ph_abort(sprintf("%s judgment is required", ROBINSI_DOMAINS[i]))
+			ph_abort(sprintf("%s judgment is required", domain_name))
 		}
 		if (!judgment %in% ROBINSI_JUDGMENTS) {
 			ph_abort(sprintf(
 				"%s must be one of: %s",
-				ROBINSI_DOMAINS[i],
+				domain_name,
 				paste(ROBINSI_JUDGMENTS, collapse = ", ")
 			))
 		}
@@ -401,8 +424,8 @@ assess_robins_i <- function(
 	domains <- list()
 	for (i in seq_along(ROBINSI_DOMAINS)) {
 		domains[[ROBINSI_DOMAINS[i]]] <- list(
-			judgment = judgments[i],
-			support = supports[i] %||% ""
+			judgment = judgments[[i]],
+			support = supports[[i]] %||% ""
 		)
 	}
 

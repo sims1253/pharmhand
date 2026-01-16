@@ -265,6 +265,23 @@ assess_rob2 <- function(
 	}
 	admiraldev::assert_character_scalar(study_id)
 
+	# Validate domain judgments are not NULL (before c() drops them)
+	if (is.null(d1_randomization)) {
+		ph_abort("D1_randomization judgment is required")
+	}
+	if (is.null(d2_deviations)) {
+		ph_abort("D2_deviations judgment is required")
+	}
+	if (is.null(d3_missing_data)) {
+		ph_abort("D3_missing_data judgment is required")
+	}
+	if (is.null(d4_measurement)) {
+		ph_abort("D4_measurement judgment is required")
+	}
+	if (is.null(d5_selection)) {
+		ph_abort("D5_selection judgment is required")
+	}
+
 	# Collect domain judgments
 	judgments <- c(
 		d1 = d1_randomization,
@@ -275,16 +292,16 @@ assess_rob2 <- function(
 	)
 
 	# Validate all judgments
-	for (i in seq_along(judgments)) {
-		domain_name <- names(judgments)[i]
-		judgment <- judgments[i]
+	for (i in seq_along(ROB2_DOMAINS)) {
+		domain_name <- ROB2_DOMAINS[i]
+		judgment <- judgments[[i]]
 		if (is.null(judgment) || is.na(judgment) || judgment == "") {
-			ph_abort(sprintf("%s judgment is required", ROB2_DOMAINS[i]))
+			ph_abort(sprintf("%s judgment is required", domain_name))
 		}
 		if (!judgment %in% ROB2_JUDGMENTS) {
 			ph_abort(sprintf(
 				"%s must be one of: %s",
-				ROB2_DOMAINS[i],
+				domain_name,
 				paste(ROB2_JUDGMENTS, collapse = ", ")
 			))
 		}
@@ -303,8 +320,8 @@ assess_rob2 <- function(
 	domains <- list()
 	for (i in seq_along(ROB2_DOMAINS)) {
 		domains[[ROB2_DOMAINS[i]]] <- list(
-			judgment = judgments[i],
-			support = supports[i]
+			judgment = judgments[[i]],
+			support = supports[[i]]
 		)
 	}
 
