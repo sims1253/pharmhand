@@ -322,6 +322,7 @@ reference:
   - grade_evidence
   - assess_evidence_domains
   - format_evidence_grade
+  - evidence_summary_table
   - create_evidence_summary_table
   - create_study_characteristics_table
   - export_evidence_table
