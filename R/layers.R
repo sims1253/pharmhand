@@ -421,18 +421,14 @@ build_shift_layer <- function(layer, data, trt_var) {
 		dplyr::filter(!is.na(.data[[baseline]]) & !is.na(.data[[post]])) |>
 		dplyr::summarise(
 			n = dplyr::n_distinct(.data[[distinct_by]]),
-			.by = c(
-				dplyr::all_of(by_vars),
-				baseline = .data[[baseline]],
-				post = .data[[post]]
-			)
+			.by = dplyr::all_of(c(by_vars, baseline, post))
 		)
 
 	if (layer@include_pct) {
 		totals <- result |>
 			dplyr::summarise(
 				N = sum(.data$n),
-				.by = c(dplyr::all_of(c(by_vars, "baseline")))
+				.by = dplyr::all_of(c(by_vars, "baseline"))
 			)
 
 		result <- result |>

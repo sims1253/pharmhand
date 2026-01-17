@@ -339,10 +339,12 @@ create_rob_traffic_light_plot <- function(
 			)
 	}
 
-	# Return ClinicalPlot object
+	# Return ClinicalPlot object with correct data
+	final_data <- if (isTRUE(show_overall)) combined_df else plot_df
+
 	ClinicalPlot(
 		plot = p,
-		data = plot_df,
+		data = final_data,
 		type = "rob_traffic_light",
 		title = title,
 		width = width,
