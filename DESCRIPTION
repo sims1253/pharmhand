@@ -30,10 +30,10 @@ Imports:
     purrr (>= 0.3.4),
     tibble (>= 1.4.2),
     withr (>= 2.5.0),
-    glue,
-    openxlsx,
-    writexl,
-    tidyselect
+    glue (>= 1.8.0),
+    openxlsx (>= 4.2.8),
+    writexl (>= 1.5.4),
+    tidyselect (>= 1.2.1)
 Suggests:
     admiral,
     brms,

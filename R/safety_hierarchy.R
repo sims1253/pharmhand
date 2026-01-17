@@ -104,7 +104,7 @@ create_ae_hierarchy_table <- function(
 	treatments <- sort(unique(adsl[[trt_var]]))
 
 	# Helper function to count subjects at each level
-	count_at_level <- function(data, group_vars) {
+	count_at_level <- function(data, group_vars, subject_var) {
 		by_vars <- c(trt_var, group_vars)
 		# Use base R split-apply pattern for dynamic column selection
 		split_data <- split(data, interaction(data[by_vars], drop = TRUE))
@@ -131,7 +131,7 @@ create_ae_hierarchy_table <- function(
 			group_vars <- c(sapply(parent_levels, function(l) level_vars[[l]]), var)
 		}
 
-		counts <- count_at_level(adae, group_vars)
+		counts <- count_at_level(adae, group_vars, subject_var)
 
 		# Pivot wider for treatments
 		wide_counts <- counts |>
