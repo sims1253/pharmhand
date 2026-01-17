@@ -466,10 +466,10 @@ relationship_table@flextable
 | Table 6: Treatment-Emergent AEs by Relationship to Study Drug |            |                      |                     |
 |---------------------------------------------------------------|------------|----------------------|---------------------|
 | Causality                                                     | Placebo    | Xanomeline High Dose | Xanomeline Low Dose |
-| NONE                                                          | 33 (38.4%) | 41 (48.8%)           | 29 (34.5%)          |
-| POSSIBLE                                                      | 25 (29.1%) | 47 (56%)             | 44 (52.4%)          |
 | PROBABLE                                                      | 23 (26.7%) | 50 (59.5%)           | 49 (58.3%)          |
 | REMOTE                                                        | 28 (32.6%) | 21 (25%)             | 23 (27.4%)          |
+| POSSIBLE                                                      | 25 (29.1%) | 47 (56%)             | 44 (52.4%)          |
+| NONE                                                          | 33 (38.4%) | 41 (48.8%)           | 29 (34.5%)          |
 | --                                                            | 0 (0.0%)   | 0 (0.0%)             | 2 (2.4%)            |
 | Safety Population                                             |            |                      |                     |
 | Subjects counted once per relationship category               |            |                      |                     |
@@ -567,11 +567,11 @@ lab_shift_table@flextable
 | Table 10: Lab Shift from Baseline to Max Post-Baseline |                                    |        |      |     |
 |--------------------------------------------------------|------------------------------------|--------|------|-----|
 | Planned Treatment for Period 01                        | Baseline Reference Range Indicator | NORMAL | HIGH | LOW |
-| Placebo                                                | HIGH                               | 3      | 0    | 0   |
 | Placebo                                                | NORMAL                             | 51     | 2    | 1   |
-| Xanomeline High Dose                                   | HIGH                               | 2      | 0    | 0   |
 | Xanomeline High Dose                                   | NORMAL                             | 28     | 0    | 0   |
 | Xanomeline Low Dose                                    | NORMAL                             | 24     | 2    | 0   |
+| Xanomeline High Dose                                   | HIGH                               | 2      | 0    | 0   |
+| Placebo                                                | HIGH                               | 3      | 0    | 0   |
 | Safety Population                                      |                                    |        |      |     |
 | Shift from baseline normal range indicator             |                                    |        |      |     |
 
@@ -644,28 +644,28 @@ rash_table <- create_ae_summary_table(
 rash_table@flextable
 ```
 
-| Table: Skin and Subcutaneous Tissue Disorders by Preferred Term |          |                      |                     |
-|-----------------------------------------------------------------|----------|----------------------|---------------------|
-| Dictionary-Derived Term                                         | Placebo  | Xanomeline High Dose | Xanomeline Low Dose |
-| ACTINIC KERATOSIS                                               | 0 (0.0%) | 1 (1.2%)             | 0 (0.0%)            |
-| ALOPECIA                                                        | 1 (1.2%) | 0 (0.0%)             | 0 (0.0%)            |
-| BLISTER                                                         | 0 (0.0%) | 1 (1.2%)             | 5 (6%)              |
-| COLD SWEAT                                                      | 1 (1.2%) | 0 (0.0%)             | 0 (0.0%)            |
-| DERMATITIS CONTACT                                              | 0 (0.0%) | 0 (0.0%)             | 1 (1.2%)            |
-| DRUG ERUPTION                                                   | 1 (1.2%) | 0 (0.0%)             | 0 (0.0%)            |
-| ERYTHEMA                                                        | 8 (9.3%) | 14 (16.7%)           | 14 (16.7%)          |
-| HYPERHIDROSIS                                                   | 2 (2.3%) | 8 (9.5%)             | 4 (4.8%)            |
-| PRURITUS                                                        | 8 (9.3%) | 25 (29.8%)           | 21 (25%)            |
-| PRURITUS GENERALISED                                            | 0 (0.0%) | 1 (1.2%)             | 1 (1.2%)            |
-| RASH                                                            | 5 (5.8%) | 8 (9.5%)             | 13 (15.5%)          |
-| RASH ERYTHEMATOUS                                               | 0 (0.0%) | 0 (0.0%)             | 1 (1.2%)            |
-| RASH MACULO-PAPULAR                                             | 0 (0.0%) | 1 (1.2%)             | 0 (0.0%)            |
-| RASH PRURITIC                                                   | 0 (0.0%) | 2 (2.4%)             | 1 (1.2%)            |
-| SKIN EXFOLIATION                                                | 0 (0.0%) | 0 (0.0%)             | 1 (1.2%)            |
-| SKIN IRRITATION                                                 | 3 (3.5%) | 5 (6%)               | 6 (7.1%)            |
-| SKIN ODOUR ABNORMAL                                             | 0 (0.0%) | 1 (1.2%)             | 0 (0.0%)            |
-| SKIN ULCER                                                      | 1 (1.2%) | 0 (0.0%)             | 0 (0.0%)            |
-| URTICARIA                                                       | 0 (0.0%) | 1 (1.2%)             | 1 (1.2%)            |
+| Table: Skin and Subcutaneous Tissue Disorders by Preferred Term |          |                     |                      |
+|-----------------------------------------------------------------|----------|---------------------|----------------------|
+| Dictionary-Derived Term                                         | Placebo  | Xanomeline Low Dose | Xanomeline High Dose |
+| ACTINIC KERATOSIS                                               | 0 (0.0%) | 0 (0.0%)            | 1 (1.2%)             |
+| ALOPECIA                                                        | 1 (1.2%) | 0 (0.0%)            | 0 (0.0%)             |
+| BLISTER                                                         | 0 (0.0%) | 5 (6%)              | 1 (1.2%)             |
+| COLD SWEAT                                                      | 1 (1.2%) | 0 (0.0%)            | 0 (0.0%)             |
+| DERMATITIS CONTACT                                              | 0 (0.0%) | 1 (1.2%)            | 0 (0.0%)             |
+| DRUG ERUPTION                                                   | 1 (1.2%) | 0 (0.0%)            | 0 (0.0%)             |
+| ERYTHEMA                                                        | 8 (9.3%) | 14 (16.7%)          | 14 (16.7%)           |
+| HYPERHIDROSIS                                                   | 2 (2.3%) | 4 (4.8%)            | 8 (9.5%)             |
+| PRURITUS                                                        | 8 (9.3%) | 21 (25%)            | 25 (29.8%)           |
+| PRURITUS GENERALISED                                            | 0 (0.0%) | 1 (1.2%)            | 1 (1.2%)             |
+| RASH                                                            | 5 (5.8%) | 13 (15.5%)          | 8 (9.5%)             |
+| RASH ERYTHEMATOUS                                               | 0 (0.0%) | 1 (1.2%)            | 0 (0.0%)             |
+| RASH MACULO-PAPULAR                                             | 0 (0.0%) | 0 (0.0%)            | 1 (1.2%)             |
+| RASH PRURITIC                                                   | 0 (0.0%) | 1 (1.2%)            | 2 (2.4%)             |
+| SKIN EXFOLIATION                                                | 0 (0.0%) | 1 (1.2%)            | 0 (0.0%)             |
+| SKIN IRRITATION                                                 | 3 (3.5%) | 6 (7.1%)            | 5 (6%)               |
+| SKIN ODOUR ABNORMAL                                             | 0 (0.0%) | 0 (0.0%)            | 1 (1.2%)             |
+| SKIN ULCER                                                      | 1 (1.2%) | 0 (0.0%)            | 0 (0.0%)             |
+| URTICARIA                                                       | 0 (0.0%) | 1 (1.2%)            | 1 (1.2%)             |
 
 ### Table Formatting
 

@@ -36,7 +36,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -187,11 +187,9 @@ properties.</p>
 <span><span class="co"># Treatment group counts</span></span>
 <span><span class="va">trt_counts</span> <span class="op">&lt;-</span> <span class="va">adam_data</span><span class="op">@</span><span class="va">trt_n</span></span>
 <span><span class="va">trt_counts</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
-<span><span class="co">#&gt;   TRT01P      N</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Active     49</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Placebo    51</span></span></code></pre></div>
+<span><span class="co">#&gt;    TRT01P  N</span></span>
+<span><span class="co">#&gt; 1 Placebo 51</span></span>
+<span><span class="co">#&gt; 2  Active 49</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="population-filtering">Population Filtering<a class="anchor" aria-label="anchor" href="#population-filtering"></a>
@@ -487,9 +485,9 @@ designs.</p>
 <code class="sourceCode R"><span><span class="co"># Single dispatch on first argument</span></span>
 <span><span class="fu"><a href="../reference/analyze.html">analyze</a></span><span class="op">(</span><span class="va">adam_data</span><span class="op">)</span>           <span class="co"># Uses ADaMData method</span></span>
 <span><span class="co">#&gt; &lt;pharmhand::AnalysisResults&gt;</span></span>
-<span><span class="co">#&gt;  @ stats    : tibble [2 × 2] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ TRT01P: chr [1:2] "Active" "Placebo"</span></span>
-<span><span class="co">#&gt;  $ N     : int [1:2] 49 51</span></span>
+<span><span class="co">#&gt;  @ stats    :'data.frame':   2 obs. of  2 variables:</span></span>
+<span><span class="co">#&gt;  .. $ TRT01P: chr  "Placebo" "Active"</span></span>
+<span><span class="co">#&gt;  .. $ N     : int  51 49</span></span>
 <span><span class="co">#&gt;  @ type     : chr "baseline"</span></span>
 <span><span class="co">#&gt;  @ groupings: list()</span></span>
 <span><span class="co">#&gt;  @ metadata : list()</span></span>
@@ -520,15 +518,15 @@ designs.</p>
 <span><span class="co">#&gt;  .. .. ..  ..$ n       : int [1:8] 15 17 18 18 13 19 35 15</span></span>
 <span><span class="co">#&gt;  .. .. ..  ..$ label   : chr [1:8] "CNS (n=15, 30%)" "GI (n=17, 34%)" "Respiratory (n=18, 36%)" "Cough (n=18, 36%)" ...</span></span>
 <span><span class="co">#&gt;  .. $ safety  : &lt;pharmhand::AnalysisResults&gt;</span></span>
-<span><span class="co">#&gt;  ..  ..@ stats    : tibble [12 × 8] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ AEBODSYS: chr [1:12] "CNS" "CNS" "CNS" "CNS" ...</span></span>
-<span><span class="co">#&gt;  $ TRT01P  : chr [1:12] "Active" "Active" "Active" "Active" ...</span></span>
-<span><span class="co">#&gt;  $ n       : int [1:12] 15 8 3 4 17 4 5 8 18 6 ...</span></span>
-<span><span class="co">#&gt;  $ N_tot   : int [1:12] 50 50 50 50 50 50 50 50 50 50 ...</span></span>
-<span><span class="co">#&gt;  $ pct     : num [1:12] 30 16 6 8 34 8 10 16 36 12 ...</span></span>
-<span><span class="co">#&gt;  $ level   : chr [1:12] "SOC" "PT" "PT" "PT" ...</span></span>
-<span><span class="co">#&gt;  $ label   : chr [1:12] "CNS" "Cough" "Headache" "Nausea" ...</span></span>
-<span><span class="co">#&gt;  $ AEDECOD : chr [1:12] NA "Cough" "Headache" "Nausea" ...</span></span>
+<span><span class="co">#&gt;  ..  ..@ stats    :'data.frame': 12 obs. of  8 variables:</span></span>
+<span><span class="co">#&gt;  .. .. .. $ AEBODSYS: chr [1:12] "CNS" "CNS" "CNS" "CNS" ...</span></span>
+<span><span class="co">#&gt;  .. .. .. $ TRT01P  : chr [1:12] "Active" "Active" "Active" "Active" ...</span></span>
+<span><span class="co">#&gt;  .. .. .. $ n       : int [1:12] 15 8 3 4 17 4 5 8 18 6 ...</span></span>
+<span><span class="co">#&gt;  .. .. .. $ N_tot   : int [1:12] 50 50 50 50 50 50 50 50 50 50 ...</span></span>
+<span><span class="co">#&gt;  .. .. .. $ pct     : num [1:12] 30 16 6 8 34 8 10 16 36 12 ...</span></span>
+<span><span class="co">#&gt;  .. .. .. $ level   : chr [1:12] "SOC" "PT" "PT" "PT" ...</span></span>
+<span><span class="co">#&gt;  .. .. .. $ label   : chr [1:12] "CNS" "Cough" "Headache" "Nausea" ...</span></span>
+<span><span class="co">#&gt;  .. .. .. $ AEDECOD : chr [1:12] NA "Cough" "Headache" "Nausea" ...</span></span>
 <span><span class="co">#&gt;  ..  ..@ type     : chr "safety_ae"</span></span>
 <span><span class="co">#&gt;  ..  ..@ groupings: list()</span></span>
 <span><span class="co">#&gt;  ..  ..@ metadata : list()</span></span>

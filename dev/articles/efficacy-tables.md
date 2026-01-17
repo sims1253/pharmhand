@@ -198,9 +198,9 @@ response_table@flextable
 |---------------------------------------|--------|----------|------------|-------------------|---------|
 | Treatment                             | n/N    | Rate (%) | 95% CI     | OR (95% CI)       | p-value |
 | Placebo                               | 8/1042 | 0.8      | (0.4, 1.5) | Reference         | -       |
-| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | 0.00 (0.00, Inf)  | 0.989   |
 | Xanomeline High Dose                  | 3/1016 | 0.3      | (0.1, 0.9) | 0.38 (0.10, 1.45) | 0.157   |
 | Xanomeline Low Dose                   | 4/1012 | 0.4      | (0.2, 1.0) | 0.51 (0.15, 1.71) | 0.277   |
+| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | 0.00 (0.00, Inf)  | 0.989   |
 | Response defined as: CR, PR           |        |          |            |                   |         |
 | 95% CI calculated using wilson method |        |          |            |                   |         |
 | OR compared to Placebo                |        |          |            |                   |         |
@@ -227,9 +227,9 @@ response_rr@flextable
 |---------------------------------------|--------|----------|------------|-------------------|---------|
 | Treatment                             | n/N    | Rate (%) | 95% CI     | RR (95% CI)       | p-value |
 | Placebo                               | 8/1042 | 0.8      | (0.4, 1.5) | Reference         | -       |
-| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | 0.10 (0.01, 1.70) | 0.029   |
 | Xanomeline High Dose                  | 3/1016 | 0.3      | (0.1, 0.9) | 0.38 (0.10, 1.45) | 0.226   |
 | Xanomeline Low Dose                   | 4/1012 | 0.4      | (0.2, 1.0) | 0.51 (0.16, 1.70) | 0.387   |
+| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | 0.10 (0.01, 1.70) | 0.029   |
 | Response defined as: CR, PR           |        |          |            |                   |         |
 | 95% CI calculated using wilson method |        |          |            |                   |         |
 | RR compared to Placebo                |        |          |            |                   |         |
@@ -255,9 +255,9 @@ response_rd@flextable
 |---------------------------------------|--------|----------|------------|-------------------|---------|
 | Treatment                             | n/N    | Rate (%) | 95% CI     | RD (95% CI)       | p-value |
 | Placebo                               | 8/1042 | 0.8      | (0.4, 1.5) | Reference         | -       |
-| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | -0.8 (-1.3, -0.2) | 0.005   |
 | Xanomeline High Dose                  | 3/1016 | 0.3      | (0.1, 0.9) | -0.5 (-1.1, 0.2)  | 0.139   |
 | Xanomeline Low Dose                   | 4/1012 | 0.4      | (0.2, 1.0) | -0.4 (-1.0, 0.3)  | 0.266   |
+| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | -0.8 (-1.3, -0.2) | 0.005   |
 | Response defined as: CR, PR           |        |          |            |                   |         |
 | 95% CI calculated using wilson method |        |          |            |                   |         |
 | RD compared to Placebo                |        |          |            |                   |         |
@@ -478,8 +478,8 @@ lab_summary@flextable
 | Alanine Aminotransferase (U/L)           | 57        | 30                     | 26                    | 17.86 (15.61)     | 20.97 (8.7)                    | 18.19 (9.17)                  |
 | Aspartate Aminotransferase (U/L)         | 57        | 30                     | 26                    | 25.19 (21.02)     | 24.43 (7.29)                   | 22.42 (10.78)                 |
 | Hemoglobin (mmol/L)                      | 58        | 30                     | 25                    | 8.32 (0.82)       | 8.88 (0.85)                    | 8.38 (0.69)                   |
-| Leukocytes (10^9/L)                      | 58        | 30                     | 25                    | 6.67 (1.77)       | 6.74 (1.8)                     | 6.29 (1.84)                   |
 | Platelet (10^9/L)                        | 57        | 29                     | 24                    | 238.75 (51.89)    | 238.34 (67.53)                 | 249.71 (63.44)                |
+| Leukocytes (10^9/L)                      | 58        | 30                     | 25                    | 6.67 (1.77)       | 6.74 (1.8)                     | 6.29 (1.84)                   |
 | Safety Population                        |           |                        |                       |                   |                                |                               |
 | Mean (SD) presented                      |           |                        |                       |                   |                                |                               |
 
@@ -503,11 +503,11 @@ shift_table@flextable
 | ALT Shift from Baseline to Week 24         |                                    |        |      |     |
 |--------------------------------------------|------------------------------------|--------|------|-----|
 | Planned Treatment for Period 01            | Baseline Reference Range Indicator | NORMAL | HIGH | LOW |
-| Placebo                                    | HIGH                               | 3      | 0    | 0   |
 | Placebo                                    | NORMAL                             | 51     | 2    | 1   |
-| Xanomeline High Dose                       | HIGH                               | 2      | 0    | 0   |
 | Xanomeline High Dose                       | NORMAL                             | 28     | 0    | 0   |
 | Xanomeline Low Dose                        | NORMAL                             | 24     | 2    | 0   |
+| Xanomeline High Dose                       | HIGH                               | 2      | 0    | 0   |
+| Placebo                                    | HIGH                               | 3      | 0    | 0   |
 | Safety Population                          |                                    |        |      |     |
 | Shift from baseline normal range indicator |                                    |        |      |     |
 
@@ -607,9 +607,9 @@ wilson_table@flextable
 |---------------------------------------|--------|----------|------------|-------------------|---------|
 | Treatment                             | n/N    | Rate (%) | 95% CI     | OR (95% CI)       | p-value |
 | Placebo                               | 8/1042 | 0.8      | (0.4, 1.5) | Reference         | -       |
-| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | 0.00 (0.00, Inf)  | 0.989   |
 | Xanomeline High Dose                  | 3/1016 | 0.3      | (0.1, 0.9) | 0.38 (0.10, 1.45) | 0.157   |
 | Xanomeline Low Dose                   | 4/1012 | 0.4      | (0.2, 1.0) | 0.51 (0.15, 1.71) | 0.277   |
+| Screen Failure                        | 0/624  | 0.0      | (0.0, 0.6) | 0.00 (0.00, Inf)  | 0.989   |
 | Response defined as: CR, PR           |        |          |            |                   |         |
 | 95% CI calculated using wilson method |        |          |            |                   |         |
 | OR compared to Placebo                |        |          |            |                   |         |
@@ -622,9 +622,9 @@ exact_table@flextable
 |--------------------------------------|--------|----------|------------|-------------------|---------|
 | Treatment                            | n/N    | Rate (%) | 95% CI     | OR (95% CI)       | p-value |
 | Placebo                              | 8/1042 | 0.8      | (0.3, 1.5) | Reference         | -       |
-| Screen Failure                       | 0/624  | 0.0      | (0.0, 0.6) | 0.00 (0.00, Inf)  | 0.989   |
 | Xanomeline High Dose                 | 3/1016 | 0.3      | (0.1, 0.9) | 0.38 (0.10, 1.45) | 0.157   |
 | Xanomeline Low Dose                  | 4/1012 | 0.4      | (0.1, 1.0) | 0.51 (0.15, 1.71) | 0.277   |
+| Screen Failure                       | 0/624  | 0.0      | (0.0, 0.6) | 0.00 (0.00, Inf)  | 0.989   |
 | Response defined as: CR, PR          |        |          |            |                   |         |
 | 95% CI calculated using exact method |        |          |            |                   |         |
 | OR compared to Placebo               |        |          |            |                   |         |

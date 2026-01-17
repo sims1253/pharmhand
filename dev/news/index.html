@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,67 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0.9000" id="pharmhand-0409000">pharmhand 0.4.0.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0409000"></a></h2>
+<div class="section level3">
+<h3 id="phase-quality-assessment-0-4-0-9000">Phase 3: Quality Assessment<a class="anchor" aria-label="anchor" href="#phase-quality-assessment-0-4-0-9000"></a></h3>
+<div class="section level4">
+<h4 id="risk-of-bias-assessment-rob-0-4-0-9000">Risk of Bias Assessment (RoB 2)<a class="anchor" aria-label="anchor" href="#risk-of-bias-assessment-rob-0-4-0-9000"></a></h4>
+<ul><li>Added <code>RoB2Result</code> S7 class for storing RoB 2 assessment results.</li>
+<li>Added <code><a href="../reference/assess_rob2.html">assess_rob2()</a></code> for single-study risk of bias assessment using Cochrane RoB 2 tool.</li>
+<li>Added <code><a href="../reference/assess_rob2_batch.html">assess_rob2_batch()</a></code> for batch processing multiple studies from a data frame.</li>
+<li>Added <code><a href="../reference/rob2_summary.html">rob2_summary()</a></code> for creating summary tables of RoB 2 assessments.</li>
+<li>Implements all 5 RoB 2 domains: randomization, deviations, missing data, measurement, selection.</li>
+<li>Automatic overall judgment calculation following RoB 2 algorithm.</li>
+<li>Reference: IQWiG Allgemeine Methoden Section 10.1.4.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="risk-of-bias-assessment-robins-i-0-4-0-9000">Risk of Bias Assessment (ROBINS-I)<a class="anchor" aria-label="anchor" href="#risk-of-bias-assessment-robins-i-0-4-0-9000"></a></h4>
+<ul><li>Added <code>ROBINSIResult</code> S7 class for storing ROBINS-I assessment results.</li>
+<li>Added <code><a href="../reference/assess_robins_i.html">assess_robins_i()</a></code> for single-study risk of bias assessment using ROBINS-I tool.</li>
+<li>Added <code><a href="../reference/assess_robins_i_batch.html">assess_robins_i_batch()</a></code> for batch processing multiple studies from a data frame.</li>
+<li>Added <code><a href="../reference/robins_i_summary.html">robins_i_summary()</a></code> for creating summary tables of ROBINS-I assessments.</li>
+<li>Implements all 7 ROBINS-I domains: confounding, participant selection, classification of interventions, deviations, missing data, outcome measurement, selection of reported result.</li>
+<li>Supports 5-level judgments: Low, Moderate, Serious, Critical, No information.</li>
+<li>Reference: IQWiG Allgemeine Methoden Section 10.1.4.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="risk-of-bias-visualization-0-4-0-9000">Risk of Bias Visualization<a class="anchor" aria-label="anchor" href="#risk-of-bias-visualization-0-4-0-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/create_rob_traffic_light_plot.html">create_rob_traffic_light_plot()</a></code> for traffic light visualization of domain-level judgments.</li>
+<li>Added <code><a href="../reference/create_rob_summary_plot.html">create_rob_summary_plot()</a></code> for stacked bar plot summaries of bias assessments.</li>
+<li>Added <code><a href="../reference/save_rob_plot.html">save_rob_plot()</a></code> for exporting plots to PNG, SVG, PDF and other formats.</li>
+<li>Added <code><a href="../reference/rob_data_to_tidy.html">rob_data_to_tidy()</a></code> for converting assessment results to tidy data frames.</li>
+<li>Supports both RoB 2 and ROBINS-I assessment results.</li>
+<li>Uses standard risk of bias color scheme (green/yellow/red/gray).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bias-adjusted-meta-analysis-0-4-0-9000">Bias-Adjusted Meta-Analysis<a class="anchor" aria-label="anchor" href="#bias-adjusted-meta-analysis-0-4-0-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/bias_adjusted_meta.html">bias_adjusted_meta()</a></code> for meta-analysis with risk of bias adjustments.</li>
+<li>Added <code><a href="../reference/rob_sensitivity_analysis.html">rob_sensitivity_analysis()</a></code> for sensitivity analysis across RoB scenarios.</li>
+<li>Added <code><a href="../reference/calculate_rob_weights.html">calculate_rob_weights()</a></code> for computing RoB-adjusted study weights.</li>
+<li>Added <code><a href="../reference/summarize_bias_adjusted.html">summarize_bias_adjusted()</a></code> for comparing original and adjusted estimates.</li>
+<li>Supports three adjustment methods: weight_downgrade, exclude_high, selection_model.</li>
+<li>Integrates with RoB 2 and ROBINS-I assessment results.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="iqwig-evidence-grading-0-4-0-9000">IQWiG Evidence Grading<a class="anchor" aria-label="anchor" href="#iqwig-evidence-grading-0-4-0-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/grade_evidence.html">grade_evidence()</a></code> for assessing evidence certainty using IQWiG methodology.</li>
+<li>Added <code><a href="../reference/assess_evidence_domains.html">assess_evidence_domains()</a></code> for evaluating individual evidence domains.</li>
+<li>Added <code><a href="../reference/format_evidence_grade.html">format_evidence_grade()</a></code> for German (Beleg/Hinweis/Anhaltspunkt) or English output.</li>
+<li>Implements IQWiG 3.1.4 evidence grading: Beleg (Proof), Hinweis (Indication), Anhaltspunkt (Hint), Kein Beleg (No proof).</li>
+<li>Evaluates: study limitations, inconsistency, imprecision, indirectness, publication bias.</li>
+<li>Integrates with RoB 2 assessments for study quality evaluation.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="evidence-summary-tables-0-4-0-9000">Evidence Summary Tables<a class="anchor" aria-label="anchor" href="#evidence-summary-tables-0-4-0-9000"></a></h4>
+<ul><li>Added <code><a href="../reference/create_evidence_summary_table.html">create_evidence_summary_table()</a></code> for IQWiG-formatted evidence summary tables.</li>
+<li>Added <code><a href="../reference/create_study_characteristics_table.html">create_study_characteristics_table()</a></code> for G-BA Module 4 study characteristics.</li>
+<li>Added <code><a href="../reference/export_evidence_table.html">export_evidence_table()</a></code> for multi-format export (Word, HTML, Excel).</li>
+<li>Includes: endpoint, N studies, effect estimate, CI, p-value, I², RoB summary, evidence grade.</li>
+<li>Supports German/English bilingual output with IQWiG-compliant formatting.</li>
+</ul></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.4.9000" id="pharmhand-0349000">pharmhand 0.3.4.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0349000"></a></h2>
 <div class="section level3">

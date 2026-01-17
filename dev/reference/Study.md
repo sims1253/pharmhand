@@ -8,7 +8,7 @@ shared by all study types.
 ``` r
 Study(
   study_id = character(0),
-  study_title = character(0),
+  study_title = "",
   design = "rct",
   population = "ITT",
   endpoints = list(),
