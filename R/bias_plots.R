@@ -430,6 +430,11 @@ create_rob_summary_plot <- function(
 		)
 	}
 
+	# Warn if weighted = TRUE (not implemented)
+	if (isTRUE(weighted)) {
+		ph_warn("weighted = TRUE is not implemented; results will be unweighted")
+	}
+
 	# Check all elements are valid result objects
 	is_rob2 <- all(vapply(
 		results,
