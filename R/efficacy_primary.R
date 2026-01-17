@@ -56,7 +56,6 @@ create_primary_endpoint_table <- function(
 			.data$PARAMCD == paramcd,
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			n = sum(!is.na(.data$AVAL)),
 			Mean = dplyr::if_else(n == 0, NA_real_, mean(.data$AVAL, na.rm = TRUE)),
@@ -68,7 +67,7 @@ create_primary_endpoint_table <- function(
 			),
 			Min = dplyr::if_else(n == 0, NA_real_, min(.data$AVAL, na.rm = TRUE)),
 			Max = dplyr::if_else(n == 0, NA_real_, max(.data$AVAL, na.rm = TRUE)),
-			.groups = "drop"
+			.by = dplyr::all_of(trt_var)
 		) |>
 		dplyr::mutate(
 			Mean = round(.data$Mean, 1),

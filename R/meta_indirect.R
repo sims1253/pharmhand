@@ -376,10 +376,9 @@ assess_transitivity <- function(
 	# (study-level expected)
 	for (var in char_vars) {
 		within_study_variation <- study_characteristics |>
-			dplyr::group_by(.data$study_id) |>
 			dplyr::summarise(
 				n_unique = dplyr::n_distinct(.data[[var]], na.rm = TRUE),
-				.groups = "drop"
+				.by = "study_id"
 			) |>
 			dplyr::filter(.data$n_unique > 1)
 
@@ -394,10 +393,9 @@ assess_transitivity <- function(
 
 	# Get which treatments are compared in each study
 	study_treatments <- study_characteristics |>
-		dplyr::group_by(.data$study_id) |>
 		dplyr::summarise(
 			treatments = list(unique(.data[[treatment_var]])),
-			.groups = "drop"
+			.by = "study_id"
 		)
 
 	# Identify unique comparisons

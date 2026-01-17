@@ -72,12 +72,11 @@ create_cfb_summary_table <- function(
 			!is.na(.data$CHG),
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$PARAM) |>
 		dplyr::summarise(
 			n = dplyr::n(),
 			Mean_CFB = round(mean(.data$CHG, na.rm = TRUE), 2),
 			SD_CFB = round(sd(.data$CHG, na.rm = TRUE), 2),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "PARAM")
 		) |>
 		dplyr::mutate(
 			display = paste0(.data$Mean_CFB, " (", .data$SD_CFB, ")"),
@@ -197,25 +196,35 @@ detect_floor_ceiling <- function(
 		dplyr::select(dplyr::all_of(c(group_vars, subject_var, score_var))) |>
 		dplyr::filter(!is.na(.data[[score_var]]))
 
-	grouped <- if (is.null(group_vars)) {
-		score_data
+	# Summarise with or without grouping
+	if (is.null(group_vars)) {
+		summary_result <- score_data |>
+			dplyr::summarise(
+				n = dplyr::n_distinct(.data[[subject_var]]),
+				# Count distinct subjects at floor/ceiling (not observations)
+				n_floor = dplyr::n_distinct(
+					.data[[subject_var]][.data[[score_var]] == min_score]
+				),
+				n_ceiling = dplyr::n_distinct(
+					.data[[subject_var]][.data[[score_var]] == max_score]
+				)
+			)
 	} else {
-		score_data |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(group_vars)))
+		summary_result <- score_data |>
+			dplyr::summarise(
+				n = dplyr::n_distinct(.data[[subject_var]]),
+				# Count distinct subjects at floor/ceiling (not observations)
+				n_floor = dplyr::n_distinct(
+					.data[[subject_var]][.data[[score_var]] == min_score]
+				),
+				n_ceiling = dplyr::n_distinct(
+					.data[[subject_var]][.data[[score_var]] == max_score]
+				),
+				.by = dplyr::all_of(group_vars)
+			)
 	}
 
-	grouped |>
-		dplyr::summarise(
-			n = dplyr::n_distinct(.data[[subject_var]]),
-			# Count distinct subjects at floor/ceiling (not observations)
-			n_floor = dplyr::n_distinct(
-				.data[[subject_var]][.data[[score_var]] == min_score]
-			),
-			n_ceiling = dplyr::n_distinct(
-				.data[[subject_var]][.data[[score_var]] == max_score]
-			),
-			.groups = "drop"
-		) |>
+	summary_result |>
 		dplyr::mutate(
 			pct_floor = ifelse(.data$n > 0, .data$n_floor / .data$n, NA_real_),
 			floor_flag = .data$n > 0 & .data$pct_floor > threshold,
@@ -265,12 +274,11 @@ create_vs_by_visit_table <- function(
 			.data$PARAMCD == paramcd,
 			.data$AVISIT %in% visits
 		) |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AVISIT) |>
 		dplyr::summarise(
 			n = dplyr::n(),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
 			SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "AVISIT")
 		) |>
 		dplyr::mutate(
 			display = paste0(.data$n, " / ", .data$Mean, " (", .data$SD, ")")

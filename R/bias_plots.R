@@ -485,10 +485,14 @@ create_rob_summary_plot <- function(
 
 	# Calculate proportions per domain
 	proportions <- summary_df |>
-		dplyr::group_by(.data$domain, .data$domain_label, .data$judgment) |>
-		dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
-		dplyr::group_by(.data$domain, .data$domain_label) |>
-		dplyr::mutate(proportion = .data$n / sum(.data$n))
+		dplyr::summarise(
+			n = dplyr::n(),
+			.by = c("domain", "domain_label", "judgment")
+		) |>
+		dplyr::mutate(
+			proportion = .data$n / sum(.data$n),
+			.by = c("domain", "domain_label")
+		)
 
 	# Get all possible judgments for color scale
 	all_judgments <- names(colors)
