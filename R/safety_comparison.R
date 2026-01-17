@@ -194,8 +194,10 @@ create_ae_comparison_table <- function(
 	# Get treatment counts from ADSL
 	trt_n <- adsl |>
 		dplyr::filter(.data$SAFFL == "Y") |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
-		dplyr::summarise(N = dplyr::n_distinct(.data$USUBJID), .groups = "drop")
+		dplyr::summarise(
+			N = dplyr::n_distinct(.data$USUBJID),
+			.by = dplyr::all_of(trt_var)
+		)
 
 	# Validate ref_group
 	trt_levels <- unique(trt_n[[trt_var]])
@@ -217,34 +219,25 @@ create_ae_comparison_table <- function(
 	# Calculate incidence by grouping variable
 	if (by == "overall") {
 		ae_counts <- teae |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 			dplyr::summarise(
 				n = dplyr::n_distinct(.data$USUBJID),
-				.groups = "drop"
+				.by = dplyr::all_of(trt_var)
 			) |>
 			dplyr::mutate(term = "Any TEAE")
 		group_var <- "term"
 	} else if (by == "soc") {
 		ae_counts <- teae |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(trt_var)),
-				.data$AEBODSYS
-			) |>
 			dplyr::summarise(
 				n = dplyr::n_distinct(.data$USUBJID),
-				.groups = "drop"
+				.by = c(dplyr::all_of(trt_var), "AEBODSYS")
 			) |>
 			dplyr::rename(term = "AEBODSYS")
 		group_var <- "term"
 	} else {
 		ae_counts <- teae |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(trt_var)),
-				.data$AEDECOD
-			) |>
 			dplyr::summarise(
 				n = dplyr::n_distinct(.data$USUBJID),
-				.groups = "drop"
+				.by = c(dplyr::all_of(trt_var), "AEDECOD")
 			) |>
 			dplyr::rename(term = "AEDECOD")
 		group_var <- "term"
@@ -258,10 +251,9 @@ create_ae_comparison_table <- function(
 	# Apply threshold filter
 	if (threshold > 0) {
 		terms_above_threshold <- ae_counts |>
-			dplyr::group_by(.data$term) |>
 			dplyr::summarise(
 				max_pct = max(.data$pct, na.rm = TRUE),
-				.groups = "drop"
+				.by = "term"
 			) |>
 			dplyr::filter(.data$max_pct >= threshold) |>
 			dplyr::pull(.data$term)

@@ -286,14 +286,12 @@ create_category_summary_table <- function(
 	autofit = TRUE
 ) {
 	trt_n <- adsl |>
-		dplyr::group_by(!!rlang::sym(trt_var)) |>
-		dplyr::summarise(N = dplyr::n(), .groups = "drop")
+		dplyr::summarise(N = dplyr::n(), .by = !!rlang::sym(trt_var))
 
 	summary_data <- analysis_data |>
-		dplyr::group_by(!!rlang::sym(trt_var), !!rlang::sym(category_var)) |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
-			.groups = "drop"
+			.by = c(!!dplyr::sym(trt_var), !!dplyr::sym(category_var))
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
@@ -418,26 +416,30 @@ create_disposition_table <- function(
 	autofit = TRUE
 ) {
 	disp_data <- adsl |>
-		dplyr::group_by(!!rlang::sym(trt_var), !!rlang::sym(status_var)) |>
-		dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+		dplyr::summarise(
+			n = dplyr::n(),
+			.by = c(!!dplyr::sym(trt_var), !!dplyr::sym(status_var))
+		) |>
 		tidyr::pivot_wider(
-			names_from = !!rlang::sym(trt_var),
+			names_from = !!dplyr::sym(trt_var),
 			values_from = "n",
 			values_fill = 0
 		) |>
-		dplyr::rename(`Study Status` = !!rlang::sym(status_var))
+		dplyr::rename(`Study Status` = !!dplyr::sym(status_var))
 
 	if (reason_var %in% names(adsl)) {
 		disc_reasons <- adsl |>
 			dplyr::filter(!!rlang::sym(status_var) == "DISCONTINUED") |>
-			dplyr::group_by(!!rlang::sym(trt_var), !!rlang::sym(reason_var)) |>
-			dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+			dplyr::summarise(
+				n = dplyr::n(),
+				.by = c(!!dplyr::sym(trt_var), !!dplyr::sym(reason_var))
+			) |>
 			tidyr::pivot_wider(
-				names_from = !!rlang::sym(trt_var),
+				names_from = !!dplyr::sym(trt_var),
 				values_from = "n",
 				values_fill = 0
 			) |>
-			dplyr::rename(`Study Status` = !!rlang::sym(reason_var)) |>
+			dplyr::rename(`Study Status` = !!dplyr::sym(reason_var)) |>
 			dplyr::mutate(`Study Status` = paste0("  ", .data$`Study Status`))
 
 		disp_data <- dplyr::bind_rows(disp_data, disc_reasons)
@@ -490,8 +492,7 @@ create_population_summary_table <- function(
 
 		counts <- adsl |>
 			dplyr::filter(.data[[var]] == "Y") |>
-			dplyr::group_by(!!rlang::sym(trt_var)) |>
-			dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+			dplyr::summarise(n = dplyr::n(), .by = !!rlang::sym(trt_var)) |>
 			tidyr::pivot_wider(
 				names_from = !!rlang::sym(trt_var),
 				values_from = "n",

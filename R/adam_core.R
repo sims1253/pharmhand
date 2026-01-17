@@ -57,10 +57,9 @@ get_trt_n <- function(
 	}
 
 	df |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			N = dplyr::n_distinct(.data[[subject_var]]),
-			.groups = "drop"
+			.by = dplyr::all_of(trt_var)
 		)
 }
 
@@ -172,10 +171,9 @@ analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
 
 	# Basic summary stats (Baseline)
 	stats <- df |>
-		dplyr::group_by(!!dplyr::sym(x@trt_var)) |>
 		dplyr::summarise(
 			N = dplyr::n_distinct(!!dplyr::sym(x@subject_var)),
-			.groups = "drop"
+			.by = !!dplyr::sym(x@trt_var)
 		)
 
 	AnalysisResults(stats = stats, type = "baseline", metadata = x@metadata)
@@ -216,7 +214,6 @@ calculate_baseline <- function(data, vars) {
 				names_to = "variable",
 				values_to = "value"
 			) |>
-			dplyr::group_by(.data$variable, !!dplyr::sym(trt_var)) |>
 			dplyr::summarise(
 				n = sum(!is.na(.data$value)),
 				mean = mean(.data$value, na.rm = TRUE),
@@ -224,7 +221,7 @@ calculate_baseline <- function(data, vars) {
 				median = median(.data$value, na.rm = TRUE),
 				min = min(.data$value, na.rm = TRUE),
 				max = max(.data$value, na.rm = TRUE),
-				.groups = "drop"
+				.by = c("variable", !!dplyr::sym(trt_var))
 			)
 	}
 
@@ -301,18 +298,16 @@ analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
 
 	# Total subjects per treatment arm for percentages
 	big_n <- df |>
-		dplyr::group_by(!!dplyr::sym(trt_var)) |>
 		dplyr::summarise(
 			N_tot = dplyr::n_distinct(!!dplyr::sym(sub_var)),
-			.groups = "drop"
+			.by = !!dplyr::sym(trt_var)
 		)
 
 	# SOC Level Stats
 	soc_stats <- df |>
-		dplyr::group_by(!!dplyr::sym(soc_var), !!dplyr::sym(trt_var)) |>
 		dplyr::summarise(
 			n = dplyr::n_distinct(!!dplyr::sym(sub_var)),
-			.groups = "drop"
+			.by = c(!!dplyr::sym(soc_var), !!dplyr::sym(trt_var))
 		) |>
 		dplyr::left_join(big_n, by = trt_var) |>
 		dplyr::mutate(
@@ -323,14 +318,13 @@ analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
 
 	# PT Level Stats
 	pt_stats <- df |>
-		dplyr::group_by(
-			!!dplyr::sym(soc_var),
-			!!dplyr::sym(pt_var),
-			!!dplyr::sym(trt_var)
-		) |>
 		dplyr::summarise(
 			n = dplyr::n_distinct(!!dplyr::sym(sub_var)),
-			.groups = "drop"
+			.by = c(
+				!!dplyr::sym(soc_var),
+				!!dplyr::sym(pt_var),
+				!!dplyr::sym(trt_var)
+			)
 		) |>
 		dplyr::left_join(big_n, by = trt_var) |>
 		dplyr::mutate(

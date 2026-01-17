@@ -70,7 +70,7 @@ calculate_ae_tte_data <- function(
 	# Merge with ADSL
 	tte_data <- adsl |>
 		dplyr::filter(.data$SAFFL == "Y") |>
-		dplyr::left_join(first_event, by = "USUBJID")
+		dplyr::left_join(first_event, by = dplyr::join_by(USUBJID))
 
 	# Derive time and event
 	# If TRTDURD is not available, derive it from TRTEDT and TRTSDT
@@ -258,7 +258,7 @@ create_time_to_first_ae <- function(
 
 	tte_data <- adsl |>
 		dplyr::filter(.data$SAFFL == "Y") |>
-		dplyr::left_join(first_event, by = "USUBJID")
+		dplyr::left_join(first_event, by = dplyr::join_by(USUBJID))
 
 	if (!censor_var %in% names(tte_data)) {
 		if (

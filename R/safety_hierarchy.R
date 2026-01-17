@@ -96,22 +96,24 @@ create_ae_hierarchy_table <- function(
 
 	# Get treatment counts from ADSL
 	trt_n <- adsl |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			N = dplyr::n_distinct(.data[[subject_var]]),
-			.groups = "drop"
+			.by = dplyr::all_of(trt_var)
 		)
 
 	treatments <- sort(unique(adsl[[trt_var]]))
 
 	# Helper function to count subjects at each level
 	count_at_level <- function(data, group_vars) {
-		data |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(c(trt_var, group_vars)))) |>
-			dplyr::summarise(
-				n = dplyr::n_distinct(.data[[subject_var]]),
-				.groups = "drop"
-			)
+		by_vars <- c(trt_var, group_vars)
+		# Use base R split-apply pattern for dynamic column selection
+		split_data <- split(data, interaction(data[by_vars], drop = TRUE))
+		result_list <- lapply(split_data, function(x) {
+			val <- unique(x[, by_vars, drop = FALSE])
+			val$n <- length(unique(x[[subject_var]]))
+			val
+		})
+		do.call(rbind, result_list)
 	}
 
 	# Build hierarchical results

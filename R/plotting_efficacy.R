@@ -91,14 +91,11 @@ create_mean_plot <- function(
 
 	if (!is.null(group_var)) {
 		summary_data <- data |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(c(x_var, group_var)))
-			) |>
 			dplyr::summarise(
 				mean_val = mean(.data[[y_var]], na.rm = TRUE),
 				sd_val = stats::sd(.data[[y_var]], na.rm = TRUE),
 				n = sum(!is.na(.data[[y_var]])),
-				.groups = "drop"
+				.by = dplyr::all_of(c(x_var, group_var))
 			) |>
 			dplyr::mutate(
 				se = dplyr::if_else(
@@ -119,12 +116,11 @@ create_mean_plot <- function(
 			)
 	} else {
 		summary_data <- data |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(x_var))) |>
 			dplyr::summarise(
 				mean_val = mean(.data[[y_var]], na.rm = TRUE),
 				sd_val = stats::sd(.data[[y_var]], na.rm = TRUE),
 				n = sum(!is.na(.data[[y_var]])),
-				.groups = "drop"
+				.by = dplyr::all_of(x_var)
 			) |>
 			dplyr::mutate(
 				se = dplyr::if_else(

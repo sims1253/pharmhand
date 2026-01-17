@@ -52,12 +52,11 @@ create_lab_summary_table <- function(
 			.data$PARAMCD %in% params,
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$PARAM) |>
 		dplyr::summarise(
 			n = dplyr::n(),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 2),
 			SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "PARAM")
 		) |>
 		dplyr::mutate(
 			display = paste0(.data$Mean, " (", .data$SD, ")"),
@@ -140,12 +139,10 @@ create_lab_shift_table <- function(
 			!is.na(.data$ANRIND),
 			.data$AVISIT == visit
 		) |>
-		dplyr::group_by(
-			dplyr::across(dplyr::all_of(trt_var)),
-			.data$BNRIND,
-			.data$ANRIND
+		dplyr::summarise(
+			n = dplyr::n(),
+			.by = c(dplyr::all_of(trt_var), "BNRIND", "ANRIND")
 		) |>
-		dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
 		tidyr::pivot_wider(
 			names_from = "ANRIND",
 			values_from = "n",

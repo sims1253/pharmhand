@@ -32,7 +32,8 @@ Imports:
     withr (>= 2.5.0),
     glue,
     openxlsx,
-    writexl
+    writexl,
+    tidyselect
 Suggests:
     admiral,
     brms,

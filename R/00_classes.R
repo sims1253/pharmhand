@@ -92,10 +92,9 @@ ADaMData <- S7::new_class(
 				trt_var <- self@trt_var
 				subject_var <- self@subject_var
 				df |>
-					dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 					dplyr::summarise(
 						N = dplyr::n_distinct(.data[[subject_var]]),
-						.groups = "drop"
+						.by = dplyr::all_of(trt_var)
 					)
 			}
 		)

@@ -81,11 +81,10 @@ create_responder_table <- function(
 
 	# Response rate by treatment
 	response_summary <- df |>
-		dplyr::group_by(!!rlang::sym(trt_var_actual)) |>
 		dplyr::summarise(
 			N = dplyr::n(),
 			responders = sum(.data$responder, na.rm = TRUE),
-			.groups = "drop"
+			.by = !!rlang::sym(trt_var_actual)
 		) |>
 		dplyr::mutate(
 			rate = ifelse(.data$N > 0, .data$responders / .data$N, NA_real_)

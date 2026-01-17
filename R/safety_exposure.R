@@ -226,10 +226,9 @@ create_ae_exposure_table <- function(
 	)
 
 	patient_years_by_trt <- adsl_exposure |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			patient_years = sum(.data$exposure_years, na.rm = TRUE),
-			.groups = "drop"
+			.by = dplyr::all_of(trt_var)
 		)
 
 	patient_years_by_trt[[trt_var]] <- factor(
@@ -275,24 +274,21 @@ create_ae_exposure_table <- function(
 
 	if (by == "overall") {
 		event_counts <- teae |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
-			dplyr::summarise(n_events = dplyr::n(), .groups = "drop") |>
+			dplyr::summarise(n_events = dplyr::n(), .by = dplyr::all_of(trt_var)) |>
 			dplyr::mutate(term = "Any TEAE")
 	} else if (by == "soc") {
 		event_counts <- teae |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(trt_var)),
-				.data$AEBODSYS
+			dplyr::summarise(
+				n_events = dplyr::n(),
+				.by = c(dplyr::all_of(trt_var), "AEBODSYS")
 			) |>
-			dplyr::summarise(n_events = dplyr::n(), .groups = "drop") |>
 			dplyr::rename(term = "AEBODSYS")
 	} else {
 		event_counts <- teae |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(trt_var)),
-				.data$AEDECOD
+			dplyr::summarise(
+				n_events = dplyr::n(),
+				.by = c(dplyr::all_of(trt_var), "AEDECOD")
 			) |>
-			dplyr::summarise(n_events = dplyr::n(), .groups = "drop") |>
 			dplyr::rename(term = "AEDECOD")
 	}
 
@@ -333,10 +329,9 @@ create_ae_exposure_table <- function(
 
 	if (threshold > 0) {
 		terms_above_threshold <- event_counts |>
-			dplyr::group_by(.data$term) |>
 			dplyr::summarise(
 				max_rate = max(.data$rate, na.rm = TRUE),
-				.groups = "drop"
+				.by = "term"
 			) |>
 			dplyr::filter(.data$max_rate >= threshold) |>
 			dplyr::pull(.data$term)

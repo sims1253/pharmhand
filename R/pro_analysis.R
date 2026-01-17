@@ -403,11 +403,10 @@ create_ttd_analysis <- function(
 	if (definition == "first") {
 		ttd_events <- data |>
 			dplyr::filter(.data$deteriorated) |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(c(subject_var, trt_var)))) |>
 			dplyr::summarise(
 				event_time = safe_min(.data[[time_var]]),
 				event = 1L,
-				.groups = "drop"
+				.by = dplyr::all_of(c(subject_var, trt_var))
 			)
 	} else {
 		# Confirmed deterioration: need consecutive visits
@@ -419,20 +418,19 @@ create_ttd_analysis <- function(
 			dplyr::filter(
 				.data$deteriorated & .data$run_length >= confirmation_visits
 			) |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(c(subject_var, trt_var)))) |>
+			dplyr::ungroup() |>
 			dplyr::summarise(
 				event_time = safe_min(.data[[time_var]]),
 				event = 1L,
-				.groups = "drop"
+				.by = dplyr::all_of(c(subject_var, trt_var))
 			)
 	}
 
 	# Get all subjects with their treatment
 	all_subjects <- data |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(c(subject_var, trt_var)))) |>
 		dplyr::summarise(
 			max_time = max(.data[[time_var]], na.rm = TRUE),
-			.groups = "drop"
+			.by = dplyr::all_of(c(subject_var, trt_var))
 		)
 
 	# Merge events with all subjects
@@ -467,7 +465,6 @@ create_ttd_analysis <- function(
 
 	# Create summary table
 	summary_table <- ttd_data |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			N = dplyr::n(),
 			Events = sum(.data$event),
@@ -480,7 +477,7 @@ create_ttd_analysis <- function(
 				med <- summary(km_sub)$table["median"]
 				if (is.na(med)) "NR" else sprintf("%.0f", med)
 			},
-			.groups = "drop"
+			.by = dplyr::all_of(trt_var)
 		)
 
 	list(

@@ -206,8 +206,10 @@ create_ae_summary_table <- function(
 		)
 		adae |>
 			dplyr::filter(.data$TRTEMFL == "Y") |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
-			dplyr::summarise(N = dplyr::n_distinct(.data$USUBJID), .groups = "drop")
+			dplyr::summarise(
+				N = dplyr::n_distinct(.data$USUBJID),
+				.by = dplyr::all_of(trt_var)
+			)
 	}
 
 	# Auto-generate title if not provided (for non-comparison types)
@@ -301,10 +303,9 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 			return(NULL)
 		}
 		result <- data |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 			dplyr::summarise(
 				n = dplyr::n_distinct(.data$USUBJID),
-				.groups = "drop"
+				.by = dplyr::all_of(trt_var)
 			) |>
 			dplyr::left_join(trt_n, by = trt_var) |>
 			dplyr::mutate(
@@ -402,10 +403,9 @@ create_ae_table_soc <- function(
 ) {
 	soc_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AEBODSYS) |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "AEBODSYS")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
@@ -476,14 +476,9 @@ create_ae_table_soc_pt <- function(
 ) {
 	soc_pt_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
-		dplyr::group_by(
-			dplyr::across(dplyr::all_of(trt_var)),
-			.data$AEBODSYS,
-			.data$AEDECOD
-		) |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "AEBODSYS", "AEDECOD")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
@@ -554,10 +549,9 @@ create_ae_table_pt <- function(adae, trt_n, trt_var, soc, title, autofit) {
 	}
 
 	pt_summary <- data |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AEDECOD) |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "AEDECOD")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
@@ -598,22 +592,19 @@ create_ae_table_common <- function(
 ) {
 	top_pts <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
-		dplyr::group_by(.data$AEDECOD) |>
-		dplyr::summarise(n = dplyr::n_distinct(.data$USUBJID), .groups = "drop") |>
+		dplyr::summarise(
+			n = dplyr::n_distinct(.data$USUBJID),
+			.by = "AEDECOD"
+		) |>
 		dplyr::arrange(dplyr::desc(.data$n)) |>
 		dplyr::slice_head(n = n_top) |>
 		dplyr::pull(.data$AEDECOD)
 
 	common_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y", .data$AEDECOD %in% top_pts) |>
-		dplyr::group_by(
-			dplyr::across(dplyr::all_of(trt_var)),
-			.data$AEBODSYS,
-			.data$AEDECOD
-		) |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "AEBODSYS", "AEDECOD")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
@@ -684,10 +675,9 @@ create_ae_table_severity <- function(
 				ordered = TRUE
 			)
 		) |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$USUBJID) |>
 		dplyr::summarise(
 			max_sev = as.character(max(.data$AESEV_ord, na.rm = TRUE)),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "USUBJID")
 		) |>
 		dplyr::mutate(
 			max_sev = dplyr::if_else(
@@ -697,8 +687,10 @@ create_ae_table_severity <- function(
 			)
 		) |>
 		dplyr::filter(!is.na(.data$max_sev)) |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$max_sev) |>
-		dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+		dplyr::summarise(
+			n = dplyr::n(),
+			.by = c(dplyr::all_of(trt_var), "max_sev")
+		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
 			pct = safe_pct(.data$n, .data$N),
@@ -739,10 +731,9 @@ create_ae_table_relationship <- function(adae, trt_n, trt_var, title, autofit) {
 	# Shows all AEREL categories including NA/unknown
 	rel_summary <- adae |>
 		dplyr::filter(.data$TRTEMFL == "Y") |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var)), .data$AEREL) |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
-			.groups = "drop"
+			.by = c(dplyr::all_of(trt_var), "AEREL")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
@@ -789,14 +780,9 @@ create_ae_table_sae <- function(adae, trt_n, trt_var, title, autofit) {
 		)
 	} else {
 		summary_df <- sae |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(trt_var)),
-				.data$AEBODSYS,
-				.data$AEDECOD
-			) |>
 			dplyr::summarise(
 				n_subj = dplyr::n_distinct(.data$USUBJID),
-				.groups = "drop"
+				.by = c(dplyr::all_of(trt_var), "AEBODSYS", "AEDECOD")
 			) |>
 			dplyr::left_join(trt_n, by = trt_var) |>
 			dplyr::mutate(
@@ -855,14 +841,9 @@ create_ae_table_discontinuation <- function(
 		)
 	} else {
 		summary_df <- disc |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(trt_var)),
-				.data$AEBODSYS,
-				.data$AEDECOD
-			) |>
 			dplyr::summarise(
 				n_subj = dplyr::n_distinct(.data$USUBJID),
-				.groups = "drop"
+				.by = c(dplyr::all_of(trt_var), "AEBODSYS", "AEDECOD")
 			) |>
 			dplyr::left_join(trt_n, by = trt_var) |>
 			dplyr::mutate(
@@ -905,11 +886,10 @@ create_ae_table_discontinuation <- function(
 create_ae_table_deaths <- function(adsl, trt_var, title, autofit) {
 	death_summary <- adsl |>
 		dplyr::filter(.data$SAFFL == "Y") |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(trt_var))) |>
 		dplyr::summarise(
 			N = dplyr::n(),
 			n_deaths = sum(.data$DTHFL == "Y", na.rm = TRUE),
-			.groups = "drop"
+			.by = dplyr::all_of(trt_var)
 		) |>
 		dplyr::mutate(
 			pct = safe_pct(.data$n_deaths, .data$N),

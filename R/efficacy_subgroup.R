@@ -2,6 +2,7 @@
 #' @name efficacy_subgroup
 #' @description Functions for subgroup analysis tables and
 #'   credibility assessment.
+#' @importFrom tidyselect all_of
 NULL
 
 #' Create Subgroup Analysis Table
@@ -85,7 +86,7 @@ create_subgroup_analysis_table <- function(
 		advs <- advs |>
 			dplyr::left_join(
 				adsl[, c("USUBJID", in_adsl), drop = FALSE],
-				by = "USUBJID"
+				by = dplyr::join_by(USUBJID)
 			)
 	}
 
@@ -107,10 +108,9 @@ create_subgroup_analysis_table <- function(
 
 		if (!is.null(min_subgroup_size)) {
 			subgroup_counts <- subgroup_data_raw |>
-				dplyr::group_by(.data[[var_name]]) |>
 				dplyr::summarise(
 					n = dplyr::n_distinct(.data$USUBJID),
-					.groups = "drop"
+					.by = all_of(var_name)
 				) |>
 				dplyr::mutate(
 					subgroup = paste0(label, ": ", .data[[var_name]])
@@ -119,15 +119,11 @@ create_subgroup_analysis_table <- function(
 		}
 
 		res <- subgroup_data_raw |>
-			dplyr::group_by(
-				dplyr::across(dplyr::all_of(trt_var)),
-				.data[[var_name]]
-			) |>
 			dplyr::summarise(
 				n = dplyr::n(),
 				Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
 				SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
-				.groups = "drop"
+				.by = c(all_of(trt_var), all_of(var_name))
 			) |>
 			dplyr::mutate(
 				Subgroup = label,
@@ -377,18 +373,19 @@ create_subgroup_table <- function(
 				dplyr::filter(!is.na(.data[[var_name]]))
 			if (subject_var %in% names(df)) {
 				subgroup_counts <- subgroup_data |>
-					dplyr::group_by(.data[[var_name]]) |>
 					dplyr::summarise(
 						n = dplyr::n_distinct(.data[[subject_var]]),
-						.groups = "drop"
+						.by = all_of(var_name)
 					) |>
 					dplyr::mutate(
 						subgroup = paste0(label, ": ", .data[[var_name]])
 					)
 			} else {
 				subgroup_counts <- subgroup_data |>
-					dplyr::group_by(.data[[var_name]]) |>
-					dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+					dplyr::summarise(
+						n = dplyr::n(),
+						.by = all_of(var_name)
+					) |>
 					dplyr::mutate(
 						subgroup = paste0(label, ": ", .data[[var_name]])
 					)

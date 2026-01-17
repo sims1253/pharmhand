@@ -264,10 +264,9 @@ build_table <- function(table, ...) {
 	if (is.null(big_n)) {
 		assert_column_exists(data, "USUBJID", "data")
 		big_n <- data |>
-			dplyr::group_by(!!rlang::sym(trt_var)) |>
 			dplyr::summarise(
 				N_tot = dplyr::n_distinct(.data$USUBJID),
-				.groups = "drop"
+				.by = !!rlang::sym(trt_var)
 			)
 	}
 
@@ -334,10 +333,9 @@ build_count_layer <- function(layer, data, trt_var, big_n = NULL) {
 
 	# Calculate counts
 	counts <- data |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(c(by_vars, target)))) |>
 		dplyr::summarise(
 			n = dplyr::n_distinct(.data[[distinct_by]]),
-			.groups = "drop"
+			.by = dplyr::all_of(c(by_vars, target))
 		)
 
 	# Calculate denominators and percentages if requested
@@ -354,10 +352,9 @@ build_count_layer <- function(layer, data, trt_var, big_n = NULL) {
 			denoms <- big_n
 		} else {
 			denoms <- data |>
-				dplyr::group_by(dplyr::across(dplyr::all_of(denom_vars))) |>
 				dplyr::summarise(
 					N_tot = dplyr::n_distinct(.data[[distinct_by]]),
-					.groups = "drop"
+					.by = dplyr::all_of(denom_vars)
 				)
 		}
 
@@ -399,8 +396,7 @@ build_descriptive_layer <- function(layer, data, trt_var) {
 	stat_calls <- stat_exprs[intersect(stats, names(stat_exprs))]
 
 	result <- data |>
-		dplyr::group_by(dplyr::across(dplyr::all_of(by_vars))) |>
-		dplyr::summarise(!!!stat_calls, .groups = "drop")
+		dplyr::summarise(!!!stat_calls, .by = dplyr::all_of(by_vars))
 
 	result$variable <- target
 	result$layer_type <- "descriptive"
@@ -423,20 +419,21 @@ build_shift_layer <- function(layer, data, trt_var) {
 	# Calculate shift counts (distinct subjects, not rows)
 	result <- data |>
 		dplyr::filter(!is.na(.data[[baseline]]) & !is.na(.data[[post]])) |>
-		dplyr::group_by(
-			dplyr::across(dplyr::all_of(by_vars)),
-			baseline = .data[[baseline]],
-			post = .data[[post]]
-		) |>
 		dplyr::summarise(
 			n = dplyr::n_distinct(.data[[distinct_by]]),
-			.groups = "drop"
+			.by = c(
+				dplyr::all_of(by_vars),
+				baseline = .data[[baseline]],
+				post = .data[[post]]
+			)
 		)
 
 	if (layer@include_pct) {
 		totals <- result |>
-			dplyr::group_by(dplyr::across(dplyr::all_of(c(by_vars, "baseline")))) |>
-			dplyr::summarise(N = sum(.data$n), .groups = "drop")
+			dplyr::summarise(
+				N = sum(.data$n),
+				.by = c(dplyr::all_of(c(by_vars, "baseline")))
+			)
 
 		result <- result |>
 			dplyr::left_join(totals, by = c(by_vars, "baseline")) |>
