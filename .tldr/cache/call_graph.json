@@ -1,0 +1,3440 @@
+{
+  "edges": [
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "create_vs_by_visit_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "prior_sensitivity_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "generate_reference_report",
+      "to_file": "inst/examples/reference_report.R",
+      "to_func": "build_ae_section"
+    },
+    {
+      "from_file": "tests/testthat/helper-fixtures.R",
+      "from_func": "get_shared_adae",
+      "to_file": "tests/testthat/helper-fixtures.R",
+      "to_func": "create_mock_adae"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_mean_plot",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "add_smd_to_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "apply_format",
+      "to_file": "R/formatting.R",
+      "to_func": "parse_format_pattern"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/efficacy_subgroup.R",
+      "to_func": "warn_small_subgroups"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "build_schoenfeld_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "create_responder_table",
+      "to_file": "R/efficacy_responder.R",
+      "to_func": "calculate_proportion_ci"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "format_bayesian_result_iqwig",
+      "to_file": "R/formatting.R",
+      "to_func": "format_percentage"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_evidence_narrative",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": ".assess_heterogeneity_level"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "generate_reference_report",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "to_gba_template"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "define_subgroup_config",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_forest_plot_iqwig",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "assess_evidence_domains",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".assess_limitations"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2_batch",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "rob2_summary",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_deaths",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_ci",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd",
+      "to_file": "R/utils.R",
+      "to_func": "assert_positive"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "assert_positive",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/efficacy_subgroup.R",
+      "to_func": "calculate_interaction_pvalue_table"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": ".bias_adjusted_selection_model",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i",
+      "to_file": "R/bias_robins_i.R",
+      "to_func": ".calculate_robins_i_overall"
+    },
+    {
+      "from_file": "R/adam_core.R",
+      "from_func": "calculate_baseline",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/safety_hierarchy.R",
+      "from_func": "create_ae_hierarchy_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "create_chef_endpoint",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": ".bias_adjusted_weight_downgrade",
+      "to_file": "R/meta_core.R",
+      "to_func": "estimate_tau2"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "ancova_adjust_continuous",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "narrative_template",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_binary",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": ".bias_adjusted_selection_model",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "calculate_ae_tte_data",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "generate_reference_report",
+      "to_file": "inst/examples/reference_report.R",
+      "to_func": "build_disposition_section"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "update_soc_config",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_spider_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "format_bayesian_result_iqwig",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "create_hta_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "apply_clinical_style"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_ae_cumulative_incidence_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_sae",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "calculate_rob_weights",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/efficacy_tte.R",
+      "to_func": "fmt_time"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "rob_sensitivity_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/bias_plots.R",
+      "from_func": "create_rob_traffic_light_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_medical_history_table",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_category_summary_table"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": ".get_template",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/compliance.R",
+      "from_func": "check_gba_compliance",
+      "to_file": "R/compliance.R",
+      "to_func": "check_one"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "create_ttd_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i_batch",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "calculate_rob_weights",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_ae_cumulative_incidence_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_loglog_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "ancova_adjust_continuous",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "quick_demographics_report",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_demographics_table"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": ".calculate_robins_i_overall",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_ae_overview",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "prior_sensitivity_analysis",
+      "to_file": "R/meta_bayesian.R",
+      "to_func": "bayesian_meta_analysis"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_pt"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_loglog_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "layered_to_flextable",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "apply_clinical_style"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "bayesian_meta_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_indirect.R",
+      "from_func": "compare_direct_indirect",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "layered_to_flextable",
+      "to_file": "R/layers.R",
+      "to_func": "build_table"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "create_cfb_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": ".calculate_certainty",
+      "to_file": "R/evidence_grading.R",
+      "to_func": "get_rating"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "detect_floor_ceiling",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "format_evidence_grade",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "bayesian_meta_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_deaths",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "test_non_inferiority",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/efficacy_primary.R",
+      "from_func": "create_primary_endpoint_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/safety_hierarchy.R",
+      "from_func": "create_ae_hierarchy_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_km_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "to_gba_template",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "theme_gba"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "create_clinical_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "apply_format",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "tests/testthat/test-bias_plots.R",
+      "from_func": "create_robinsi_result",
+      "to_file": "R/bias_robins_i.R",
+      "to_func": "assess_robins_i"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "create_responder_table",
+      "to_file": "R/efficacy_responder.R",
+      "to_func": "calculate_response_comparison"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_spider_plot",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/plotting_forest.R",
+      "from_func": "create_forest_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_hta_module4_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "calculate_heterogeneity",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "add_translation",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "assess_iceman",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2_batch",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "get_population_config",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "network_meta",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/meta_indirect.R",
+      "from_func": "assess_transitivity",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "tests/testthat/helper-localization.R",
+      "from_func": "reset_locale_state",
+      "to_file": "R/localization.R",
+      "to_func": "set_locale"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "format_bayesian_result_iqwig",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_from_data",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "grade_evidence",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".generate_grade_justification"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_ae_by_relationship",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_forest_plot_iqwig",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_meta_forest_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "assess_baseline_balance",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_from_data",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_primary.R",
+      "from_func": "create_primary_endpoint_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_clinical_table"
+    },
+    {
+      "from_file": "R/efficacy_lab.R",
+      "from_func": "create_lab_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_km_plot",
+      "to_file": "R/plotting_survival.R",
+      "to_func": "create_loglog_plot"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": ".export_to_excel",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "detect_floor_ceiling",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "grade_evidence",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".calculate_certainty"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_pvalue",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/plotting_forest.R",
+      "from_func": "create_forest_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "layered_to_flextable",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "apply_composite",
+      "to_file": "R/formatting.R",
+      "to_func": "apply_format"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_ci",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "meta_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/plotting_survival.R",
+      "to_func": "create_km_plot"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "leave_one_out",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_soc",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/safety_comparison.R",
+      "to_func": "calculate_ae_risk_difference"
+    },
+    {
+      "from_file": "R/meta_bias.R",
+      "from_func": "eggers_test",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2",
+      "to_file": "R/bias_rob2.R",
+      "to_func": ".generate_rob2_justification"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "get_translations",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_full_evidence_report",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": "generate_endpoint_narrative"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "add_translation",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i_batch",
+      "to_file": "R/utils.R",
+      "to_func": ".get_optional_col"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/efficacy_subgroup.R",
+      "to_func": "calculate_subgroup_effect_table"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_binary",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_demographics_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_clinical_table"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "create_chef_endpoint",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "create_responder_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "add_smd_to_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_column_exists"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "ancova_adjust_continuous",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_funnel_plot",
+      "to_file": "R/meta_bias.R",
+      "to_func": "eggers_test"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_distribution",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "calculate_exposure_adjusted_rate",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "R/meta_bias.R",
+      "from_func": "trim_and_fill",
+      "to_file": "R/meta_bias.R",
+      "to_func": "eggers_test"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_evidence_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "get_population_config",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "inst/examples/baseline_report.R",
+      "from_func": "generate_baseline_report",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_demographics_table"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "bayesian_meta_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_distribution",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/efficacy_tte.R",
+      "to_func": "test_ph_assumption"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "add_smd_to_table",
+      "to_file": "R/gba_utils.R",
+      "to_func": "calculate_smd_from_data"
+    },
+    {
+      "from_file": "R/meta_bias.R",
+      "from_func": "trim_and_fill",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "list_populations",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_trace_plots",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "prior_sensitivity_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_disposition_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "build_hta_section",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_overview",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "build_demographics_section",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_demographics_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "run_chef_pipeline",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": ".bias_adjusted_weight_downgrade",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_trace_plots",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": ".export_to_word",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_spider_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "bias_adjusted_meta",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "test_non_inferiority",
+      "to_file": "R/efficacy_responder.R",
+      "to_func": "calculate_proportion_ci"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_loglog_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "ph_default",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_mean_plot",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_severity",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": ".pool_pairwise_effects",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "assess_evidence_domains",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".assess_indirectness"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2_batch",
+      "to_file": "R/utils.R",
+      "to_func": ".get_optional_col"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_n"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "bias_adjusted_meta",
+      "to_file": "R/meta_bias_adjusted.R",
+      "to_func": ".bias_adjusted_weight_downgrade"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i_batch",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_ae_km_plot_for_soc",
+      "to_file": "R/safety_tte.R",
+      "to_func": "calculate_ae_tte_data"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "fmt_ci",
+      "to_file": "R/formatting.R",
+      "to_func": "composite_format"
+    },
+    {
+      "from_file": "R/bias_plots.R",
+      "from_func": "rob_data_to_tidy",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "quick_demographics_report",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "network_meta",
+      "to_file": "R/meta_network.R",
+      "to_func": ".pool_pairwise_effects"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "robins_i_summary",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_ae_cumulative_incidence_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "theme_gba",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "assert_numeric_scalar",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_lab.R",
+      "from_func": "create_lab_shift_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "define_population_config",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "tests/testthat/helper-fixtures.R",
+      "from_func": "get_shared_adsl",
+      "to_file": "tests/testthat/helper-fixtures.R",
+      "to_func": "create_mock_adsl"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_distribution",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "detect_floor_ceiling",
+      "to_file": "R/utils.R",
+      "to_func": "assert_column_exists"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "bayesian_meta_analysis",
+      "to_file": "R/meta_core.R",
+      "to_func": "meta_analysis"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "run_chef_pipeline",
+      "to_file": "R/chef_integration.R",
+      "to_func": "chef_to_analysis_results"
+    },
+    {
+      "from_file": "inst/examples/baseline_report.R",
+      "from_func": "generate_baseline_report",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_region_table"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i_batch",
+      "to_file": "R/bias_robins_i.R",
+      "to_func": "assess_robins_i"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_study_characteristics_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_clinical_table"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_discontinuation"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "format_bayesian_result_iqwig",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "create_ttd_analysis",
+      "to_file": "R/pro_analysis.R",
+      "to_func": "safe_min"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_evidence_summary_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_clinical_table"
+    },
+    {
+      "from_file": "R/efficacy_lab.R",
+      "from_func": "create_lab_shift_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_severity"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_evidence_narrative",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": ".format_ci"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "assess_baseline_balance",
+      "to_file": "R/gba_utils.R",
+      "to_func": "calculate_smd_from_data"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "to_gba_template",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "create_ttd_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "build_schoenfeld_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_forest_plot_iqwig",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_sae_summary",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/layers.R",
+      "from_func": "build_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_column_exists"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_batch_narratives",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": "generate_endpoint_narrative"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_empty_ae_exposure_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/efficacy_tte.R",
+      "to_func": "create_tte_summary_table"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_analysis_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_pt",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_ae_disc"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/efficacy_lab.R",
+      "to_func": "create_lab_summary_table"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_discontinuation",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_region_table",
+      "to_file": "R/layers.R",
+      "to_func": "build_table"
+    },
+    {
+      "from_file": "tests/testthat/helper-fixtures.R",
+      "from_func": "get_shared_test_config",
+      "to_file": "tests/testthat/helper-fixtures.R",
+      "to_func": "create_test_config"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "add_smd_to_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "assess_evidence_domains",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".assess_inconsistency"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_overview"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/gba_utils.R",
+      "to_func": "adjust_pvalues"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_mean_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_km_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".resolve_palette"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/efficacy_subgroup.R",
+      "to_func": "create_subgroup_analysis_table"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2_batch",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": ".generate_robins_i_justification",
+      "to_file": "R/bias_robins_i.R",
+      "to_func": "get_domain_names"
+    },
+    {
+      "from_file": "tests/testthat/helper-brms.R",
+      "from_func": "get_shared_bayesian_result",
+      "to_file": "R/meta_bayesian.R",
+      "to_func": "bayesian_meta_analysis"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "rob_sensitivity_analysis",
+      "to_file": "R/meta_core.R",
+      "to_func": "meta_analysis"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "R/zzz.R",
+      "from_func": ".onLoad",
+      "to_file": "R/zzz.R",
+      "to_func": "set_option_if_null"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "calculate_sucra",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": ".calculate_rob2_overall",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "build_ae_section",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "assess_baseline_balance",
+      "to_file": "R/utils.R",
+      "to_func": "assert_column_exists"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_from_data",
+      "to_file": "R/utils.R",
+      "to_func": "assert_column_exists"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "add_translation",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "chef_to_analysis_results",
+      "to_file": "R/chef_integration.R",
+      "to_func": "flatten_chef_results"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "ancova_adjust_continuous",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_common_aes",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "export_evidence_table",
+      "to_file": "R/evidence_summary_table.R",
+      "to_func": ".export_to_html"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_population_summary_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_trace_plots",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "define_population_config",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "prior_sensitivity_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "calculate_sucra",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_lab.R",
+      "from_func": "create_lab_summary_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/layers.R",
+      "from_func": "build_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_hierarchy.R",
+      "from_func": "create_ae_hierarchy_table",
+      "to_file": "R/safety_hierarchy.R",
+      "to_func": "count_at_level"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "robins_i_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_spider_plot",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/compliance.R",
+      "from_func": "check_gba_compliance",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_anchor",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_relationship",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "quick_safety_report",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_km_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "list_translation_keys",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "add_smd_to_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_positive"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_anchor",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "test_non_inferiority",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "tr",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "assess_baseline_balance",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_severity",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "update_pt_config",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_evidence_summary_table",
+      "to_file": "R/evidence_summary_table.R",
+      "to_func": ".format_rob_summary"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "create_cfb_summary_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": ".format_effect_ci",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "chef_to_analysis_results",
+      "to_file": "R/chef_integration.R",
+      "to_func": "extract_chef_metadata"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_analysis_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "assert_column_exists",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_evidence_summary_table",
+      "to_file": "R/evidence_summary_table.R",
+      "to_func": ".format_effect_ci"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_evidence_narrative",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": ".format_effect_measure"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_comparison.R",
+      "to_func": "create_ae_comparison_table"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_hta_module4_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "theme_gba"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "bayesian_meta_analysis",
+      "to_file": "R/meta_bayesian.R",
+      "to_func": "is_sampler_diagnostic_warning"
+    },
+    {
+      "from_file": "R/plotting_forest.R",
+      "from_func": "create_forest_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "ph_default",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_full_evidence_report",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "tr",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/gba_utils.R",
+      "to_func": "calculate_nnt"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "meta_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "network_meta",
+      "to_file": "R/meta_network.R",
+      "to_func": ".check_network_connectivity"
+    },
+    {
+      "from_file": "R/bias_plots.R",
+      "from_func": "save_rob_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/efficacy_cfb.R",
+      "to_func": "create_vs_by_visit_table"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "detect_floor_ceiling",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_meta_forest_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "fmt_mean_sd",
+      "to_file": "R/formatting.R",
+      "to_func": "composite_format"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "test_non_inferiority",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_ae_km_plot_for_soc",
+      "to_file": "R/plotting_survival.R",
+      "to_func": "create_km_plot"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_common_aes"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_funnel_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/bias_plots.R",
+      "from_func": "create_rob_summary_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_sae",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_sae"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_km_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_common",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "assert_character_scalar",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_region_table",
+      "to_file": "R/layers.R",
+      "to_func": "add_layer"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_batch_narratives",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_evidence_summary_table",
+      "to_file": "R/evidence_summary_table.R",
+      "to_func": ".format_grade"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_pvalue",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "node_splitting",
+      "to_file": "R/meta_network.R",
+      "to_func": ".extract_pairwise_data"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "grade_evidence",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".determine_effect_direction"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "create_vs_by_visit_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_binary",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "get_subgroup_config",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_ae_overview"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "calculate_exposure_adjusted_rate",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_ci",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "create_league_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "create_love_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_anchor",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "assert_data_frame",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_number",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "list_chef_stats",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/efficacy_cfb.R",
+      "to_func": "create_cfb_summary_table"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "create_responder_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_funnel_plot",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "run_chef_pipeline",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_indirect.R",
+      "from_func": "indirect_comparison",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_ae_disc",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid",
+      "to_file": "R/pro_analysis.R",
+      "to_func": "calculate_mcid_anchor"
+    },
+    {
+      "from_file": "inst/examples/baseline_report.R",
+      "from_func": "generate_baseline_report",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_disposition_table"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "export_evidence_table",
+      "to_file": "R/evidence_summary_table.R",
+      "to_func": ".export_to_excel"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_region_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/meta_bias.R",
+      "from_func": "trim_and_fill",
+      "to_file": "R/meta_core.R",
+      "to_func": "meta_analysis"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "apply_clinical_style",
+      "to_file": "R/utils.R",
+      "to_func": "get_na_string"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_spider_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".resolve_palette"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_evidence_summary_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "assess_baseline_balance",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_from_data",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_analysis_table",
+      "to_file": "R/efficacy_subgroup.R",
+      "to_func": "warn_small_subgroups"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_percentage",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "calculate_ae_tte_data",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_lab.R",
+      "from_func": "create_lab_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/safety_exposure.R",
+      "to_func": "calculate_exposure_adjusted_rate"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "to_gba_template"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "load_config",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "detect_floor_ceiling",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "bias_adjusted_meta",
+      "to_file": "R/meta_bias_adjusted.R",
+      "to_func": ".bias_adjusted_exclude_high"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_evidence_narrative",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": ".format_p_value"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": ".pool_pairwise_effects",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "grade_evidence",
+      "to_file": "R/evidence_grading.R",
+      "to_func": "assess_evidence_domains"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_from_data",
+      "to_file": "R/gba_utils.R",
+      "to_func": "calculate_smd"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_evidence_narrative",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": ".summarize_rob"
+    },
+    {
+      "from_file": "R/layers.R",
+      "from_func": "add_layer",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "rob_sensitivity_analysis",
+      "to_file": "R/meta_bias_adjusted.R",
+      "to_func": "run_meta_subset"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_overview",
+      "to_file": "R/safety_summary.R",
+      "to_func": "summarize_category"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_demographics_table",
+      "to_file": "R/layers.R",
+      "to_func": "build_table"
+    },
+    {
+      "from_file": "R/bias_plots.R",
+      "from_func": "create_rob_traffic_light_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2_batch",
+      "to_file": "R/bias_rob2.R",
+      "to_func": "assess_rob2"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_relationship"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_overview",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_ae_by_soc"
+    },
+    {
+      "from_file": "tests/testthat/helper-brms.R",
+      "from_func": "get_cached_bayesian_result",
+      "to_file": "R/meta_bayesian.R",
+      "to_func": "bayesian_meta_analysis"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_ae_cumulative_incidence_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".resolve_palette"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "create_responder_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "parse_config_registry",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "grade_evidence",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_primary.R",
+      "from_func": "create_primary_endpoint_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "add_if_exists",
+      "to_file": "R/layers.R",
+      "to_func": "add_layer"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_conmeds_table",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_category_summary_table"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_forest_plot_iqwig",
+      "to_file": "R/formatting.R",
+      "to_func": "format_ci"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "get_subgroup_config",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_analysis_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "tests/testthat/helper-brms.R",
+      "from_func": "get_shared_bayesian_result_smd",
+      "to_file": "R/meta_bayesian.R",
+      "to_func": "bayesian_meta_analysis"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "ancova_adjust_continuous",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "export_evidence_table",
+      "to_file": "R/evidence_summary_table.R",
+      "to_func": ".export_to_word"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_subject_var"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "assess_baseline_balance",
+      "to_file": "R/utils.R",
+      "to_func": "assert_positive"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_from_data",
+      "to_file": "R/utils.R",
+      "to_func": "assert_positive"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_loglog_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/bias_plots.R",
+      "from_func": "save_rob_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_time_to_event",
+      "to_file": "R/plotting_survival.R",
+      "to_func": "create_km_plot"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_ae_by_severity",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "list_subgroups",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_hierarchy.R",
+      "from_func": "create_ae_hierarchy_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_distribution",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "to_gba_template",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "inst/examples/baseline_report.R",
+      "from_func": "generate_baseline_report",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_conmeds_table"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_hta_module4_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "tests/testthat/test-evidence_narrative.R",
+      "from_func": ".fixture_rob_results",
+      "to_file": "R/bias_rob2.R",
+      "to_func": "assess_rob2"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_ae_cumulative_incidence_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "test_non_inferiority",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_primary.R",
+      "from_func": "create_primary_endpoint_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "format_bayesian_result_iqwig",
+      "to_file": "R/formatting.R",
+      "to_func": "format_ci"
+    },
+    {
+      "from_file": "R/safety_hierarchy.R",
+      "from_func": "create_ae_hierarchy_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "fmt_median_range",
+      "to_file": "R/formatting.R",
+      "to_func": "composite_format"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "create_responder_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "run_chef_pipeline",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_clinical_table"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "create_bayesian_forest_plot_iqwig",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".pharmhand_theme"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_hta_module4_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/plotting_forest.R",
+      "from_func": "create_forest_plot",
+      "to_file": "R/plotting_forest.R",
+      "to_func": "calculate_subgroup_effect"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd",
+      "to_file": "R/utils.R",
+      "to_func": "assert_in_range"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_soc_pt",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "network_meta",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_mean_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".resolve_palette"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "calculate_exposure_adjusted_rate",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_common"
+    },
+    {
+      "from_file": "R/meta_indirect.R",
+      "from_func": "assess_transitivity",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "tests/testthat/helper-localization.R",
+      "from_func": "reset_locale_state",
+      "to_file": "R/localization.R",
+      "to_func": "reset_custom_translations"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "run_brm",
+      "to_file": "R/meta_bayesian.R",
+      "to_func": "is_sampler_diagnostic_warning"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "export_evidence_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_binary",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "network_meta",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/safety_exposure.R",
+      "to_func": "create_empty_ae_exposure_table"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "calculate_exposure_adjusted_rate",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "theme_iqwig",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_indirect.R",
+      "from_func": "assess_transitivity",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": ".bias_adjusted_selection_model",
+      "to_file": "R/meta_core.R",
+      "to_func": "estimate_tau2"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_rob_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "create_league_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "assess_evidence_domains",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".assess_imprecision"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "calculate_sucra",
+      "to_file": "R/meta_network.R",
+      "to_func": "simulate_ranks"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_ae_by_soc",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "run_chef_pipeline",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "assess_iceman",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "apply_format",
+      "to_file": "R/formatting.R",
+      "to_func": "format_spec"
+    },
+    {
+      "from_file": "inst/examples/baseline_report.R",
+      "from_func": "generate_baseline_report",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_medical_history_table"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_number",
+      "to_file": "R/formatting.R",
+      "to_func": "round_half_up"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/efficacy_tte.R",
+      "to_func": "build_schoenfeld_plot"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_ae_cumulative_incidence_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "quick_safety_report",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "chef_to_analysis_results",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "get_performance_setting",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/efficacy_primary.R",
+      "to_func": "create_primary_endpoint_table"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_demographics_table",
+      "to_file": "R/layers.R",
+      "to_func": "add_layer"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/efficacy_lab.R",
+      "to_func": "create_lab_shift_table"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "build_demographics_section",
+      "to_file": "R/layers.R",
+      "to_func": "build_table"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_demographics_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "R/plotting_forest.R",
+      "from_func": "create_forest_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_network_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "adjust_pvalues",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "warn_small_subgroups",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/plotting_common.R",
+      "from_func": ".resolve_palette",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "get_na_string",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_soc",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "assess_evidence_domains",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".assess_publication_bias"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_evidence_narrative",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": ".get_effect_direction_text"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "create_clinical_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": ".export_to_html",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_km_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_deaths_summary"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_evidence_narrative",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "build_sae_section",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_demographics_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "create_vs_by_visit_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_discontinuation",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "get_translations",
+      "to_file": "R/localization.R",
+      "to_func": "get_locale"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "run_meta_subset",
+      "to_file": "R/meta_core.R",
+      "to_func": "meta_analysis"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_deaths_summary",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_summary_table"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_filtered_data"
+    },
+    {
+      "from_file": "inst/examples/efficacy_report.R",
+      "from_func": "generate_efficacy_report",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "to_gba_template"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_smd_from_data",
+      "to_file": "R/gba_utils.R",
+      "to_func": "calculate_smd_binary"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "create_cfb_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "narrative_template",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": ".get_template"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_km_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_sae_summary"
+    },
+    {
+      "from_file": "R/evidence_narrative.R",
+      "from_func": "generate_endpoint_narrative",
+      "to_file": "R/evidence_narrative.R",
+      "to_func": "generate_evidence_narrative"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_rob_summary_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_clinical_table"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_meta_forest_plot",
+      "to_file": "R/formatting.R",
+      "to_func": "format_pvalue"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "R/safety_hierarchy.R",
+      "from_func": "create_ae_hierarchy_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_inform"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "generate_reference_report",
+      "to_file": "inst/examples/reference_report.R",
+      "to_func": "build_hta_section"
+    },
+    {
+      "from_file": "R/study_logic.R",
+      "from_func": "create_study_report",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "clinical_table_from_results"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_ae_by_severity"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_soc"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "generate_reference_report",
+      "to_file": "inst/examples/reference_report.R",
+      "to_func": "build_demographics_section"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid",
+      "to_file": "R/pro_analysis.R",
+      "to_func": "calculate_mcid_distribution"
+    },
+    {
+      "from_file": "tests/testthat/helper-brms.R",
+      "from_func": "get_cached_bayesian_result",
+      "to_file": "tests/testthat/helper-brms.R",
+      "to_func": ".brms_cache_dir"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "grade_evidence",
+      "to_file": "R/evidence_grading.R",
+      "to_func": ".apply_grade_algorithm"
+    },
+    {
+      "from_file": "R/reporting_engine.R",
+      "from_func": "create_hta_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_default"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "build_disposition_section",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_comparison.R",
+      "from_func": "create_ae_comparison_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "generate_reference_report",
+      "to_file": "inst/examples/reference_report.R",
+      "to_func": "build_sae_section"
+    },
+    {
+      "from_file": "R/bias_rob2.R",
+      "from_func": "assess_rob2",
+      "to_file": "R/bias_rob2.R",
+      "to_func": ".calculate_rob2_overall"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_soc_pt",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "tests/testthat/test-bias_plots.R",
+      "from_func": "create_rob2_result",
+      "to_file": "R/bias_rob2.R",
+      "to_func": "assess_rob2"
+    },
+    {
+      "from_file": "R/meta_plots.R",
+      "from_func": "create_funnel_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": ".bias_adjusted_exclude_high",
+      "to_file": "R/meta_core.R",
+      "to_func": "meta_analysis"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "summarize_bias_adjusted",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "test_ph_assumption",
+      "to_file": "R/utils.R",
+      "to_func": "assert_character_scalar"
+    },
+    {
+      "from_file": "R/plotting_efficacy.R",
+      "from_func": "create_mean_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "calculate_mcid_anchor",
+      "to_file": "R/utils.R",
+      "to_func": "assert_data_frame"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "load_config",
+      "to_file": "R/config_api.R",
+      "to_func": "parse_config_registry"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "calculate_heterogeneity",
+      "to_file": "R/meta_core.R",
+      "to_func": "estimate_tau2"
+    },
+    {
+      "from_file": "R/safety_exposure.R",
+      "from_func": "create_ae_exposure_table",
+      "to_file": "R/utils.R",
+      "to_func": "get_na_string"
+    },
+    {
+      "from_file": "R/evidence_grading.R",
+      "from_func": "evidence_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/localization.R",
+      "from_func": "tr_col",
+      "to_file": "R/localization.R",
+      "to_func": "tr"
+    },
+    {
+      "from_file": "R/config_api.R",
+      "from_func": "define_subgroup_config",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "robins_i_to_df",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "estimate_tau2",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/plotting_forest.R",
+      "from_func": "create_forest_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "node_splitting",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i_batch",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": "node_splitting",
+      "to_file": "R/meta_network.R",
+      "to_func": ".pool_pairwise_effects"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_analysis_table",
+      "to_file": "R/utils.R",
+      "to_func": "assert_column_exists"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_category_summary_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "ph_default",
+      "to_file": "R/utils.R",
+      "to_func": "is_scalar_atomic"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_study_characteristics_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "inst/examples/reference_report.R",
+      "from_func": "build_demographics_section",
+      "to_file": "R/layers.R",
+      "to_func": "add_layer"
+    },
+    {
+      "from_file": "R/meta_bayesian.R",
+      "from_func": "bayesian_meta_analysis",
+      "to_file": "R/meta_bayesian.R",
+      "to_func": "run_brm"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_analysis_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "inst/examples/baseline_report.R",
+      "from_func": "generate_baseline_report",
+      "to_file": "R/standard_tables.R",
+      "to_func": "create_population_summary_table"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "meta_analysis",
+      "to_file": "R/meta_core.R",
+      "to_func": "estimate_tau2"
+    },
+    {
+      "from_file": "R/efficacy_cfb.R",
+      "from_func": "detect_floor_ceiling",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/meta_core.R",
+      "from_func": "leave_one_out",
+      "to_file": "R/meta_core.R",
+      "to_func": "estimate_tau2"
+    },
+    {
+      "from_file": "R/meta_bias_adjusted.R",
+      "from_func": "bias_adjusted_meta",
+      "to_file": "R/meta_bias_adjusted.R",
+      "to_func": ".bias_adjusted_selection_model"
+    },
+    {
+      "from_file": "R/safety_tte.R",
+      "from_func": "create_time_to_first_ae",
+      "to_file": "R/utils.R",
+      "to_func": "assert_numeric_scalar"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_study_characteristics_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "fmt_n_pct",
+      "to_file": "R/formatting.R",
+      "to_func": "composite_format"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "build_ae_by_soc",
+      "to_file": "R/safety_tte.R",
+      "to_func": "create_ae_km_plot_for_soc"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_ae_by_relationship"
+    },
+    {
+      "from_file": "R/chef_integration.R",
+      "from_func": "get_chef_stat",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_soc_pt"
+    },
+    {
+      "from_file": "R/efficacy_tte.R",
+      "from_func": "create_tte_summary_table",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/evidence_summary_table.R",
+      "from_func": "create_evidence_summary_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "inst/examples/baseline_report.R",
+      "from_func": "generate_baseline_report",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "to_gba_template"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_summary_table",
+      "to_file": "R/safety_summary.R",
+      "to_func": "create_ae_table_deaths"
+    },
+    {
+      "from_file": "R/plotting_forest.R",
+      "from_func": "create_forest_plot",
+      "to_file": "R/plotting_forest.R",
+      "to_func": "calculate_interaction_pvalue"
+    },
+    {
+      "from_file": "R/bias_robins_i.R",
+      "from_func": "assess_robins_i",
+      "to_file": "R/bias_robins_i.R",
+      "to_func": ".generate_robins_i_justification"
+    },
+    {
+      "from_file": "R/efficacy_responder.R",
+      "from_func": "test_non_inferiority",
+      "to_file": "R/utils.R",
+      "to_func": "assert_column_exists"
+    },
+    {
+      "from_file": "R/formatting.R",
+      "from_func": "format_percentage",
+      "to_file": "R/formatting.R",
+      "to_func": "format_number"
+    },
+    {
+      "from_file": "R/bias_plots.R",
+      "from_func": "create_rob_summary_plot",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/meta_network.R",
+      "from_func": ".pool_pairwise_effects",
+      "to_file": "R/meta_core.R",
+      "to_func": "estimate_tau2"
+    },
+    {
+      "from_file": "R/efficacy_lab.R",
+      "from_func": "create_lab_shift_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/standard_tables.R",
+      "from_func": "create_demographics_table",
+      "to_file": "R/standard_tables.R",
+      "to_func": "add_if_exists"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_loglog_plot",
+      "to_file": "R/adam_core.R",
+      "to_func": "get_trt_var"
+    },
+    {
+      "from_file": "inst/examples/safety_report.R",
+      "from_func": "generate_safety_report",
+      "to_file": "inst/examples/safety_report.R",
+      "to_func": "build_time_to_event"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_common",
+      "to_file": "R/safety_summary.R",
+      "to_func": "safe_pct"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_severity",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/pro_analysis.R",
+      "from_func": "create_ttd_analysis",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_relationship",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    },
+    {
+      "from_file": "R/plotting_survival.R",
+      "from_func": "create_loglog_plot",
+      "to_file": "R/plotting_common.R",
+      "to_func": ".resolve_palette"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "calculate_nnt",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/gba_utils.R",
+      "from_func": "add_smd_to_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_warn"
+    },
+    {
+      "from_file": "R/efficacy_subgroup.R",
+      "from_func": "create_subgroup_table",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/utils.R",
+      "from_func": "assert_in_range",
+      "to_file": "R/utils.R",
+      "to_func": "ph_abort"
+    },
+    {
+      "from_file": "R/safety_summary.R",
+      "from_func": "create_ae_table_pt",
+      "to_file": "R/reporting_engine.R",
+      "to_func": "create_hta_table"
+    }
+  ],
+  "languages": [
+    "r"
+  ],
+  "timestamp": 1768660054.05034
+}
