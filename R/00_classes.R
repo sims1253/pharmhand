@@ -1618,8 +1618,7 @@ SubgroupSection <- S7::new_class(
 
 #' HTAEndpoint Class
 #'
-#' An S7 class for representing Health Technology Assessment endpoints,
-#' with integration to the chef pipeline for AMNOG-style analyses.
+#' An S7 class for representing Health Technology Assessment endpoints.
 #'
 #' @export
 #'
@@ -1630,9 +1629,7 @@ SubgroupSection <- S7::new_class(
 #' @param hypothesis Character string for hypothesis type
 #' @param margin Numeric value for non-inferiority margin
 #' @param alpha Numeric value for significance level
-#' @param chef_spec List containing chef endpoint specification
 #' @param strata Character vector of stratification variables
-#' @param criteria List of inclusion criteria for chef pipeline
 #' @param metadata List of additional metadata
 #' @param category Character string for endpoint category
 #'   (inherited from Endpoint)
@@ -1654,7 +1651,6 @@ HTAEndpoint <- S7::new_class(
 	package = "pharmhand",
 	parent = Endpoint,
 	properties = list(
-		chef_spec = S7::new_property(S7::class_list, default = list()),
 		strata = S7::new_property(
 			S7::class_character,
 			default = character(),

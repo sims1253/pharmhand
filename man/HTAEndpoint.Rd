@@ -15,7 +15,6 @@ HTAEndpoint(
   alpha = 0.05,
   priority = 1,
   metadata = list(),
-  chef_spec = list(),
   strata = character(0),
   criteria = list()
 )
@@ -42,18 +41,13 @@ HTAEndpoint(
 
 \item{metadata}{List of additional metadata}
 
-\item{chef_spec}{List containing chef endpoint specification}
-
 \item{strata}{Character vector of stratification variables}
-
-\item{criteria}{List of inclusion criteria for chef pipeline}
 }
 \value{
 An HTAEndpoint object
 }
 \description{
-An S7 class for representing Health Technology Assessment endpoints,
-with integration to the chef pipeline for AMNOG-style analyses.
+An S7 class for representing Health Technology Assessment endpoints.
 }
 \examples{
 \dontrun{
