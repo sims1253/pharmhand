@@ -986,6 +986,9 @@ create_mock_ae_summary_data <- function(n = 3) {
 #' @param seed Random seed
 #' @return Data frame with missing values
 create_imputation_test_data <- function(n = 30, seed = 123) {
+	if (n < 5) {
+		stop("n must be at least 5 for create_imputation_test_data()")
+	}
 	set.seed(seed)
 	data.frame(
 		x = c(rnorm(n - 5, mean = 50, sd = 10), rep(NA, 5)),
@@ -993,4 +996,15 @@ create_imputation_test_data <- function(n = 30, seed = 123) {
 		z = sample(c("A", "B"), n, replace = TRUE),
 		stringsAsFactors = FALSE
 	)
+}
+
+# =============================================================================
+# Helper functions for Bayesian tests
+# =============================================================================
+
+#' Skip test if brms package is not available
+skip_if_brms_unavailable <- function() {
+	if (!requireNamespace("brms", quietly = TRUE)) {
+		skip("brms package not available")
+	}
 }

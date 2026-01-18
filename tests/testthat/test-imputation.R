@@ -2,20 +2,6 @@
 # Issue #169: Multiple imputation with mice + Rubin pooling
 
 # =============================================================================
-# Helper function for creating test data
-# =============================================================================
-
-create_imputation_test_data <- function(n = 30, seed = 123) {
-	set.seed(seed)
-	data.frame(
-		x = c(rnorm(n - 5, mean = 50, sd = 10), rep(NA, 5)),
-		y = c(rep(NA, 3), rnorm(n - 3, mean = 100, sd = 20)),
-		z = sample(c("A", "B"), n, replace = TRUE),
-		stringsAsFactors = FALSE
-	)
-}
-
-# =============================================================================
 # perform_multiple_imputation tests
 # =============================================================================
 

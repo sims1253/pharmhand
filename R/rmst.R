@@ -241,6 +241,21 @@ rmst_analysis <- function(
 		reference_group <- trt_levels[1]
 	}
 
+	# Validate reference_group is in treatment levels
+	if (!reference_group %in% trt_levels) {
+		ph_abort(sprintf(
+			"reference_group '%s' not found in treatment levels: %s",
+			reference_group,
+			paste(trt_levels, collapse = ", ")
+		))
+	}
+
+	# Set factor levels with reference_group first
+	complete_data$treatment <- factor(
+		complete_data$treatment,
+		levels = c(reference_group, setdiff(trt_levels, reference_group))
+	)
+
 	# Perform RMST analysis using survRM2
 	tryCatch(
 		{
@@ -288,7 +303,12 @@ rmst_analysis <- function(
 
 	# Count events by group
 	event_counts <- table(complete_data$treatment, complete_data$status)
-	n_events <- as.numeric(event_counts[, "1"])
+	if ("1" %in% colnames(event_counts)) {
+		n_events <- as.numeric(event_counts[, "1"])
+	} else {
+		# No events occurred - create zero vector
+		n_events <- rep(0, nrow(event_counts))
+	}
 	names(n_events) <- rownames(event_counts)
 
 	RMSTResult(
@@ -353,6 +373,10 @@ create_rmst_table <- function(
 			stringsAsFactors = FALSE
 		)
 	} else {
+		# Get confidence level for dynamic labeling
+		conf_level <- result@metadata$conf_level
+		ci_label <- paste0(round(conf_level * 100, 0), "% CI")
+
 		# Format confidence intervals
 		comp_data$CI <- sprintf(
 			"%.2f (%.2f, %.2f)",
@@ -362,23 +386,29 @@ create_rmst_table <- function(
 		)
 
 		comp_data <- comp_data[, c("group", "rmst", "se", "CI")]
-		colnames(comp_data) <- c("Group", "RMST", "SE", "95% CI")
+		colnames(comp_data) <- c("Group", "RMST", "SE", ci_label)
 	}
 
 	# Add difference information if available
 	if (!is.na(result@rmst_difference)) {
+		# Get confidence level for dynamic labeling
+		conf_level <- result@metadata$conf_level
+		ci_label <- paste0(round(conf_level * 100, 0), "% CI")
+
 		diff_row <- data.frame(
 			Group = "Difference",
 			RMST = round(result@rmst_difference, 3),
 			SE = round(result@se_difference, 3),
-			`95% CI` = sprintf(
-				"%.3f (%.3f, %.3f)",
-				result@rmst_difference,
-				result@ci[1],
-				result@ci[2]
-			),
-			stringsAsFactors = FALSE
+			check.names = FALSE
 		)
+		colnames(diff_row)[4] <- ci_label
+		diff_row[[4]] <- sprintf(
+			"%.3f (%.3f, %.3f)",
+			result@rmst_difference,
+			result@ci[1],
+			result@ci[2]
+		)
+
 		comp_data <- rbind(comp_data, diff_row)
 	}
 

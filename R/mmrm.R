@@ -296,16 +296,27 @@ mmrm_analysis <- function(
 	aic_val <- AIC(fit)
 	bic_val <- BIC(fit)
 
-	# Handle coefficient names for better display
-	coef_names <- rownames(coef_summary)
+	# Extract components
+	estimates <- coef_summary[, "Estimate"]
+	ses <- coef_summary[, "Std. Error"]
+	dfs <- coef_summary[, "df"]
+
+	# Compute t critical values (vectorized for different df per coefficient)
+	t_crit <- qt(0.975, dfs)
+
+	# Build CI matrix
+	ci_matrix <- cbind(
+		"2.5 %" = estimates - t_crit * ses,
+		"97.5 %" = estimates + t_crit * ses
+	)
 
 	MMRMResult(
 		model = fit,
-		coefficients = coef_summary[, "Estimate"],
-		se = coef_summary[, "Std. Error"],
-		ci = coef_summary[, c("2.5 %", "97.5 %")],
+		coefficients = estimates,
+		se = ses,
+		ci = ci_matrix,
 		p_values = coef_summary[, "Pr(>|t|)"],
-		df = coef_summary[, "df"],
+		df = dfs,
 		sigma = sigma,
 		log_likelihood = loglik,
 		aic = aic_val,

@@ -16,7 +16,10 @@ describe("bayesian_meta_analysis_few", {
 		result <- bayesian_meta_analysis_few(
 			yi = yi,
 			sei = sei,
-			effect_measure = "hr"
+			effect_measure = "hr",
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		expect_true("pharmhand::BayesianMetaFewResult" %in% class(result))
@@ -32,7 +35,10 @@ describe("bayesian_meta_analysis_few", {
 		result <- bayesian_meta_analysis_few(
 			yi = yi,
 			sei = sei,
-			effect_measure = "hr"
+			effect_measure = "hr",
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		expect_true("pharmhand::BayesianMetaFewResult" %in% class(result))
@@ -47,7 +53,10 @@ describe("bayesian_meta_analysis_few", {
 		result <- bayesian_meta_analysis_few(
 			yi = yi,
 			sei = sei,
-			effect_measure = "hr"
+			effect_measure = "hr",
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		# Should have conservative priors for few studies
@@ -64,7 +73,10 @@ describe("bayesian_meta_analysis_few", {
 		result <- bayesian_meta_analysis_few(
 			yi = yi,
 			sei = sei,
-			effect_measure = "hr"
+			effect_measure = "hr",
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		expect_true("posterior_summary" %in% names(S7::props(result)))
@@ -83,7 +95,10 @@ describe("bayesian_meta_analysis_few", {
 			yi = yi,
 			sei = sei,
 			effect_measure = "hr",
-			prior_sensitivity = TRUE
+			prior_sensitivity = TRUE,
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		expect_true("prior_sensitivity" %in% names(S7::props(result)))
@@ -99,7 +114,10 @@ describe("bayesian_meta_analysis_few", {
 		result_md <- bayesian_meta_analysis_few(
 			yi = yi_md,
 			sei = sei_md,
-			effect_measure = "md"
+			effect_measure = "md",
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		expect_true("pharmhand::BayesianMetaFewResult" %in% class(result_md))
@@ -114,7 +132,10 @@ describe("bayesian_meta_analysis_few", {
 		result <- bayesian_meta_analysis_few(
 			yi = yi,
 			sei = sei,
-			effect_measure = "hr"
+			effect_measure = "hr",
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		expect_true("heterogeneity" %in% names(S7::props(result)))
@@ -153,7 +174,10 @@ describe("BayesianMetaFewResult class", {
 		result <- bayesian_meta_analysis_few(
 			yi = yi,
 			sei = sei,
-			effect_measure = "hr"
+			effect_measure = "hr",
+			chains = 1,
+			iter = 400,
+			warmup = 200
 		)
 
 		# Check all expected properties exist
@@ -168,14 +192,3 @@ describe("BayesianMetaFewResult class", {
 		expect_true("prior_sensitivity" %in% props)
 	})
 })
-
-# =============================================================================
-# Helper test functions
-# =============================================================================
-
-# Custom skip function for brms availability
-skip_if_brms_unavailable <- function() {
-	if (!requireNamespace("brms", quietly = TRUE)) {
-		skip("brms package not available")
-	}
-}

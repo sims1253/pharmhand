@@ -121,6 +121,7 @@ describe("mmrm_analysis", {
 			USUBJID = rep(1:n, each = 4),
 			TRT01P = rep(sample(c("A", "B"), n, replace = TRUE), each = 4),
 			AVISITN = rep(0:3, n),
+			BASE = rep(base_vals, each = 4), # ADD THIS LINE
 			AVAL = c(base_vals, base_vals + 5, base_vals + 8, base_vals + 10) +
 				rnorm(n * 4, 0, 3)
 		)
