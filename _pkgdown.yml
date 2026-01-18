@@ -219,19 +219,6 @@ reference:
   - build_layer
   - build_table
 
-- title: "Chef Integration"
-  desc: >
-    Integration with the chef package for Health Technology Assessment
-    (HTA) analyses and statistical pipelines.
-  contents:
-  - run_chef_pipeline
-  - create_chef_endpoint
-  - chef_to_analysis_results
-  - get_chef_stat
-  - list_chef_stats
-  - extract_chef_metadata
-  - flatten_chef_results
-
 - title: "Subgroup Analysis"
   desc: >
     Functions for subgroup and interaction analyses
@@ -404,7 +391,6 @@ reference:
   - S7_generics
   - S7_registration
   - adam_core
-  - chef_integration
   - formatting
   - layers
   - reporting_engine
@@ -460,8 +446,7 @@ home:
   description: >
     Create publication-ready clinical study tables and reports from ADaM datasets.
     Provides S7 classes for structured output with Word document
-    generation via officer/flextable. Integrates with the chef package for
-    Health Technology Assessment (HTA) analyses.
+    generation via officer/flextable.
 
 # Authors configuration
 authors:
