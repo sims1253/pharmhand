@@ -220,7 +220,7 @@ bayesian_meta_analysis_few <- function(
 ) {
 	effect_measure <- match.arg(effect_measure)
 	backend <- match.arg(backend)
-	k <- length(yi)
+	k <- as.integer(length(yi))
 
 	# Check for brms availability
 	if (!requireNamespace("brms", quietly = TRUE)) {
@@ -233,14 +233,6 @@ bayesian_meta_analysis_few <- function(
 	# Validate inputs
 	if (k < 2) {
 		ph_abort("At least 2 studies are required for meta-analysis")
-	}
-
-	if (k == 1) {
-		ph_warn(
-			"Only 1 study provided. Meta-analysis with few studies is not ",
-			"recommended with fewer than 2 studies. Results should be interpreted ",
-			"with extreme caution."
-		)
 	}
 
 	if (k <= 3) {
@@ -303,11 +295,6 @@ bayesian_meta_analysis_few <- function(
 		"cmdstanr"
 	} else {
 		"rstan"
-	}
-
-	# Set seed if provided
-	if (!is.null(seed)) {
-		set.seed(seed)
 	}
 
 	# Build brms formula for few studies
@@ -471,7 +458,7 @@ bayesian_meta_analysis_few <- function(
 				brms::prior_string(tau_prior_test, class = "sd", lb = 0)
 			)
 
-			tryCatch(
+			result <- tryCatch(
 				{
 					fit_test <- brms::brm(
 						formula = formula,
@@ -492,7 +479,7 @@ bayesian_meta_analysis_few <- function(
 					samples_test <- brms::as_draws_df(fit_test)
 					intercept_test <- samples_test$b_Intercept
 
-					prior_sens_results[[i]] <- list(
+					list(
 						prior_type = prior_test$type,
 						prior_scale = prior_test$scale,
 						effect_mean = mean(intercept_test),
@@ -502,13 +489,15 @@ bayesian_meta_analysis_few <- function(
 					)
 				},
 				error = function(e) {
-					prior_sens_results[[i]] <- list(
+					list(
 						prior_type = prior_test$type,
 						prior_scale = prior_test$scale,
 						error = conditionMessage(e)
 					)
 				}
 			)
+
+			prior_sens_results[[i]] <- result
 		}
 
 		prior_sensitivity_results <- prior_sens_results

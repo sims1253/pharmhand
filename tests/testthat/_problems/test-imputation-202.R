@@ -4,13 +4,8 @@
 it("applies analysis function to imputed datasets and pools results", {
 	skip_if_not_installed("mice")
 
-	set.seed(123)
-	data <- data.frame(
-		x = c(1, 2, NA, 4, 5, 6, 7, NA, 9, 10),
-		y = c(2, 4, 6, 8, 10, NA, 14, 16, NA, 20)
-	)
-
-	imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+	imputation_data <- create_imputation_test_data(n = 30, seed = 123)
+	imp_result <- perform_multiple_imputation(imputation_data, m = 3, maxit = 2)
 
 	# Simple analysis: mean of x
 	result <- analyze_with_imputation(

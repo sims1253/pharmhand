@@ -184,6 +184,9 @@ competing_risk_analysis <- function(
 		ph_abort("'conf_level' must be a single value between 0 and 1")
 	}
 
+	# Compute z critical value for confidence intervals
+	z <- qnorm(1 - (1 - conf_level) / 2)
+
 	# Check required variables exist
 	required_vars <- c(time_var, event_var, trt_var)
 	if (!all(required_vars %in% names(data))) {
@@ -229,6 +232,21 @@ competing_risk_analysis <- function(
 		reference_group <- trt_levels[1]
 	}
 
+	# Validate reference_group is in treatment levels
+	if (!reference_group %in% trt_levels) {
+		ph_abort(sprintf(
+			"reference_group '%s' not found in treatment levels: %s",
+			reference_group,
+			paste(trt_levels, collapse = ", ")
+		))
+	}
+
+	# Relevel treatment factor with reference_group first
+	analysis_data$treatment <- factor(
+		analysis_data$treatment,
+		levels = c(reference_group, setdiff(trt_levels, reference_group))
+	)
+
 	# Build model formula
 	formula_rhs <- c("treatment")
 	if (!is.null(covariates)) {
@@ -249,8 +267,8 @@ competing_risk_analysis <- function(
 	tryCatch(
 		{
 			fit_main <- cmprsk::crr(
-				time = analysis_data$time,
-				ftime = status_main,
+				ftime = analysis_data$time,
+				fstatus = status_main,
 				cov1 = model.matrix(formula, analysis_data)[, -1], # Remove intercept
 				failcode = 1,
 				cencode = 0
@@ -296,8 +314,8 @@ competing_risk_analysis <- function(
 		cif_by_treatment[[trt]] <- data.frame(
 			time = time_grid,
 			cif = cif_main_trt$est,
-			ci_lower = cif_main_trt$est - 1.96 * cif_main_trt$se,
-			ci_upper = cif_main_trt$est + 1.96 * cif_main_trt$se,
+			ci_lower = cif_main_trt$est - z * cif_main_trt$se,
+			ci_upper = cif_main_trt$est + z * cif_main_trt$se,
 			treatment = trt,
 			stringsAsFactors = FALSE
 		)
@@ -322,11 +340,11 @@ competing_risk_analysis <- function(
 				se = fit_main$var[coef_name, coef_name]^0.5,
 				ci_lower = exp(
 					fit_main$coef[coef_name] -
-						1.96 * fit_main$var[coef_name, coef_name]^0.5
+						z * fit_main$var[coef_name, coef_name]^0.5
 				),
 				ci_upper = exp(
 					fit_main$coef[coef_name] +
-						1.96 * fit_main$var[coef_name, coef_name]^0.5
+						z * fit_main$var[coef_name, coef_name]^0.5
 				),
 				p_value = 2 *
 					(1 -

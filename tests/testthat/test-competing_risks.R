@@ -26,7 +26,14 @@ describe("competing_risk_analysis", {
 		skip_if_not_installed("cmprsk")
 
 		expect_error(
-			competing_risk_analysis("not_dataframe"),
+			competing_risk_analysis(
+				"not_dataframe",
+				time_var = "time",
+				event_var = "event",
+				trt_var = "TRT01P",
+				main_event = 1,
+				competing_events = c(2, 3)
+			),
 			"data frame"
 		)
 	})
@@ -39,7 +46,11 @@ describe("competing_risk_analysis", {
 		expect_error(
 			competing_risk_analysis(
 				data,
-				time_var = "MISSING_VAR"
+				time_var = "MISSING_VAR",
+				event_var = "event",
+				trt_var = "TRT01P",
+				main_event = 1,
+				competing_events = c(2, 3)
 			),
 			"MISSING_VAR"
 		)

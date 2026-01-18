@@ -171,11 +171,11 @@ create_rmst_test_data <- function(n = 100, seed = 123) {
 	# Generate survival times with treatment effect
 	trt_grp <- sample(c("A", "B"), n, replace = TRUE)
 
-	# Treatment A has better survival (lower hazard)
-	times_A <- rexp(sum(trt_grp == "A"), 0.1) # Lower hazard
-	times_B <- rexp(sum(trt_grp == "B"), 0.15) # Higher hazard
-
-	times <- c(times_A, times_B)
+	# Initialize times vector
+	times <- numeric(n)
+	# Assign times based on actual treatment assignment
+	times[trt_grp == "A"] <- rexp(sum(trt_grp == "A"), 0.1) # Lower hazard
+	times[trt_grp == "B"] <- rexp(sum(trt_grp == "B"), 0.15) # Higher hazard
 
 	# Generate censoring times
 	censor_times <- rexp(n, 0.05)

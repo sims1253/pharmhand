@@ -323,7 +323,8 @@ pool_rubin <- function(estimates, variances, conf_level = 0.95) {
 	u_bar <- mean(variances)
 
 	# Between-imputation variance: variance of estimates
-	b <- stats::var(estimates)
+	# Guard against m == 1 where var() returns NA
+	b <- if (m == 1) 0 else stats::var(estimates)
 
 	# Total variance: U_bar + (1 + 1/m) * B
 	total_var <- u_bar + (1 + 1 / m) * b
