@@ -19,6 +19,7 @@ bayesian_meta_analysis(
   iter = 4000,
   warmup = 2000,
   seed = NULL,
+  cores = 1,
   adapt_delta = 0.95,
   max_treedepth = 12,
   backend = c("auto", "cmdstanr", "rstan"),
@@ -67,6 +68,9 @@ checks. Default: 100}
 \item{warmup}{Integer. Warmup iterations. Default: 2000}
 
 \item{seed}{Integer. Random seed}
+
+\item{cores}{Integer. Number of CPU cores to use for parallel chains.
+Default: 1. Setting to >1 requires proper seed handling.}
 
 \item{adapt_delta}{Numeric. MCMC sampler tuning parameter (0-1).
 Default: 0.95. Higher values reduce divergent transitions but slow

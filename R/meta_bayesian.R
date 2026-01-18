@@ -47,6 +47,8 @@ NULL
 #' @param iter Integer. Total iterations per chain. Default: 4000
 #' @param warmup Integer. Warmup iterations. Default: 2000
 #' @param seed Integer. Random seed
+#' @param cores Integer. Number of CPU cores to use for parallel chains.
+#'   Default: 1. Setting to >1 requires proper seed handling.
 #' @param adapt_delta Numeric. MCMC sampler tuning parameter (0-1).
 #'   Default: 0.95. Higher values reduce divergent transitions but slow
 #'   sampling.
@@ -122,6 +124,7 @@ bayesian_meta_analysis <- function(
 	iter = 4000,
 	warmup = 2000,
 	seed = NULL,
+	cores = 1,
 	adapt_delta = 0.95,
 	max_treedepth = 12,
 	backend = c("auto", "cmdstanr", "rstan"),
@@ -134,6 +137,7 @@ bayesian_meta_analysis <- function(
 	dots <- list(...)
 	# Avoid collisions with brms::brm() arguments we manage explicitly
 	dots$backend <- NULL
+	dots$cores <- NULL
 
 	# Check for brms availability
 	if (!requireNamespace("brms", quietly = TRUE)) {
@@ -262,6 +266,14 @@ bayesian_meta_analysis <- function(
 	if (warmup >= iter) {
 		ph_abort("'warmup' must be less than 'iter'")
 	}
+	if (
+		!is.numeric(cores) ||
+			length(cores) != 1 ||
+			cores < 1 ||
+			cores != as.integer(cores)
+	) {
+		ph_abort("'cores' must be a positive integer")
+	}
 
 	# Prepare data for brms
 	data <- data.frame(
@@ -381,7 +393,7 @@ bayesian_meta_analysis <- function(
 					chains = chains,
 					iter = iter,
 					warmup = warmup,
-					seed = seed,
+					cores = cores,
 					refresh = 0,
 					sample_prior = "only",
 					control = list(
@@ -390,6 +402,7 @@ bayesian_meta_analysis <- function(
 					),
 					backend = brms_backend
 				),
+				if (!is.null(seed)) list(seed = seed) else list(),
 				dots
 			)),
 			error = function(e) {
@@ -439,7 +452,7 @@ bayesian_meta_analysis <- function(
 				chains = chains,
 				iter = iter,
 				warmup = warmup,
-				seed = seed,
+				cores = cores,
 				refresh = 0,
 				control = list(
 					adapt_delta = adapt_delta,
@@ -447,6 +460,7 @@ bayesian_meta_analysis <- function(
 				),
 				backend = brms_backend
 			),
+			if (!is.null(seed)) list(seed = seed) else list(),
 			dots
 		)),
 		error = function(e) {

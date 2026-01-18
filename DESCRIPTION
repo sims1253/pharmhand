@@ -39,15 +39,16 @@ Suggests:
     brms,
     bayesplot,
     cmdstanr,
-    chef,
-    chefStats,
-    chefCriteria,
+    cmprsk,
     data.table,
     digest,
+    mice,
+    mmrm,
     patchwork,
     pharmaverseadam,
     posterior,
     rstan,
+    survRM2,
     svglite,
     testthat (>= 3.3.1),
     lintr,
@@ -56,9 +57,6 @@ Suggests:
     knitr,
     rmarkdown
 Remotes:
-    hta-pharma/chef,
-    hta-pharma/chefStats,
-    hta-pharma/chefCriteria,
     stan-dev/cmdstanr
 Additional_repositories:
     https://stan-dev.r-universe.dev/

@@ -219,19 +219,6 @@ reference:
   - build_layer
   - build_table
 
-- title: "Chef Integration"
-  desc: >
-    Integration with the chef package for Health Technology Assessment
-    (HTA) analyses and statistical pipelines.
-  contents:
-  - run_chef_pipeline
-  - create_chef_endpoint
-  - chef_to_analysis_results
-  - get_chef_stat
-  - list_chef_stats
-  - extract_chef_metadata
-  - flatten_chef_results
-
 - title: "Subgroup Analysis"
   desc: >
     Functions for subgroup and interaction analyses
@@ -256,6 +243,20 @@ reference:
   - calculate_mcid_distribution
   - create_ttd_analysis
 
+- title: "Multiple Imputation"
+  desc: >
+    Functions for multiple imputation using mice package with Rubin's rules
+    for pooling results.
+  contents:
+  - ImputationResult
+  - perform_multiple_imputation
+  - pool_rubin
+  - analyze_with_imputation
+  - get_complete_data
+  - summarize_missing
+  - imputation
+  - create_imputation_report
+
 - title: "Meta-Analysis"
   desc: >
     Functions for conducting meta-analyses including heterogeneity
@@ -278,6 +279,43 @@ reference:
   - rob_sensitivity_analysis
   - calculate_rob_weights
   - summarize_bias_adjusted
+  - BayesianMetaFewResult
+  - bayesian_meta_analysis_few
+  - create_bayesian_few_table
+  - create_meta_analysis_priors
+  - create_prior_specification
+  - PriorSpecification
+  - validate_prior_parameters
+
+- title: "Competing Risks"
+  desc: >
+    Functions for competing risks analysis including cumulative incidence
+    estimation and Gray's test for comparing groups.
+  contents:
+  - CompetingRiskResult
+  - competing_risks
+  - competing_risk_analysis
+  - create_competing_risk_table
+
+- title: "MMRM Analysis"
+  desc: >
+    Functions for Mixed-Effects Models for Repeated Measures (MMRM)
+    analysis with robust variance estimation.
+  contents:
+  - MMRMResult
+  - RMSTResult
+  - create_mmrm_table
+  - summary_mmrm
+
+- title: "MCMC Diagnostics"
+  desc: >
+    Functions for diagnosing Markov Chain Monte Carlo (MCMC) convergence
+    and assessing mixing quality.
+  contents:
+  - assess_mcmc_convergence
+  - calculate_effective_sample_size
+  - calculate_gelman_rubin
+  - create_mcmc_diagnostics_report
 
 - title: "Network Meta-Analysis"
   desc: >
@@ -391,7 +429,6 @@ reference:
   - S7_generics
   - S7_registration
   - adam_core
-  - chef_integration
   - formatting
   - layers
   - reporting_engine
@@ -427,6 +464,8 @@ reference:
   - pro_analysis
   - evidence_grading
   - evidence_summary_tables
+  - imputation
+  - imputation_diagnostics
 
 # Articles/vignettes structure
 articles:
@@ -445,8 +484,7 @@ home:
   description: >
     Create publication-ready clinical study tables and reports from ADaM datasets.
     Provides S7 classes for structured output with Word document
-    generation via officer/flextable. Integrates with the chef package for
-    Health Technology Assessment (HTA) analyses.
+    generation via officer/flextable.
 
 # Authors configuration
 authors:
