@@ -305,7 +305,13 @@ validate_prior_parameters <- function(distribution, parameters) {
 		distribution,
 		normal = c("mean", "sd"),
 		beta = c("shape1", "shape2"),
-		gamma = c("shape", "rate"), # or "scale"
+		gamma = {
+			if ("scale" %in% names(parameters) && !"rate" %in% names(parameters)) {
+				c("shape", "scale")
+			} else {
+				c("shape", "rate")
+			}
+		},
 		half_cauchy = c("location", "scale"),
 		half_normal = "sd",
 		exponential = "rate",
@@ -342,12 +348,18 @@ validate_prior_parameters <- function(distribution, parameters) {
 			}
 		},
 		beta = {
-			if (any(parameters <= 0)) {
+			if (parameters$shape1 <= 0 || parameters$shape2 <= 0) {
 				return("Beta distribution parameters must be positive")
 			}
 		},
 		gamma = {
-			if (any(parameters <= 0)) {
+			shape_val <- parameters$shape
+			rate_or_scale <- if ("rate" %in% names(parameters)) {
+				parameters$rate
+			} else {
+				parameters$scale
+			}
+			if (shape_val <= 0 || rate_or_scale <= 0) {
 				return("Gamma distribution parameters must be positive")
 			}
 		},
@@ -469,6 +481,14 @@ summarize_prior_specification <- function(prior) {
 create_prior_specification_set <- function(priors) {
 	if (!is.list(priors)) {
 		ph_abort("'priors' must be a list")
+	}
+
+	# Validate that all elements are named
+	prior_names <- names(priors)
+	if (
+		is.null(prior_names) || any(prior_names == "") || any(is.na(prior_names))
+	) {
+		ph_abort("All elements in 'priors' must be named")
 	}
 
 	# Validate that all elements are PriorSpecification objects

@@ -193,9 +193,9 @@ perform_multiple_imputation <- function(
 		))
 	}
 
-	# Set seed if provided
+	# Set seed if provided (scoped to this function)
 	if (!is.null(seed)) {
-		set.seed(seed)
+		withr::local_seed(seed)
 	}
 
 	# Perform imputation - build args conditionally to avoid NULL
@@ -334,7 +334,12 @@ pool_rubin <- function(estimates, variances, conf_level = 0.95) {
 	pooled_se <- sqrt(total_var)
 
 	# Relative increase in variance due to nonresponse
-	r <- (1 + 1 / m) * b / u_bar
+	# Guard against division by zero when u_bar is effectively zero
+	if (u_bar < .Machine$double.eps) {
+		r <- Inf
+	} else {
+		r <- (1 + 1 / m) * b / u_bar
+	}
 
 	# Fraction of missing information
 	fmi <- (r + 2 / (m + 1)) / (r + 1)

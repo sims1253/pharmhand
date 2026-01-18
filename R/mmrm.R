@@ -271,9 +271,9 @@ mmrm_analysis <- function(
 	formula <- stats::as.formula(formula_str)
 
 	# Build the MMRM model
-	tryCatch(
+	fit <- tryCatch(
 		{
-			fit <- mmrm::mmrm(
+			mmrm::mmrm(
 				formula = formula,
 				data = data,
 				weights = NULL,

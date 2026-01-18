@@ -89,6 +89,15 @@ plot_mcmc_trace <- function(
 		))
 	}
 
+	# Update parameters to match filtered param_cols
+	parameters <- if (
+		length(param_cols) > 0 && all(grepl("__Intercept$", param_cols))
+	) {
+		sub("__Intercept$", "", param_cols)
+	} else {
+		param_cols
+	}
+
 	# Get chain information
 	if (is.null(chains)) {
 		chains <- unique(posterior_draws$.chain)
@@ -217,6 +226,15 @@ plot_mcmc_density <- function(
 			type = "mcmc_density",
 			title = title
 		))
+	}
+
+	# Update parameters to match filtered param_cols
+	parameters <- if (
+		length(param_cols) > 0 && all(grepl("__Intercept$", param_cols))
+	) {
+		sub("__Intercept$", "", param_cols)
+	} else {
+		param_cols
 	}
 
 	# Prepare data for plotting
@@ -600,7 +618,7 @@ create_mcmc_diagnostics_report <- function(
 
 	# Create diagnostic summary
 	rhat_vals <- convergence$rhat_values
-	eff_vals <- convergence$eff_sample_size
+	eff_vals <- convergence$ess_values
 
 	if (length(rhat_vals) > 0 && length(eff_vals) > 0) {
 		# Filter to requested parameters if specified

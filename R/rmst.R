@@ -132,7 +132,8 @@ RMSTResult <- S7::new_class(
 #' where T is the survival time and S(t) is the survival function.
 #'
 #' RMST is estimated using the Kaplan-Meier estimator:
-#' \code{RMST(tau) = tau - integral from 0 to tau of F(t) dt = sum_i (t_i - t_i-1) * S(t_i-1)}
+#' \code{RMST(tau) = tau - integral from 0 to tau of F(t) dt}
+#' \code{= sum_i (t_i - t_i-1) * S(t_i-1)}
 #'
 #' where the integral is restricted to \code{[0, tau]}.
 #'
@@ -259,9 +260,9 @@ rmst_analysis <- function(
 	)
 
 	# Perform RMST analysis using survRM2
-	tryCatch(
+	rmst_results <- tryCatch(
 		{
-			rmst_results <- survRM2::rmst2(
+			survRM2::rmst2(
 				time = complete_data$time,
 				status = complete_data$status,
 				group = complete_data$treatment,
@@ -401,15 +402,15 @@ create_rmst_table <- function(
 			Group = "Difference",
 			RMST = round(result@rmst_difference, 3),
 			SE = round(result@se_difference, 3),
+			CI = sprintf(
+				"%.3f (%.3f, %.3f)",
+				result@rmst_difference,
+				result@ci[1],
+				result@ci[2]
+			),
 			check.names = FALSE
 		)
 		colnames(diff_row)[4] <- ci_label
-		diff_row[[4]] <- sprintf(
-			"%.3f (%.3f, %.3f)",
-			result@rmst_difference,
-			result@ci[1],
-			result@ci[2]
-		)
 
 		comp_data <- rbind(comp_data, diff_row)
 	}

@@ -166,7 +166,8 @@ BayesianMetaFewResult <- S7::new_class(
 #'
 #' 1. **Conservative priors**: Uses more informative priors that are appropriate
 #'    when data is sparse
-#' 2. **Regularization**: Stronger regularization of between-study variance (tau^2)
+#' 2. **Regularization**: Stronger regularization of between-study variance
+#'    (tau^2)
 #' 3. **Sensitivity analysis**: Includes prior sensitivity analysis by default
 #' 4. **Few studies warnings**: Provides explicit warnings about limitations
 #'
@@ -308,7 +309,11 @@ bayesian_meta_analysis_few <- function(
 		prior_tau$type,
 		"half_cauchy" = sprintf("cauchy(0, %f)", prior_tau$scale),
 		"half_normal" = sprintf("normal(0, %f)", prior_tau$scale),
-		"exponential" = sprintf("exponential(%f)", 1 / prior_tau$scale)
+		"exponential" = sprintf("exponential(%f)", 1 / prior_tau$scale),
+		stop(sprintf(
+			"Unknown tau prior type for tau_prior_str: '%s'. Expected one of: half_cauchy, half_normal, exponential",
+			prior_tau$type
+		))
 	)
 
 	priors <- c(
@@ -449,7 +454,11 @@ bayesian_meta_analysis_few <- function(
 				prior_test$type,
 				"half_cauchy" = sprintf("cauchy(0, %f)", prior_test$scale),
 				"half_normal" = sprintf("normal(0, %f)", prior_test$scale),
-				"exponential" = sprintf("exponential(%f)", 1 / prior_test$scale)
+				"exponential" = sprintf("exponential(%f)", 1 / prior_test$scale),
+				stop(sprintf(
+					"Unknown tau prior type for tau_prior_test: '%s'. Expected one of: half_cauchy, half_normal, exponential",
+					prior_test$type
+				))
 			)
 
 			priors_test <- c(
@@ -642,7 +651,8 @@ create_bayesian_few_table <- function(
 		`Posterior Median` = "",
 		`Posterior SD` = "",
 		`95% Credible Interval` = "",
-		stringsAsFactors = FALSE
+		stringsAsFactors = FALSE,
+		check.names = FALSE
 	)
 
 	summary_df <- rbind(summary_df, prob_row)
@@ -659,7 +669,8 @@ create_bayesian_few_table <- function(
 				result@heterogeneity$tau2_ci[1],
 				result@heterogeneity$tau2_ci[2]
 			),
-			stringsAsFactors = FALSE
+			stringsAsFactors = FALSE,
+			check.names = FALSE
 		)
 		summary_df <- rbind(summary_df, het_row)
 	}
