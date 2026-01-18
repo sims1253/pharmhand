@@ -54,7 +54,7 @@ F_k(t) = P(T <= t, epsilon = k)
 where T is the event time and epsilon is the event type.
 
 The model uses a proportional subhazards approach:
-lambda_k(t|X) = lambda_{0k}(t) * exp(beta_k'X)
+lambda_k(t|X) = lambda_\{0k\}(t) * exp(beta_k'X)
 
 where lambda_k is the subhazard for event type k.
 }

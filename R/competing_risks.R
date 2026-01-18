@@ -16,7 +16,8 @@ NULL
 #'
 #' @param model The cmprsk model object
 #' @param cif_main Data frame with cumulative incidence function for main event
-#' @param cif_competing Data frame with cumulative incidence function for competing events
+#' @param cif_competing Data frame with cumulative incidence function
+#'   for competing events
 #' @param cif_by_treatment List of CIFs by treatment group
 #' @param treatment_comparison Data frame comparing treatments
 #' @param subhazard_ratio Data frame with subhazard ratios
@@ -114,7 +115,7 @@ CompetingRiskResult <- S7::new_class(
 #' where T is the event time and epsilon is the event type.
 #'
 #' The model uses a proportional subhazards approach:
-#' lambda_k(t|X) = lambda_{0k}(t) * exp(beta_k'X)
+#' lambda_k(t|X) = lambda_\{0k\}(t) * exp(beta_k'X)
 #'
 #' where lambda_k is the subhazard for event type k.
 #'
@@ -224,7 +225,8 @@ competing_risk_analysis <- function(
 	trt_levels <- trt_levels[!is.na(trt_levels)]
 	if (length(trt_levels) < 2) {
 		ph_warn(
-			"Only one treatment level found. Treatment comparisons may not be meaningful."
+			"Only one treatment level found. ",
+			"Treatment comparisons may not be meaningful."
 		)
 	}
 
@@ -426,7 +428,9 @@ competing_risk_analysis <- function(
 #'
 #' @examples
 #' \dontrun{
-#' table <- create_competing_risk_table(result, title = "Competing Risk Analysis")
+#' table <- create_competing_risk_table(
+#'   result, title = "Competing Risk Analysis"
+#' )
 #' }
 create_competing_risk_table <- function(
 	result,
@@ -488,7 +492,6 @@ create_competing_risk_table <- function(
 	create_clinical_table(
 		data = summary_df,
 		title = title,
-		subtitle = subtitle,
 		footnotes = meta_footnotes,
 		autofit = autofit
 	)
@@ -496,7 +499,8 @@ create_competing_risk_table <- function(
 
 #' Plot Cumulative Incidence Function
 #'
-#' Creates a plot of the cumulative incidence function from competing risk analysis.
+#' Creates a plot of the cumulative incidence function from competing
+#' risk analysis.
 #'
 #' @param result A CompetingRiskResult object
 #' @param title Plot title

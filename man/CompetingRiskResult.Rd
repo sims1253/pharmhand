@@ -24,7 +24,8 @@ CompetingRiskResult(
 
 \item{cif_main}{Data frame with cumulative incidence function for main event}
 
-\item{cif_competing}{Data frame with cumulative incidence function for competing events}
+\item{cif_competing}{Data frame with cumulative incidence function
+for competing events}
 
 \item{cif_by_treatment}{List of CIFs by treatment group}
 

@@ -255,6 +255,7 @@ reference:
   - get_complete_data
   - summarize_missing
   - imputation
+  - create_imputation_report
 
 - title: "Meta-Analysis"
   desc: >
@@ -278,6 +279,43 @@ reference:
   - rob_sensitivity_analysis
   - calculate_rob_weights
   - summarize_bias_adjusted
+  - BayesianMetaFewResult
+  - bayesian_meta_analysis_few
+  - create_bayesian_few_table
+  - create_meta_analysis_priors
+  - create_prior_specification
+  - PriorSpecification
+  - validate_prior_parameters
+
+- title: "Competing Risks"
+  desc: >
+    Functions for competing risks analysis including cumulative incidence
+    estimation and Gray's test for comparing groups.
+  contents:
+  - CompetingRiskResult
+  - competing_risks
+  - competing_risk_analysis
+  - create_competing_risk_table
+
+- title: "MMRM Analysis"
+  desc: >
+    Functions for Mixed-Effects Models for Repeated Measures (MMRM)
+    analysis with robust variance estimation.
+  contents:
+  - MMRMResult
+  - RMSTResult
+  - create_mmrm_table
+  - summary_mmrm
+
+- title: "MCMC Diagnostics"
+  desc: >
+    Functions for diagnosing Markov Chain Monte Carlo (MCMC) convergence
+    and assessing mixing quality.
+  contents:
+  - assess_mcmc_convergence
+  - calculate_effective_sample_size
+  - calculate_gelman_rubin
+  - create_mcmc_diagnostics_report
 
 - title: "Network Meta-Analysis"
   desc: >

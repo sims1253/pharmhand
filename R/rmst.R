@@ -115,7 +115,8 @@ RMSTResult <- S7::new_class(
 #'
 #' @param data A data frame containing survival data
 #' @param time_var Character. Name of the time variable
-#' @param event_var Character. Name of the event indicator variable (1=event, 0=censored)
+#' @param event_var Character. Name of the event indicator variable
+#'   (1=event, 0=censored)
 #' @param trt_var Character. Name of the treatment variable
 #' @param tau Numeric. Time restriction for RMST calculation
 #' @param conf_level Numeric. Confidence level for intervals (default: 0.95)
@@ -126,14 +127,14 @@ RMSTResult <- S7::new_class(
 #'
 #' @details
 #' The restricted mean survival time (RMST) is defined as:
-#' RMST(τ) = E[min(T, τ)] = ∫₀^τ S(t) dt
+#' \code{RMST(tau) = E[min(T, tau)] = integral from 0 to tau of S(t) dt}
 #'
 #' where T is the survival time and S(t) is the survival function.
 #'
 #' RMST is estimated using the Kaplan-Meier estimator:
-#' RMST(τ) = τ - ∫₀^τ F(t) dt = Σᵢ (tᵢ - tᵢ₋₁) * S(tᵢ₋₁)
+#' \code{RMST(tau) = tau - integral from 0 to tau of F(t) dt = sum_i (t_i - t_i-1) * S(t_i-1)}
 #'
-#' where the integral is restricted to [0, τ].
+#' where the integral is restricted to \code{[0, tau]}.
 #'
 #' @references
 #' Uno, H. et al. (2014). Moving beyond the hazard ratio in quantifying the
@@ -233,7 +234,8 @@ rmst_analysis <- function(
 	trt_levels <- trt_levels[!is.na(trt_levels)]
 	if (length(trt_levels) < 2) {
 		ph_warn(
-			"Only one treatment level found. Treatment comparisons may not be meaningful."
+			"Only one treatment level found. ",
+			"Treatment comparisons may not be meaningful."
 		)
 	}
 
@@ -414,7 +416,7 @@ create_rmst_table <- function(
 
 	# Add metadata
 	meta_footnotes <- c(
-		paste("Time restriction (τ):", result@tau),
+		paste("Time restriction (tau):", result@tau),
 		paste("Observations:", result@n_obs),
 		paste("Total events:", sum(result@n_events)),
 		paste("P-value:", format_pvalue(result@p_value)),
@@ -424,7 +426,6 @@ create_rmst_table <- function(
 	create_clinical_table(
 		data = comp_data,
 		title = title,
-		subtitle = subtitle,
 		footnotes = meta_footnotes,
 		autofit = autofit
 	)
@@ -478,7 +479,7 @@ plot_rmst <- function(
 		ggplot2::labs(
 			title = title,
 			x = "Treatment Group",
-			y = sprintf("RMST (τ = %.1f)", result@tau)
+			y = sprintf("RMST (tau = %.1f)", result@tau)
 		) +
 		ggplot2::theme_minimal()
 

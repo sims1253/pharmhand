@@ -93,6 +93,7 @@ result <- mmrm_analysis(
 }
 }
 \references{
-Mallinckrodt, C.H. et al. (2013). Choosing the optimal mixed-effects model
-for repeated measures data. Statistical Methods in Medical Research, 22(2), 113-138.
+Mallinckrodt, C.H. et al. (2013). Choosing the optimal
+mixed-effects model for repeated measures data.
+Statistical Methods in Medical Research, 22(2), 113-138.
 }

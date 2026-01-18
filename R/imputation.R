@@ -198,7 +198,8 @@ perform_multiple_imputation <- function(
 		set.seed(seed)
 	}
 
-	# Perform imputation - build args conditionally to avoid NULL predictorMatrix issue
+	# Perform imputation - build args conditionally to avoid NULL
+	# predictorMatrix issue
 	mice_args <- list(
 		data = data,
 		m = m,

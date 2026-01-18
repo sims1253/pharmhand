@@ -163,8 +163,9 @@ MMRMResult <- S7::new_class(
 #' - "ante_dependence": Flexible for unequal time intervals
 #'
 #' @references
-#' Mallinckrodt, C.H. et al. (2013). Choosing the optimal mixed-effects model
-#' for repeated measures data. Statistical Methods in Medical Research, 22(2), 113-138.
+#' Mallinckrodt, C.H. et al. (2013). Choosing the optimal
+#' mixed-effects model for repeated measures data.
+#' Statistical Methods in Medical Research, 22(2), 113-138.
 #'
 #' @export
 #'
@@ -414,7 +415,6 @@ create_mmrm_table <- function(
 	create_clinical_table(
 		data = summary_df,
 		title = title,
-		subtitle = subtitle,
 		footnotes = meta_footnotes,
 		autofit = autofit
 	)

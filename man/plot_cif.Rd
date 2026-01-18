@@ -15,7 +15,8 @@ plot_cif(result, title = "Cumulative Incidence Function")
 A ClinicalPlot object
 }
 \description{
-Creates a plot of the cumulative incidence function from competing risk analysis.
+Creates a plot of the cumulative incidence function from competing
+risk analysis.
 }
 \examples{
 \dontrun{
