@@ -1630,6 +1630,8 @@ SubgroupSection <- S7::new_class(
 #' @param margin Numeric value for non-inferiority margin
 #' @param alpha Numeric value for significance level
 #' @param strata Character vector of stratification variables
+#' @param criteria List of criteria definitions for HTA assessment
+#'   (e.g., list(clinical = list(...), economic = list(...)))
 #' @param metadata List of additional metadata
 #' @param category Character string for endpoint category
 #'   (inherited from Endpoint)

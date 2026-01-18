@@ -9,7 +9,8 @@ assess_mcmc_convergence(fit, rhat_threshold = 1.01, ess_threshold = 100)
 \arguments{
 \item{fit}{A brmsfit object from brms package}
 
-\item{rhat_threshold}{Numeric. R-hat threshold for convergence (default: 1.01)}
+\item{rhat_threshold}{Numeric. R-hat threshold for convergence
+(default: 1.01)}
 
 \item{ess_threshold}{Numeric. Minimum ESS threshold (default: 100)}
 }

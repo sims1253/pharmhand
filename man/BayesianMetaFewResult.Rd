@@ -27,7 +27,8 @@ BayesianMetaFewResult(
 
 \item{prior_summary}{Data frame with prior specification summary}
 
-\item{few_studies_adjustment}{Character. Description of adjustments made for few studies}
+\item{few_studies_adjustment}{Character. Description of adjustments
+made for few studies}
 
 \item{prob_positive}{Numeric. Posterior probability that effect is positive}
 

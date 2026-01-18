@@ -88,7 +88,8 @@ PriorSpecification <- S7::new_class(
 #'
 #' @param distribution Character string specifying the distribution:
 #'   "normal", "beta", "gamma", "half_cauchy", "half_normal", "exponential",
-#'   "uniform", "cauchy", "t", "log_normal", "inverse_gamma", "laplace", "student_t"
+#'   "uniform", "cauchy", "t", "log_normal", "inverse_gamma", "laplace",
+#'   "student_t"
 #' @param parameters List of distribution parameters (see details)
 #' @param description Character string describing the prior
 #' @param domain Character string indicating the parameter domain

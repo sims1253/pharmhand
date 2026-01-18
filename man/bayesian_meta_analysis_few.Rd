@@ -36,9 +36,10 @@ bayesian_meta_analysis_few(
 \item{prior_mu}{Prior for overall effect mean (default: 0, very wide)}
 
 \item{prior_tau}{Prior for heterogeneity. For few studies, uses more
-informative priors that pull τ towards smaller values}
+informative priors that pull tau towards smaller values}
 
-\item{prior_sensitivity}{Logical. Whether to perform prior sensitivity analysis}
+\item{prior_sensitivity}{Logical. Whether to perform prior
+sensitivity analysis}
 
 \item{chains}{Integer. Number of MCMC chains (default: 4)}
 
@@ -69,7 +70,7 @@ and implements several adjustments:
 \enumerate{
 \item \strong{Conservative priors}: Uses more informative priors that are appropriate
 when data is sparse
-\item \strong{Regularization}: Stronger regularization of between-study variance (τ²)
+\item \strong{Regularization}: Stronger regularization of between-study variance (tau^2)
 \item \strong{Sensitivity analysis}: Includes prior sensitivity analysis by default
 \item \strong{Few studies warnings}: Provides explicit warnings about limitations
 }

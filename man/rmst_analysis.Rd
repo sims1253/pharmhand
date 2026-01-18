@@ -19,7 +19,8 @@ rmst_analysis(
 
 \item{time_var}{Character. Name of the time variable}
 
-\item{event_var}{Character. Name of the event indicator variable (1=event, 0=censored)}
+\item{event_var}{Character. Name of the event indicator variable
+(1=event, 0=censored)}
 
 \item{trt_var}{Character. Name of the treatment variable}
 
@@ -38,14 +39,14 @@ Calculates restricted mean survival time with treatment group comparisons.
 }
 \details{
 The restricted mean survival time (RMST) is defined as:
-RMST(τ) = E\link{min(T, τ)} = ∫₀^τ S(t) dt
+\code{RMST(tau) = E[min(T, tau)] = integral from 0 to tau of S(t) dt}
 
 where T is the survival time and S(t) is the survival function.
 
 RMST is estimated using the Kaplan-Meier estimator:
-RMST(τ) = τ - ∫₀^τ F(t) dt = Σᵢ (tᵢ - tᵢ₋₁) * S(tᵢ₋₁)
+\code{RMST(tau) = tau - integral from 0 to tau of F(t) dt = sum_i (t_i - t_i-1) * S(t_i-1)}
 
-where the integral is restricted to \link{0, τ}.
+where the integral is restricted to \code{[0, tau]}.
 }
 \examples{
 \dontrun{

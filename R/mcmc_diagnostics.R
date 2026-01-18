@@ -57,7 +57,10 @@ plot_mcmc_trace <- function(
 		# Filter out non-scalar parameters for cleaner plots
 		parameters <- parameters[grep("^b_", parameters)]
 		if (length(parameters) == 0) {
-			parameters <- brms::variables(fit)[1:min(5, length(brms::variables(fit)))]
+			parameters <- brms::variables(fit)[seq_len(min(
+				5,
+				length(brms::variables(fit))
+			))]
 		}
 	}
 
@@ -184,7 +187,10 @@ plot_mcmc_density <- function(
 		# Filter out non-scalar parameters for cleaner plots
 		parameters <- parameters[grep("^b_", parameters)]
 		if (length(parameters) == 0) {
-			parameters <- brms::variables(fit)[1:min(5, length(brms::variables(fit)))]
+			parameters <- brms::variables(fit)[seq_len(min(
+				5,
+				length(brms::variables(fit))
+			))]
 		}
 	}
 
@@ -366,7 +372,8 @@ calculate_effective_sample_size <- function(fit) {
 #' R-hat values, effective sample sizes, and recommendations.
 #'
 #' @param fit A brmsfit object from brms package
-#' @param rhat_threshold Numeric. R-hat threshold for convergence (default: 1.01)
+#' @param rhat_threshold Numeric. R-hat threshold for convergence
+#'   (default: 1.01)
 #' @param ess_threshold Numeric. Minimum ESS threshold (default: 100)
 #'
 #' @return A list containing:
@@ -456,7 +463,10 @@ assess_mcmc_convergence <- function(
 			recommendations <- c(
 				recommendations,
 				sprintf(
-					"%d parameters show poor convergence. Consider increasing warmup iterations or number of chains.",
+					paste(
+						"%d parameters show poor convergence.",
+						"Consider increasing warmup iterations or number of chains."
+					),
 					n_poor
 				)
 			)
@@ -466,7 +476,10 @@ assess_mcmc_convergence <- function(
 			recommendations <- c(
 				recommendations,
 				sprintf(
-					"%d parameters show marginal convergence. Monitor these parameters carefully.",
+					paste(
+						"%d parameters show marginal convergence.",
+						"Monitor these parameters carefully."
+					),
 					n_marginal
 				)
 			)
@@ -557,7 +570,10 @@ create_mcmc_diagnostics_report <- function(
 		# Focus on main parameters for cleaner output
 		parameters <- parameters[grep("^b_", parameters)]
 		if (length(parameters) == 0) {
-			parameters <- brms::variables(fit)[1:min(5, length(brms::variables(fit)))]
+			parameters <- brms::variables(fit)[seq_len(min(
+				5,
+				length(brms::variables(fit))
+			))]
 		}
 	}
 

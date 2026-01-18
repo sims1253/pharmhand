@@ -18,7 +18,8 @@ NULL
 #' @param posterior_summary Data frame with posterior summary statistics
 #' @param credible_intervals Data frame with credible intervals
 #' @param prior_summary Data frame with prior specification summary
-#' @param few_studies_adjustment Character. Description of adjustments made for few studies
+#' @param few_studies_adjustment Character. Description of adjustments
+#'   made for few studies
 #' @param prob_positive Numeric. Posterior probability that effect is positive
 #' @param prob_negative Numeric. Posterior probability that effect is negative
 #' @param heterogeneity List with heterogeneity statistics (tau2, I2, etc.)
@@ -145,8 +146,9 @@ BayesianMetaFewResult <- S7::new_class(
 #'   "md" (mean difference), "smd" (standardized mean difference)
 #' @param prior_mu Prior for overall effect mean (default: 0, very wide)
 #' @param prior_tau Prior for heterogeneity. For few studies, uses more
-#'   informative priors that pull τ towards smaller values
-#' @param prior_sensitivity Logical. Whether to perform prior sensitivity analysis
+#'   informative priors that pull tau towards smaller values
+#' @param prior_sensitivity Logical. Whether to perform prior
+#'   sensitivity analysis
 #' @param chains Integer. Number of MCMC chains (default: 4)
 #' @param iter Integer. Total iterations per chain (default: 6000)
 #' @param warmup Integer. Warmup iterations (default: 3000)
@@ -164,7 +166,7 @@ BayesianMetaFewResult <- S7::new_class(
 #'
 #' 1. **Conservative priors**: Uses more informative priors that are appropriate
 #'    when data is sparse
-#' 2. **Regularization**: Stronger regularization of between-study variance (τ²)
+#' 2. **Regularization**: Stronger regularization of between-study variance (tau^2)
 #' 3. **Sensitivity analysis**: Includes prior sensitivity analysis by default
 #' 4. **Few studies warnings**: Provides explicit warnings about limitations
 #'
@@ -363,7 +365,7 @@ bayesian_meta_analysis_few <- function(
 
 	# Posterior summary
 	post_summary <- data.frame(
-		parameter = c("Overall Effect", "Between-study SD (τ)"),
+		parameter = c("Overall Effect", "Between-study SD (tau)"),
 		mean = c(mean(intercept_samples), mean(sd_samples)),
 		median = c(median(intercept_samples), median(sd_samples)),
 		sd = c(sd(intercept_samples), sd(sd_samples)),
@@ -391,7 +393,7 @@ bayesian_meta_analysis_few <- function(
 
 	# Prior summary
 	prior_summary <- data.frame(
-		parameter = c("Overall Effect", "Between-study SD (τ)"),
+		parameter = c("Overall Effect", "Between-study SD (tau)"),
 		prior_distribution = c(
 			sprintf("Normal(%.1f, %.1f)", prior_mu$mean, prior_mu$sd),
 			sprintf("%s(%.2f)", prior_tau$type, prior_tau$scale)
@@ -416,7 +418,7 @@ bayesian_meta_analysis_few <- function(
 
 	# Tau summary
 	tau_summary <- data.frame(
-		parameter = "Between-study SD (τ)",
+		parameter = "Between-study SD (tau)",
 		mean = mean(sd_samples),
 		median = median(sd_samples),
 		sd = sd(sd_samples),
@@ -505,7 +507,11 @@ bayesian_meta_analysis_few <- function(
 
 	# Few studies adjustment description
 	few_studies_desc <- sprintf(
-		"Analysis adjusted for few studies (n=%d): Used conservative priors (mu ~ N(%.1f, %.1f), tau ~ %s(%.2f)), increased iterations (%d), and included prior sensitivity analysis.",
+		paste(
+			"Analysis adjusted for few studies (n=%d):",
+			"Used conservative priors (mu ~ N(%.1f, %.1f), tau ~ %s(%.2f)),",
+			"increased iterations (%d), and included prior sensitivity analysis."
+		),
 		k,
 		prior_mu$mean,
 		prior_mu$sd,
@@ -611,7 +617,9 @@ summary_bayesian_few <- function(result, digits = 3) {
 #'
 #' @examples
 #' \dontrun{
-#' table <- create_bayesian_few_table(result, title = "Bayesian Meta-Analysis (Few Studies)")
+#' table <- create_bayesian_few_table(
+#'   result, title = "Bayesian Meta-Analysis (Few Studies)"
+#' )
 #' }
 create_bayesian_few_table <- function(
 	result,
@@ -642,7 +650,7 @@ create_bayesian_few_table <- function(
 	# Add heterogeneity if available
 	if (length(result@heterogeneity) > 0) {
 		het_row <- data.frame(
-			Parameter = "Between-study variance (τ²)",
+			Parameter = "Between-study variance (tau^2)",
 			`Posterior Mean` = sprintf("%.3f", result@heterogeneity$tau2_mean),
 			`Posterior Median` = sprintf("%.3f", result@heterogeneity$tau2_median),
 			`Posterior SD` = "",
@@ -668,7 +676,6 @@ create_bayesian_few_table <- function(
 	create_clinical_table(
 		data = summary_df,
 		title = title,
-		subtitle = subtitle,
 		footnotes = meta_footnotes,
 		autofit = autofit
 	)
@@ -686,7 +693,9 @@ create_bayesian_few_table <- function(
 #'
 #' @examples
 #' \dontrun{
-#' plot <- plot_bayesian_few(result, title = "Bayesian Meta-Analysis (Few Studies)")
+#' plot <- plot_bayesian_few(
+#'   result, title = "Bayesian Meta-Analysis (Few Studies)"
+#' )
 #' }
 plot_bayesian_few <- function(
 	result,

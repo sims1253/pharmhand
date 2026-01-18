@@ -22,6 +22,8 @@ Creates forest plot for Bayesian meta-analysis results for few studies.
 }
 \examples{
 \dontrun{
-plot <- plot_bayesian_few(result, title = "Bayesian Meta-Analysis (Few Studies)")
+plot <- plot_bayesian_few(
+  result, title = "Bayesian Meta-Analysis (Few Studies)"
+)
 }
 }

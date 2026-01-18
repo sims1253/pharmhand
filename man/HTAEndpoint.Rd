@@ -42,6 +42,9 @@ HTAEndpoint(
 \item{metadata}{List of additional metadata}
 
 \item{strata}{Character vector of stratification variables}
+
+\item{criteria}{List of criteria definitions for HTA assessment
+(e.g., list(clinical = list(...), economic = list(...)))}
 }
 \value{
 An HTAEndpoint object

@@ -16,7 +16,8 @@ create_prior_specification(
 \arguments{
 \item{distribution}{Character string specifying the distribution:
 "normal", "beta", "gamma", "half_cauchy", "half_normal", "exponential",
-"uniform", "cauchy", "t", "log_normal", "inverse_gamma", "laplace", "student_t"}
+"uniform", "cauchy", "t", "log_normal", "inverse_gamma", "laplace",
+"student_t"}
 
 \item{parameters}{List of distribution parameters (see details)}
 

@@ -31,6 +31,8 @@ Creates a clinical table from competing risk analysis results.
 }
 \examples{
 \dontrun{
-table <- create_competing_risk_table(result, title = "Competing Risk Analysis")
+table <- create_competing_risk_table(
+  result, title = "Competing Risk Analysis"
+)
 }
 }

@@ -31,6 +31,8 @@ Creates a clinical table from Bayesian meta-analysis results for few studies.
 }
 \examples{
 \dontrun{
-table <- create_bayesian_few_table(result, title = "Bayesian Meta-Analysis (Few Studies)")
+table <- create_bayesian_few_table(
+  result, title = "Bayesian Meta-Analysis (Few Studies)"
+)
 }
 }
