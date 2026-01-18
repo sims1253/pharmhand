@@ -975,3 +975,22 @@ create_mock_ae_summary_data <- function(n = 3) {
 
 	list(adae = adae, adsl = adsl)
 }
+
+# ==============================================================================
+# Multiple Imputation Test Data
+# ==============================================================================
+
+#' Create test data for imputation tests
+#'
+#' @param n Number of rows
+#' @param seed Random seed
+#' @return Data frame with missing values
+create_imputation_test_data <- function(n = 30, seed = 123) {
+	set.seed(seed)
+	data.frame(
+		x = c(rnorm(n - 5, mean = 50, sd = 10), rep(NA, 5)),
+		y = c(rep(NA, 3), rnorm(n - 3, mean = 100, sd = 20)),
+		z = sample(c("A", "B"), n, replace = TRUE),
+		stringsAsFactors = FALSE
+	)
+}

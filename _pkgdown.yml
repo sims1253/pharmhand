@@ -256,6 +256,19 @@ reference:
   - calculate_mcid_distribution
   - create_ttd_analysis
 
+- title: "Multiple Imputation"
+  desc: >
+    Functions for multiple imputation using mice package with Rubin's rules
+    for pooling results.
+  contents:
+  - ImputationResult
+  - perform_multiple_imputation
+  - pool_rubin
+  - analyze_with_imputation
+  - get_complete_data
+  - summarize_missing
+  - imputation
+
 - title: "Meta-Analysis"
   desc: >
     Functions for conducting meta-analyses including heterogeneity
@@ -427,6 +440,8 @@ reference:
   - pro_analysis
   - evidence_grading
   - evidence_summary_tables
+  - imputation
+  - imputation_diagnostics
 
 # Articles/vignettes structure
 articles:
