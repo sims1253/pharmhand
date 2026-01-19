@@ -76,11 +76,11 @@ MMRMResult <- S7::new_class(
 		p_values = S7::new_property(
 			S7::class_numeric,
 			validator = function(value) {
-				if (any(value < 0 | value > 1)) {
-					return("p_values must be between 0 and 1")
-				}
 				if (anyNA(value)) {
 					return("p_values must not contain NA values")
+				}
+				if (any(value < 0 | value > 1)) {
+					return("p_values must be between 0 and 1")
 				}
 				NULL
 			}
@@ -88,11 +88,11 @@ MMRMResult <- S7::new_class(
 		df = S7::new_property(
 			S7::class_numeric,
 			validator = function(value) {
-				if (any(value <= 0)) {
-					return("df must be positive")
-				}
 				if (anyNA(value)) {
 					return("df must not contain NA values")
+				}
+				if (any(value <= 0)) {
+					return("df must be positive")
 				}
 				NULL
 			}
@@ -202,13 +202,12 @@ mmrm_analysis <- function(
 	covariates = NULL,
 	interaction = FALSE,
 	cov_covariance = c(
-		"unstructured",
-		"compound_symmetry",
-		"autoregressive",
-		"ante_dependence",
-		"toeplitz",
-		"spatial_exponential",
-		"spatial_power"
+		"us",
+		"cs",
+		"ar1",
+		"ad",
+		"toep",
+		"sp_exp"
 	),
 	df_adjustment = c("Kenward-Roger", "Satterthwaite", "Residual"),
 	method = c("REML", "ML"),
@@ -378,7 +377,6 @@ summary_mmrm <- function(result, digits = 3) {
 #'
 #' @param result An MMRMResult object
 #' @param title Table title
-#' @param subtitle Optional subtitle
 #' @param footnotes Optional footnotes
 #' @param autofit Logical. Whether to autofit column widths
 #'
@@ -392,7 +390,6 @@ summary_mmrm <- function(result, digits = 3) {
 create_mmrm_table <- function(
 	result,
 	title = "Mixed Model Repeated Measures Analysis",
-	subtitle = NULL,
 	footnotes = NULL,
 	autofit = TRUE
 ) {

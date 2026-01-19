@@ -311,7 +311,10 @@ bayesian_meta_analysis_few <- function(
 		"half_normal" = sprintf("normal(0, %f)", prior_tau$scale),
 		"exponential" = sprintf("exponential(%f)", 1 / prior_tau$scale),
 		stop(sprintf(
-			"Unknown tau prior type for tau_prior_str: '%s'. Expected one of: half_cauchy, half_normal, exponential",
+			paste0(
+				"Unknown tau prior type for tau_prior_str: '%s'. ",
+				"Expected one of: half_cauchy, half_normal, exponential"
+			),
 			prior_tau$type
 		))
 	)
@@ -411,7 +414,11 @@ bayesian_meta_analysis_few <- function(
 	prob_negative <- mean(intercept_samples < 0)
 
 	# Heterogeneity assessment
-	i2_samples <- sd_samples^2 / (sd_samples^2 + mean(sei^2))
+	# Compute typical within-study variance using Higgins & Thompson formula
+	k <- length(sei)
+	w <- 1 / sei^2
+	vtilde <- ((k - 1) * sum(w)) / ((sum(w)^2) - sum(w^2))
+	i2_samples <- sd_samples^2 / (sd_samples^2 + vtilde)
 	heterogeneity <- list(
 		tau2_mean = mean(sd_samples^2),
 		tau2_median = median(sd_samples^2),
@@ -456,7 +463,10 @@ bayesian_meta_analysis_few <- function(
 				"half_normal" = sprintf("normal(0, %f)", prior_test$scale),
 				"exponential" = sprintf("exponential(%f)", 1 / prior_test$scale),
 				stop(sprintf(
-					"Unknown tau prior type for tau_prior_test: '%s'. Expected one of: half_cauchy, half_normal, exponential",
+					paste0(
+						"Unknown tau prior type for tau_prior_test: '%s'. ",
+						"Expected one of: half_cauchy, half_normal, exponential"
+					),
 					prior_test$type
 				))
 			)

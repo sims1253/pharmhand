@@ -277,6 +277,11 @@ get_default_prior <- function(domain) {
 	if (domain %in% names(priors)) {
 		return(priors[[domain]])
 	} else {
+		ph_warn(sprintf(
+			"Unrecognized domain '%s'. Available domains: %s",
+			domain,
+			paste(names(priors), collapse = ", ")
+		))
 		return(NULL)
 	}
 }
@@ -402,7 +407,7 @@ validate_prior_parameters <- function(distribution, parameters) {
 			}
 		},
 		inverse_gamma = {
-			if (any(parameters <= 0)) {
+			if (parameters$shape <= 0 || parameters$scale <= 0) {
 				return("Inverse-Gamma distribution parameters must be positive")
 			}
 		},

@@ -621,26 +621,45 @@ create_mcmc_diagnostics_report <- function(
 	eff_vals <- convergence$ess_values
 
 	if (length(rhat_vals) > 0 && length(eff_vals) > 0) {
-		# Filter to requested parameters if specified
+		# Compute aligned parameter names
+		common_names <- intersect(names(rhat_vals), names(eff_vals))
+
+		# Further filter to requested parameters if specified
 		if (!is.null(parameters)) {
-			common_params <- intersect(
-				parameters,
-				intersect(names(rhat_vals), names(eff_vals))
-			)
-			if (length(common_params) > 0) {
-				rhat_vals <- rhat_vals[common_params]
-				eff_vals <- eff_vals[common_params]
-			}
+			common_names <- intersect(common_names, parameters)
 		}
 
-		diagnostic_summary <- data.frame(
-			parameter = names(rhat_vals),
-			rhat = round(rhat_vals, 3),
-			eff_sample_size = round(eff_vals),
-			convergence_status = ifelse(rhat_vals < rhat_threshold, "Good", "Poor"),
-			ess_status = ifelse(eff_vals >= ess_threshold, "Adequate", "Low"),
-			stringsAsFactors = FALSE
-		)
+		if (length(common_names) > 0) {
+			# Subset both vectors by common names for alignment
+			rhat_vals <- rhat_vals[common_names]
+			eff_vals <- eff_vals[common_names]
+
+			diagnostic_summary <- data.frame(
+				parameter = common_names,
+				rhat = round(rhat_vals, 3),
+				eff_sample_size = round(eff_vals),
+				convergence_status = ifelse(
+					rhat_vals < rhat_threshold,
+					"Good",
+					"Poor"
+				),
+				ess_status = ifelse(
+					eff_vals >= ess_threshold,
+					"Adequate",
+					"Low"
+				),
+				stringsAsFactors = FALSE
+			)
+		} else {
+			diagnostic_summary <- data.frame(
+				parameter = character(),
+				rhat = numeric(),
+				eff_sample_size = numeric(),
+				convergence_status = character(),
+				ess_status = character(),
+				stringsAsFactors = FALSE
+			)
+		}
 	} else {
 		diagnostic_summary <- data.frame(
 			parameter = character(),
