@@ -38,7 +38,10 @@ describe("rmst_analysis", {
 		expect_error(
 			rmst_analysis(
 				data,
-				time_var = "MISSING_VAR"
+				time_var = "MISSING_VAR",
+				event_var = "status",
+				trt_var = "TRT01P",
+				tau = 12
 			),
 			"MISSING_VAR"
 		)
@@ -56,9 +59,9 @@ describe("rmst_analysis", {
 			tau = 12
 		)
 
-		expect_true("rmst_by_group" %in% names(result))
-		expect_true("rmst_difference" %in% names(result))
-		expect_true("ci" %in% names(result))
+		expect_true("rmst_by_group" %in% names(S7::props(result)))
+		expect_true("rmst_difference" %in% names(S7::props(result)))
+		expect_true("ci" %in% names(S7::props(result)))
 	})
 
 	it("compares treatment groups", {
@@ -73,7 +76,7 @@ describe("rmst_analysis", {
 			tau = 12
 		)
 
-		expect_true("treatment_comparison" %in% names(result))
+		expect_true("treatment_comparison" %in% names(S7::props(result)))
 		expect_true(nrow(result@treatment_comparison) > 0)
 	})
 
@@ -160,34 +163,3 @@ describe("RMSTResult class", {
 		expect_true("treatment_comparison" %in% names(S7::props(result)))
 	})
 })
-
-# =============================================================================
-# Helper function for test data
-# =============================================================================
-
-create_rmst_test_data <- function(n = 100, seed = 123) {
-	set.seed(seed)
-
-	# Generate survival times with treatment effect
-	trt_grp <- sample(c("A", "B"), n, replace = TRUE)
-
-	# Initialize times vector
-	times <- numeric(n)
-	# Assign times based on actual treatment assignment
-	times[trt_grp == "A"] <- rexp(sum(trt_grp == "A"), 0.1) # Lower hazard
-	times[trt_grp == "B"] <- rexp(sum(trt_grp == "B"), 0.15) # Higher hazard
-
-	# Generate censoring times
-	censor_times <- rexp(n, 0.05)
-
-	# Determine observed times and status
-	observed_times <- pmin(times, censor_times)
-	status <- ifelse(times <= censor_times, 1, 0) # 1=event, 0=censored
-
-	data.frame(
-		time = observed_times,
-		status = status,
-		TRT01P = trt_grp,
-		stringsAsFactors = FALSE
-	)
-}

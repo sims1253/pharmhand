@@ -276,7 +276,7 @@ rmst_analysis <- function(
 			survRM2::rmst2(
 				time = complete_data$time,
 				status = complete_data$status,
-				group = treatment_numeric,
+				arm = treatment_numeric,
 				tau = tau
 			)
 		},
@@ -285,32 +285,59 @@ rmst_analysis <- function(
 		}
 	)
 
-	# Extract results
-	rmst_by_group <- rmst_results$RMST_summary
-	rmst_diff <- rmst_results$unadjusted$result
+	# Extract results - survRM2 returns different structure
+	# RMST by group from individual arm results
+	rmst_arm0 <- rmst_results$RMST.arm0$result
+	rmst_arm1 <- rmst_results$RMST.arm1$result
 
-	# Extract difference results using named column access
-	# Row 1 is the RMST difference: "RMST (arm=1)-(arm=0)"
-	diff_estimate <- rmst_diff["RMST (arm=1)-(arm=0)", "Est."]
-	diff_se <- rmst_diff["RMST (arm=1)-(arm=0)", "se"]
-
-	# Calculate confidence interval for difference
+	# Create RMST summary data frame
+	treatment_levels <- levels(complete_data$treatment)
+	conf_level <- conf_level # already defined
 	alpha <- 1 - conf_level
 	z_crit <- qnorm(1 - alpha / 2)
+
+	rmst_by_group <- data.frame(
+		arm = c(0, 1),
+		RMST = c(rmst_arm0["RMST", "Est."], rmst_arm1["RMST", "Est."]),
+		SE = c(
+			sqrt(rmst_results$RMST.arm0$rmst.var),
+			sqrt(rmst_results$RMST.arm1$rmst.var)
+		),
+		"lower.CL" = c(
+			rmst_arm0["RMST", "lower .95"],
+			rmst_arm1["RMST", "lower .95"]
+		),
+		"upper.CL" = c(
+			rmst_arm0["RMST", "upper .95"],
+			rmst_arm1["RMST", "upper .95"]
+		),
+		check.names = FALSE
+	)
+
+	# Extract difference results from unadjusted.result matrix
+	# unadjusted.result is a matrix, not a list
+	rmst_diff <- rmst_results$unadjusted.result
+
+	# Row 1 is the RMST difference: "RMST (arm=1)-(arm=0)"
+	diff_estimate <- rmst_diff[1, "Est."]
+	diff_se <- sqrt(
+		rmst_results$RMST.arm0$rmst.var + rmst_results$RMST.arm1$rmst.var
+	)
+
+	# Calculate confidence interval for difference
 	diff_ci <- c(
-		diff_estimate - z_crit * diff_se,
-		diff_estimate + z_crit * diff_se
+		rmst_diff[1, "lower .95"],
+		rmst_diff[1, "upper .95"]
 	)
 
 	# Create treatment comparison
-	treatment_levels <- unique(complete_data$treatment)
 	if (length(treatment_levels) >= 2) {
 		treatment_comp <- data.frame(
 			group = treatment_levels,
-			rmst = rmst_by_group[, "RMST"],
-			se = rmst_by_group[, "SE"],
-			ci_lower = rmst_by_group[, "lower.CL"],
-			ci_upper = rmst_by_group[, "upper.CL"],
+			rmst = rmst_by_group$RMST,
+			se = rmst_by_group$SE,
+			ci_lower = rmst_by_group$"lower.CL",
+			ci_upper = rmst_by_group$"upper.CL",
 			stringsAsFactors = FALSE
 		)
 	} else {
@@ -318,7 +345,7 @@ rmst_analysis <- function(
 	}
 
 	# Calculate p-value for difference
-	p_value <- rmst_diff["RMST (arm=1)-(arm=0)", "p"]
+	p_value <- rmst_diff[1, "p"]
 
 	# Count events by group
 	event_counts <- table(complete_data$treatment, complete_data$status)
