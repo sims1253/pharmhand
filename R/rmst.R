@@ -259,13 +259,24 @@ rmst_analysis <- function(
 		levels = c(reference_group, setdiff(trt_levels, reference_group))
 	)
 
+	# Convert treatment factor to 0/1 numeric for survRM2
+	# 0 = reference/control, 1 = active/treatment
+	if (length(levels(complete_data$treatment)) != 2) {
+		ph_abort(sprintf(
+			"RMST analysis requires exactly 2 treatment groups, found %d: %s",
+			length(levels(complete_data$treatment)),
+			paste(levels(complete_data$treatment), collapse = ", ")
+		))
+	}
+	treatment_numeric <- as.integer(complete_data$treatment) - 1L
+
 	# Perform RMST analysis using survRM2
 	rmst_results <- tryCatch(
 		{
 			survRM2::rmst2(
 				time = complete_data$time,
 				status = complete_data$status,
-				group = complete_data$treatment,
+				group = treatment_numeric,
 				tau = tau
 			)
 		},
@@ -278,12 +289,17 @@ rmst_analysis <- function(
 	rmst_by_group <- rmst_results$RMST_summary
 	rmst_diff <- rmst_results$unadjusted$result
 
+	# Extract difference results using named column access
+	# Row 1 is the RMST difference: "RMST (arm=1)-(arm=0)"
+	diff_estimate <- rmst_diff["RMST (arm=1)-(arm=0)", "Est."]
+	diff_se <- rmst_diff["RMST (arm=1)-(arm=0)", "se"]
+
 	# Calculate confidence interval for difference
 	alpha <- 1 - conf_level
 	z_crit <- qnorm(1 - alpha / 2)
 	diff_ci <- c(
-		rmst_diff[2] - z_crit * rmst_diff[3],
-		rmst_diff[2] + z_crit * rmst_diff[3]
+		diff_estimate - z_crit * diff_se,
+		diff_estimate + z_crit * diff_se
 	)
 
 	# Create treatment comparison
@@ -302,7 +318,7 @@ rmst_analysis <- function(
 	}
 
 	# Calculate p-value for difference
-	p_value <- rmst_diff[4]
+	p_value <- rmst_diff["RMST (arm=1)-(arm=0)", "p"]
 
 	# Count events by group
 	event_counts <- table(complete_data$treatment, complete_data$status)
@@ -316,8 +332,8 @@ rmst_analysis <- function(
 
 	RMSTResult(
 		rmst_by_group = rmst_by_group,
-		rmst_difference = rmst_diff[2],
-		se_difference = rmst_diff[3],
+		rmst_difference = diff_estimate,
+		se_difference = diff_se,
 		ci = diff_ci,
 		p_value = p_value,
 		tau = tau,
@@ -366,6 +382,10 @@ create_rmst_table <- function(
 	# Get treatment comparison data
 	comp_data <- result@treatment_comparison
 
+	# Get confidence level for dynamic labeling (shared across branches)
+	conf_level <- result@metadata$conf_level
+	ci_label <- paste0(round(conf_level * 100, 0), "% CI")
+
 	if (nrow(comp_data) == 0) {
 		ph_warn("No treatment comparison data available for table creation")
 		comp_data <- data.frame(
@@ -376,10 +396,6 @@ create_rmst_table <- function(
 			stringsAsFactors = FALSE
 		)
 	} else {
-		# Get confidence level for dynamic labeling
-		conf_level <- result@metadata$conf_level
-		ci_label <- paste0(round(conf_level * 100, 0), "% CI")
-
 		# Format confidence intervals
 		comp_data$CI <- sprintf(
 			"%.2f (%.2f, %.2f)",
@@ -394,10 +410,6 @@ create_rmst_table <- function(
 
 	# Add difference information if available
 	if (!is.na(result@rmst_difference)) {
-		# Get confidence level for dynamic labeling
-		conf_level <- result@metadata$conf_level
-		ci_label <- paste0(round(conf_level * 100, 0), "% CI")
-
 		diff_row <- data.frame(
 			Group = "Difference",
 			RMST = round(result@rmst_difference, 3),

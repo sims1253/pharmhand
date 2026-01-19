@@ -571,7 +571,12 @@ summarize_missing <- function(data) {
 	)
 
 	summary_df$n_complete <- n_total - summary_df$n_missing
-	summary_df$pct_missing <- round(100 * summary_df$n_missing / n_total, 1)
+	# Handle zero rows to avoid NaN from division by zero
+	summary_df$pct_missing <- if (n_total == 0) {
+		rep(0, nrow(summary_df))
+	} else {
+		round(100 * summary_df$n_missing / n_total, 1)
+	}
 
 	# Order by amount missing (descending)
 	summary_df <- summary_df[order(-summary_df$n_missing), ]

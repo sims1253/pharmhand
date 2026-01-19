@@ -256,6 +256,9 @@ reference:
   - summarize_missing
   - imputation
   - create_imputation_report
+  - plot_imputation_convergence
+  - plot_imputation_distributions
+  - plot_missing_pattern
 
 - title: "Meta-Analysis"
   desc: >
@@ -286,6 +289,12 @@ reference:
   - create_prior_specification
   - PriorSpecification
   - validate_prior_parameters
+  - get_default_prior
+  - create_prior_specification_set
+  - summarize_prior_specification
+  - summary_bayesian_few
+  - plot_bayesian_few
+  - meta_bayesian_few
 
 - title: "Competing Risks"
   desc: >
@@ -296,6 +305,7 @@ reference:
   - competing_risks
   - competing_risk_analysis
   - create_competing_risk_table
+  - plot_cif
 
 - title: "MMRM Analysis"
   desc: >
@@ -306,6 +316,12 @@ reference:
   - RMSTResult
   - create_mmrm_table
   - summary_mmrm
+  - mmrm
+  - mmrm_analysis
+  - rmst
+  - rmst_analysis
+  - create_rmst_table
+  - plot_rmst
 
 - title: "MCMC Diagnostics"
   desc: >
@@ -316,6 +332,9 @@ reference:
   - calculate_effective_sample_size
   - calculate_gelman_rubin
   - create_mcmc_diagnostics_report
+  - mcmc_diagnostics
+  - plot_mcmc_trace
+  - plot_mcmc_density
 
 - title: "Network Meta-Analysis"
   desc: >
