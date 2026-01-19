@@ -1008,3 +1008,91 @@ skip_if_brms_unavailable <- function() {
 		skip("brms package not available")
 	}
 }
+
+# =============================================================================
+# MMRM Test Data
+# =============================================================================
+
+#' Create test data for MMRM analysis
+#'
+#' @param n_subjects Number of subjects
+#' @param n_visits Number of visits per subject
+#' @param seed Random seed
+#' @return Data frame suitable for MMRM testing
+create_mmrm_test_data <- function(n_subjects = 30, n_visits = 4, seed = 123) {
+	set.seed(seed)
+
+	# Generate subject-level data
+	subjects <- sprintf("SUBJ%03d", 1:n_subjects)
+	trt_grp <- sample(c("A", "B"), n_subjects, replace = TRUE)
+	base_vals <- rnorm(n_subjects, mean = 50, sd = 10)
+
+	# Generate visit-level data (keep numeric for now)
+	visit_nums <- rep(0:(n_visits - 1), n_subjects)
+	subject_ids <- rep(subjects, each = n_visits)
+	subject_idx <- rep(1:n_subjects, each = n_visits)
+
+	data <- data.frame(
+		USUBJID = subject_ids,
+		TRT01P = rep(trt_grp, each = n_visits),
+		AVISITN = visit_nums,
+		BASE = rep(base_vals, each = n_visits),
+		stringsAsFactors = FALSE
+	)
+
+	# Generate response values with treatment effect
+	effect_A <- c(0, 2, 4, 6) # Linear improvement over time for A
+	effect_B <- c(0, 1, 2, 3) # Smaller improvement for B
+
+	# Use numeric visit index for effect lookup
+	data$AVAL <- data$BASE +
+		ifelse(
+			data$TRT01P == "A",
+			effect_A[data$AVISITN + 1],
+			effect_B[data$AVISITN + 1]
+		) +
+		rnorm(nrow(data), 0, 3) + # Random error
+		rnorm(n_subjects, 0, 5)[subject_idx] # Random subject effect
+
+	# Convert to factors AFTER calculations (required by mmrm)
+	data$USUBJID <- factor(data$USUBJID)
+	data$AVISITN <- factor(data$AVISITN)
+
+	data
+}
+
+# =============================================================================
+# RMST Test Data
+# =============================================================================
+
+#' Create test data for RMST analysis
+#'
+#' @param n Number of subjects
+#' @param seed Random seed
+#' @return Data frame suitable for RMST testing
+create_rmst_test_data <- function(n = 100, seed = 123) {
+	set.seed(seed)
+
+	# Generate survival times with treatment effect
+	trt_grp <- sample(c("A", "B"), n, replace = TRUE)
+
+	# Initialize times vector
+	times <- numeric(n)
+	# Assign times based on actual treatment assignment
+	times[trt_grp == "A"] <- rexp(sum(trt_grp == "A"), 0.1) # Lower hazard
+	times[trt_grp == "B"] <- rexp(sum(trt_grp == "B"), 0.15) # Higher hazard
+
+	# Generate censoring times
+	censor_times <- rexp(n, 0.05)
+
+	# Determine observed times and status
+	observed_times <- pmin(times, censor_times)
+	status <- ifelse(times <= censor_times, 1, 0) # 1=event, 0=censored
+
+	data.frame(
+		time = observed_times,
+		status = status,
+		TRT01P = trt_grp,
+		stringsAsFactors = FALSE
+	)
+}

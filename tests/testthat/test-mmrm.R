@@ -39,7 +39,10 @@ describe("mmrm_analysis", {
 		expect_error(
 			mmrm_analysis(
 				data,
-				response_var = "MISSING_VAR"
+				response_var = "MISSING_VAR",
+				subject_var = "USUBJID",
+				trt_var = "TRT01P",
+				time_var = "AVISITN"
 			),
 			"MISSING_VAR"
 		)
@@ -57,7 +60,7 @@ describe("mmrm_analysis", {
 			subject_var = "USUBJID",
 			trt_var = "TRT01P",
 			time_var = "AVISITN",
-			cov_covariance = "compound_symmetry"
+			cov_covariance = "cs"
 		)
 
 		expect_true(S7::S7_inherits(result_cs, MMRMResult))
@@ -69,7 +72,7 @@ describe("mmrm_analysis", {
 			subject_var = "USUBJID",
 			trt_var = "TRT01P",
 			time_var = "AVISITN",
-			cov_covariance = "unstructured"
+			cov_covariance = "us"
 		)
 
 		expect_true(S7::S7_inherits(result_un, MMRMResult))
@@ -171,39 +174,3 @@ describe("MMRMResult class", {
 		expect_true("bic" %in% names(S7::props(result)))
 	})
 })
-
-# =============================================================================
-# Helper function for test data
-# =============================================================================
-
-create_mmrm_test_data <- function(n_subjects = 30, n_visits = 4, seed = 123) {
-	set.seed(seed)
-
-	# Generate subject-level data
-	subjects <- 1:n_subjects
-	trt_grp <- sample(c("A", "B"), n_subjects, replace = TRUE)
-	base_vals <- rnorm(n_subjects, mean = 50, sd = 10)
-
-	# Generate visit-level data
-	data <- data.frame(
-		USUBJID = rep(subjects, each = n_visits),
-		TRT01P = rep(trt_grp, each = n_visits),
-		AVISITN = rep(0:(n_visits - 1), n_subjects),
-		BASE = rep(base_vals, each = n_visits)
-	)
-
-	# Generate response values with treatment effect
-	effect_A <- c(0, 2, 4, 6) # Linear improvement over time for A
-	effect_B <- c(0, 1, 2, 3) # Smaller improvement for B
-
-	data$AVAL <- data$BASE +
-		ifelse(
-			data$TRT01P == "A",
-			effect_A[data$AVISITN + 1],
-			effect_B[data$AVISITN + 1]
-		) +
-		rnorm(nrow(data), 0, 3) + # Random error
-		rnorm(n_subjects, 0, 5)[data$USUBJID] # Random subject effect
-
-	data
-}

@@ -252,7 +252,23 @@ mmrm_analysis <- function(
 		}
 	}
 
-	# Build model formula
+	# Ensure subject and time variables are factors (required by mmrm)
+	if (!is.factor(data[[subject_var]]) && !is.character(data[[subject_var]])) {
+		data[[subject_var]] <- as.factor(data[[subject_var]])
+	}
+	if (!is.factor(data[[time_var]])) {
+		data[[time_var]] <- as.factor(data[[time_var]])
+	}
+
+	# Build model formula with covariance structure in formula
+	# The mmrm package requires covariance specified as: cov_type(time_var | subject_var)
+	cov_formula_part <- sprintf(
+		"%s(%s | %s)",
+		cov_covariance,
+		time_var,
+		subject_var
+	)
+
 	fixed_effects <- c(trt_var, time_var)
 	if (!is.null(covariates)) {
 		fixed_effects <- c(fixed_effects, covariates)
@@ -263,11 +279,20 @@ mmrm_analysis <- function(
 	}
 
 	formula_str <- sprintf(
-		"%s ~ %s",
+		"%s ~ %s + %s",
 		response_var,
-		paste(fixed_effects, collapse = " + ")
+		paste(fixed_effects, collapse = " + "),
+		cov_formula_part
 	)
 	formula <- stats::as.formula(formula_str)
+
+	# Map df_adjustment to mmrm method parameter
+	method_map <- c(
+		"Kenward-Roger" = "Kenward-Roger",
+		"Satterthwaite" = "Satterthwaite",
+		"Residual" = "Residual"
+	)
+	mmrm_method <- method_map[df_adjustment]
 
 	# Build the MMRM model
 	fit <- tryCatch(
@@ -275,13 +300,8 @@ mmrm_analysis <- function(
 			mmrm::mmrm(
 				formula = formula,
 				data = data,
-				weights = NULL,
 				reml = method == "REML",
-				covariance = cov_covariance,
-				time = time_var,
-				subject = subject_var,
-				adjust_method = df_adjustment,
-				control = control
+				method = mmrm_method
 			)
 		},
 		error = function(e) {
@@ -291,7 +311,7 @@ mmrm_analysis <- function(
 
 	# Extract model results
 	coef_summary <- summary(fit)$coefficients
-	sigma <- sqrt(summary(fit)$sigma2)
+	sigma <- sigma(fit)
 	loglik <- logLik(fit)
 	aic_val <- AIC(fit)
 	bic_val <- BIC(fit)
