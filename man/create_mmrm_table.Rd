@@ -7,7 +7,6 @@
 create_mmrm_table(
   result,
   title = "Mixed Model Repeated Measures Analysis",
-  subtitle = NULL,
   footnotes = NULL,
   autofit = TRUE
 )
@@ -16,8 +15,6 @@ create_mmrm_table(
 \item{result}{An MMRMResult object}
 
 \item{title}{Table title}
-
-\item{subtitle}{Optional subtitle}
 
 \item{footnotes}{Optional footnotes}
 

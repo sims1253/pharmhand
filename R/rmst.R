@@ -384,7 +384,6 @@ rmst_analysis <- function(
 #'
 #' @param result An RMSTResult object
 #' @param title Table title
-#' @param subtitle Optional subtitle
 #' @param footnotes Optional footnotes
 #' @param autofit Logical. Whether to autofit column widths
 #'
@@ -398,7 +397,6 @@ rmst_analysis <- function(
 create_rmst_table <- function(
 	result,
 	title = "Restricted Mean Survival Time Analysis",
-	subtitle = NULL,
 	footnotes = NULL,
 	autofit = TRUE
 ) {

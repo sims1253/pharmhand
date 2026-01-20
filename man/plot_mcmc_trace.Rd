@@ -16,7 +16,8 @@ plot_mcmc_trace(
 \item{fit}{A brmsfit object from brms package}
 
 \item{parameters}{Character vector of parameter names to plot.
-If NULL, plots all parameters.}
+If NULL, selects parameters starting with "b_", or the first 5 parameters
+if no "b_" parameters exist.}
 
 \item{chains}{Integer vector of chain numbers to plot.
 If NULL, plots all chains.}

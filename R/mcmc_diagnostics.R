@@ -105,8 +105,9 @@ plot_mcmc_trace <- function(
 	}
 
 	# Prepare data for plotting
+	# Use .iteration from draws for proper per-chain iteration scale
 	plot_data <- data.frame(
-		iteration = rep(seq_len(nrow(posterior_draws)), length(param_cols)),
+		iteration = rep(posterior_draws$.iteration, length(param_cols)),
 		value = unlist(posterior_draws[, param_cols]),
 		parameter = rep(parameters, each = nrow(posterior_draws)),
 		chain = rep(posterior_draws$.chain, length(param_cols))
@@ -366,9 +367,14 @@ calculate_effective_sample_size <- function(fit) {
 		eff_bulk <- posterior::ess_bulk(samples)
 		eff_tail <- posterior::ess_tail(samples)
 
+		# Assign parameter names explicitly (may be unnamed from draws array)
+		param_names <- posterior::variables(samples)
+		names(eff_bulk) <- param_names
+		names(eff_tail) <- param_names
+
 		# Return the minimum of bulk and tail ESS for each parameter
 		eff_min <- pmin(eff_bulk, eff_tail)
-		names(eff_min) <- names(eff_bulk)
+		names(eff_min) <- param_names
 	} else {
 		# Fallback to brms implementation
 		eff_bulk <- brms::neff_ratio(fit) * brms::niterations(fit)
