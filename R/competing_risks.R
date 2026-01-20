@@ -213,6 +213,9 @@ competing_risk_analysis <- function(
 	analysis_data <- data[, c(time_var, event_var, trt_var, covariates)]
 	colnames(analysis_data) <- c("time", "event", "treatment", covariates)
 
+	# Remove rows with NA values
+	analysis_data <- na.omit(analysis_data)
+
 	# Check data quality
 	if (any(analysis_data$time <= 0, na.rm = TRUE)) {
 		ph_warn(
@@ -249,14 +252,14 @@ competing_risk_analysis <- function(
 		levels = c(reference_group, setdiff(trt_levels, reference_group))
 	)
 
-	# Build model formula
+	# Build model formula for model.matrix (RHS only - LHS not needed by crr)
 	formula_rhs <- c("treatment")
 	if (!is.null(covariates)) {
 		formula_rhs <- c(formula_rhs, covariates)
 	}
 
 	formula_str <- sprintf(
-		"Surv(time, event) ~ %s",
+		"~ %s",
 		paste(formula_rhs, collapse = " + ")
 	)
 	formula <- stats::as.formula(formula_str)
@@ -283,7 +286,7 @@ competing_risk_analysis <- function(
 	}
 
 	# Create event indicator matrix for main event
-	status_main <- ifelse(analysis_data$event == main_event, 1, 0)
+	status_main <- as.numeric(ifelse(analysis_data$event == main_event, 1, 0))
 	status_main[analysis_data$event %in% competing_events] <- 2 # Competing
 
 	# Fit Fine-Gray model for main event
@@ -324,21 +327,23 @@ competing_risk_analysis <- function(
 
 		# Create covariate matrix for predictions
 		pred_data <- analysis_data[1, ] # Template row
-		pred_data$treatment <- trt
+		pred_data$treatment <- factor(trt, levels = levels(analysis_data$treatment))
 		pred_matrix <- model.matrix(formula, pred_data)[, -1]
 
 		# Calculate CIF
-		cif_main_trt <- cmprsk::predict.crr(
+		# Note: predict.crr returns a matrix with times in col 1 and CIF in col 2+
+		cif_result <- cmprsk::predict.crr(
 			fit_main,
-			cov1 = pred_matrix,
-			time = time_grid
+			cov1 = pred_matrix
 		)
 
+		# Extract times and CIF values from matrix output
+		pred_times <- cif_result[, 1]
+		cif_values <- cif_result[, 2]
+
 		cif_by_treatment[[trt]] <- data.frame(
-			time = time_grid,
-			cif = cif_main_trt$est,
-			ci_lower = cif_main_trt$est - z * cif_main_trt$se,
-			ci_upper = cif_main_trt$est + z * cif_main_trt$se,
+			time = pred_times,
+			cif = cif_values,
 			treatment = trt,
 			stringsAsFactors = FALSE
 		)

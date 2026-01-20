@@ -5,9 +5,10 @@ it("applies analysis function to imputed datasets and pools results", {
 	skip_if_not_installed("mice")
 
 	set.seed(123)
+	n <- 30
 	data <- data.frame(
-		x = c(1, 2, NA, 4, 5, 6, 7, NA, 9, 10),
-		y = c(2, 4, 6, 8, 10, NA, 14, 16, NA, 20)
+		x = c(rnorm(n - 3), rep(NA, 3)),
+		y = c(rep(NA, 4), rnorm(n - 4))
 	)
 
 	imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
@@ -38,13 +39,20 @@ it("works with regression models", {
 	skip_if_not_installed("mice")
 
 	set.seed(123)
+	n <- 40
+	predictor <- rnorm(n, mean = 5, sd = 2)
+	outcome <- 10 + 2 * predictor + rnorm(n, sd = 3)
+	# Add some missing values
+	outcome[sample.int(n, 5)] <- NA
+	predictor[sample.int(n, 3)] <- NA
+
 	data <- data.frame(
-		outcome = c(10, 20, NA, 40, 50, 60, NA, 80, 90, 100),
-		predictor = c(1, 2, 3, 4, NA, 6, 7, 8, 9, 10),
-		group = rep(c("A", "B"), 5)
+		outcome = outcome,
+		predictor = predictor,
+		group = factor(rep(c("A", "B"), length.out = n))
 	)
 
-	imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+	imp_result <- perform_multiple_imputation(data, m = 3, maxit = 3)
 
 	# Linear regression analysis
 	result <- analyze_with_imputation(
