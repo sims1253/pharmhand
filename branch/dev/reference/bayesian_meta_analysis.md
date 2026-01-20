@@ -21,6 +21,7 @@ bayesian_meta_analysis(
   iter = 4000,
   warmup = 2000,
   seed = NULL,
+  cores = 1,
   adapt_delta = 0.95,
   max_treedepth = 12,
   backend = c("auto", "cmdstanr", "rstan"),
@@ -99,6 +100,11 @@ bayesian_meta_analysis(
 - seed:
 
   Integer. Random seed
+
+- cores:
+
+  Integer. Number of CPU cores to use for parallel chains. Default: 1.
+  Setting to \>1 requires proper seed handling.
 
 - adapt_delta:
 

@@ -1001,64 +1001,6 @@
         </dt>
         <dd>Build a LayeredTable</dd>
       </dl></div><div class="section level2">
-      <h2 id="chef-integration">Chef Integration<a class="anchor" aria-label="anchor" href="#chef-integration"></a></h2>
-
-      <div class="section-desc"><p>Integration with the chef package for Health Technology Assessment (HTA) analyses and statistical pipelines.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="run_chef_pipeline.html">run_chef_pipeline()</a></code>
-
-        </dt>
-        <dd>Run Chef Pipeline with pharmhand Integration</dd>
-
-        <dt>
-
-          <code><a href="create_chef_endpoint.html">create_chef_endpoint()</a></code>
-
-        </dt>
-        <dd>Create Chef Endpoint Specification</dd>
-
-        <dt>
-
-          <code><a href="chef_to_analysis_results.html">chef_to_analysis_results()</a></code>
-
-        </dt>
-        <dd>Convert Chef Results to AnalysisResults</dd>
-
-        <dt>
-
-          <code><a href="get_chef_stat.html">get_chef_stat()</a></code>
-
-        </dt>
-        <dd>Register Chef Statistical Functions</dd>
-
-        <dt>
-
-          <code><a href="list_chef_stats.html">list_chef_stats()</a></code>
-
-        </dt>
-        <dd>List Available Chef Statistical Functions</dd>
-
-        <dt>
-
-          <code><a href="extract_chef_metadata.html">extract_chef_metadata()</a></code>
-
-        </dt>
-        <dd>Extract Metadata from Chef Output</dd>
-
-        <dt>
-
-          <code><a href="flatten_chef_results.html">flatten_chef_results()</a></code>
-
-        </dt>
-        <dd>Flatten Chef Hierarchical Results</dd>
-      </dl></div><div class="section level2">
       <h2 id="subgroup-analysis">Subgroup Analysis<a class="anchor" aria-label="anchor" href="#subgroup-analysis"></a></h2>
 
       <div class="section-desc"><p>Functions for subgroup and interaction analyses in clinical trials.</p></div>
@@ -1160,6 +1102,92 @@
 
         </dt>
         <dd>Create Time-to-Deterioration Analysis</dd>
+      </dl></div><div class="section level2">
+      <h2 id="multiple-imputation">Multiple Imputation<a class="anchor" aria-label="anchor" href="#multiple-imputation"></a></h2>
+
+      <div class="section-desc"><p>Functions for multiple imputation using mice package with Rubin’s rules for pooling results.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="ImputationResult.html">ImputationResult()</a></code>
+
+        </dt>
+        <dd>ImputationResult Class</dd>
+
+        <dt>
+
+          <code><a href="perform_multiple_imputation.html">perform_multiple_imputation()</a></code>
+
+        </dt>
+        <dd>Perform Multiple Imputation</dd>
+
+        <dt>
+
+          <code><a href="pool_rubin.html">pool_rubin()</a></code>
+
+        </dt>
+        <dd>Pool Results Using Rubin's Rules</dd>
+
+        <dt>
+
+          <code><a href="analyze_with_imputation.html">analyze_with_imputation()</a></code>
+
+        </dt>
+        <dd>Analyze Data with Multiple Imputation</dd>
+
+        <dt>
+
+          <code><a href="get_complete_data.html">get_complete_data()</a></code>
+
+        </dt>
+        <dd>Get Completed Datasets from Imputation</dd>
+
+        <dt>
+
+          <code><a href="summarize_missing.html">summarize_missing()</a></code>
+
+        </dt>
+        <dd>Summarize Missing Data Patterns</dd>
+
+        <dt>
+
+          <code><a href="imputation.html">imputation</a></code>
+
+        </dt>
+        <dd>Multiple Imputation Functions</dd>
+
+        <dt>
+
+          <code><a href="create_imputation_report.html">create_imputation_report()</a></code>
+
+        </dt>
+        <dd>Create Imputation Diagnostic Report</dd>
+
+        <dt>
+
+          <code><a href="plot_imputation_convergence.html">plot_imputation_convergence()</a></code>
+
+        </dt>
+        <dd>Plot Imputation Convergence</dd>
+
+        <dt>
+
+          <code><a href="plot_imputation_distributions.html">plot_imputation_distributions()</a></code>
+
+        </dt>
+        <dd>Plot Imputation Distributions</dd>
+
+        <dt>
+
+          <code><a href="plot_missing_pattern.html">plot_missing_pattern()</a></code>
+
+        </dt>
+        <dd>Plot Missing Data Pattern</dd>
       </dl></div><div class="section level2">
       <h2 id="meta-analysis">Meta-Analysis<a class="anchor" aria-label="anchor" href="#meta-analysis"></a></h2>
 
@@ -1288,6 +1316,285 @@
 
         </dt>
         <dd>Summarize Bias-Adjusted Meta-Analysis Results</dd>
+
+        <dt>
+
+          <code><a href="BayesianMetaFewResult.html">BayesianMetaFewResult()</a></code>
+
+        </dt>
+        <dd>BayesianMetaFewResult Class</dd>
+
+        <dt>
+
+          <code><a href="bayesian_meta_analysis_few.html">bayesian_meta_analysis_few()</a></code>
+
+        </dt>
+        <dd>Bayesian Meta-Analysis for Few Studies</dd>
+
+        <dt>
+
+          <code><a href="create_bayesian_few_table.html">create_bayesian_few_table()</a></code>
+
+        </dt>
+        <dd>Create Bayesian Meta-Analysis Table for Few Studies</dd>
+
+        <dt>
+
+          <code><a href="create_meta_analysis_priors.html">create_meta_analysis_priors()</a></code>
+
+        </dt>
+        <dd>Create Default Prior Set for Meta-Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_prior_specification.html">create_prior_specification()</a></code>
+
+        </dt>
+        <dd>Create Prior Specification</dd>
+
+        <dt>
+
+          <code><a href="PriorSpecification.html">PriorSpecification()</a></code>
+
+        </dt>
+        <dd>PriorSpecification Class</dd>
+
+        <dt>
+
+          <code><a href="validate_prior_parameters.html">validate_prior_parameters()</a></code>
+
+        </dt>
+        <dd>Validate Prior Parameters</dd>
+
+        <dt>
+
+          <code><a href="get_default_prior.html">get_default_prior()</a></code>
+
+        </dt>
+        <dd>Get Default Prior</dd>
+
+        <dt>
+
+          <code><a href="create_prior_specification_set.html">create_prior_specification_set()</a></code>
+
+        </dt>
+        <dd>Create Prior Specification Set</dd>
+
+        <dt>
+
+          <code><a href="summarize_prior_specification.html">summarize_prior_specification()</a></code>
+
+        </dt>
+        <dd>Summarize Prior Specification</dd>
+
+        <dt>
+
+          <code><a href="summary_bayesian_few.html">summary_bayesian_few()</a></code>
+
+        </dt>
+        <dd>Summarize Bayesian Meta-Analysis for Few Studies</dd>
+
+        <dt>
+
+          <code><a href="plot_bayesian_few.html">plot_bayesian_few()</a></code>
+
+        </dt>
+        <dd>Plot Bayesian Meta-Analysis Results for Few Studies</dd>
+
+        <dt>
+
+          <code><a href="meta_bayesian_few.html">meta_bayesian_few</a></code>
+
+        </dt>
+        <dd>Bayesian Meta-Analysis for Few Studies</dd>
+
+        <dt>
+
+          <code><a href="prior_specification.html">prior_specification</a></code>
+
+        </dt>
+        <dd>Prior Specification Interface</dd>
+      </dl></div><div class="section level2">
+      <h2 id="competing-risks">Competing Risks<a class="anchor" aria-label="anchor" href="#competing-risks"></a></h2>
+
+      <div class="section-desc"><p>Functions for competing risks analysis including cumulative incidence estimation and Gray’s test for comparing groups.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="CompetingRiskResult.html">CompetingRiskResult()</a></code>
+
+        </dt>
+        <dd>CompetingRiskResult Class</dd>
+
+        <dt>
+
+          <code><a href="competing_risks.html">competing_risks</a></code>
+
+        </dt>
+        <dd>Competing Risk Analysis</dd>
+
+        <dt>
+
+          <code><a href="competing_risk_analysis.html">competing_risk_analysis()</a></code>
+
+        </dt>
+        <dd>Competing Risk Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_competing_risk_table.html">create_competing_risk_table()</a></code>
+
+        </dt>
+        <dd>Create Competing Risk Table</dd>
+
+        <dt>
+
+          <code><a href="plot_cif.html">plot_cif()</a></code>
+
+        </dt>
+        <dd>Plot Cumulative Incidence Function</dd>
+      </dl></div><div class="section level2">
+      <h2 id="mmrm-analysis">MMRM Analysis<a class="anchor" aria-label="anchor" href="#mmrm-analysis"></a></h2>
+
+      <div class="section-desc"><p>Functions for Mixed-Effects Models for Repeated Measures (MMRM) analysis with robust variance estimation.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="MMRMResult.html">MMRMResult()</a></code>
+
+        </dt>
+        <dd>MMRMResult Class</dd>
+
+        <dt>
+
+          <code><a href="RMSTResult.html">RMSTResult()</a></code>
+
+        </dt>
+        <dd>RMSTResult Class</dd>
+
+        <dt>
+
+          <code><a href="create_mmrm_table.html">create_mmrm_table()</a></code>
+
+        </dt>
+        <dd>Create MMRM Table</dd>
+
+        <dt>
+
+          <code><a href="summary_mmrm.html">summary_mmrm()</a></code>
+
+        </dt>
+        <dd>Extract MMRM Model Summary</dd>
+
+        <dt>
+
+          <code><a href="mmrm.html">mmrm</a></code>
+
+        </dt>
+        <dd>Mixed Model Repeated Measures (MMRM)</dd>
+
+        <dt>
+
+          <code><a href="mmrm_analysis.html">mmrm_analysis()</a></code>
+
+        </dt>
+        <dd>MMRM Analysis</dd>
+
+        <dt>
+
+          <code><a href="rmst.html">rmst</a></code>
+
+        </dt>
+        <dd>Restricted Mean Survival Time (RMST)</dd>
+
+        <dt>
+
+          <code><a href="rmst_analysis.html">rmst_analysis()</a></code>
+
+        </dt>
+        <dd>RMST Analysis</dd>
+
+        <dt>
+
+          <code><a href="create_rmst_table.html">create_rmst_table()</a></code>
+
+        </dt>
+        <dd>Create RMST Table</dd>
+
+        <dt>
+
+          <code><a href="plot_rmst.html">plot_rmst()</a></code>
+
+        </dt>
+        <dd>Plot RMST Results</dd>
+      </dl></div><div class="section level2">
+      <h2 id="mcmc-diagnostics">MCMC Diagnostics<a class="anchor" aria-label="anchor" href="#mcmc-diagnostics"></a></h2>
+
+      <div class="section-desc"><p>Functions for diagnosing Markov Chain Monte Carlo (MCMC) convergence and assessing mixing quality.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="assess_mcmc_convergence.html">assess_mcmc_convergence()</a></code>
+
+        </dt>
+        <dd>Assess MCMC Convergence</dd>
+
+        <dt>
+
+          <code><a href="calculate_effective_sample_size.html">calculate_effective_sample_size()</a></code>
+
+        </dt>
+        <dd>Calculate Effective Sample Size</dd>
+
+        <dt>
+
+          <code><a href="calculate_gelman_rubin.html">calculate_gelman_rubin()</a></code>
+
+        </dt>
+        <dd>Calculate Gelman-Rubin Diagnostic</dd>
+
+        <dt>
+
+          <code><a href="create_mcmc_diagnostics_report.html">create_mcmc_diagnostics_report()</a></code>
+
+        </dt>
+        <dd>Create MCMC Diagnostics Report</dd>
+
+        <dt>
+
+          <code><a href="mcmc_diagnostics.html">mcmc_diagnostics</a></code>
+
+        </dt>
+        <dd>MCMC Diagnostics</dd>
+
+        <dt>
+
+          <code><a href="plot_mcmc_trace.html">plot_mcmc_trace()</a></code>
+
+        </dt>
+        <dd>Plot MCMC Trace</dd>
+
+        <dt>
+
+          <code><a href="plot_mcmc_density.html">plot_mcmc_density()</a></code>
+
+        </dt>
+        <dd>Plot MCMC Density</dd>
       </dl></div><div class="section level2">
       <h2 id="network-meta-analysis">Network Meta-Analysis<a class="anchor" aria-label="anchor" href="#network-meta-analysis"></a></h2>
 
@@ -1844,13 +2151,6 @@
 
         <dt>
 
-          <code><a href="chef_integration.html">chef_integration</a></code>
-
-        </dt>
-        <dd>Chef Integration</dd>
-
-        <dt>
-
           <code><a href="formatting.html">formatting</a></code>
 
         </dt>
@@ -2093,6 +2393,20 @@
 
         </dt>
         <dd>Evidence Summary Tables</dd>
+
+        <dt>
+
+          <code><a href="imputation.html">imputation</a></code>
+
+        </dt>
+        <dd>Multiple Imputation Functions</dd>
+
+        <dt>
+
+          <code><a href="imputation_diagnostics.html">imputation_diagnostics</a></code>
+
+        </dt>
+        <dd>Imputation Diagnostic Plots</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
