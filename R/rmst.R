@@ -53,7 +53,7 @@ RMSTResult <- S7::new_class(
 		se_difference = S7::new_property(
 			S7::class_numeric,
 			validator = function(value) {
-				if (length(value) != 1 || value < 0) {
+				if (length(value) != 1 || value <= 0) {
 					return("se_difference must be a single positive value")
 				}
 				NULL
