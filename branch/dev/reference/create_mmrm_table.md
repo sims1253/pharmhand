@@ -8,7 +8,6 @@ Creates a clinical table from MMRM results.
 create_mmrm_table(
   result,
   title = "Mixed Model Repeated Measures Analysis",
-  subtitle = NULL,
   footnotes = NULL,
   autofit = TRUE
 )
@@ -23,10 +22,6 @@ create_mmrm_table(
 - title:
 
   Table title
-
-- subtitle:
-
-  Optional subtitle
 
 - footnotes:
 

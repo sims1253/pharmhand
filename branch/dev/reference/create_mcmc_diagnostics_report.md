@@ -23,8 +23,9 @@ create_mcmc_diagnostics_report(
 
 - parameters:
 
-  Character vector of specific parameters to analyze. If NULL, analyzes
-  all parameters.
+  Character vector of specific parameters to analyze. If NULL, selects
+  parameters starting with "b\_", or the first 5 parameters if no "b\_"
+  parameters exist.
 
 - rhat_threshold:
 

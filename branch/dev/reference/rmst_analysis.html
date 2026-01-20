@@ -101,7 +101,8 @@ If NULL, uses first level of treatment variable.</p></dd>
 <code>RMST(tau) = E[min(T, tau)] = integral from 0 to tau of S(t) dt</code></p>
 <p>where T is the survival time and S(t) is the survival function.</p>
 <p>RMST is estimated using the Kaplan-Meier estimator:
-<code>RMST(tau) = tau - integral from 0 to tau of F(t) dt = sum_i (t_i - t_i-1) * S(t_i-1)</code></p>
+<code>RMST(tau) = tau - integral from 0 to tau of F(t) dt</code>
+<code>= sum_i (t_i - t_i-1) * S(t_i-1)</code></p>
 <p>where the integral is restricted to <code>[0, tau]</code>.</p>
     </div>
     <div class="section level2">

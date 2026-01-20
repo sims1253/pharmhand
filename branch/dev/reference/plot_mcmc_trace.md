@@ -22,8 +22,9 @@ plot_mcmc_trace(
 
 - parameters:
 
-  Character vector of parameter names to plot. If NULL, plots all
-  parameters.
+  Character vector of parameter names to plot. If NULL, selects
+  parameters starting with "b\_", or the first 5 parameters if no "b\_"
+  parameters exist.
 
 - chains:
 

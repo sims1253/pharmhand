@@ -14,8 +14,7 @@ mmrm_analysis(
   time_var,
   covariates = NULL,
   interaction = FALSE,
-  cov_covariance = c("unstructured", "compound_symmetry", "autoregressive",
-    "ante_dependence", "toeplitz", "spatial_exponential", "spatial_power"),
+  cov_covariance = c("us", "cs", "ar1", "ad", "toep", "sp_exp"),
   df_adjustment = c("Kenward-Roger", "Satterthwaite", "Residual"),
   method = c("REML", "ML"),
   control = list()
