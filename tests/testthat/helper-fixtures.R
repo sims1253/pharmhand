@@ -1095,3 +1095,38 @@ create_rmst_test_data <- function(n = 100, seed = 123) {
 		stringsAsFactors = FALSE
 	)
 }
+
+# =============================================================================
+# Competing Risks Test Data
+# =============================================================================
+
+#' Create test data for competing risks analysis
+#'
+#' @param n Number of subjects
+#' @param seed Random seed
+#' @return Data frame suitable for competing risks testing
+create_competing_risk_test_data <- function(n = 100, seed = 123) {
+	set.seed(seed)
+
+	# Generate survival times
+	times <- rexp(n, 0.1)
+
+	# Generate competing event types:
+	# 0 = censored, 1 = main event, 2 = competing event 1, 3 = competing event 2
+	events <- sample(
+		c(0, 1, 2, 3),
+		n,
+		replace = TRUE,
+		prob = c(0.4, 0.3, 0.2, 0.1)
+	)
+
+	# Generate treatment groups
+	trt_grp <- sample(c("A", "B"), n, replace = TRUE)
+
+	data.frame(
+		time = times,
+		event = events,
+		TRT01P = trt_grp,
+		stringsAsFactors = FALSE
+	)
+}

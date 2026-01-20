@@ -364,17 +364,22 @@ calculate_effective_sample_size <- function(fit) {
 
 	if (requireNamespace("posterior", quietly = TRUE)) {
 		# Use posterior package if available for more accurate ESS
-		eff_bulk <- posterior::ess_bulk(samples)
-		eff_tail <- posterior::ess_tail(samples)
+		# summarise_draws returns a tibble with ESS per variable
+		draws_summary <- posterior::summarise_draws(
+			samples,
+			ess_bulk = posterior::ess_bulk,
+			ess_tail = posterior::ess_tail
+		)
 
-		# Assign parameter names explicitly (may be unnamed from draws array)
-		param_names <- posterior::variables(samples)
-		names(eff_bulk) <- param_names
-		names(eff_tail) <- param_names
+		# Extract ESS values with parameter names
+		eff_bulk <- draws_summary$ess_bulk
+		eff_tail <- draws_summary$ess_tail
+		names(eff_bulk) <- draws_summary$variable
+		names(eff_tail) <- draws_summary$variable
 
 		# Return the minimum of bulk and tail ESS for each parameter
 		eff_min <- pmin(eff_bulk, eff_tail)
-		names(eff_min) <- param_names
+		names(eff_min) <- draws_summary$variable
 	} else {
 		# Fallback to brms implementation
 		eff_bulk <- brms::neff_ratio(fit) * brms::niterations(fit)
