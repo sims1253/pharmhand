@@ -10,7 +10,11 @@ describe("perform_multiple_imputation", {
 		skip_if_not_installed("mice")
 
 		data <- create_imputation_test_data(n = 30, seed = 123)
-		result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 
 		expect_true(S7::S7_inherits(result, ImputationResult))
 	})
@@ -61,7 +65,11 @@ describe("perform_multiple_imputation", {
 		skip_if_not_installed("mice")
 
 		data <- create_imputation_test_data(n = 30, seed = 789)
-		result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 
 		expect_true("mids" %in% class(result@mice_object))
 	})
@@ -70,7 +78,11 @@ describe("perform_multiple_imputation", {
 		skip_if_not_installed("mice")
 
 		data <- create_imputation_test_data(n = 30, seed = 111)
-		result <- perform_multiple_imputation(data, m = 5, maxit = 2)
+		result <- perform_multiple_imputation(
+			data,
+			m = 5,
+			maxit = 2
+		)
 
 		expect_equal(result@m, 5L)
 	})
@@ -86,7 +98,11 @@ describe("perform_multiple_imputation", {
 			z = rnorm(n) # No missing
 		)
 
-		result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 
 		expect_true("x" %in% result@imputed_vars)
 		expect_true("y" %in% result@imputed_vars)
@@ -181,7 +197,11 @@ describe("analyze_with_imputation", {
 			y = c(rep(NA, 4), rnorm(n - 4, mean = 20, sd = 4))
 		)
 
-		imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		imp_result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 
 		# Simple analysis: mean of x
 		result <- analyze_with_imputation(
@@ -221,10 +241,14 @@ describe("analyze_with_imputation", {
 		data <- data.frame(
 			outcome = outcome,
 			predictor = predictor,
-			group = rep(c("A", "B"), length.out = n)
+			group = factor(rep(c("A", "B"), length.out = n))
 		)
 
-		imp_result <- perform_multiple_imputation(data, m = 3, maxit = 3)
+		imp_result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 3
+		)
 
 		# Linear regression analysis
 		result <- analyze_with_imputation(
@@ -254,7 +278,11 @@ describe("get_complete_data", {
 		skip_if_not_installed("mice")
 
 		data <- create_imputation_test_data(n = 30, seed = 666)
-		imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		imp_result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 		completed <- get_complete_data(imp_result)
 
 		expect_true(is.list(completed))
@@ -266,7 +294,11 @@ describe("get_complete_data", {
 		skip_if_not_installed("mice")
 
 		data <- create_imputation_test_data(n = 30, seed = 777)
-		imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		imp_result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 		completed <- get_complete_data(imp_result, action = "long")
 
 		expect_true(is.data.frame(completed))
@@ -277,7 +309,11 @@ describe("get_complete_data", {
 		skip_if_not_installed("mice")
 
 		data <- create_imputation_test_data(n = 30, seed = 888)
-		imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		imp_result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 		completed <- get_complete_data(imp_result)
 
 		for (df in completed) {
@@ -295,7 +331,11 @@ describe("ImputationResult class", {
 		skip_if_not_installed("mice")
 
 		data <- create_imputation_test_data(n = 30, seed = 999)
-		result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 
 		# Check all expected properties exist
 		expect_true("mice_object" %in% names(S7::props(result)))
@@ -316,7 +356,11 @@ describe("ImputationResult class", {
 			y = c(rep(NA, 2), rnorm(n - 2)) # 2 missing
 		)
 
-		result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		result <- perform_multiple_imputation(
+			data,
+			m = 3,
+			maxit = 2
+		)
 
 		expect_true(is.list(result@n_missing))
 		expect_equal(result@n_missing$x, 1L)

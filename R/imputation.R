@@ -216,6 +216,7 @@ perform_multiple_imputation <- function(
 	# Merge with additional arguments
 	mice_args <- c(mice_args, list(...))
 
+	# Perform imputation
 	mice_obj <- do.call(mice::mice, mice_args)
 
 	# Extract method used (may be vector if different per variable)

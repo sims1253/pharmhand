@@ -69,9 +69,9 @@ describe("competing_risk_analysis", {
 			competing_events = c(2, 3)
 		)
 
-		expect_true("cif_main" %in% names(result))
-		expect_true("cif_competing" %in% names(result))
-		expect_true("cif_by_treatment" %in% names(result))
+		expect_true("cif_main" %in% S7::prop_names(result))
+		expect_true("cif_competing" %in% S7::prop_names(result))
+		expect_true("cif_by_treatment" %in% S7::prop_names(result))
 	})
 
 	it("calculates treatment effects", {
@@ -87,8 +87,8 @@ describe("competing_risk_analysis", {
 			competing_events = c(2, 3)
 		)
 
-		expect_true("treatment_comparison" %in% names(result))
-		expect_true("subhazard_ratio" %in% names(result))
+		expect_true("treatment_comparison" %in% S7::prop_names(result))
+		expect_true("subhazard_ratio" %in% S7::prop_names(result))
 	})
 
 	it("handles multiple competing events", {
@@ -133,7 +133,7 @@ describe("competing_risk_analysis", {
 			AVISITN = 0:(visits - 1)
 		)
 
-		subjects$time <- subjects$AVISITN * 30
+		subjects$time <- (subjects$AVISITN + 1) * 30
 		subjects$TRT01P <- rep(
 			sample(c("A", "B"), n, replace = TRUE),
 			each = visits
