@@ -259,7 +259,7 @@ competing_risk_analysis <- function(
 		"Surv(time, event) ~ %s",
 		paste(formula_rhs, collapse = " + ")
 	)
-	formula <- survival::as.formula(formula_str)
+	formula <- stats::as.formula(formula_str)
 
 	# Create event indicator matrix for main event
 	status_main <- ifelse(analysis_data$event == main_event, 1, 0)
