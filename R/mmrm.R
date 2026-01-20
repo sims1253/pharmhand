@@ -262,11 +262,13 @@ mmrm_analysis <- function(
 
 	# Build model formula with covariance structure in formula
 	# The mmrm package requires covariance specified as: cov_type(time_var | subject_var)
-	cov_formula_part <- sprintf(
-		"%s(%s | %s)",
+	cov_formula_part <- paste0(
 		cov_covariance,
+		"(",
 		time_var,
-		subject_var
+		" | ",
+		subject_var,
+		")"
 	)
 
 	fixed_effects <- c(trt_var, time_var)

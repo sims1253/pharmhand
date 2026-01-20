@@ -14,7 +14,8 @@ NULL
 #'
 #' @param fit A brmsfit object from brms package
 #' @param parameters Character vector of parameter names to plot.
-#'   If NULL, plots all parameters.
+#'   If NULL, selects parameters starting with "b_", or the first 5 parameters
+#'   if no "b_" parameters exist.
 #' @param chains Integer vector of chain numbers to plot.
 #'   If NULL, plots all chains.
 #' @param title Plot title
@@ -157,7 +158,8 @@ plot_mcmc_trace <- function(
 #'
 #' @param fit A brmsfit object from brms package
 #' @param parameters Character vector of parameter names to plot.
-#'   If NULL, plots all parameters.
+#'   If NULL, selects parameters starting with "b_", or the first 5 parameters
+#'   if no "b_" parameters exist.
 #' @param title Plot title
 #' @param alpha Numeric. Transparency for density areas
 #' @param fill_colors Character vector of colors for different chains
@@ -258,7 +260,7 @@ plot_mcmc_density <- function(
 			fill = "Chain"
 		) +
 		ggplot2::scale_fill_manual(
-			values = fill_colors[seq_along(unique(plot_data$chain))]
+			values = rep(fill_colors, length.out = length(unique(plot_data$chain)))
 		) +
 		ggplot2::theme_minimal() +
 		ggplot2::theme(
@@ -550,7 +552,8 @@ assess_mcmc_convergence <- function(
 #'
 #' @param fit A brmsfit object from brms package
 #' @param parameters Character vector of specific parameters to analyze.
-#'   If NULL, analyzes all parameters.
+#'   If NULL, selects parameters starting with "b_", or the first 5 parameters
+#'   if no "b_" parameters exist.
 #' @param rhat_threshold Numeric. R-hat threshold for convergence
 #' @param ess_threshold Numeric. Minimum ESS threshold
 #' @param title_prefix Character string for report section titles
@@ -580,6 +583,14 @@ create_mcmc_diagnostics_report <- function(
 	# Validate input
 	if (!inherits(fit, "brmsfit")) {
 		ph_abort("'fit' must be a brmsfit object")
+	}
+
+	# Check brms availability
+	if (!requireNamespace("brms", quietly = TRUE)) {
+		ph_abort(
+			"Package 'brms' is required for MCMC diagnostics. ",
+			"Install with: install.packages('brms')"
+		)
 	}
 
 	# Get parameter names if not specified

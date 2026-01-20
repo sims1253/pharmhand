@@ -1041,8 +1041,9 @@ create_mmrm_test_data <- function(n_subjects = 30, n_visits = 4, seed = 123) {
 	)
 
 	# Generate response values with treatment effect
-	effect_A <- c(0, 2, 4, 6) # Linear improvement over time for A
-	effect_B <- c(0, 1, 2, 3) # Smaller improvement for B
+	# Create effect vectors sized to n_visits
+	effect_A <- seq(0, by = 2, length.out = n_visits) # Linear improvement for A
+	effect_B <- seq(0, by = 1, length.out = n_visits) # Smaller improvement for B
 
 	# Use numeric visit index for effect lookup
 	data$AVAL <- data$BASE +

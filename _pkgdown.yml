@@ -295,6 +295,7 @@ reference:
   - summary_bayesian_few
   - plot_bayesian_few
   - meta_bayesian_few
+  - prior_specification
 
 - title: "Competing Risks"
   desc: >
