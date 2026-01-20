@@ -261,6 +261,27 @@ competing_risk_analysis <- function(
 	)
 	formula <- stats::as.formula(formula_str)
 
+	# Validate main_event is not in competing_events
+	if (main_event %in% competing_events) {
+		ph_abort(sprintf(
+			"main_event (%s) cannot also be in competing_events (%s)",
+			main_event,
+			paste(competing_events, collapse = ", ")
+		))
+	}
+
+	# Validate all event values are in allowed set
+	allowed_events <- c(0, main_event, competing_events)
+	actual_events <- unique(na.omit(analysis_data$event))
+	unexpected <- setdiff(actual_events, allowed_events)
+	if (length(unexpected) > 0) {
+		ph_abort(sprintf(
+			"Unexpected event values found: %s. Allowed values are: %s",
+			paste(unexpected, collapse = ", "),
+			paste(allowed_events, collapse = ", ")
+		))
+	}
+
 	# Create event indicator matrix for main event
 	status_main <- ifelse(analysis_data$event == main_event, 1, 0)
 	status_main[analysis_data$event %in% competing_events] <- 2 # Competing
@@ -336,23 +357,17 @@ competing_risk_analysis <- function(
 			fixed = TRUE
 		)
 		if (length(coef_name) > 0) {
+			# Extract SE from variance diagonal to handle multiple coefficients
+			se_vec <- sqrt(diag(fit_main$var))[coef_name]
+			coef_vec <- fit_main$coef[coef_name]
+
 			subhazard_ratio <- data.frame(
 				effect_measure = "Subhazard Ratio",
-				estimate = exp(fit_main$coef[coef_name]),
-				se = fit_main$var[coef_name, coef_name]^0.5,
-				ci_lower = exp(
-					fit_main$coef[coef_name] -
-						z * fit_main$var[coef_name, coef_name]^0.5
-				),
-				ci_upper = exp(
-					fit_main$coef[coef_name] +
-						z * fit_main$var[coef_name, coef_name]^0.5
-				),
-				p_value = 2 *
-					(1 -
-						pnorm(abs(
-							fit_main$coef[coef_name] / fit_main$var[coef_name, coef_name]^0.5
-						))),
+				estimate = exp(coef_vec),
+				se = se_vec,
+				ci_lower = exp(coef_vec - z * se_vec),
+				ci_upper = exp(coef_vec + z * se_vec),
+				p_value = 2 * (1 - pnorm(abs(coef_vec / se_vec))),
 				stringsAsFactors = FALSE
 			)
 		} else {
@@ -459,9 +474,12 @@ create_competing_risk_table <- function(
 		)
 	}
 
-	# Format p-values
+	# Format p-values and CI with dynamic label based on conf_level
+	conf_level <- result@metadata$conf_level
+	ci_label <- paste0(round(conf_level * 100, 0), "% CI")
+
 	subhazard_df$`P-value` <- format_pvalue(subhazard_df$p_value)
-	subhazard_df$`95% CI` <- sprintf(
+	subhazard_df[[ci_label]] <- sprintf(
 		"%.3f (%.3f, %.3f)",
 		subhazard_df$estimate,
 		subhazard_df$ci_lower,
@@ -472,10 +490,12 @@ create_competing_risk_table <- function(
 	summary_df <- data.frame(
 		`Effect Measure` = subhazard_df$effect_measure,
 		`Subhazard Ratio` = subhazard_df$estimate,
-		`95% CI` = subhazard_df$`95% CI`,
+		CI = subhazard_df[[ci_label]],
 		`P-value` = subhazard_df$`P-value`,
-		stringsAsFactors = FALSE
+		stringsAsFactors = FALSE,
+		check.names = FALSE
 	)
+	names(summary_df)[3] <- ci_label
 
 	# Add metadata
 	meta_footnotes <- c(

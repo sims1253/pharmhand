@@ -338,14 +338,3 @@ describe("create_mcmc_diagnostics_report", {
 		)
 	})
 })
-
-# =============================================================================
-# Helper test functions
-# =============================================================================
-
-# Custom skip function for brms availability
-skip_if_brms_unavailable <- function() {
-	if (!requireNamespace("brms", quietly = TRUE)) {
-		skip("brms package not available")
-	}
-}

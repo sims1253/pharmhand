@@ -999,15 +999,6 @@ create_imputation_test_data <- function(n = 30, seed = 123) {
 }
 
 # =============================================================================
-# Helper functions for Bayesian tests
-# =============================================================================
-
-#' Skip test if brms package is not available
-skip_if_brms_unavailable <- function() {
-	testthat::skip_if_not_installed("brms")
-}
-
-# =============================================================================
 # MMRM Test Data
 # =============================================================================
 
@@ -1054,8 +1045,12 @@ create_mmrm_test_data <- function(n_subjects = 30, n_visits = 4, seed = 123) {
 		rnorm(n_subjects, 0, 5)[subject_idx] # Random subject effect
 
 	# Convert to factors AFTER calculations (required by mmrm)
+	# Use explicit levels for AVISITN to preserve numeric order
 	data$USUBJID <- factor(data$USUBJID)
-	data$AVISITN <- factor(data$AVISITN)
+	data$AVISITN <- factor(
+		data$AVISITN,
+		levels = as.character(0:(n_visits - 1))
+	)
 
 	data
 }

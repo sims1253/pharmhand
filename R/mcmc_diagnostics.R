@@ -148,7 +148,8 @@ plot_mcmc_trace <- function(
 		metadata = list(
 			n_parameters = length(parameters),
 			n_chains = length(chains),
-			n_iterations = nrow(posterior_draws)
+			n_iterations = max(posterior_draws$.iteration),
+			n_samples = nrow(posterior_draws)
 		)
 	)
 }
