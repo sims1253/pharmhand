@@ -1004,9 +1004,7 @@ create_imputation_test_data <- function(n = 30, seed = 123) {
 
 #' Skip test if brms package is not available
 skip_if_brms_unavailable <- function() {
-	if (!requireNamespace("brms", quietly = TRUE)) {
-		skip("brms package not available")
-	}
+	testthat::skip_if_not_installed("brms")
 }
 
 # =============================================================================

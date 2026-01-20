@@ -70,7 +70,8 @@ and implements several adjustments:
 \enumerate{
 \item \strong{Conservative priors}: Uses more informative priors that are appropriate
 when data is sparse
-\item \strong{Regularization}: Stronger regularization of between-study variance (tau^2)
+\item \strong{Regularization}: Stronger regularization of between-study variance
+(tau^2)
 \item \strong{Sensitivity analysis}: Includes prior sensitivity analysis by default
 \item \strong{Few studies warnings}: Provides explicit warnings about limitations
 }

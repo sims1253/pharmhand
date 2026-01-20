@@ -139,8 +139,8 @@ MMRMResult <- S7::new_class(
 #' @param covariates Character vector of covariate variable names
 #' @param interaction Logical. Whether to include treatment by time interaction
 #' @param cov_covariance Character. Covariance structure:
-#'   "unstructured", "compound_symmetry", "autoregressive", "ante_dependence",
-#'   "toeplitz", "spatial_exponential", "spatial_power"
+#'   "us" (unstructured), "cs" (compound symmetry), "ar1" (autoregressive),
+#'   "ad" (ante-dependence), "toep" (Toeplitz), "sp_exp" (spatial exponential)
 #' @param df_adjustment Character. Degrees of freedom adjustment:
 #'   "Kenward-Roger", "Satterthwaite", "Residual"
 #' @param method Character. Estimation method: "REML" (default) or "ML"
@@ -157,10 +157,10 @@ MMRMResult <- S7::new_class(
 #' and epsilon_ij ~ N(0, Sigma) where Sigma is the covariance matrix.
 #'
 #' Common covariance structures:
-#' - "unstructured": Most flexible, allows all covariances to differ
-#' - "compound_symmetry": Equal variances and equal covariances
-#' - "autoregressive": Covariance decreases with time distance
-#' - "ante_dependence": Flexible for unequal time intervals
+#' - "us": Unstructured - most flexible, all covariances differ
+#' - "cs": Compound symmetry - equal variances and covariances
+#' - "ar1": Autoregressive - covariance decreases with time distance
+#' - "ad": Ante-dependence - flexible for unequal time intervals
 #'
 #' @references
 #' Mallinckrodt, C.H. et al. (2013). Choosing the optimal
@@ -190,7 +190,7 @@ MMRMResult <- S7::new_class(
 #'   time_var = "AVISITN",
 #'   covariates = c("BASE", "AGE"),
 #'   interaction = TRUE,
-#'   cov_covariance = "compound_symmetry"
+#'   cov_covariance = "cs"
 #' )
 #' }
 mmrm_analysis <- function(
@@ -261,7 +261,7 @@ mmrm_analysis <- function(
 	}
 
 	# Build model formula with covariance structure in formula
-	# The mmrm package requires covariance specified as: cov_type(time_var | subject_var)
+	# mmrm requires covariance as: cov_type(time_var | subject_var)
 	cov_formula_part <- paste0(
 		cov_covariance,
 		"(",

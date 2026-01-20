@@ -44,7 +44,8 @@ The restricted mean survival time (RMST) is defined as:
 where T is the survival time and S(t) is the survival function.
 
 RMST is estimated using the Kaplan-Meier estimator:
-\code{RMST(tau) = tau - integral from 0 to tau of F(t) dt = sum_i (t_i - t_i-1) * S(t_i-1)}
+\code{RMST(tau) = tau - integral from 0 to tau of F(t) dt}
+\code{= sum_i (t_i - t_i-1) * S(t_i-1)}
 
 where the integral is restricted to \code{[0, tau]}.
 }

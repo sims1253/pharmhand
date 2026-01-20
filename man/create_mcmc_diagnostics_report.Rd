@@ -16,7 +16,8 @@ create_mcmc_diagnostics_report(
 \item{fit}{A brmsfit object from brms package}
 
 \item{parameters}{Character vector of specific parameters to analyze.
-If NULL, analyzes all parameters.}
+If NULL, selects parameters starting with "b_", or the first 5 parameters
+if no "b_" parameters exist.}
 
 \item{rhat_threshold}{Numeric. R-hat threshold for convergence}
 
