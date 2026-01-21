@@ -182,6 +182,28 @@ describe("plot_rmst", {
 		p <- plot_rmst(result)
 		expect_true(S7::S7_inherits(p, ClinicalPlot))
 	})
+
+	it("has correct plot title, labels, and metadata", {
+		skip_if_not_installed("survRM2")
+		data <- create_rmst_test_data()
+		result <- rmst_analysis(
+			data,
+			time_var = "time",
+			event_var = "status",
+			trt_var = "TRT01P",
+			tau = 12
+		)
+		p <- plot_rmst(result)
+
+		# Check plot title
+		expect_match(p@title, "Restricted Mean Survival Time")
+
+		# Check labels (x-axis is Treatment Group for RMST plot)
+		expect_match(p@plot$labels$x, "Treatment Group")
+
+		# Check metadata
+		expect_equal(p@metadata$tau, 12)
+	})
 })
 
 # =============================================================================
@@ -201,5 +223,32 @@ describe("create_rmst_table", {
 		)
 		tab <- create_rmst_table(result)
 		expect_true(S7::S7_inherits(tab, ClinicalTable))
+	})
+
+	it("has correct columns, row count, and metadata", {
+		skip_if_not_installed("survRM2")
+		data <- create_rmst_test_data()
+		result <- rmst_analysis(
+			data,
+			time_var = "time",
+			event_var = "status",
+			trt_var = "TRT01P",
+			tau = 12
+		)
+		tab <- create_rmst_table(result)
+
+		# Check columns (note: column names are capitalized in the ClinicalTable)
+		expect_true(all(
+			c("Group", "RMST", "SE") %in% names(tab@data)
+		))
+
+		# Check row count
+		expect_true(nrow(tab@data) >= 2)
+
+		# Check for difference row if applicable (it should be there if 2 arms)
+		expect_true("Difference" %in% tab@data$Group)
+
+		# Check metadata
+		expect_equal(tab@metadata$tau, 12)
 	})
 })
