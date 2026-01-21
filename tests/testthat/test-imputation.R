@@ -337,13 +337,16 @@ describe("ImputationResult class", {
 			maxit = 2
 		)
 
-		# Check all expected properties exist
-		expect_true("mice_object" %in% names(S7::props(result)))
-		expect_true("m" %in% names(S7::props(result)))
-		expect_true("method" %in% names(S7::props(result)))
-		expect_true("imputed_vars" %in% names(S7::props(result)))
-		expect_true("n_missing" %in% names(S7::props(result)))
-		expect_true("original_data" %in% names(S7::props(result)))
+		expected_props <- c(
+			"mice_object",
+			"m",
+			"method",
+			"imputed_vars",
+			"n_missing",
+			"original_data",
+			"metadata"
+		)
+		expect_setequal(names(S7::props(result)), expected_props)
 	})
 
 	it("stores missing data summary", {

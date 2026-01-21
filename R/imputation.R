@@ -454,13 +454,22 @@ analyze_with_imputation <- function(
 		tryCatch(
 			analysis_fun(data),
 			error = function(e) {
-				ph_abort(sprintf(
+				ph_warn(sprintf(
 					"Analysis function failed: %s",
 					conditionMessage(e)
 				))
+				NULL
 			}
 		)
 	})
+
+	# Filter out NULL results from failed analyses
+	results <- Filter(Negate(is.null), results)
+
+	# Check if any analyses succeeded
+	if (length(results) == 0) {
+		ph_abort("Analysis function failed for all imputed datasets")
+	}
 
 	# Extract estimates and variances
 	estimates <- vapply(
