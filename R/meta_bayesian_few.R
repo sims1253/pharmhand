@@ -618,7 +618,9 @@ summary_bayesian_few <- function(result, digits = 3) {
 		"95% Credible Interval"
 	)
 
-	final_summary
+	list(posterior = final_summary)
+
+	list(posterior = final_summary)
 }
 
 #' Create Bayesian Meta-Analysis Table for Few Studies
@@ -652,7 +654,8 @@ create_bayesian_few_table <- function(
 	}
 
 	# Get summary statistics
-	summary_df <- summary_bayesian_few(result)
+	summary_list <- summary_bayesian_few(result)
+	summary_df <- summary_list$posterior
 
 	# Add probabilities
 	prob_row <- data.frame(
@@ -664,6 +667,9 @@ create_bayesian_few_table <- function(
 		stringsAsFactors = FALSE,
 		check.names = FALSE
 	)
+
+	# Rename for consistency
+	colnames(prob_row)[5] <- "95% Credible Interval"
 
 	summary_df <- rbind(summary_df, prob_row)
 
@@ -682,6 +688,9 @@ create_bayesian_few_table <- function(
 			stringsAsFactors = FALSE,
 			check.names = FALSE
 		)
+
+		# Rename for consistency
+		colnames(het_row)[5] <- "95% Credible Interval"
 		summary_df <- rbind(summary_df, het_row)
 	}
 
@@ -696,6 +705,7 @@ create_bayesian_few_table <- function(
 
 	create_clinical_table(
 		data = summary_df,
+		type = "bayesian_few",
 		title = title,
 		footnotes = meta_footnotes,
 		autofit = autofit

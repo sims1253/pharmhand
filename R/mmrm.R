@@ -433,6 +433,7 @@ create_mmrm_table <- function(
 
 	create_clinical_table(
 		data = summary_df,
+		type = "mmrm",
 		title = title,
 		footnotes = meta_footnotes,
 		autofit = autofit

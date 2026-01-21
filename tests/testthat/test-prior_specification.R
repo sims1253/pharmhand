@@ -109,6 +109,24 @@ describe("create_prior_specification", {
 		expect_equal(prior@parameters$max, 1)
 	})
 
+	it("handles uniform distribution", {
+		prior <- create_prior_specification("uniform", list(min = -1, max = 1))
+		expect_equal(prior@distribution, "uniform")
+	})
+
+	it("handles cauchy distribution", {
+		prior <- create_prior_specification("cauchy", list(location = 0, scale = 1))
+		expect_equal(prior@distribution, "cauchy")
+	})
+
+	it("handles student_t distribution", {
+		prior <- create_prior_specification(
+			"student_t",
+			list(df = 3, location = 0, scale = 1)
+		)
+		expect_equal(prior@distribution, "student_t")
+	})
+
 	it("accepts description parameter", {
 		prior <- create_prior_specification(
 			distribution = "normal",

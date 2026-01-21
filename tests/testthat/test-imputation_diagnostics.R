@@ -112,6 +112,14 @@ describe("plot_missing_pattern", {
 			"data frame|ImputationResult"
 		)
 	})
+
+	it("handles ImputationResult with no missing data in plot_missing_pattern", {
+		skip_if_not_installed("mice")
+		data <- data.frame(x = 1:10, y = 1:10)
+		result <- suppressWarnings(perform_multiple_imputation(data))
+		p <- plot_missing_pattern(result)
+		expect_true(S7::S7_inherits(p, ClinicalPlot))
+	})
 })
 
 # =============================================================================

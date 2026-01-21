@@ -163,3 +163,43 @@ describe("RMSTResult class", {
 		expect_true("treatment_comparison" %in% names(S7::props(result)))
 	})
 })
+
+# =============================================================================
+# plot_rmst tests
+# =============================================================================
+
+describe("plot_rmst", {
+	it("returns a ClinicalPlot object", {
+		skip_if_not_installed("survRM2")
+		data <- create_rmst_test_data()
+		result <- rmst_analysis(
+			data,
+			time_var = "time",
+			event_var = "status",
+			trt_var = "TRT01P",
+			tau = 12
+		)
+		p <- plot_rmst(result)
+		expect_true(S7::S7_inherits(p, ClinicalPlot))
+	})
+})
+
+# =============================================================================
+# create_rmst_table tests
+# =============================================================================
+
+describe("create_rmst_table", {
+	it("returns a ClinicalTable object", {
+		skip_if_not_installed("survRM2")
+		data <- create_rmst_test_data()
+		result <- rmst_analysis(
+			data,
+			time_var = "time",
+			event_var = "status",
+			trt_var = "TRT01P",
+			tau = 12
+		)
+		tab <- create_rmst_table(result)
+		expect_true(S7::S7_inherits(tab, ClinicalTable))
+	})
+})

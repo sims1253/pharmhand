@@ -186,6 +186,21 @@ describe("calculate_gelman_rubin", {
 		# R-hat should be close to 1 for converged chains
 		expect_true(all(rhat_values < 1.1)) # Conservative threshold
 	})
+
+	it("calculates Gelman-Rubin for specific parameters", {
+		skip_if_brms_unavailable()
+		yi <- log(c(0.75, 0.82, 0.68, 0.91))
+		sei <- c(0.12, 0.15, 0.18, 0.14)
+		result <- bayesian_meta_analysis(
+			yi,
+			sei,
+			chains = 2,
+			iter = 600,
+			warmup = 300
+		)
+		rhat <- calculate_gelman_rubin(result$fit, parameters = "b_Intercept")
+		expect_equal(length(rhat), 1)
+	})
 })
 
 # =============================================================================

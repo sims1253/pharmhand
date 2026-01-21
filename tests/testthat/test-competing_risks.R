@@ -188,6 +188,104 @@ describe("competing_risk_analysis", {
 
 		expect_true(S7::S7_inherits(result, CompetingRiskResult))
 	})
+
+	it("fails if competing_events contains censor code 0", {
+		skip_if_not_installed("cmprsk")
+		data <- create_competing_risk_test_data()
+		expect_error(
+			competing_risk_analysis(data, "time", "event", "TRT01P", 1, c(0, 2)),
+			"competing_events cannot contain censor code 0"
+		)
+	})
+
+	it("handles crr failure gracefully", {
+		skip_if_not_installed("cmprsk")
+		# Data that will likely fail crr (constant time)
+		data <- data.frame(
+			time = rep(10, 10),
+			event = rep(1, 10),
+			TRT01P = rep("A", 10)
+		)
+		expect_error(
+			competing_risk_analysis(data, "time", "event", "TRT01P", 1, integer(0)),
+			"Fine-Gray model fitting failed"
+		)
+	})
+})
+
+# =============================================================================
+# plot_cif tests
+# =============================================================================
+
+describe("plot_cif", {
+	it("returns a ClinicalPlot object", {
+		skip_if_not_installed("cmprsk")
+		data <- create_competing_risk_test_data()
+		result <- competing_risk_analysis(
+			data,
+			"time",
+			"event",
+			"TRT01P",
+			1,
+			c(2, 3)
+		)
+		p <- plot_cif(result)
+		expect_true(S7::S7_inherits(p, ClinicalPlot))
+	})
+
+	it("handles empty CIF data", {
+		# Mock an empty result
+		result <- CompetingRiskResult(
+			main_event = 1L,
+			competing_events = 2L,
+			time_points = numeric(0),
+			n_obs = 0L,
+			n_events = numeric(0)
+		)
+		expect_warning(p <- plot_cif(result), "No CIF data available")
+		expect_true(S7::S7_inherits(p, ClinicalPlot))
+	})
+})
+
+# =============================================================================
+# create_competing_risk_table tests
+# =============================================================================
+
+describe("create_competing_risk_table", {
+	it("returns a ClinicalTable object", {
+		skip_if_not_installed("cmprsk")
+		data <- create_competing_risk_test_data()
+		result <- competing_risk_analysis(
+			data,
+			"time",
+			"event",
+			"TRT01P",
+			1,
+			c(2, 3)
+		)
+		tab <- create_competing_risk_table(result)
+		expect_true(S7::S7_inherits(tab, ClinicalTable))
+	})
+
+	it("errors if only one treatment level for Fine-Gray model", {
+		skip_if_not_installed("cmprsk")
+		# Single treatment arm - cannot fit Fine-Gray model
+		data <- data.frame(time = 1:10, event = rep(c(0, 1), 5), TRT01P = "A")
+		# This should error because Fine-Gray requires >1 treatment level
+		suppressWarnings(
+			expect_error(
+				competing_risk_analysis(
+					data,
+					"time",
+					"event",
+					"TRT01P",
+					1,
+					integer(0)
+				),
+				"Fine-Gray model fitting failed"
+			)
+		)
+	})
 })
 
 # =============================================================================
