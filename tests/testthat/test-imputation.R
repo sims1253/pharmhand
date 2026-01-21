@@ -353,7 +353,8 @@ describe("ImputationResult class", {
 		n <- 30
 		data <- data.frame(
 			x = c(rnorm(n - 1), NA), # 1 missing
-			y = c(rep(NA, 2), rnorm(n - 2)) # 2 missing
+			y = c(rep(NA, 2), rnorm(n - 2)), # 2 missing
+			z = rnorm(n) # No missing values
 		)
 
 		result <- perform_multiple_imputation(
@@ -365,6 +366,7 @@ describe("ImputationResult class", {
 		expect_true(is.list(result@n_missing))
 		expect_equal(result@n_missing$x, 1L)
 		expect_equal(result@n_missing$y, 2L)
+		expect_equal(result@n_missing$z, 0L)
 	})
 })
 

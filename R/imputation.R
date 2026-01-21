@@ -231,7 +231,7 @@ perform_multiple_imputation <- function(
 		m = as.integer(m),
 		method = method_used,
 		imputed_vars = imputed_vars,
-		n_missing = as.list(missing_counts[imputed_vars]),
+		n_missing = as.list(missing_counts),
 		original_data = data,
 		metadata = list(
 			maxit = maxit,
