@@ -167,6 +167,13 @@ competing_risk_analysis <- function(
 		ph_abort("'data' must be a data frame")
 	}
 
+	# Validate competing_events does not contain censor code 0
+	if (0 %in% competing_events) {
+		ph_abort(
+			"competing_events cannot contain censor code 0; include only competing event codes"
+		)
+	}
+
 	# Check cmprsk package availability
 	if (!requireNamespace("cmprsk", quietly = TRUE)) {
 		ph_abort(
@@ -252,6 +259,9 @@ competing_risk_analysis <- function(
 		levels = c(reference_group, setdiff(trt_levels, reference_group))
 	)
 
+	# Refresh trt_levels after releveling
+	trt_levels <- levels(analysis_data$treatment)
+
 	# Build model formula for model.matrix (RHS only - LHS not needed by crr)
 	formula_rhs <- c("treatment")
 	if (!is.null(covariates)) {
@@ -292,10 +302,12 @@ competing_risk_analysis <- function(
 	# Fit Fine-Gray model for main event
 	tryCatch(
 		{
+			# Build covariate matrix, guard against 0-column matrix
+			cov_matrix <- model.matrix(formula, analysis_data)[, -1, drop = FALSE]
 			fit_main <- cmprsk::crr(
 				ftime = analysis_data$time,
 				fstatus = status_main,
-				cov1 = model.matrix(formula, analysis_data)[, -1], # Remove intercept
+				cov1 = if (ncol(cov_matrix) > 0) cov_matrix else NULL,
 				failcode = 1,
 				cencode = 0
 			)
@@ -328,22 +340,36 @@ competing_risk_analysis <- function(
 		# Create covariate matrix for predictions
 		pred_data <- analysis_data[1, ] # Template row
 		pred_data$treatment <- factor(trt, levels = levels(analysis_data$treatment))
-		pred_matrix <- model.matrix(formula, pred_data)[, -1]
+		pred_matrix <- model.matrix(formula, pred_data)[, -1, drop = FALSE]
 
 		# Calculate CIF
 		# Note: predict.crr returns a matrix with times in col 1 and CIF in col 2+
 		cif_result <- cmprsk::predict.crr(
 			fit_main,
-			cov1 = pred_matrix
+			cov1 = if (ncol(pred_matrix) > 0) pred_matrix else NULL
 		)
 
 		# Extract times and CIF values from matrix output
 		pred_times <- cif_result[, 1]
 		cif_values <- cif_result[, 2]
 
+		# Interpolate CIF onto time_grid
+		full_times <- c(0, pred_times)
+		full_cifs <- c(0, cif_values)
+		cif_at_grid <- stats::approx(
+			x = full_times,
+			y = full_cifs,
+			xout = time_grid,
+			method = "constant",
+			f = 0,
+			rule = 2
+		)$y
+
 		cif_by_treatment[[trt]] <- data.frame(
-			time = pred_times,
-			cif = cif_values,
+			time = time_grid,
+			cif = cif_at_grid,
+			ci_lower = NA_real_,
+			ci_upper = NA_real_,
 			treatment = trt,
 			stringsAsFactors = FALSE
 		)
@@ -564,15 +590,6 @@ plot_cif <- function(
 		ggplot2::aes(x = .data$time, y = .data$cif, color = .data$treatment)
 	) +
 		ggplot2::geom_line() +
-		ggplot2::geom_ribbon(
-			ggplot2::aes(
-				ymin = .data$ci_lower,
-				ymax = .data$ci_upper,
-				fill = .data$treatment
-			),
-			alpha = 0.2,
-			color = NA
-		) +
 		ggplot2::labs(
 			title = title,
 			x = "Time",
@@ -581,6 +598,23 @@ plot_cif <- function(
 			fill = "Treatment"
 		) +
 		ggplot2::theme_minimal()
+
+	# Only add confidence interval ribbon if CI columns exist and have non-NA values
+	if (
+		all(c("ci_lower", "ci_upper") %in% names(cif_data)) &&
+			!all(is.na(cif_data$ci_lower))
+	) {
+		p <- p +
+			ggplot2::geom_ribbon(
+				ggplot2::aes(
+					ymin = .data$ci_lower,
+					ymax = .data$ci_upper,
+					fill = .data$treatment
+				),
+				alpha = 0.2,
+				color = NA
+			)
+	}
 
 	ClinicalPlot(
 		plot = p,

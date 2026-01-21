@@ -121,7 +121,7 @@ describe("competing_risk_analysis", {
 		expect_true(S7::S7_inherits(result, CompetingRiskResult))
 	})
 
-	it("supports time-varying covariates", {
+	it("handles long format data with repeated observations", {
 		skip_if_not_installed("cmprsk")
 
 		set.seed(222)
@@ -152,7 +152,7 @@ describe("competing_risk_analysis", {
 			event_var = "event",
 			trt_var = "TRT01P",
 			main_event = 1,
-			competing_events = c(0),
+			competing_events = integer(0),
 			covariates = "covariate"
 		)
 
@@ -217,44 +217,3 @@ describe("CompetingRiskResult class", {
 		expect_true("subhazard_ratio" %in% names(S7::props(result)))
 	})
 })
-
-# =============================================================================
-# Helper function for test data
-# =============================================================================
-
-create_competing_risk_test_data <- function(n = 100, seed = 123) {
-	set.seed(seed)
-
-	# Generate event times
-	times <- rexp(n, 0.1)
-
-	# Generate events with competing risks
-	# Main event (1): 20%, Competing events (2,3): 10% each, Censored (0): 60%
-	events <- sample(
-		c(0, 1, 2, 3),
-		n,
-		replace = TRUE,
-		prob = c(0.6, 0.2, 0.1, 0.1)
-	)
-
-	# Treatment effect
-	trt <- sample(c("A", "B"), n, replace = TRUE)
-	effect_A <- 0.8 # Lower hazard for main event
-	effect_B <- 1.2 # Higher hazard for main event
-
-	# Adjust event probabilities based on treatment
-	for (i in 1:n) {
-		if (trt[i] == "A") {
-			if (runif(1) < 0.2) events[i] <- 1 # Main event
-		} else {
-			if (runif(1) < 0.25) events[i] <- 1 # Main event
-		}
-	}
-
-	data.frame(
-		time = times,
-		event = events,
-		TRT01P = trt,
-		stringsAsFactors = FALSE
-	)
-}

@@ -1009,6 +1009,9 @@ create_imputation_test_data <- function(n = 30, seed = 123) {
 #' @param seed Random seed
 #' @return Data frame suitable for MMRM testing
 create_mmrm_test_data <- function(n_subjects = 30, n_visits = 4, seed = 123) {
+	if (n_subjects <= 0 || n_visits <= 0) {
+		stop("n_subjects and n_visits must be positive integers")
+	}
 	set.seed(seed)
 
 	# Generate subject-level data
@@ -1101,23 +1104,21 @@ create_rmst_test_data <- function(n = 100, seed = 123) {
 #' @param seed Random seed
 #' @return Data frame suitable for competing risks testing
 create_competing_risk_test_data <- function(n = 100, seed = 123) {
+	if (n <= 0) {
+		stop("n must be positive")
+	}
 	set.seed(seed)
-
-	# Generate survival times
-	times <- rexp(n, 0.1)
-
-	# Generate competing event types:
-	# 0 = censored, 1 = main event, 2 = competing event 1, 3 = competing event 2
-	events <- sample(
-		c(0, 1, 2, 3),
-		n,
-		replace = TRUE,
-		prob = c(0.4, 0.3, 0.2, 0.1)
-	)
-
-	# Generate treatment groups
 	trt_grp <- sample(c("A", "B"), n, replace = TRUE)
-
+	events <- integer(n)
+	for (i in seq_len(n)) {
+		probs <- if (trt_grp[i] == "A") {
+			c(0.5, 0.2, 0.2, 0.1) # More censoring, fewer main events for A
+		} else {
+			c(0.3, 0.4, 0.2, 0.1) # Less censoring, more main events for B
+		}
+		events[i] <- sample(c(0, 1, 2, 3), 1, prob = probs)
+	}
+	times <- rexp(n, 0.1)
 	data.frame(
 		time = times,
 		event = events,
