@@ -136,9 +136,14 @@ describe("create_imputation_report", {
 		report <- create_imputation_report(imp)
 
 		expect_true(is.list(report))
-		expect_true("summary" %in% names(report))
-		expect_true("convergence_plot" %in% names(report))
-		expect_true("distribution_plot" %in% names(report))
-		expect_true("missing_pattern_plot" %in% names(report))
+		expect_named(
+			report,
+			c(
+				"summary",
+				"convergence_plot",
+				"distribution_plot",
+				"missing_pattern_plot"
+			)
+		)
 	})
 })

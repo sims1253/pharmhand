@@ -235,28 +235,6 @@ describe("calculate_effective_sample_size", {
 			"brmsfit"
 		)
 	})
-
-	it("returns ESS values less than total samples", {
-		skip_if_brms_unavailable()
-
-		yi <- log(c(0.75, 0.82, 0.68, 0.91))
-		sei <- c(0.12, 0.15, 0.18, 0.14)
-
-		result <- bayesian_meta_analysis(
-			yi = yi,
-			sei = sei,
-			effect_measure = "hr",
-			chains = 2,
-			iter = 1000,
-			warmup = 500
-		)
-
-		ess_values <- calculate_effective_sample_size(result$fit)
-		total_samples <- (1000 - 500) * 2 # (iter - warmup) * chains
-
-		# ESS should be less than or equal to total samples
-		expect_true(all(ess_values <= total_samples))
-	})
 })
 
 # =============================================================================

@@ -144,7 +144,8 @@ MMRMResult <- S7::new_class(
 #' @param df_adjustment Character. Degrees of freedom adjustment:
 #'   "Kenward-Roger", "Satterthwaite", "Residual"
 #' @param method Character. Estimation method: "REML" (default) or "ML"
-#' @param control List of control parameters for optimization
+#' @param control List of control parameters for optimization, passed to
+#'   \code{\link[mmrm]{mmrm}}. Typically created with \code{\link[mmrm]{mmrm_control}}.
 #'
 #' @return An MMRMResult object
 #'
@@ -211,7 +212,7 @@ mmrm_analysis <- function(
 	),
 	df_adjustment = c("Kenward-Roger", "Satterthwaite", "Residual"),
 	method = c("REML", "ML"),
-	control = list()
+	control = NULL
 ) {
 	# Validate inputs
 	if (!is.data.frame(data)) {
@@ -299,12 +300,17 @@ mmrm_analysis <- function(
 	# Build the MMRM model
 	fit <- tryCatch(
 		{
-			mmrm::mmrm(
+			# Build argument list conditionally
+			args <- list(
 				formula = formula,
 				data = data,
 				reml = method == "REML",
 				method = mmrm_method
 			)
+			if (!is.null(control)) {
+				args$control <- control
+			}
+			do.call(mmrm::mmrm, args)
 		},
 		error = function(e) {
 			ph_abort(sprintf("MMRM model fitting failed: %s", conditionMessage(e)))

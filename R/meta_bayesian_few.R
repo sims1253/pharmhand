@@ -415,9 +415,9 @@ bayesian_meta_analysis_few <- function(
 
 	# Heterogeneity assessment
 	# Compute typical within-study variance using Higgins & Thompson formula
-	k <- length(sei)
+	k_sei <- as.integer(length(sei))
 	w <- 1 / sei^2
-	vtilde <- ((k - 1) * sum(w)) / ((sum(w)^2) - sum(w^2))
+	vtilde <- ((k_sei - 1) * sum(w)) / ((sum(w)^2) - sum(w^2))
 	i2_samples <- sd_samples^2 / (sd_samples^2 + vtilde)
 	heterogeneity <- list(
 		tau2_mean = mean(sd_samples^2),
@@ -617,8 +617,6 @@ summary_bayesian_few <- function(result, digits = 3) {
 		"Posterior SD",
 		"95% Credible Interval"
 	)
-
-	list(posterior = final_summary)
 
 	list(posterior = final_summary)
 }

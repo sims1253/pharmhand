@@ -112,6 +112,8 @@ describe("create_prior_specification", {
 	it("handles uniform distribution", {
 		prior <- create_prior_specification("uniform", list(min = -1, max = 1))
 		expect_equal(prior@distribution, "uniform")
+		expect_equal(prior@parameters$min, -1)
+		expect_equal(prior@parameters$max, 1)
 	})
 
 	it("handles cauchy distribution", {

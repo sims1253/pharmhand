@@ -277,7 +277,8 @@ rmst_analysis <- function(
 				time = complete_data$time,
 				status = complete_data$status,
 				arm = treatment_numeric,
-				tau = tau
+				tau = tau,
+				alpha = 1 - conf_level
 			)
 		},
 		error = function(e) {
@@ -292,25 +293,20 @@ rmst_analysis <- function(
 
 	# Create RMST summary data frame
 	treatment_levels <- levels(complete_data$treatment)
-	conf_level <- conf_level # already defined
 	alpha <- 1 - conf_level
 	z_crit <- qnorm(1 - alpha / 2)
 
+	rmst_estimates <- c(rmst_arm0["RMST", "Est."], rmst_arm1["RMST", "Est."])
+	rmst_ses <- c(
+		sqrt(rmst_results$RMST.arm0$rmst.var),
+		sqrt(rmst_results$RMST.arm1$rmst.var)
+	)
 	rmst_by_group <- data.frame(
 		arm = c(0, 1),
-		RMST = c(rmst_arm0["RMST", "Est."], rmst_arm1["RMST", "Est."]),
-		SE = c(
-			sqrt(rmst_results$RMST.arm0$rmst.var),
-			sqrt(rmst_results$RMST.arm1$rmst.var)
-		),
-		"lower.CL" = c(
-			rmst_arm0["RMST", "lower .95"],
-			rmst_arm1["RMST", "lower .95"]
-		),
-		"upper.CL" = c(
-			rmst_arm0["RMST", "upper .95"],
-			rmst_arm1["RMST", "upper .95"]
-		),
+		RMST = rmst_estimates,
+		SE = rmst_ses,
+		"lower.CL" = rmst_estimates - z_crit * rmst_ses,
+		"upper.CL" = rmst_estimates + z_crit * rmst_ses,
 		check.names = FALSE
 	)
 
@@ -326,8 +322,8 @@ rmst_analysis <- function(
 
 	# Calculate confidence interval for difference
 	diff_ci <- c(
-		rmst_diff[1, "lower .95"],
-		rmst_diff[1, "upper .95"]
+		diff_estimate - z_crit * diff_se,
+		diff_estimate + z_crit * diff_se
 	)
 
 	# Create treatment comparison
@@ -466,6 +462,7 @@ create_rmst_table <- function(
 		type = "rmst",
 		title = title,
 		footnotes = meta_footnotes,
+		metadata = list(tau = result@tau),
 		autofit = autofit
 	)
 }

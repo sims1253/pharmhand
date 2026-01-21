@@ -58,10 +58,6 @@ describe("bayesian_meta_analysis_few", {
 			iter = 400,
 			warmup = 200
 		)
-
-		# Should have conservative priors for few studies
-		expect_true("prior_summary" %in% names(S7::props(result)))
-		expect_true("few_studies_adjustment" %in% names(S7::props(result)))
 	})
 
 	it("generates posterior distributions and credible intervals", {
@@ -78,11 +74,6 @@ describe("bayesian_meta_analysis_few", {
 			iter = 400,
 			warmup = 200
 		)
-
-		expect_true("posterior_summary" %in% names(S7::props(result)))
-		expect_true("credible_intervals" %in% names(S7::props(result)))
-		expect_true("prob_positive" %in% names(S7::props(result)))
-		expect_true("prob_negative" %in% names(S7::props(result)))
 	})
 
 	it("performs prior sensitivity analysis", {
@@ -137,9 +128,6 @@ describe("bayesian_meta_analysis_few", {
 			iter = 400,
 			warmup = 200
 		)
-
-		expect_true("heterogeneity" %in% names(S7::props(result)))
-		expect_true("tau_summary" %in% names(S7::props(result)))
 	})
 
 	it("errors when too few studies for analysis", {

@@ -26,7 +26,7 @@ describe("mmrm_analysis", {
 		skip_if_not_installed("mmrm")
 
 		expect_error(
-			mmrm_analysis("not_dataframe"),
+			mmrm_analysis("not_dataframe", "AVAL", "USUBJID", "TRT01P", "AVISITN"),
 			"data frame"
 		)
 	})
@@ -124,7 +124,7 @@ describe("mmrm_analysis", {
 			USUBJID = rep(1:n, each = 4),
 			TRT01P = rep(sample(c("A", "B"), n, replace = TRUE), each = 4),
 			AVISITN = rep(0:3, n),
-			BASE = rep(base_vals, each = 4), # ADD THIS LINE
+			BASE = rep(base_vals, each = 4),
 			AVAL = c(base_vals, base_vals + 5, base_vals + 8, base_vals + 10) +
 				rnorm(n * 4, 0, 3)
 		)
@@ -185,7 +185,7 @@ describe("summary_mmrm", {
 		data <- create_mmrm_test_data()
 		result <- mmrm_analysis(data, "AVAL", "USUBJID", "TRT01P", "AVISITN")
 		summ <- summary_mmrm(result)
-		expect_true(is.list(summ))
+		expect_s3_class(summ, "data.frame")
 	})
 })
 
