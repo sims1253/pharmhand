@@ -106,12 +106,12 @@ plot_mcmc_trace <- function(
 
 	# Prepare data for plotting
 	# Use .iteration from draws for proper per-chain iteration scale
-	plot_data <- data.frame(
+	plot_data <- suppressWarnings(data.frame(
 		iteration = rep(posterior_draws$.iteration, length(param_cols)),
 		value = unlist(posterior_draws[, param_cols]),
 		parameter = rep(parameters, each = nrow(posterior_draws)),
 		chain = rep(posterior_draws$.chain, length(param_cols))
-	)
+	))
 
 	# Filter to requested chains
 	plot_data <- plot_data[plot_data$chain %in% chains, ]
@@ -242,11 +242,11 @@ plot_mcmc_density <- function(
 	}
 
 	# Prepare data for plotting
-	plot_data <- data.frame(
+	plot_data <- suppressWarnings(data.frame(
 		value = unlist(posterior_draws[, param_cols]),
 		parameter = rep(parameters, each = nrow(posterior_draws)),
 		chain = rep(posterior_draws$.chain, length(param_cols))
-	)
+	))
 
 	# Create density plot
 	p <- ggplot2::ggplot(
@@ -304,7 +304,7 @@ plot_mcmc_density <- function(
 #' rhat_values <- calculate_gelman_rubin(fit)
 #' print(rhat_values)
 #' }
-calculate_gelman_rubin <- function(fit) {
+calculate_gelman_rubin <- function(fit, parameters = NULL) {
 	# Validate input
 	if (!inherits(fit, "brmsfit")) {
 		ph_abort("'fit' must be a brmsfit object")
@@ -316,11 +316,18 @@ calculate_gelman_rubin <- function(fit) {
 	}
 
 	# Calculate R-hat using brms
-	rhat_values <- brms::rhat(fit)
+	# Pass parameters argument if provided
+	if (!is.null(parameters)) {
+		rhat_values <- brms::rhat(fit, pars = parameters)
+	} else {
+		rhat_values <- brms::rhat(fit)
+	}
 
 	# Remove any NA values and return as named vector
 	rhat_values <- rhat_values[!is.na(rhat_values)]
+	names(rhat_values)
 
+	# Check if any values were calculated
 	if (length(rhat_values) == 0) {
 		ph_warn("No R-hat values could be calculated")
 		return(numeric(0))

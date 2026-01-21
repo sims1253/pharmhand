@@ -463,6 +463,7 @@ create_rmst_table <- function(
 
 	create_clinical_table(
 		data = comp_data,
+		type = "rmst",
 		title = title,
 		footnotes = meta_footnotes,
 		autofit = autofit

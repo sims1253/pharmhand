@@ -303,8 +303,8 @@ pool_rubin <- function(estimates, variances, conf_level = 0.95) {
 	if (length(estimates) != length(variances)) {
 		ph_abort("'estimates' and 'variances' must have the same length")
 	}
-	if (any(variances <= 0)) {
-		ph_abort("'variances' must contain only positive values")
+	if (any(variances < 0)) {
+		ph_abort("'variances' must contain only non-negative values")
 	}
 	if (
 		!is.numeric(conf_level) ||
@@ -337,14 +337,23 @@ pool_rubin <- function(estimates, variances, conf_level = 0.95) {
 	# Relative increase in variance due to nonresponse
 	# Guard against division by zero when u_bar is effectively zero
 	if (u_bar < .Machine$double.eps) {
-		r <- Inf
+		r <- if (b < .Machine$double.eps) 0 else Inf
 	} else {
 		r <- (1 + 1 / m) * b / u_bar
 	}
 
 	# Fraction of missing information
-	fmi <- (r + 2 / (m + 1)) / (r + 1)
-	# Ensure FMI is bounded [0, 1]
+	if (is.infinite(r)) {
+		fmi <- 1
+	} else if (r == 0) {
+		fmi <- 0
+	} else {
+		fmi <- (r + 2 / (m + 1)) / (r + 1)
+	}
+	# Fallback for NA/NaN
+	if (is.na(fmi) || is.nan(fmi)) {
+		fmi <- 0
+	}
 	fmi <- max(0, min(1, fmi))
 
 	# Degrees of freedom (Barnard & Rubin, 1999 adjusted formula)

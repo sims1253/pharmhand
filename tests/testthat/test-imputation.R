@@ -155,10 +155,10 @@ describe("pool_rubin", {
 		)
 	})
 
-	it("validates that variances are positive", {
+	it("validates that variances are non-negative", {
 		expect_error(
 			pool_rubin(c(0.5, 0.6), c(0.01, -0.02)),
-			"positive"
+			"non-negative"
 		)
 	})
 
@@ -179,6 +179,24 @@ describe("pool_rubin", {
 
 		# FMI should be between 0 and 1
 		expect_true(result$fmi >= 0 && result$fmi <= 1)
+	})
+
+	it("handles zero within-imputation variance stably", {
+		estimates <- c(0.5, 0.6)
+		variances <- c(0, 0)
+		result <- pool_rubin(estimates, variances)
+		expect_equal(result$within_var, 0)
+		expect_true(is.infinite(result$total_var) || result$total_var > 0)
+		# total_var = 0 + (1+1/2)*var(estimates)
+		expect_equal(result$fmi, 1) # r is Inf
+	})
+
+	it("handles zero between-imputation variance stably", {
+		estimates <- c(0.5, 0.5)
+		variances <- c(0.01, 0.01)
+		result <- pool_rubin(estimates, variances)
+		expect_equal(result$between_var, 0)
+		expect_equal(result$fmi, 0) # r is 0
 	})
 })
 
@@ -266,6 +284,44 @@ describe("analyze_with_imputation", {
 
 		expect_true("pooled_estimate" %in% names(result))
 		expect_true("pooled_se" %in% names(result))
+	})
+
+	it("is resilient to partial analysis failures", {
+		skip_if_not_installed("mice")
+		data <- create_imputation_test_data(n = 30)
+		imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+
+		# Use a counter to ensure controlled failure
+		counter <- 0
+		analysis_fun_fail <- function(d) {
+			counter <<- counter + 1
+			if (counter == 1) {
+				stop("First one fails")
+			}
+			list(
+				estimate = mean(d$x, na.rm = TRUE),
+				variance = var(d$x, na.rm = TRUE) / nrow(d)
+			)
+		}
+
+		expect_warning(
+			result <- analyze_with_imputation(imp_result, analysis_fun_fail),
+			"Analysis function failed"
+		)
+		expect_true("pooled_estimate" %in% names(result))
+		expect_equal(result$m, 2) # Only 2 pooled
+	})
+
+	it("aborts if all analysis functions fail", {
+		skip_if_not_installed("mice")
+		data <- create_imputation_test_data(n = 30)
+		imp_result <- perform_multiple_imputation(data, m = 3, maxit = 2)
+		suppressWarnings(
+			expect_error(
+				analyze_with_imputation(imp_result, function(d) stop("Failure")),
+				"Analysis function failed for all imputed datasets"
+			)
+		)
 	})
 })
 

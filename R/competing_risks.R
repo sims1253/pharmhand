@@ -543,6 +543,7 @@ create_competing_risk_table <- function(
 
 	create_clinical_table(
 		data = summary_df,
+		type = "competing_risk",
 		title = title,
 		footnotes = meta_footnotes,
 		autofit = autofit
@@ -604,7 +605,8 @@ plot_cif <- function(
 	# and have non-NA values
 	if (
 		all(c("ci_lower", "ci_upper") %in% names(cif_data)) &&
-			!all(is.na(cif_data$ci_lower))
+			!all(is.na(cif_data$ci_lower)) &&
+			!all(is.na(cif_data$ci_upper))
 	) {
 		p <- p +
 			ggplot2::geom_ribbon(

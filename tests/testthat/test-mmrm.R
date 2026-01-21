@@ -174,3 +174,31 @@ describe("MMRMResult class", {
 		expect_true("bic" %in% names(S7::props(result)))
 	})
 })
+
+# =============================================================================
+# summary_mmrm tests
+# =============================================================================
+
+describe("summary_mmrm", {
+	it("returns a summary list", {
+		skip_if_not_installed("mmrm")
+		data <- create_mmrm_test_data()
+		result <- mmrm_analysis(data, "AVAL", "USUBJID", "TRT01P", "AVISITN")
+		summ <- summary_mmrm(result)
+		expect_true(is.list(summ))
+	})
+})
+
+# =============================================================================
+# create_mmrm_table tests
+# =============================================================================
+
+describe("create_mmrm_table", {
+	it("returns a ClinicalTable object", {
+		skip_if_not_installed("mmrm")
+		data <- create_mmrm_test_data()
+		result <- mmrm_analysis(data, "AVAL", "USUBJID", "TRT01P", "AVISITN")
+		tab <- create_mmrm_table(result)
+		expect_true(S7::S7_inherits(tab, ClinicalTable))
+	})
+})

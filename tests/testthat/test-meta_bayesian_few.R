@@ -192,3 +192,67 @@ describe("BayesianMetaFewResult class", {
 		expect_true("prior_sensitivity" %in% props)
 	})
 })
+
+# =============================================================================
+# summary_bayesian_few tests
+# =============================================================================
+
+describe("summary_bayesian_few", {
+	it("returns a summary list", {
+		skip_if_brms_unavailable()
+		yi <- log(c(0.75, 0.82, 0.68))
+		sei <- c(0.12, 0.15, 0.18)
+		result <- bayesian_meta_analysis_few(
+			yi = yi,
+			sei = sei,
+			chains = 1,
+			iter = 400,
+			warmup = 200
+		)
+		summ <- summary_bayesian_few(result)
+		expect_true(is.list(summ))
+		expect_true("posterior" %in% names(summ))
+	})
+})
+
+# =============================================================================
+# plot_bayesian_few tests
+# =============================================================================
+
+describe("plot_bayesian_few", {
+	it("returns a ClinicalPlot object", {
+		skip_if_brms_unavailable()
+		yi <- log(c(0.75, 0.82, 0.68))
+		sei <- c(0.12, 0.15, 0.18)
+		result <- bayesian_meta_analysis_few(
+			yi = yi,
+			sei = sei,
+			chains = 1,
+			iter = 400,
+			warmup = 200
+		)
+		p <- plot_bayesian_few(result)
+		expect_true(S7::S7_inherits(p, ClinicalPlot))
+	})
+})
+
+# =============================================================================
+# create_bayesian_few_table tests
+# =============================================================================
+
+describe("create_bayesian_few_table", {
+	it("returns a ClinicalTable object", {
+		skip_if_brms_unavailable()
+		yi <- log(c(0.75, 0.82, 0.68))
+		sei <- c(0.12, 0.15, 0.18)
+		result <- bayesian_meta_analysis_few(
+			yi = yi,
+			sei = sei,
+			chains = 1,
+			iter = 400,
+			warmup = 200
+		)
+		tab <- create_bayesian_few_table(result)
+		expect_true(S7::S7_inherits(tab, ClinicalTable))
+	})
+})
