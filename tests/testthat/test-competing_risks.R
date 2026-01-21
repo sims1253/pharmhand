@@ -209,11 +209,22 @@ describe("CompetingRiskResult class", {
 		)
 
 		# Check all expected properties exist
-		expect_true("model" %in% names(S7::props(result)))
-		expect_true("cif_main" %in% names(S7::props(result)))
-		expect_true("cif_competing" %in% names(S7::props(result)))
-		expect_true("cif_by_treatment" %in% names(S7::props(result)))
-		expect_true("treatment_comparison" %in% names(S7::props(result)))
-		expect_true("subhazard_ratio" %in% names(S7::props(result)))
+		expect_setequal(
+			names(S7::props(result)),
+			c(
+				"model",
+				"cif_main",
+				"cif_competing",
+				"cif_by_treatment",
+				"treatment_comparison",
+				"subhazard_ratio",
+				"main_event",
+				"competing_events",
+				"time_points",
+				"n_obs",
+				"n_events",
+				"metadata"
+			)
+		)
 	})
 })

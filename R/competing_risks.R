@@ -170,7 +170,8 @@ competing_risk_analysis <- function(
 	# Validate competing_events does not contain censor code 0
 	if (0 %in% competing_events) {
 		ph_abort(
-			"competing_events cannot contain censor code 0; include only competing event codes"
+			"competing_events cannot contain censor code 0; ",
+			"include only competing event codes"
 		)
 	}
 
@@ -300,11 +301,11 @@ competing_risk_analysis <- function(
 	status_main[analysis_data$event %in% competing_events] <- 2 # Competing
 
 	# Fit Fine-Gray model for main event
-	tryCatch(
+	fit_main <- tryCatch(
 		{
 			# Build covariate matrix, guard against 0-column matrix
 			cov_matrix <- model.matrix(formula, analysis_data)[, -1, drop = FALSE]
-			fit_main <- cmprsk::crr(
+			cmprsk::crr(
 				ftime = analysis_data$time,
 				fstatus = status_main,
 				cov1 = if (ncol(cov_matrix) > 0) cov_matrix else NULL,
@@ -599,7 +600,8 @@ plot_cif <- function(
 		) +
 		ggplot2::theme_minimal()
 
-	# Only add confidence interval ribbon if CI columns exist and have non-NA values
+	# Only add confidence interval ribbon if CI columns exist
+	# and have non-NA values
 	if (
 		all(c("ci_lower", "ci_upper") %in% names(cif_data)) &&
 			!all(is.na(cif_data$ci_lower))
