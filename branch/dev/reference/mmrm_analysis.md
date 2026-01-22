@@ -17,7 +17,7 @@ mmrm_analysis(
   cov_covariance = c("us", "cs", "ar1", "ad", "toep", "sp_exp"),
   df_adjustment = c("Kenward-Roger", "Satterthwaite", "Residual"),
   method = c("REML", "ML"),
-  control = list()
+  control = NULL
 )
 ```
 
@@ -53,9 +53,9 @@ mmrm_analysis(
 
 - cov_covariance:
 
-  Character. Covariance structure: "unstructured", "compound_symmetry",
-  "autoregressive", "ante_dependence", "toeplitz",
-  "spatial_exponential", "spatial_power"
+  Character. Covariance structure: "us" (unstructured), "cs" (compound
+  symmetry), "ar1" (autoregressive), "ad" (ante-dependence), "toep"
+  (Toeplitz), "sp_exp" (spatial exponential)
 
 - df_adjustment:
 
@@ -68,7 +68,10 @@ mmrm_analysis(
 
 - control:
 
-  List of control parameters for optimization
+  List of control parameters for optimization, passed to
+  [`mmrm`](https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html).
+  Typically created with
+  [`mmrm_control`](https://openpharma.github.io/mmrm/latest-tag/reference/mmrm_control.html).
 
 ## Value
 
@@ -84,13 +87,13 @@ N(0, Sigma) where Sigma is the covariance matrix.
 
 Common covariance structures:
 
-- "unstructured": Most flexible, allows all covariances to differ
+- "us": Unstructured - most flexible, all covariances differ
 
-- "compound_symmetry": Equal variances and equal covariances
+- "cs": Compound symmetry - equal variances and covariances
 
-- "autoregressive": Covariance decreases with time distance
+- "ar1": Autoregressive - covariance decreases with time distance
 
-- "ante_dependence": Flexible for unequal time intervals
+- "ad": Ante-dependence - flexible for unequal time intervals
 
 ## References
 
@@ -121,7 +124,7 @@ result <- mmrm_analysis(
   time_var = "AVISITN",
   covariates = c("BASE", "AGE"),
   interaction = TRUE,
-  cov_covariance = "compound_symmetry"
+  cov_covariance = "cs"
 )
 } # }
 ```

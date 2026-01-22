@@ -57,7 +57,7 @@
 <span>  cov_covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"us"</span>, <span class="st">"cs"</span>, <span class="st">"ar1"</span>, <span class="st">"ad"</span>, <span class="st">"toep"</span>, <span class="st">"sp_exp"</span><span class="op">)</span>,</span>
 <span>  df_adjustment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Kenward-Roger"</span>, <span class="st">"Satterthwaite"</span>, <span class="st">"Residual"</span><span class="op">)</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REML"</span>, <span class="st">"ML"</span><span class="op">)</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  control <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -95,8 +95,8 @@
 
 <dt id="arg-cov-covariance">cov_covariance<a class="anchor" aria-label="anchor" href="#arg-cov-covariance"></a></dt>
 <dd><p>Character. Covariance structure:
-"unstructured", "compound_symmetry", "autoregressive", "ante_dependence",
-"toeplitz", "spatial_exponential", "spatial_power"</p></dd>
+"us" (unstructured), "cs" (compound symmetry), "ar1" (autoregressive),
+"ad" (ante-dependence), "toep" (Toeplitz), "sp_exp" (spatial exponential)</p></dd>
 
 
 <dt id="arg-df-adjustment">df_adjustment<a class="anchor" aria-label="anchor" href="#arg-df-adjustment"></a></dt>
@@ -109,7 +109,9 @@
 
 
 <dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
-<dd><p>List of control parameters for optimization</p></dd>
+<dd><p>List of control parameters for optimization, passed to
+<code><a href="https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html" class="external-link">mmrm</a></code>. Typically created with
+<code><a href="https://openpharma.github.io/mmrm/latest-tag/reference/mmrm_control.html" class="external-link">mmrm_control</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -123,10 +125,10 @@ Y_ij = X_ij * beta + epsilon_ij</p>
 <p>Where Y_ij is the response for subject i at time j,
 X_ij contains fixed effects (treatment, time, covariates, interactions),
 and epsilon_ij ~ N(0, Sigma) where Sigma is the covariance matrix.</p>
-<p>Common covariance structures:</p><ul><li><p>"unstructured": Most flexible, allows all covariances to differ</p></li>
-<li><p>"compound_symmetry": Equal variances and equal covariances</p></li>
-<li><p>"autoregressive": Covariance decreases with time distance</p></li>
-<li><p>"ante_dependence": Flexible for unequal time intervals</p></li>
+<p>Common covariance structures:</p><ul><li><p>"us": Unstructured - most flexible, all covariances differ</p></li>
+<li><p>"cs": Compound symmetry - equal variances and covariances</p></li>
+<li><p>"ar1": Autoregressive - covariance decreases with time distance</p></li>
+<li><p>"ad": Ante-dependence - flexible for unequal time intervals</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -157,7 +159,7 @@ Statistical Methods in Medical Research, 22(2), 113-138.</p>
 <span class="r-in"><span>  time_var <span class="op">=</span> <span class="st">"AVISITN"</span>,</span></span>
 <span class="r-in"><span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BASE"</span>, <span class="st">"AGE"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  interaction <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  cov_covariance <span class="op">=</span> <span class="st">"compound_symmetry"</span></span></span>
+<span class="r-in"><span>  cov_covariance <span class="op">=</span> <span class="st">"cs"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

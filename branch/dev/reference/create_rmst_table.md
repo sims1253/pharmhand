@@ -8,7 +8,6 @@ Creates a clinical table from RMST analysis results.
 create_rmst_table(
   result,
   title = "Restricted Mean Survival Time Analysis",
-  subtitle = NULL,
   footnotes = NULL,
   autofit = TRUE
 )
@@ -24,13 +23,10 @@ create_rmst_table(
 
   Table title
 
-- subtitle:
-
-  Optional subtitle
-
 - footnotes:
 
-  Optional footnotes
+  Optional character vector of footnote strings (or NULL) to append to
+  the table.
 
 - autofit:
 

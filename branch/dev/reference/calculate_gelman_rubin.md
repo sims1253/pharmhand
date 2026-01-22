@@ -6,7 +6,7 @@ chains.
 ## Usage
 
 ``` r
-calculate_gelman_rubin(fit)
+calculate_gelman_rubin(fit, parameters = NULL)
 ```
 
 ## Arguments
@@ -14,6 +14,11 @@ calculate_gelman_rubin(fit)
 - fit:
 
   A brmsfit object from brms package
+
+- parameters:
+
+  Character vector or NULL (default: NULL). Subset of parameter names to
+  compute R-hat for. If NULL, all parameters are included.
 
 ## Value
 

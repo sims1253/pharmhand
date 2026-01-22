@@ -21,7 +21,7 @@ summary_bayesian_few(result, digits = 3)
 
 ## Value
 
-A data frame with summary statistics
+A list containing a "posterior" data frame with summary statistics
 
 ## Examples
 
