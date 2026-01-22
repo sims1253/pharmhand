@@ -19,7 +19,8 @@ describe("bayesian_meta_analysis_few", {
 			effect_measure = "hr",
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
 
 		expect_true("pharmhand::BayesianMetaFewResult" %in% class(result))
@@ -38,7 +39,8 @@ describe("bayesian_meta_analysis_few", {
 			effect_measure = "hr",
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
 
 		expect_true("pharmhand::BayesianMetaFewResult" %in% class(result))
@@ -56,8 +58,11 @@ describe("bayesian_meta_analysis_few", {
 			effect_measure = "hr",
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
+
+		expect_true(!is.null(result))
 	})
 
 	it("generates posterior distributions and credible intervals", {
@@ -72,8 +77,11 @@ describe("bayesian_meta_analysis_few", {
 			effect_measure = "hr",
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
+
+		expect_named(result@posterior_summary)
 	})
 
 	it("performs prior sensitivity analysis", {
@@ -108,7 +116,8 @@ describe("bayesian_meta_analysis_few", {
 			effect_measure = "md",
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
 
 		expect_true("pharmhand::BayesianMetaFewResult" %in% class(result_md))
@@ -126,8 +135,11 @@ describe("bayesian_meta_analysis_few", {
 			effect_measure = "hr",
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
+
+		expect_true(is.list(result@heterogeneity))
 	})
 
 	it("errors when too few studies for analysis", {
@@ -165,7 +177,8 @@ describe("BayesianMetaFewResult class", {
 			effect_measure = "hr",
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
 
 		# Check all expected properties exist
@@ -195,7 +208,8 @@ describe("summary_bayesian_few", {
 			sei = sei,
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
 		summ <- summary_bayesian_few(result)
 		expect_true(is.list(summ))
@@ -217,7 +231,8 @@ describe("plot_bayesian_few", {
 			sei = sei,
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
 		p <- plot_bayesian_few(result)
 		expect_true(S7::S7_inherits(p, ClinicalPlot))
@@ -238,7 +253,8 @@ describe("create_bayesian_few_table", {
 			sei = sei,
 			chains = 1,
 			iter = 400,
-			warmup = 200
+			warmup = 200,
+			prior_sensitivity = FALSE
 		)
 		tab <- create_bayesian_few_table(result)
 		expect_true(S7::S7_inherits(tab, ClinicalTable))

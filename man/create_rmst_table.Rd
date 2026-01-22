@@ -7,7 +7,6 @@
 create_rmst_table(
   result,
   title = "Restricted Mean Survival Time Analysis",
-  subtitle = NULL,
   footnotes = NULL,
   autofit = TRUE
 )
@@ -17,9 +16,8 @@ create_rmst_table(
 
 \item{title}{Table title}
 
-\item{subtitle}{Optional subtitle}
-
-\item{footnotes}{Optional footnotes}
+\item{footnotes}{Optional character vector of footnote strings (or NULL)
+to append to the table.}
 
 \item{autofit}{Logical. Whether to autofit column widths}
 }

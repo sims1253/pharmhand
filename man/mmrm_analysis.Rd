@@ -15,7 +15,7 @@ mmrm_analysis(
   cov_covariance = c("us", "cs", "ar1", "ad", "toep", "sp_exp"),
   df_adjustment = c("Kenward-Roger", "Satterthwaite", "Residual"),
   method = c("REML", "ML"),
-  control = list()
+  control = NULL
 )
 }
 \arguments{
@@ -34,15 +34,17 @@ mmrm_analysis(
 \item{interaction}{Logical. Whether to include treatment by time interaction}
 
 \item{cov_covariance}{Character. Covariance structure:
-"unstructured", "compound_symmetry", "autoregressive", "ante_dependence",
-"toeplitz", "spatial_exponential", "spatial_power"}
+"us" (unstructured), "cs" (compound symmetry), "ar1" (autoregressive),
+"ad" (ante-dependence), "toep" (Toeplitz), "sp_exp" (spatial exponential)}
 
 \item{df_adjustment}{Character. Degrees of freedom adjustment:
 "Kenward-Roger", "Satterthwaite", "Residual"}
 
 \item{method}{Character. Estimation method: "REML" (default) or "ML"}
 
-\item{control}{List of control parameters for optimization}
+\item{control}{List of control parameters for optimization, passed to
+\code{\link[mmrm]{mmrm}}. Typically created with
+\code{\link[mmrm]{mmrm_control}}.}
 }
 \value{
 An MMRMResult object
@@ -60,10 +62,10 @@ and epsilon_ij ~ N(0, Sigma) where Sigma is the covariance matrix.
 
 Common covariance structures:
 \itemize{
-\item "unstructured": Most flexible, allows all covariances to differ
-\item "compound_symmetry": Equal variances and equal covariances
-\item "autoregressive": Covariance decreases with time distance
-\item "ante_dependence": Flexible for unequal time intervals
+\item "us": Unstructured - most flexible, all covariances differ
+\item "cs": Compound symmetry - equal variances and covariances
+\item "ar1": Autoregressive - covariance decreases with time distance
+\item "ad": Ante-dependence - flexible for unequal time intervals
 }
 }
 \examples{
@@ -87,7 +89,7 @@ result <- mmrm_analysis(
   time_var = "AVISITN",
   covariates = c("BASE", "AGE"),
   interaction = TRUE,
-  cov_covariance = "compound_symmetry"
+  cov_covariance = "cs"
 )
 }
 }

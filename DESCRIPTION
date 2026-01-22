@@ -33,10 +33,10 @@ Imports:
     glue (>= 1.8.0),
     openxlsx (>= 4.2.8),
     writexl (>= 1.5.4),
-    tidyselect (>= 1.2.1)
+    tidyselect (>= 1.2.1),
+    brms
 Suggests:
     admiral,
-    brms,
     bayesplot,
     cmdstanr,
     cmprsk,

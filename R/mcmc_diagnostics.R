@@ -291,7 +291,8 @@ plot_mcmc_density <- function(
 #' Calculates the Gelman-Rubin (R-hat) convergence diagnostic for MCMC chains.
 #'
 #' @param fit A brmsfit object from brms package
-#' @param parameters Character vector or NULL (default: NULL). Subset of parameter names to compute R-hat for. If NULL, all parameters are included.
+#' @param parameters Character vector or NULL (default: NULL). Subset of
+#'   parameter names to compute R-hat for. If NULL, all parameters are included.
 #'
 #' @return Named numeric vector of R-hat values for each parameter
 #' @export

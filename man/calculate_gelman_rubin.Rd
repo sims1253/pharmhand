@@ -4,10 +4,13 @@
 \alias{calculate_gelman_rubin}
 \title{Calculate Gelman-Rubin Diagnostic}
 \usage{
-calculate_gelman_rubin(fit)
+calculate_gelman_rubin(fit, parameters = NULL)
 }
 \arguments{
 \item{fit}{A brmsfit object from brms package}
+
+\item{parameters}{Character vector or NULL (default: NULL). Subset of
+parameter names to compute R-hat for. If NULL, all parameters are included.}
 }
 \value{
 Named numeric vector of R-hat values for each parameter

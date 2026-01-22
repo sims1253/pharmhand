@@ -109,13 +109,6 @@ describe("create_prior_specification", {
 		expect_equal(prior@parameters$max, 1)
 	})
 
-	it("handles uniform distribution", {
-		prior <- create_prior_specification("uniform", list(min = -1, max = 1))
-		expect_equal(prior@distribution, "uniform")
-		expect_equal(prior@parameters$min, -1)
-		expect_equal(prior@parameters$max, 1)
-	})
-
 	it("handles cauchy distribution", {
 		prior <- create_prior_specification("cauchy", list(location = 0, scale = 1))
 		expect_equal(prior@distribution, "cauchy")
@@ -244,30 +237,32 @@ describe("get_default_prior", {
 # =============================================================================
 
 describe("validate_prior_parameters", {
-	it("validates normal distribution parameters", {
-		# Valid
+	it("validates normal distribution - valid parameters", {
 		result <- validate_prior_parameters("normal", list(mean = 0, sd = 1))
 		expect_null(result)
+	})
 
-		# Missing parameter
+	it("validates normal distribution - missing parameters", {
 		result <- validate_prior_parameters("normal", list(mean = 0))
 		expect_true(is.character(result))
+	})
 
-		# Invalid parameter
+	it("validates normal distribution - invalid parameters", {
 		result <- validate_prior_parameters("normal", list(mean = 0, sd = -1))
 		expect_true(is.character(result))
 	})
 
-	it("validates beta distribution parameters", {
-		# Valid
+	it("validates beta distribution - valid parameters", {
 		result <- validate_prior_parameters("beta", list(shape1 = 2, shape2 = 2))
 		expect_null(result)
+	})
 
-		# Missing parameter
+	it("validates beta distribution - missing parameters", {
 		result <- validate_prior_parameters("beta", list(shape1 = 2))
 		expect_true(is.character(result))
+	})
 
-		# Invalid parameters
+	it("validates beta distribution - invalid parameters", {
 		result <- validate_prior_parameters("beta", list(shape1 = 0, shape2 = 2))
 		expect_true(is.character(result))
 	})
