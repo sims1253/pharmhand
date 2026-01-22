@@ -178,6 +178,8 @@ BayesianMetaFewResult <- S7::new_class(
 #' Spiegelhalter, D.J. et al. (2004). Bayesian approaches to clinical trials
 #' and health-care evaluation. Wiley.
 #'
+#' @importFrom brms brm bf prior_string as_draws_df
+#'
 #' @export
 #'
 #' @examples
@@ -572,7 +574,7 @@ bayesian_meta_analysis_few <- function(
 #' @param result A BayesianMetaFewResult object
 #' @param digits Integer. Number of decimal places to display
 #'
-#' @return A data frame with summary statistics
+#' @return A list containing a "posterior" data frame with summary statistics
 #' @export
 #'
 #' @examples

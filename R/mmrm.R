@@ -145,7 +145,8 @@ MMRMResult <- S7::new_class(
 #'   "Kenward-Roger", "Satterthwaite", "Residual"
 #' @param method Character. Estimation method: "REML" (default) or "ML"
 #' @param control List of control parameters for optimization, passed to
-#'   \code{\link[mmrm]{mmrm}}. Typically created with \code{\link[mmrm]{mmrm_control}}.
+#'   \code{\link[mmrm]{mmrm}}. Typically created with
+#'   \code{\link[mmrm]{mmrm_control}}.
 #'
 #' @return An MMRMResult object
 #'

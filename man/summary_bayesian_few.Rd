@@ -12,7 +12,7 @@ summary_bayesian_few(result, digits = 3)
 \item{digits}{Integer. Number of decimal places to display}
 }
 \value{
-A data frame with summary statistics
+A list containing a "posterior" data frame with summary statistics
 }
 \description{
 Creates a summary table from Bayesian meta-analysis results for few studies.

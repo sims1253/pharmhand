@@ -19,7 +19,8 @@ describe("plot_mcmc_trace", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		plot <- plot_mcmc_trace(result$fit)
@@ -67,7 +68,8 @@ describe("plot_mcmc_trace", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		plot <- plot_mcmc_trace(result$fit, chains = 1)
@@ -93,7 +95,8 @@ describe("plot_mcmc_density", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		plot <- plot_mcmc_density(result$fit)
@@ -121,7 +124,8 @@ describe("plot_mcmc_density", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		plot <- plot_mcmc_density(result$fit, parameters = "b_Intercept")
@@ -147,7 +151,8 @@ describe("calculate_gelman_rubin", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		rhat_values <- calculate_gelman_rubin(result$fit)
@@ -196,7 +201,8 @@ describe("calculate_gelman_rubin", {
 			sei,
 			chains = 2,
 			iter = 600,
-			warmup = 300
+			warmup = 300,
+			seed = 123
 		)
 		rhat <- calculate_gelman_rubin(result$fit, parameters = "b_Intercept")
 		expect_equal(length(rhat), 1)
@@ -220,7 +226,8 @@ describe("calculate_effective_sample_size", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		ess_values <- calculate_effective_sample_size(result$fit)
@@ -254,7 +261,8 @@ describe("assess_mcmc_convergence", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		assessment <- assess_mcmc_convergence(result$fit)
@@ -285,7 +293,8 @@ describe("assess_mcmc_convergence", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		assessment <- assess_mcmc_convergence(result$fit)
@@ -312,7 +321,8 @@ describe("create_mcmc_diagnostics_report", {
 			effect_measure = "hr",
 			chains = 2,
 			iter = 1000,
-			warmup = 500
+			warmup = 500,
+			seed = 123
 		)
 
 		report <- create_mcmc_diagnostics_report(result$fit)

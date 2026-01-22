@@ -380,7 +380,8 @@ rmst_analysis <- function(
 #'
 #' @param result An RMSTResult object
 #' @param title Table title
-#' @param footnotes Optional footnotes
+#' @param footnotes Optional character vector of footnote strings (or NULL)
+#'   to append to the table.
 #' @param autofit Logical. Whether to autofit column widths
 #'
 #' @return A ClinicalTable object

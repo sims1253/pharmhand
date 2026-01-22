@@ -180,7 +180,7 @@ describe("MMRMResult class", {
 # =============================================================================
 
 describe("summary_mmrm", {
-	it("returns a summary list", {
+	it("returns a summary data.frame", {
 		skip_if_not_installed("mmrm")
 		data <- create_mmrm_test_data()
 		result <- mmrm_analysis(data, "AVAL", "USUBJID", "TRT01P", "AVISITN")
