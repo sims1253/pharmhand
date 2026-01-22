@@ -1289,11 +1289,9 @@
 
 ### chef integration
 
-- [`run_chef_pipeline()`](https://sims1253.github.io/pharmhand/dev/reference/run_chef_pipeline.md)
-  executes chef pipelines
+- `run_chef_pipeline()` executes chef pipelines
 
-- [`chef_to_analysis_results()`](https://sims1253.github.io/pharmhand/dev/reference/chef_to_analysis_results.md)
-  converts chef output
+- `chef_to_analysis_results()` converts chef output
 
 ## pharmhand 0.0.0.9000
 

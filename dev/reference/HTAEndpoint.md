@@ -1,7 +1,6 @@
 # HTAEndpoint Class
 
-An S7 class for representing Health Technology Assessment endpoints,
-with integration to the chef pipeline for AMNOG-style analyses.
+An S7 class for representing Health Technology Assessment endpoints.
 
 ## Usage
 
@@ -17,7 +16,6 @@ HTAEndpoint(
   alpha = 0.05,
   priority = 1,
   metadata = list(),
-  chef_spec = list(),
   strata = character(0),
   criteria = list()
 )
@@ -65,17 +63,14 @@ HTAEndpoint(
 
   List of additional metadata
 
-- chef_spec:
-
-  List containing chef endpoint specification
-
 - strata:
 
   Character vector of stratification variables
 
 - criteria:
 
-  List of inclusion criteria for chef pipeline
+  List of criteria definitions for HTA assessment (e.g., list(clinical =
+  list(...), economic = list(...)))
 
 ## Value
 

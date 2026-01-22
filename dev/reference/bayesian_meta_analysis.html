@@ -64,6 +64,7 @@ Provides guidance when dependencies are not installed.</p>
 <span>  iter <span class="op">=</span> <span class="fl">4000</span>,</span>
 <span>  warmup <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  adapt_delta <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  max_treedepth <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  backend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"cmdstanr"</span>, <span class="st">"rstan"</span><span class="op">)</span>,</span>
@@ -143,6 +144,11 @@ checks. Default: 100</p></dd>
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Integer. Random seed</p></dd>
+
+
+<dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>
+<dd><p>Integer. Number of CPU cores to use for parallel chains.
+Default: 1. Setting to &gt;1 requires proper seed handling.</p></dd>
 
 
 <dt id="arg-adapt-delta">adapt_delta<a class="anchor" aria-label="anchor" href="#arg-adapt-delta"></a></dt>

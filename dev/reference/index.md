@@ -322,26 +322,6 @@ multiple summary statistics.
 - [`build_table()`](https://sims1253.github.io/pharmhand/dev/reference/build_table.md)
   : Build a LayeredTable
 
-## Chef Integration
-
-Integration with the chef package for Health Technology Assessment (HTA)
-analyses and statistical pipelines.
-
-- [`run_chef_pipeline()`](https://sims1253.github.io/pharmhand/dev/reference/run_chef_pipeline.md)
-  : Run Chef Pipeline with pharmhand Integration
-- [`create_chef_endpoint()`](https://sims1253.github.io/pharmhand/dev/reference/create_chef_endpoint.md)
-  : Create Chef Endpoint Specification
-- [`chef_to_analysis_results()`](https://sims1253.github.io/pharmhand/dev/reference/chef_to_analysis_results.md)
-  : Convert Chef Results to AnalysisResults
-- [`get_chef_stat()`](https://sims1253.github.io/pharmhand/dev/reference/get_chef_stat.md)
-  : Register Chef Statistical Functions
-- [`list_chef_stats()`](https://sims1253.github.io/pharmhand/dev/reference/list_chef_stats.md)
-  : List Available Chef Statistical Functions
-- [`extract_chef_metadata()`](https://sims1253.github.io/pharmhand/dev/reference/extract_chef_metadata.md)
-  : Extract Metadata from Chef Output
-- [`flatten_chef_results()`](https://sims1253.github.io/pharmhand/dev/reference/flatten_chef_results.md)
-  : Flatten Chef Hierarchical Results
-
 ## Subgroup Analysis
 
 Functions for subgroup and interaction analyses in clinical trials.
@@ -376,6 +356,34 @@ clinically important difference (MCID) and time-to-deterioration.
   : Calculate MCID using Distribution-Based Methods
 - [`create_ttd_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/create_ttd_analysis.md)
   : Create Time-to-Deterioration Analysis
+
+## Multiple Imputation
+
+Functions for multiple imputation using mice package with Rubin’s rules
+for pooling results.
+
+- [`ImputationResult()`](https://sims1253.github.io/pharmhand/dev/reference/ImputationResult.md)
+  : ImputationResult Class
+- [`perform_multiple_imputation()`](https://sims1253.github.io/pharmhand/dev/reference/perform_multiple_imputation.md)
+  : Perform Multiple Imputation
+- [`pool_rubin()`](https://sims1253.github.io/pharmhand/dev/reference/pool_rubin.md)
+  : Pool Results Using Rubin's Rules
+- [`analyze_with_imputation()`](https://sims1253.github.io/pharmhand/dev/reference/analyze_with_imputation.md)
+  : Analyze Data with Multiple Imputation
+- [`get_complete_data()`](https://sims1253.github.io/pharmhand/dev/reference/get_complete_data.md)
+  : Get Completed Datasets from Imputation
+- [`summarize_missing()`](https://sims1253.github.io/pharmhand/dev/reference/summarize_missing.md)
+  : Summarize Missing Data Patterns
+- [`imputation`](https://sims1253.github.io/pharmhand/dev/reference/imputation.md)
+  : Multiple Imputation Functions
+- [`create_imputation_report()`](https://sims1253.github.io/pharmhand/dev/reference/create_imputation_report.md)
+  : Create Imputation Diagnostic Report
+- [`plot_imputation_convergence()`](https://sims1253.github.io/pharmhand/dev/reference/plot_imputation_convergence.md)
+  : Plot Imputation Convergence
+- [`plot_imputation_distributions()`](https://sims1253.github.io/pharmhand/dev/reference/plot_imputation_distributions.md)
+  : Plot Imputation Distributions
+- [`plot_missing_pattern()`](https://sims1253.github.io/pharmhand/dev/reference/plot_missing_pattern.md)
+  : Plot Missing Data Pattern
 
 ## Meta-Analysis
 
@@ -416,6 +424,96 @@ assessment, sensitivity analysis, and publication bias detection.
   : Calculate Study Weights Based on Risk of Bias
 - [`summarize_bias_adjusted()`](https://sims1253.github.io/pharmhand/dev/reference/summarize_bias_adjusted.md)
   : Summarize Bias-Adjusted Meta-Analysis Results
+- [`BayesianMetaFewResult()`](https://sims1253.github.io/pharmhand/dev/reference/BayesianMetaFewResult.md)
+  : BayesianMetaFewResult Class
+- [`bayesian_meta_analysis_few()`](https://sims1253.github.io/pharmhand/dev/reference/bayesian_meta_analysis_few.md)
+  : Bayesian Meta-Analysis for Few Studies
+- [`create_bayesian_few_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_bayesian_few_table.md)
+  : Create Bayesian Meta-Analysis Table for Few Studies
+- [`create_meta_analysis_priors()`](https://sims1253.github.io/pharmhand/dev/reference/create_meta_analysis_priors.md)
+  : Create Default Prior Set for Meta-Analysis
+- [`create_prior_specification()`](https://sims1253.github.io/pharmhand/dev/reference/create_prior_specification.md)
+  : Create Prior Specification
+- [`PriorSpecification()`](https://sims1253.github.io/pharmhand/dev/reference/PriorSpecification.md)
+  : PriorSpecification Class
+- [`validate_prior_parameters()`](https://sims1253.github.io/pharmhand/dev/reference/validate_prior_parameters.md)
+  : Validate Prior Parameters
+- [`get_default_prior()`](https://sims1253.github.io/pharmhand/dev/reference/get_default_prior.md)
+  : Get Default Prior
+- [`create_prior_specification_set()`](https://sims1253.github.io/pharmhand/dev/reference/create_prior_specification_set.md)
+  : Create Prior Specification Set
+- [`summarize_prior_specification()`](https://sims1253.github.io/pharmhand/dev/reference/summarize_prior_specification.md)
+  : Summarize Prior Specification
+- [`summary_bayesian_few()`](https://sims1253.github.io/pharmhand/dev/reference/summary_bayesian_few.md)
+  : Summarize Bayesian Meta-Analysis for Few Studies
+- [`plot_bayesian_few()`](https://sims1253.github.io/pharmhand/dev/reference/plot_bayesian_few.md)
+  : Plot Bayesian Meta-Analysis Results for Few Studies
+- [`meta_bayesian_few`](https://sims1253.github.io/pharmhand/dev/reference/meta_bayesian_few.md)
+  : Bayesian Meta-Analysis for Few Studies
+- [`prior_specification`](https://sims1253.github.io/pharmhand/dev/reference/prior_specification.md)
+  : Prior Specification Interface
+
+## Competing Risks
+
+Functions for competing risks analysis including cumulative incidence
+estimation and Gray’s test for comparing groups.
+
+- [`CompetingRiskResult()`](https://sims1253.github.io/pharmhand/dev/reference/CompetingRiskResult.md)
+  : CompetingRiskResult Class
+- [`competing_risks`](https://sims1253.github.io/pharmhand/dev/reference/competing_risks.md)
+  : Competing Risk Analysis
+- [`competing_risk_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/competing_risk_analysis.md)
+  : Competing Risk Analysis
+- [`create_competing_risk_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_competing_risk_table.md)
+  : Create Competing Risk Table
+- [`plot_cif()`](https://sims1253.github.io/pharmhand/dev/reference/plot_cif.md)
+  : Plot Cumulative Incidence Function
+
+## MMRM Analysis
+
+Functions for Mixed-Effects Models for Repeated Measures (MMRM) analysis
+with robust variance estimation.
+
+- [`MMRMResult()`](https://sims1253.github.io/pharmhand/dev/reference/MMRMResult.md)
+  : MMRMResult Class
+- [`RMSTResult()`](https://sims1253.github.io/pharmhand/dev/reference/RMSTResult.md)
+  : RMSTResult Class
+- [`create_mmrm_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_mmrm_table.md)
+  : Create MMRM Table
+- [`summary_mmrm()`](https://sims1253.github.io/pharmhand/dev/reference/summary_mmrm.md)
+  : Extract MMRM Model Summary
+- [`mmrm`](https://sims1253.github.io/pharmhand/dev/reference/mmrm.md) :
+  Mixed Model Repeated Measures (MMRM)
+- [`mmrm_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/mmrm_analysis.md)
+  : MMRM Analysis
+- [`rmst`](https://sims1253.github.io/pharmhand/dev/reference/rmst.md) :
+  Restricted Mean Survival Time (RMST)
+- [`rmst_analysis()`](https://sims1253.github.io/pharmhand/dev/reference/rmst_analysis.md)
+  : RMST Analysis
+- [`create_rmst_table()`](https://sims1253.github.io/pharmhand/dev/reference/create_rmst_table.md)
+  : Create RMST Table
+- [`plot_rmst()`](https://sims1253.github.io/pharmhand/dev/reference/plot_rmst.md)
+  : Plot RMST Results
+
+## MCMC Diagnostics
+
+Functions for diagnosing Markov Chain Monte Carlo (MCMC) convergence and
+assessing mixing quality.
+
+- [`assess_mcmc_convergence()`](https://sims1253.github.io/pharmhand/dev/reference/assess_mcmc_convergence.md)
+  : Assess MCMC Convergence
+- [`calculate_effective_sample_size()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_effective_sample_size.md)
+  : Calculate Effective Sample Size
+- [`calculate_gelman_rubin()`](https://sims1253.github.io/pharmhand/dev/reference/calculate_gelman_rubin.md)
+  : Calculate Gelman-Rubin Diagnostic
+- [`create_mcmc_diagnostics_report()`](https://sims1253.github.io/pharmhand/dev/reference/create_mcmc_diagnostics_report.md)
+  : Create MCMC Diagnostics Report
+- [`mcmc_diagnostics`](https://sims1253.github.io/pharmhand/dev/reference/mcmc_diagnostics.md)
+  : MCMC Diagnostics
+- [`plot_mcmc_trace()`](https://sims1253.github.io/pharmhand/dev/reference/plot_mcmc_trace.md)
+  : Plot MCMC Trace
+- [`plot_mcmc_density()`](https://sims1253.github.io/pharmhand/dev/reference/plot_mcmc_density.md)
+  : Plot MCMC Density
 
 ## Network Meta-Analysis
 
@@ -602,8 +700,6 @@ Internal package documentation for architecture and modules.
   : S7 Method Registration and Package Initialization
 - [`adam_core`](https://sims1253.github.io/pharmhand/dev/reference/adam_core.md)
   : ADaM Analysis Core
-- [`chef_integration`](https://sims1253.github.io/pharmhand/dev/reference/chef_integration.md)
-  : Chef Integration
 - [`formatting`](https://sims1253.github.io/pharmhand/dev/reference/formatting.md)
   : Format String Grammar
 - [`layers`](https://sims1253.github.io/pharmhand/dev/reference/layers.md)
@@ -674,3 +770,7 @@ Internal package documentation for architecture and modules.
   : IQWiG Evidence Grading Implementation
 - [`evidence_summary_tables`](https://sims1253.github.io/pharmhand/dev/reference/evidence_summary_tables.md)
   : Evidence Summary Tables
+- [`imputation`](https://sims1253.github.io/pharmhand/dev/reference/imputation.md)
+  : Multiple Imputation Functions
+- [`imputation_diagnostics`](https://sims1253.github.io/pharmhand/dev/reference/imputation_diagnostics.md)
+  : Imputation Diagnostic Plots

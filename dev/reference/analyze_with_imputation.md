@@ -1,0 +1,66 @@
+# Analyze Data with Multiple Imputation
+
+Applies an analysis function to each imputed dataset and pools results
+using Rubin's rules.
+
+## Usage
+
+``` r
+analyze_with_imputation(imputation_result, analysis_fun, conf_level = 0.95)
+```
+
+## Arguments
+
+- imputation_result:
+
+  An ImputationResult object from perform_multiple_imputation()
+
+- analysis_fun:
+
+  A function that takes a completed data frame and returns a list with
+  'estimate' and 'variance' components
+
+- conf_level:
+
+  Numeric. Confidence level for pooled CI (default: 0.95)
+
+## Value
+
+A list containing pooled results from Rubin's rules
+
+## Details
+
+The analysis_fun must return a list with at least:
+
+- estimate: The point estimate from the analysis
+
+- variance: The variance of the estimate
+
+For regression models, this typically means extracting the coefficient
+and its squared standard error.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+data <- data.frame(
+  outcome = c(10, NA, 30, 40, 50),
+  predictor = c(1, 2, NA, 4, 5)
+)
+
+imp <- perform_multiple_imputation(data, m = 5)
+
+# Analyze with linear regression
+result <- analyze_with_imputation(imp, function(d) {
+  fit <- lm(outcome ~ predictor, data = d)
+  coefs <- summary(fit)$coefficients
+  list(
+    estimate = coefs["predictor", "Estimate"],
+    variance = coefs["predictor", "Std. Error"]^2
+  )
+})
+
+result$pooled_estimate
+result$ci
+} # }
+```
