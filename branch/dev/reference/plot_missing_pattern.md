@@ -179,9 +179,9 @@ plot_missing_pattern(data)
 #>     super:  <ggproto object: Class Guides, gg> 
 #>  .. @ mapping    : <ggplot2::mapping> List of 2
 #>  .. .. $ x: language ~.data$variable
-#>  .. ..  ..- attr(*, ".Environment")=<environment: 0x55eda58634d0> 
+#>  .. ..  ..- attr(*, ".Environment")=<environment: 0x555a66a5b8a8> 
 #>  .. .. $ y: language ~.data$pct_missing
-#>  .. ..  ..- attr(*, ".Environment")=<environment: 0x55eda58634d0> 
+#>  .. ..  ..- attr(*, ".Environment")=<environment: 0x555a66a5b8a8> 
 #>  .. @ theme      : <theme> List of 144
 #>  .. .. $ line                            : <ggplot2::element_line>
 #>  .. ..  ..@ colour       : chr "black"
@@ -626,7 +626,7 @@ plot_missing_pattern(data)
 #>  .. .. $ y    : chr "% Missing"
 #>  .. .. $ title: chr "Missing Data Pattern"
 #>  .. @ meta       : list()
-#>  .. @ plot_env   :<environment: 0x55eda58634d0> 
+#>  .. @ plot_env   :<environment: 0x555a66a5b8a8> 
 #>  @ data       :'data.frame': 2 obs. of  2 variables:
 #>  .. $ variable   : Factor w/ 2 levels "a","b": 1 2
 #>  .. $ pct_missing: num  33.3 33.3

@@ -162,7 +162,7 @@ print(table)
 #>  ..  .. .. ..- attr(*, "order")= int 1
 #>  ..  .. .. ..- attr(*, "intercept")= num 1
 #>  ..  .. .. ..- attr(*, "response")= int 1
-#>  ..  .. .. ..- attr(*, ".Environment")=<environment: 0x55edb2224950> 
+#>  ..  .. .. ..- attr(*, ".Environment")=<environment: 0x555a718d8a78> 
 #>  ..  .. .. ..- attr(*, "predvars")= language list(survival::Surv(AVAL, event), TRT01P)
 #>  ..  .. .. ..- attr(*, "dataClasses")= Named chr [1:2] "nmatrix.2" "factor"
 #>  ..  .. .. .. ..- attr(*, "names")= chr [1:2] "survival::Surv(AVAL, event)" "TRT01P"
@@ -179,7 +179,7 @@ print(table)
 #>  ..  .. ..- attr(*, "type")= chr "right"
 #>  ..  ..$ timefix          : logi TRUE
 #>  ..  ..$ formula          :Class 'formula'  language survival::Surv(AVAL, event) ~ TRT01P
-#>  ..  .. .. ..- attr(*, ".Environment")=<environment: 0x55edb2224950> 
+#>  ..  .. .. ..- attr(*, ".Environment")=<environment: 0x555a718d8a78> 
 #>  ..  ..$ xlevels          :List of 1
 #>  ..  .. ..$ TRT01P: chr [1:2] "Active" "Placebo"
 #>  ..  ..$ contrasts        :List of 1
@@ -226,7 +226,7 @@ print(table)
 #>  ..  .. .. .. ..- attr(*, "order")= int 1
 #>  ..  .. .. .. ..- attr(*, "intercept")= num 1
 #>  ..  .. .. .. ..- attr(*, "response")= int 1
-#>  ..  .. .. .. ..- attr(*, ".Environment")=<environment: 0x55edb2224950> 
+#>  ..  .. .. .. ..- attr(*, ".Environment")=<environment: 0x555a718d8a78> 
 #>  ..  .. .. .. ..- attr(*, "predvars")= language list(survival::Surv(AVAL, event), TRT01P)
 #>  ..  .. .. .. ..- attr(*, "dataClasses")= Named chr [1:2] "nmatrix.2" "factor"
 #>  ..  .. .. .. .. ..- attr(*, "names")= chr [1:2] "survival::Surv(AVAL, event)" "TRT01P"
@@ -243,7 +243,7 @@ print(table)
 #>  ..  .. .. ..- attr(*, "type")= chr "right"
 #>  ..  .. ..$ timefix          : logi TRUE
 #>  ..  .. ..$ formula          :Class 'formula'  language survival::Surv(AVAL, event) ~ TRT01P
-#>  ..  .. .. .. ..- attr(*, ".Environment")=<environment: 0x55edb2224950> 
+#>  ..  .. .. .. ..- attr(*, ".Environment")=<environment: 0x555a718d8a78> 
 #>  ..  .. ..$ xlevels          :List of 1
 #>  ..  .. .. ..$ TRT01P: chr [1:2] "Active" "Placebo"
 #>  ..  .. ..$ contrasts        :List of 1
