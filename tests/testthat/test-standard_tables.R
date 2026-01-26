@@ -97,17 +97,23 @@ test_that("create_hta_module4_table works", {
 	expect_equal(tbl@type, "module4")
 })
 
-test_that("create_demographics_table accepts data.frame and wraps to ADaMData", {
-	adsl <- data.frame(
-		USUBJID = c("01", "02"),
-		TRT01P = c("A", "B"),
-		AGE = c(25, 30),
-		SEX = c("M", "F"),
-		RACE = c("WHITE", "BLACK")
-	)
+test_that(
+	paste0(
+		"create_demographics_table accepts data.frame and wraps to ",
+		"ADaMData"
+	),
+	{
+		adsl <- data.frame(
+			USUBJID = c("01", "02"),
+			TRT01P = c("A", "B"),
+			AGE = c(25, 30),
+			SEX = c("M", "F"),
+			RACE = c("WHITE", "BLACK")
+		)
 
-	tbl <- create_demographics_table(data = adsl)
+		tbl <- create_demographics_table(data = adsl)
 
-	expect_s7_class(tbl, ClinicalTable)
-	expect_equal(tbl@type, "demographics")
-})
+		expect_s7_class(tbl, ClinicalTable)
+		expect_equal(tbl@type, "demographics")
+	}
+)
