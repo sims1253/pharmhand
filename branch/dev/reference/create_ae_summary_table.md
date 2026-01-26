@@ -6,7 +6,7 @@ Generate AE summary tables for clinical study reports.
 
 ``` r
 create_ae_summary_table(
-  adae,
+  data,
   adsl = NULL,
   type = c("overview", "soc", "soc_pt", "pt", "common", "severity", "relationship",
     "sae", "discontinuation", "deaths", "comparison"),
@@ -14,7 +14,8 @@ create_ae_summary_table(
   n_top = ph_default("n_top"),
   soc = NULL,
   title = NULL,
-  autofit = ph_default("autofit"),
+  footnotes = character(),
+  theme = "hta",
   ref_group = NULL,
   by = "pt",
   threshold = 0,
@@ -22,24 +23,26 @@ create_ae_summary_table(
   conf_level = ph_default("conf_level"),
   include_nnh = TRUE,
   soc_order = NULL,
-  severity_levels = c("MILD", "MODERATE", "SEVERE")
+  severity_levels = c("MILD", "MODERATE", "SEVERE"),
+  ...
 )
 ```
 
 ## Arguments
 
-- adae:
+- data:
 
-  ADAE data frame (ADaM Adverse Events dataset)
+  ADAE data frame or ADaMData object containing ADaM Adverse Events
+  dataset
 
 - adsl:
 
-  ADSL data frame (optional, required for some table types like
-  "deaths", "comparison", or for denominator calculation)
+  ADSL data frame or ADaMData object (optional, required for some table
+  types like "deaths", "comparison", or for denominator calculation)
 
 - type:
 
-  Character string specifying the table type:
+  Character string specifying table type:
 
   - "overview" - Summary of TEAEs, related AEs, SAEs, discontinuations
 
@@ -79,13 +82,17 @@ create_ae_summary_table(
 
   Table title (auto-generated if NULL)
 
-- autofit:
+- footnotes:
 
-  Logical, whether to autofit column widths (default: TRUE)
+  Character vector of footnotes (optional)
+
+- theme:
+
+  Theme for table styling (default: "hta")
 
 - ref_group:
 
-  For type="comparison", the reference group for comparisons
+  For type="comparison", reference group for comparisons
 
 - by:
 
@@ -117,6 +124,11 @@ create_ae_summary_table(
   For type="severity", severity levels ordering (character vector).
   Default: c("MILD", "MODERATE", "SEVERE")
 
+- ...:
+
+  Additional arguments passed to
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
+
 ## Value
 
 A ClinicalTable object
@@ -126,23 +138,23 @@ A ClinicalTable object
 ``` r
 if (FALSE) { # \dontrun{
 # AE Overview
-overview <- create_ae_summary_table(adae, adsl, type = "overview")
+overview <- create_ae_summary_table(data, adsl, type = "overview")
 
 # SOC table
-soc_table <- create_ae_summary_table(adae, adsl, type = "soc")
+soc_table <- create_ae_summary_table(data, adsl, type = "soc")
 
 # SOC/PT hierarchical table
-soc_pt <- create_ae_summary_table(adae, adsl, type = "soc_pt")
+soc_pt <- create_ae_summary_table(data, adsl, type = "soc_pt")
 
 # Most common AEs (top 20)
-common <- create_ae_summary_table(adae, adsl, type = "common", n_top = 20)
+common <- create_ae_summary_table(data, adsl, type = "common", n_top = 20)
 
 # SAE table
-sae <- create_ae_summary_table(adae, adsl, type = "sae")
+sae <- create_ae_summary_table(data, adsl, type = "sae")
 
 # AE comparison with risk differences
 comparison <- create_ae_summary_table(
-  adae, adsl,
+  data, adsl,
   type = "comparison",
   ref_group = "Placebo",
   by = "pt",
@@ -151,7 +163,7 @@ comparison <- create_ae_summary_table(
 
 # SOC table with custom ordering
 soc_ordered <- create_ae_summary_table(
-  adae, adsl,
+  data, adsl,
   type = "soc",
   soc_order = c(
     "Infections",

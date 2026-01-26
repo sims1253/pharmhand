@@ -6,7 +6,7 @@ Standard demographics and baseline characteristics table.
 
 ``` r
 create_demographics_table(
-  adsl_data,
+  data,
   title = "Demographics and Baseline Characteristics",
   trt_var = ph_default("trt_var"),
   age_var = "AGE",
@@ -21,9 +21,9 @@ create_demographics_table(
 
 ## Arguments
 
-- adsl_data:
+- data:
 
-  ADaMData object containing ADSL
+  ADaMData object or data.frame containing ADSL
 
 - title:
 

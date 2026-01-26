@@ -89,6 +89,13 @@ options(
 create_demographics_table(adsl)  # Uses ARM instead of TRT01P
 ```
 
+### Validation
+
+Scalar validation helpers reject NA values. Use
+[`assert_no_na()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_no_na.md)
+for explicit NA checking or remove NA values before passing to
+validation functions.
+
 ## Advanced: ADaMData Wrapper
 
 For population filtering and computed properties:

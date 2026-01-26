@@ -1,8 +1,8 @@
-# Create HTA-Style Table Create Clinical Table (Factory Function)
+# Create Clinical Table (Factory Function)
 
-Convenience factory function that creates a properly formatted clinical
-table with flextable styling. Reduces boilerplate code across the
-package.
+Primary factory function for creating ClinicalTable objects with proper
+styling. Supports multiple data types and themes, with optional custom
+summarization logic.
 
 ## Usage
 
@@ -12,9 +12,9 @@ create_clinical_table(
   type,
   title = NULL,
   footnotes = character(),
-  metadata = list(),
-  col_widths = NULL,
-  autofit = ph_default("autofit")
+  theme = c("hta", "iqwig", "gba", "clinical"),
+  summary_fn = NULL,
+  ...
 )
 ```
 
@@ -22,8 +22,16 @@ create_clinical_table(
 
 - data:
 
-  Data frame to display, or an `AnalysisResults` object (in which case
-  `@stats` is used).
+  Data to display. Can be:
+
+  - `ADaMData` object (uses `@data` or `@filtered_data`)
+
+  - `LayeredTable` object (built using
+    [`build_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/build_table.md))
+
+  - `AnalysisResults` object (uses `@stats`)
+
+  - Raw `data.frame`
 
 - type:
 
@@ -37,17 +45,18 @@ create_clinical_table(
 
   Character vector of footnotes
 
-- metadata:
+- theme:
 
-  List of additional metadata
+  Theme preset: "hta", "iqwig", "gba", or "clinical" (default: "hta")
 
-- col_widths:
+- summary_fn:
 
-  Named numeric vector of column widths (optional)
+  Optional function for custom summarization. Receives the extracted
+  data and should return a data.frame. If NULL, data is used as-is.
 
-- autofit:
+- ...:
 
-  Logical, whether to autofit column widths
+  Additional arguments passed to theme functions
 
 ## Value
 
@@ -57,12 +66,46 @@ A ClinicalTable object
 
 ``` r
 if (FALSE) { # \dontrun{
+# Basic usage with data.frame
 df <- data.frame(Treatment = c("A", "B"), N = c(100, 95))
 table <- create_clinical_table(
   data = df,
   type = "summary",
   title = "Treatment Summary",
   footnotes = "ITT Population"
+)
+
+# With custom summary function
+table <- create_clinical_table(
+  data = adsl_data,
+  type = "demographics",
+  summary_fn = function(d) {
+    d |> dplyr::summarise(N = dplyr::n(), .by = TRT01P)
+  },
+  theme = "iqwig"
+)
+
+# With ADaMData object
+table <- create_clinical_table(
+  data = ADaMData(adsl_df, domain = "ADSL"),
+  type = "demographics",
+  title = "Baseline Characteristics",
+  theme = "gba"
+)
+
+# With LayeredTable object
+demo_lt <- LayeredTable(
+  data = adsl_df,
+  trt_var = "TRT01P",
+  layers = list(
+    CountLayer(target_var = "SEX", label = "Sex"),
+    DescriptiveLayer(target_var = "AGE", label = "Age (years)")
+  )
+)
+table <- create_clinical_table(
+  data = demo_lt,
+  type = "demographics",
+  title = "Demographics"
 )
 } # }
 ```

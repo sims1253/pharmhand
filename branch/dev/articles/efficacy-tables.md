@@ -68,6 +68,7 @@ tte_table@flextable
 | Median (95% CI)             | NE        | NE                   | NE                  |
 | HR (95% CI)                 | Reference | 0.84 (0.20, 3.53)    | 0.56 (0.11, 2.92)   |
 | p-value                     | -         | 0.809                | 0.492               |
+| FAS Population              |           |                      |                     |
 | Time unit: months           |           |                      |                     |
 | HR reference group: Placebo |           |                      |                     |
 | NE = Not Estimable          |           |                      |                     |
@@ -100,6 +101,7 @@ tte_landmark@flextable
 | 24-months Rate (95% CI)                          | 97.8 (94.8, 100.0) | 97.8 (94.8, 100.0)   | 97.8 (94.8, 100.0)  |
 | HR (95% CI)                                      | Reference          | 0.84 (0.20, 3.53)    | 0.56 (0.11, 2.92)   |
 | p-value                                          | -                  | 0.809                | 0.492               |
+| FAS Population                                   |                    |                      |                     |
 | Time unit: months                                |                    |                      |                     |
 | HR reference group: Placebo                      |                    |                      |                     |
 | NE = Not Estimable                               |                    |                      |                     |
@@ -355,7 +357,7 @@ analyzes change from baseline values for continuous endpoints.
 ``` r
 # Create change from baseline table for vital signs
 cfb_table <- create_cfb_summary_table(
-  advs = advs,
+  data = advs,
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
   title = "Change from Baseline in Vital Signs"
@@ -371,7 +373,7 @@ cfb_table@flextable
 | Diastolic Blood Pressure (mmHg)              | 222       | 168                    | 177                   | -3 (9)            | -2.74 (11.34)                  | 0.11 (10.12)                  |
 | Pulse Rate (beats/min)                       | 222       | 168                    | 177                   | 1.63 (10.7)       | 1.2 (8.93)                     | 4.29 (10.39)                  |
 | Systolic Blood Pressure (mmHg)               | 222       | 168                    | 177                   | -3.56 (17.82)     | -6.74 (14.96)                  | -3.7 (14.06)                  |
-| Safety Population                            |           |                        |                       |                   |                                |                               |
+| FAS Population                               |           |                        |                       |                   |                                |                               |
 | Mean (SD) presented for change from baseline |           |                        |                       |                   |                                |                               |
 
 ### Custom Parameters
@@ -379,7 +381,7 @@ cfb_table@flextable
 ``` r
 # Change from baseline for specific parameters
 cfb_custom <- create_cfb_summary_table(
-  advs = advs,
+  data = advs,
   params = c("SYSBP"),  # Only systolic blood pressure
   visit = "Week 8",
   title = "Systolic Blood Pressure Change from Baseline at Week 8"
@@ -393,7 +395,7 @@ cfb_custom@flextable
 |--------------------------------------------------------|-----------|------------------------|-----------------------|-------------------|--------------------------------|-------------------------------|
 | Parameter                                              | Placebo n | Xanomeline High Dose n | Xanomeline Low Dose n | Placebo Mean (SD) | Xanomeline High Dose Mean (SD) | Xanomeline Low Dose Mean (SD) |
 | Systolic Blood Pressure (mmHg)                         | 219       | 168                    | 180                   | 0.05 (15.09)      | -3.64 (15.93)                  | -1.17 (17.25)                 |
-| Safety Population                                      |           |                        |                       |                   |                                |                               |
+| FAS Population                                         |           |                        |                       |                   |                                |                               |
 | Mean (SD) presented for change from baseline           |           |                        |                       |                   |                                |                               |
 
 ## Primary Endpoint Tables
@@ -406,7 +408,7 @@ secondary endpoints.
 ``` r
 # Create primary endpoint summary table
 primary_table <- create_primary_endpoint_table(
-  advs = advs,
+  data = advs,
   paramcd = "SYSBP",
   visit = "End of Treatment",
   title = "Primary Endpoint Summary: Systolic Blood Pressure"
@@ -423,7 +425,7 @@ primary_table@flextable
 | Mean (SD)                                         | 132.7 (15.44) | 132.3 (15.62)        | 133 (17.08)         |
 | Median                                            | 131           | 131                  | 130                 |
 | Min, Max                                          | 78, 172       | 100, 177             | 92, 178             |
-| Safety Population                                 |               |                      |                     |
+| FAS Population                                    |               |                      |                     |
 | Parameter: SYSBP at End of Treatment              |               |                      |                     |
 
 ### Secondary Endpoint
@@ -431,7 +433,7 @@ primary_table@flextable
 ``` r
 # Secondary endpoint analysis
 secondary_table <- create_primary_endpoint_table(
-  advs = advs,
+  data = advs,
   paramcd = "DIABP",
   visit = "Week 8",
   title = "Secondary Endpoint: Diastolic Blood Pressure at Week 8"
@@ -448,7 +450,7 @@ secondary_table@flextable
 | Mean (SD)                                              | 75.2 (9.12) | 77.4 (9.07)          | 75.4 (10.59)        |
 | Median                                                 | 76          | 78.3                 | 74                  |
 | Min, Max                                               | 49, 101     | 54, 98               | 52, 100             |
-| Safety Population                                      |             |                      |                     |
+| FAS Population                                         |             |                      |                     |
 | Parameter: DIABP at Week 8                             |             |                      |                     |
 
 ## Laboratory Analysis
@@ -462,7 +464,7 @@ Click to expand: Laboratory Parameters Summary
 ``` r
 # Create laboratory parameters summary
 lab_summary <- create_lab_summary_table(
-  adlb = adlb,
+  data = adlb,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST"),
   visit = "Week 24",
   title = "Laboratory Parameters Summary at Week 24"
@@ -490,7 +492,7 @@ Click to expand: Lab Shift Table
 ``` r
 # Create laboratory shift table for liver function test
 shift_table <- create_lab_shift_table(
-  adlb = adlb,
+  data = adlb,
   paramcd = "ALT",
   visit = "Week 24",
   title = "ALT Shift from Baseline to Week 24"
@@ -520,7 +522,7 @@ Click to expand: Vital Signs by Visit Table
 ``` r
 # Vital signs by visit table
 vs_visit_table <- create_vs_by_visit_table(
-  advs = advs,
+  data = advs,
   paramcd = "SYSBP",
   visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
   title = "Systolic Blood Pressure by Study Visit"
@@ -538,7 +540,7 @@ vs_visit_table@flextable
 | Week 4                                 | 328 / 133.9 (17.37) | 292 / 132.2 (16.14)  | 288 / 135.4 (17.79) |
 | Week 8                                 | 292 / 136.3 (17.02) | 224 / 135.1 (15.54)  | 240 / 134.9 (17.84) |
 | End of Treatment                       | 222 / 132.7 (15.44) | 168 / 132.3 (15.62)  | 177 / 133 (17.08)   |
-| Safety Population                      |                     |                      |                     |
+| FAS Population                         |                     |                      |                     |
 | Format: n / Mean (SD)                  |                     |                      |                     |
 
 ## Customization
@@ -573,6 +575,7 @@ custom_table@flextable
 | Median (95% CI)             | NE        | NE                   | NE                  |
 | HR (95% CI)                 | Reference | 0.84 (0.20, 3.53)    | 0.56 (0.11, 2.92)   |
 | p-value                     | -         | 0.809                | 0.492               |
+| FAS Population              |           |                      |                     |
 | Time unit: months           |           |                      |                     |
 | HR reference group: Placebo |           |                      |                     |
 | NE = Not Estimable          |           |                      |                     |
@@ -638,7 +641,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
 
   # Section 1: Primary Endpoint Summary
   primary_content <- create_primary_endpoint_table(
-    advs = advs,
+    data = advs,
     paramcd = "SYSBP",
     visit = "End of Treatment",
     title = "Table 3.1: Primary Endpoint Summary (Systolic BP)"
@@ -646,7 +649,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
 
   # Section 2: Change from Baseline
   cfb_content <- create_cfb_summary_table(
-    advs = advs,
+    data = advs,
     params = c("SYSBP", "DIABP", "PULSE"),
     visit = "End of Treatment",
     title = "Table 3.2: Change from Baseline Summary"
@@ -654,20 +657,20 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
 
   # Section 3: Vital Signs by Visit
   vs_content <- create_vs_by_visit_table(
-    advs = advs,
+    data = advs,
     paramcd = "SYSBP",
     title = "Table 3.3: Vital Signs by Visit"
   )
 
   # Section 4: Laboratory Parameters
   lab_content <- create_lab_summary_table(
-    adlb = adlb,
+    data = adlb,
     title = "Table 3.4: Laboratory Parameters Summary"
   )
 
   # Section 5: Laboratory Shift Table
   shift_content <- create_lab_shift_table(
-    adlb = adlb,
+    data = adlb,
     paramcd = "ALT",
     title = "Table 3.5: ALT Shift from Baseline"
   )
@@ -675,7 +678,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
   # Section 6: Subgroup Analysis
   subgroup_content <- create_subgroup_analysis_table(
     adsl = adsl,
-    advs = advs,
+    data = advs,
     title = "Table 3.6: Subgroup Analysis by Age Group"
   )
 

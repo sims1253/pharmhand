@@ -8,21 +8,20 @@ and evidence grades for multiple endpoints.
 
 ``` r
 create_evidence_summary_table(
-  endpoints,
+  data,
   title = "Evidence Summary",
   columns = c("Endpoint", "N Studies", "Effect (95% CI)", "p-value", "I2", "RoB",
     "Grade"),
   conf_level = 0.95,
   language = c("en", "de"),
   footnotes = character(),
-  col_widths = NULL,
-  autofit = TRUE
+  ...
 )
 ```
 
 ## Arguments
 
-- endpoints:
+- data:
 
   List of named elements containing endpoint data. Each element should
   be a list with components:
@@ -59,13 +58,11 @@ create_evidence_summary_table(
 
   Character vector of footnotes to add to the table.
 
-- col_widths:
+- ...:
 
-  Named numeric vector of column widths (in inches).
-
-- autofit:
-
-  Logical, whether to autofit column widths (default: TRUE).
+  Additional arguments passed to
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md),
+  such as `col_widths`, `autofit`, `theme`, etc.
 
 ## Value
 
@@ -93,8 +90,9 @@ endpoints <- list(
       n_studies = 3L
     ),
     rob = list(
-      RoB2Result(study_id = "Study1", ...),
-      RoB2Result(study_id = "Study2", ...)
+      # Additional RoB2Result objects with required arguments would go here
+      # e.g., RoB2Result(study_id = "Study1", outcome = "...", overall = "...", domains = list(...))
+      # e.g., RoB2Result(study_id = "Study2", outcome = "...", overall = "...", domains = list(...))
     )
   ),
   "Progression-Free Survival" = list(

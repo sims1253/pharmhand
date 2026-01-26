@@ -1,5 +1,94 @@
 # Changelog
 
+## pharmhand 0.4.2.9000
+
+- Validation helpers now reject NA consistently across assertion
+  functions.
+- Reporting engine refactor: title/footnotes helper, ADaMData coercion,
+  empty gt styling.
+- Export improvements: preserve ClinicalTable styling, HTML title
+  handling.
+- Safety/efficacy robustness: NNH bounds ordering, warnings on empty
+  filters, Treatment column guard, case-insensitive DISCONTINUED
+  matching.
+- Added .format_n_over_n formatting helper for n/N display.
+- Test refactors for clarity and maintainability.
+
+## pharmhand 0.4.1.9000
+
+### Code Quality Improvements
+
+#### Validation Utilities
+
+- Added comprehensive assertion functions for input validation:
+  - [`assert_all_positive()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_all_positive.md),
+    [`assert_positive()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_positive.md),
+    [`assert_non_negative()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_non_negative.md)
+  - [`assert_positive_integer()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_positive_integer.md),
+    [`assert_non_negative_integer()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_non_negative_integer.md)
+  - [`assert_character_scalar()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_character_scalar.md),
+    [`assert_character_vector()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_character_vector.md)
+  - [`assert_numeric_scalar()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_numeric_scalar.md),
+    [`assert_numeric_vector()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_numeric_vector.md)
+  - [`assert_integer_scalar()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_integer_scalar.md),
+    [`assert_logical_scalar()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_logical_scalar.md)
+  - [`assert_data_frame()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_data_frame.md),
+    [`assert_column_exists()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_column_exists.md)
+  - [`assert_lengths_match()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_lengths_match.md),
+    [`assert_no_na()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_no_na.md),
+    [`assert_in_range()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_in_range.md)
+
+#### Messaging and Helpers
+
+- Added
+  [`ph_abort()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_abort.md)
+  for consistent error handling with abort messaging
+- Added
+  [`ph_inform()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_inform.md)
+  for informational messages
+- Added
+  [`ph_warn()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_warn.md)
+  for warning messages
+- Added
+  [`get_subject_n()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_subject_n.md)
+  for extracting subject counts from ADaM datasets
+- Added
+  [`get_summary_label()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_summary_label.md)
+  for generating standardized summary labels
+- Added `||` operator (`grapes-or-or-grapes`) for flexible default value
+  handling
+
+#### Documentation Improvements
+
+- Added man pages for internal helper functions:
+  - [`.build_evidence_summary_row()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-build_evidence_summary_row.md),
+    [`.build_league_matrix()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-build_league_matrix.md),
+    [`.build_rob_summary_row()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-build_rob_summary_row.md)
+  - [`.build_study_characteristic_row()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-build_study_characteristic_row.md),
+    [`.calculate_ae_comparisons()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-calculate_ae_comparisons.md)
+  - [`.empty_ae_exposure_df()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-empty_ae_exposure_df.md),
+    [`.ensure_adam_data()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-ensure_adam_data.md),
+    [`.summarize_ae_exposure()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-summarize_ae_exposure.md),
+    [`.summarize_ae_hierarchy()`](https://sims1253.github.io/pharmhand/branch/dev/reference/dot-summarize_ae_hierarchy.md)
+- Added man pages for utility functions:
+  [`ph_abort()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_abort.md),
+  [`ph_inform()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_inform.md),
+  [`ph_warn()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_warn.md)
+- Added man pages for new helpers:
+  [`get_subject_n()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_subject_n.md),
+  [`get_summary_label()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_summary_label.md),
+  `||`
+
+#### Cleanup and Maintenance
+
+- Removed `.tldr/` directory and cache files (TLDR code analysis cache)
+- Deprecated `safe_pct()` function (removed man page)
+- Removed 11 old imputation test problem files from
+  `tests/testthat/_problems/`
+- Added `.tldr/` and `vignettes/safety-tables_files/` to `.gitignore`
+- Updated README files and pkgdown configuration
+- Updated vignettes for baseline, efficacy, and safety tables
+
 ## pharmhand 0.4.0.9000
 
 ### Phase 3: Quality Assessment
@@ -265,7 +354,8 @@
 
 #### Code Quality
 
-- Changed [`stop()`](https://rdrr.io/r/base/stop.html) to `ph_abort()`
+- Changed [`stop()`](https://rdrr.io/r/base/stop.html) to
+  [`ph_abort()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_abort.md)
   in example script for consistent error handling
 - Fixed vignette code fence indentation mismatch in efficacy-tables.Rmd
 - Added `:=` import from rlang to fix undefined global function warning
@@ -286,10 +376,8 @@
   [`create_km_plot()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_km_plot.md)
   risk table grid background by explicitly setting
   panel.grid.major/minor to element_blank()
-- Fixed
-  [`safe_pct()`](https://sims1253.github.io/pharmhand/branch/dev/reference/safe_pct.md)
-  division by zero in `safety_summary.R` by adding helper function
-  applied to 9 locations
+- Fixed `safe_pct()` division by zero in `safety_summary.R` by adding
+  helper function applied to 9 locations
 
 #### Bayesian Meta-Analysis Fixes
 

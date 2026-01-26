@@ -21,7 +21,8 @@ create_hta_module4_table(
 
 - data:
 
-  Data frame to display. If NULL, an empty template is created.
+  Data frame to display. If NULL, an empty template is created. Can also
+  be an ADaMData object.
 
 - title:
 

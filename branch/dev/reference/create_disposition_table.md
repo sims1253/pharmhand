@@ -6,7 +6,7 @@ Create Subject Disposition Table
 
 ``` r
 create_disposition_table(
-  adsl,
+  data,
   title = "Subject Disposition",
   trt_var = "TRT01P",
   status_var = "EOSSTT",
@@ -17,9 +17,9 @@ create_disposition_table(
 
 ## Arguments
 
-- adsl:
+- data:
 
-  ADSL data frame
+  ADSL data frame or ADaMData object
 
 - title:
 

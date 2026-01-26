@@ -8,19 +8,18 @@ information for each included study.
 
 ``` r
 create_study_characteristics_table(
-  studies,
+  data,
   title = "Study Characteristics",
   columns = c("Study", "Design", "N", "Treatment", "Comparator", "Population"),
   include_metadata = TRUE,
   footnotes = character(),
-  col_widths = NULL,
-  autofit = TRUE
+  ...
 )
 ```
 
 ## Arguments
 
-- studies:
+- data:
 
   List of Study objects, TwoArmStudy objects, or data frame with
   study-level characteristics.
@@ -42,13 +41,11 @@ create_study_characteristics_table(
 
   Character vector of footnotes to add.
 
-- col_widths:
+- ...:
 
-  Named numeric vector of column widths (in inches).
-
-- autofit:
-
-  Logical, whether to autofit column widths (default: TRUE).
+  Additional arguments passed to
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md),
+  such as `col_widths`, `autofit`, `theme`, etc.
 
 ## Value
 

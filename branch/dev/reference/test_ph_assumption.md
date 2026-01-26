@@ -10,7 +10,7 @@ test_ph_assumption(
   data,
   time_var = NULL,
   event_var = NULL,
-  trt_var = NULL,
+  trt_var = "TRT01P",
   covariates = character(),
   alpha = 0.05,
   plot = FALSE
@@ -21,7 +21,8 @@ test_ph_assumption(
 
 - data:
 
-  Data frame with time-to-event data, or a coxph model object
+  An ADaMData object (with domain "ADTTE") or an ADTTE data frame with
+  time-to-event data, or a coxph model object
 
 - time_var:
 
@@ -33,7 +34,8 @@ test_ph_assumption(
 
 - trt_var:
 
-  Character. Treatment variable (required if data is a data frame)
+  Treatment variable name (default: "TRT01P"). Ignored for ADaMData
+  objects which use their own trt_var property.
 
 - covariates:
 

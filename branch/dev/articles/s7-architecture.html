@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -484,12 +484,17 @@ designs.</p>
 <code class="sourceCode R"><span><span class="co"># Single dispatch on first argument</span></span>
 <span><span class="fu"><a href="../reference/analyze.html">analyze</a></span><span class="op">(</span><span class="va">adam_data</span><span class="op">)</span>           <span class="co"># Uses ADaMData method</span></span>
 <span><span class="co">#&gt; &lt;pharmhand::AnalysisResults&gt;</span></span>
-<span><span class="co">#&gt;  @ stats    :'data.frame':   2 obs. of  2 variables:</span></span>
+<span><span class="co">#&gt;  @ stats        :'data.frame':   2 obs. of  2 variables:</span></span>
 <span><span class="co">#&gt;  .. $ TRT01P: chr  "Placebo" "Active"</span></span>
 <span><span class="co">#&gt;  .. $ N     : int  51 49</span></span>
-<span><span class="co">#&gt;  @ type     : chr "baseline"</span></span>
-<span><span class="co">#&gt;  @ groupings: list()</span></span>
-<span><span class="co">#&gt;  @ metadata : list()</span></span>
+<span><span class="co">#&gt;  @ type         : chr "baseline"</span></span>
+<span><span class="co">#&gt;  @ groupings    : list()</span></span>
+<span><span class="co">#&gt;  @ metadata     : list()</span></span>
+<span><span class="co">#&gt;  @ n_rows       : int 2</span></span>
+<span><span class="co">#&gt;  @ n_cols       : int 2</span></span>
+<span><span class="co">#&gt;  @ is_empty     : logi FALSE</span></span>
+<span><span class="co">#&gt;  @ summary_label: chr "baseline (n=2)"</span></span>
+<span><span class="co">#&gt;  @ column_names : chr [1:2] "TRT01P" "N"</span></span>
 <span><span class="fu"><a href="../reference/analyze_study.html">analyze_study</a></span><span class="op">(</span><span class="va">one_arm_study</span><span class="op">)</span> <span class="co"># Uses SingleArmStudy method</span></span>
 <span><span class="co">#&gt; &lt;pharmhand::SingleArmStudy&gt;</span></span>
 <span><span class="co">#&gt;  @ study_id     : chr "ONE-ARM-001"</span></span>
@@ -499,7 +504,7 @@ designs.</p>
 <span><span class="co">#&gt;  @ endpoints    : list()</span></span>
 <span><span class="co">#&gt;  @ results      :List of 2</span></span>
 <span><span class="co">#&gt;  .. $ baseline: &lt;pharmhand::AnalysisResults&gt;</span></span>
-<span><span class="co">#&gt;  ..  ..@ stats    : tibble [1 × 8] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  ..  ..@ stats        : tibble [1 × 8] (S3: tbl_df/tbl/data.frame)</span></span>
 <span><span class="co">#&gt;  $ variable: chr "AGE"</span></span>
 <span><span class="co">#&gt;  $ TRT01P  : chr "Active"</span></span>
 <span><span class="co">#&gt;  $ n       : int 50</span></span>
@@ -508,16 +513,21 @@ designs.</p>
 <span><span class="co">#&gt;  $ median  : num 60</span></span>
 <span><span class="co">#&gt;  $ min     : num 38.2</span></span>
 <span><span class="co">#&gt;  $ max     : num 81.6</span></span>
-<span><span class="co">#&gt;  ..  ..@ type     : chr "baseline"</span></span>
-<span><span class="co">#&gt;  ..  ..@ groupings: list()</span></span>
-<span><span class="co">#&gt;  ..  ..@ metadata :List of 1</span></span>
+<span><span class="co">#&gt;  ..  ..@ type         : chr "baseline"</span></span>
+<span><span class="co">#&gt;  ..  ..@ groupings    : list()</span></span>
+<span><span class="co">#&gt;  ..  ..@ metadata     :List of 1</span></span>
 <span><span class="co">#&gt;  .. .. .. $ categorical: tibble [8 × 4] (S3: tbl_df/tbl/data.frame)</span></span>
 <span><span class="co">#&gt;  .. .. ..  ..$ variable: chr [1:8] "AEBODSYS" "AEBODSYS" "AEBODSYS" "AEDECOD" ...</span></span>
 <span><span class="co">#&gt;  .. .. ..  ..$ TRT01P  : chr [1:8] "Active" "Active" "Active" "Active" ...</span></span>
 <span><span class="co">#&gt;  .. .. ..  ..$ n       : int [1:8] 15 17 18 18 13 19 35 15</span></span>
 <span><span class="co">#&gt;  .. .. ..  ..$ label   : chr [1:8] "CNS (n=15, 30%)" "GI (n=17, 34%)" "Respiratory (n=18, 36%)" "Cough (n=18, 36%)" ...</span></span>
+<span><span class="co">#&gt;  ..  ..@ n_rows       : int 1</span></span>
+<span><span class="co">#&gt;  ..  ..@ n_cols       : int 8</span></span>
+<span><span class="co">#&gt;  ..  ..@ is_empty     : logi FALSE</span></span>
+<span><span class="co">#&gt;  ..  ..@ summary_label: chr "baseline (n=1)"</span></span>
+<span><span class="co">#&gt;  ..  ..@ column_names : chr [1:8] "variable" "TRT01P" "n" "mean" ...</span></span>
 <span><span class="co">#&gt;  .. $ safety  : &lt;pharmhand::AnalysisResults&gt;</span></span>
-<span><span class="co">#&gt;  ..  ..@ stats    :'data.frame': 12 obs. of  8 variables:</span></span>
+<span><span class="co">#&gt;  ..  ..@ stats        :'data.frame': 12 obs. of  8 variables:</span></span>
 <span><span class="co">#&gt;  .. .. .. $ AEBODSYS: chr [1:12] "CNS" "CNS" "CNS" "CNS" ...</span></span>
 <span><span class="co">#&gt;  .. .. .. $ TRT01P  : chr [1:12] "Active" "Active" "Active" "Active" ...</span></span>
 <span><span class="co">#&gt;  .. .. .. $ n       : int [1:12] 15 8 3 4 17 4 5 8 18 6 ...</span></span>
@@ -526,9 +536,14 @@ designs.</p>
 <span><span class="co">#&gt;  .. .. .. $ level   : chr [1:12] "SOC" "PT" "PT" "PT" ...</span></span>
 <span><span class="co">#&gt;  .. .. .. $ label   : chr [1:12] "CNS" "Cough" "Headache" "Nausea" ...</span></span>
 <span><span class="co">#&gt;  .. .. .. $ AEDECOD : chr [1:12] NA "Cough" "Headache" "Nausea" ...</span></span>
-<span><span class="co">#&gt;  ..  ..@ type     : chr "safety_ae"</span></span>
-<span><span class="co">#&gt;  ..  ..@ groupings: list()</span></span>
-<span><span class="co">#&gt;  ..  ..@ metadata : list()</span></span>
+<span><span class="co">#&gt;  ..  ..@ type         : chr "safety_ae"</span></span>
+<span><span class="co">#&gt;  ..  ..@ groupings    : list()</span></span>
+<span><span class="co">#&gt;  ..  ..@ metadata     : list()</span></span>
+<span><span class="co">#&gt;  ..  ..@ n_rows       : int 12</span></span>
+<span><span class="co">#&gt;  ..  ..@ n_cols       : int 8</span></span>
+<span><span class="co">#&gt;  ..  ..@ is_empty     : logi FALSE</span></span>
+<span><span class="co">#&gt;  ..  ..@ summary_label: chr "safety_ae (n=12)"</span></span>
+<span><span class="co">#&gt;  ..  ..@ column_names : chr [1:8] "AEBODSYS" "TRT01P" "n" "N_tot" ...</span></span>
 <span><span class="co">#&gt;  @ risk_of_bias : NULL</span></span>
 <span><span class="co">#&gt;  @ metadata     : list()</span></span>
 <span><span class="co">#&gt;  @ data         :'data.frame':   50 obs. of  6 variables:</span></span>

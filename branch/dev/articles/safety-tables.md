@@ -12,7 +12,7 @@ Generate a complete safety report in one call:
 ``` r
 # One-line safety report with multiple tables
 quick_safety_report(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   output = "safety_report.docx",
   title = "Safety Analysis",
@@ -69,7 +69,7 @@ adlb <- pharmaverseadam::adlb
 ``` r
 # Create AE overview table
 overview_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "overview",
   title = "Table 1: Overview of Treatment-Emergent Adverse Events"
@@ -98,7 +98,7 @@ discontinuation (`AEACN == "DRUG WITHDRAWN"`) - Deaths
 ``` r
 # Create SOC table
 soc_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "soc",
   title = "Table 2: Treatment-Emergent Adverse Events by System Organ Class"
@@ -144,7 +144,7 @@ Click to expand: SOC/PT Hierarchical Table
 ``` r
 # Create hierarchical SOC/PT table
 soc_pt_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "soc_pt",
   title = "Table 3: TEAEs by System Organ Class and Preferred Term"
@@ -395,7 +395,7 @@ soc_pt_table@flextable
 ``` r
 # Create table of most common AEs (top 10)
 common_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "common",
   n_top = 10,
@@ -427,7 +427,7 @@ common_table@flextable
 ``` r
 # Create severity table
 severity_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "severity",
   title = "Table 5: Subjects by Maximum Adverse Event Severity"
@@ -453,7 +453,7 @@ Severity categories order as: MILD → MODERATE → SEVERE.
 ``` r
 # Create relationship table
 relationship_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "relationship",
   title = "Table 6: Treatment-Emergent AEs by Relationship to Study Drug"
@@ -479,7 +479,7 @@ relationship_table@flextable
 ``` r
 # Create SAE table
 sae_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "sae",
   title = "Table 7: Serious Adverse Events"
@@ -506,7 +506,7 @@ Shows message if no SAEs reported.
 ``` r
 # Create discontinuation table
 disc_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "discontinuation",
   title = "Table 8: AEs Leading to Study Drug Discontinuation"
@@ -528,7 +528,7 @@ disc_table@flextable
 ``` r
 # Create deaths summary table
 deaths_table <- create_ae_summary_table(
-  adae = NULL,  # Not needed for deaths
+  data = NULL,  # Not needed for deaths
   adsl = adsl,
   type = "deaths",
   title = "Table 9: Deaths Summary"
@@ -556,7 +556,7 @@ trt_n <- adsl |>
   dplyr::group_by(TRT01P) |>
   dplyr::summarise(N = dplyr::n(), .groups = "drop")
 lab_shift_table <- create_lab_shift_table(
-  adlb = adlb,
+  data = adlb,
   title = "Table 10: Lab Shift from Baseline to Max Post-Baseline"
 )
 
@@ -582,7 +582,7 @@ lab_shift_table@flextable
 ``` r
 # Use different treatment variable
 overview_trtp <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "overview",
   trt_var = "TRT01P",  # Planned treatment
@@ -606,7 +606,7 @@ overview_trtp@flextable
 ``` r
 # Show top 5 instead of default 15
 common_top5 <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "common",
   n_top = 5,
@@ -633,7 +633,7 @@ common_top5@flextable
 ``` r
 # Analyze only skin and subcutaneous tissue disorders
 rash_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "pt",
   soc = "SKIN AND SUBCUTANEOUS TISSUE DISORDERS",
@@ -672,7 +672,7 @@ rash_table@flextable
 ``` r
 # Create table without autofit (for custom formatting)
 soc_manual <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "soc",
   autofit = FALSE,
@@ -802,7 +802,7 @@ function provides these statistics.
 ``` r
 # Create AE comparison table with risk differences
 comparison_table <- create_ae_summary_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   type = "comparison",
   ref_group = "Placebo",
@@ -831,7 +831,7 @@ The comparison table includes: - **n/N (%)** for each treatment group -
 ``` r
 # Compare at preferred term level with threshold
 pt_comparison <- create_ae_comparison_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   ref_group = "Placebo",
   by = "pt",
@@ -851,7 +851,7 @@ pt_comparison@flextable
 ``` r
 # Overall comparison (any TEAE)
 overall_comparison <- create_ae_comparison_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   ref_group = "Placebo",
   by = "overall",

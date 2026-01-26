@@ -6,7 +6,7 @@ Create Enrollment by Region Table
 
 ``` r
 create_region_table(
-  adsl,
+  data,
   title = "Enrollment by Region",
   trt_var = "TRT01P",
   region_var = "REGION1",
@@ -16,9 +16,9 @@ create_region_table(
 
 ## Arguments
 
-- adsl:
+- data:
 
-  ADSL data frame
+  ADSL data frame or ADaMData object
 
 - title:
 

@@ -6,7 +6,7 @@ Create Primary Endpoint Summary Table
 
 ``` r
 create_primary_endpoint_table(
-  advs,
+  data,
   paramcd = "SYSBP",
   visit = "End of Treatment",
   trt_var = ph_default("trt_var"),
@@ -17,9 +17,10 @@ create_primary_endpoint_table(
 
 ## Arguments
 
-- advs:
+- data:
 
-  ADVS data frame
+  ADVS data frame or ADaMData object (data frames are coerced via
+  .ensure_adam_data())
 
 - paramcd:
 
@@ -57,6 +58,7 @@ advs <- data.frame(
   AVAL = c(120, 125, 118, 122)
 )
 table <- create_primary_endpoint_table(advs, paramcd = "SYSBP")
+#> Automatically wrapping data.frame in ADaMData object
 table@type
 #> [1] "primary_endpoint"
 ```

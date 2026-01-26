@@ -7,17 +7,17 @@ domains, suitable for G-BA Module 4 requirements.
 
 ``` r
 create_rob_summary_table(
-  rob_results,
+  data,
   title = "Risk of Bias Assessment",
   include_justification = FALSE,
   footnotes = character(),
-  autofit = TRUE
+  ...
 )
 ```
 
 ## Arguments
 
-- rob_results:
+- data:
 
   List of RoB2Result objects (one per study).
 
@@ -33,9 +33,11 @@ create_rob_summary_table(
 
   Character vector of footnotes.
 
-- autofit:
+- ...:
 
-  Logical, autofit column widths (default: TRUE).
+  Additional arguments passed to
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md),
+  such as `col_widths`, `autofit`, `theme`, etc.
 
 ## Value
 
@@ -46,8 +48,9 @@ A ClinicalTable object.
 ``` r
 if (FALSE) { # \dontrun{
 rob_results <- list(
-  RoB2Result(study_id = "Study 1", ...),
-  RoB2Result(study_id = "Study 2", ...)
+  # RoB2Result objects with required arguments would go here
+  # e.g., RoB2Result(study_id = "Study 1", outcome = "...", overall = "...", domains = list(...))
+  # e.g., RoB2Result(study_id = "Study 2", outcome = "...", overall = "...", domains = list(...))
 )
 rob_table <- create_rob_summary_table(rob_results)
 } # }

@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,6 +153,11 @@
 <span></span>
 <span><span class="co"># All functions now use your preferences</span></span>
 <span><span class="fu"><a href="reference/create_demographics_table.html">create_demographics_table</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">)</span>  <span class="co"># Uses ARM instead of TRT01P</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
+</h3>
+<p>Scalar validation helpers reject NA values. Use <code><a href="reference/assert_no_na.html">assert_no_na()</a></code> for explicit NA checking or remove NA values before passing to validation functions.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="advanced-adamdata-wrapper">Advanced: ADaMData Wrapper<a class="anchor" aria-label="anchor" href="#advanced-adamdata-wrapper"></a>

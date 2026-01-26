@@ -8,29 +8,32 @@ assessments.
 
 ``` r
 create_ae_comparison_table(
-  adae,
+  data,
   adsl,
   ref_group,
   trt_var = "TRT01P",
   by = c("pt", "soc", "overall"),
   threshold = 0,
   sort_by = c("incidence", "rd", "rr"),
-  conf_level = 0.95,
+  conf_level = ph_default("conf_level"),
   include_nnh = TRUE,
   title = NULL,
-  autofit = TRUE
+  footnotes = character(),
+  theme = "hta",
+  ...
 )
 ```
 
 ## Arguments
 
-- adae:
+- data:
 
-  ADAE data frame
+  ADAE data frame or ADaMData object containing ADaM Adverse Events
+  dataset
 
 - adsl:
 
-  ADSL data frame for denominators
+  ADSL data frame or ADaMData object for denominators
 
 - ref_group:
 
@@ -64,9 +67,18 @@ create_ae_comparison_table(
 
   Table title (auto-generated if NULL)
 
-- autofit:
+- footnotes:
 
-  Logical (default: TRUE)
+  Character vector of footnotes (optional)
+
+- theme:
+
+  Theme for table styling (default: "hta")
+
+- ...:
+
+  Additional arguments passed to
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
 
 ## Value
 
@@ -79,14 +91,16 @@ p-value
 if (FALSE) { # \dontrun{
 # AE comparison by PT
 ae_comp <- create_ae_comparison_table(
-  adae, adsl,
+  data = adae,
+  adsl = adsl,
   ref_group = "Placebo",
   by = "pt"
 )
 
 # AE comparison by SOC with 5% threshold
 ae_comp_soc <- create_ae_comparison_table(
-  adae, adsl,
+  data = adae,
+  adsl = adsl,
   ref_group = "Placebo",
   by = "soc",
   threshold = 5

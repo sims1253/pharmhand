@@ -108,7 +108,7 @@ adam_data <- ADaMData(
 
 # Pass to table function
 demo_table_saf <- create_demographics_table(
-  adsl_data = adam_data,
+  data = adam_data,
   trt_var = "TRT01P"
 )
 
@@ -171,7 +171,7 @@ Customize variable names to match your data structure:
 ``` r
 # Custom variable names
 demo_table_custom <- create_demographics_table(
-  adsl_data = adam_data,
+  data = adam_data,
   trt_var = "TRT01P",
   age_var = "AGE",
   sex_var = "SEX",
@@ -236,7 +236,7 @@ demo_table_custom@flextable
 
 ``` r
 region_table <- create_region_table(
-  adsl = adsl,
+  data = adsl,
   trt_var = "TRT01P",
   region_var = "REGION1"
 )
@@ -252,7 +252,7 @@ region_table@flextable
 | Xanomeline High Dose                    | NA                  | 84  | 84    | 100.0 | REGION1  | count      |
 | Xanomeline Low Dose                     | NA                  | 84  | 84    | 100.0 | REGION1  | count      |
 | Screen Failure                          | NA                  | 52  | 52    | 100.0 | REGION1  | count      |
-| Safety Population                       |                     |     |       |       |          |            |
+| FAS Population                          |                     |     |       |       |          |            |
 | n (%) = Number (percentage) of subjects |                     |     |       |       |          |            |
 
 ## Medical history
@@ -261,8 +261,8 @@ Click to expand: Medical History Table
 
 ``` r
 mh_table <- create_medical_history_table(
+  data = admh,
   adsl = adsl,
-  admh = admh,
   trt_var = "TRT01P",
   soc_var = "MHBODSYS"
 )
@@ -301,7 +301,7 @@ mh_table@flextable
 | SURGICAL AND MEDICAL PROCEDURES                                     | 45 (52.3%) | 55 (65.5%)           | 59 (70.2%)          |
 | VASCULAR DISORDERS                                                  | 22 (25.6%) | 27 (32.1%)           | 20 (23.8%)          |
 | --                                                                  | 86 (100%)  | 84 (100%)            | 84 (100%)           |
-| ITT Population                                                      |            |                      |                     |
+| FAS Population                                                      |            |                      |                     |
 | n (%) = Number (percentage) of subjects with at least one condition |            |                      |                     |
 
 ## Concomitant medications
@@ -310,8 +310,8 @@ Click to expand: Concomitant Medications Table
 
 ``` r
 cm_table <- create_conmeds_table(
+  data = adcm,
   adsl = adsl,
-  adcm = adcm,
   trt_var = "TRT01P"
 )
 
@@ -332,7 +332,7 @@ cm_table@flextable
 | RESPIRATORY SYSTEM                                                     | 4 (4.7%)   | 4 (4.8%)             | 1 (1.2%)            |
 | SYSTEMIC HORMONAL PREPARATIONS, EXCL.                                  | 2 (2.3%)   | 8 (9.5%)             | 13 (15.5%)          |
 | UNCODED                                                                | 74 (86%)   | 77 (91.7%)           | 70 (83.3%)          |
-| ITT Population                                                         |            |                      |                     |
+| FAS Population                                                         |            |                      |                     |
 | n (%) = Number (percentage) of subjects taking at least one medication |            |                      |                     |
 
 ## Disposition
@@ -342,7 +342,7 @@ reasons for discontinuation.
 
 ``` r
 disp_table <- create_disposition_table(
-  adsl = adsl,
+  data = adsl,
   trt_var = "TRT01P"
 )
 
@@ -356,7 +356,7 @@ disp_table@flextable
 | COMPLETED           | 58      | 27                   | 25                  | 0              |
 | DISCONTINUED        | 28      | 57                   | 59                  | 0              |
 | --                  | 0       | 0                    | 0                   | 52             |
-| ITT Population      |         |                      |                     |                |
+| FAS Population      |         |                      |                     |                |
 
 ## Population summary
 
@@ -365,7 +365,7 @@ analysis populations.
 
 ``` r
 pop_table <- create_population_summary_table(
-  adsl = adsl,
+  data = adsl,
   trt_var = "TRT01P",
   pop_flags = c("SAFFL"),
   pop_labels = c("Safety")

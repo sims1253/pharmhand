@@ -190,7 +190,7 @@ tables.
 - [`create_region_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_region_table.md)
   : Create Enrollment by Region Table
 - [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
-  : Create HTA-Style Table Create Clinical Table (Factory Function)
+  : Create Clinical Table (Factory Function)
 - [`create_hta_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_table.md)
   : Create a flextable formatted for HTA/AMNOG submissions.
 - [`create_hta_module4_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_hta_module4_table.md)
@@ -673,10 +673,16 @@ headers and content.
 Helper functions for data filtering, treatment information, statistical
 diagnostics, and other common operations.
 
+- [`assert_non_negative()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_non_negative.md)
+  : Assert Non-Negative
 - [`get_filtered_data()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_filtered_data.md)
   : Get Filtered Data
+- [`get_subject_n()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_subject_n.md)
+  : Get Total Subject Count
 - [`get_subject_var()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_subject_var.md)
   : Get Subject Variable Name
+- [`get_summary_label()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_summary_label.md)
+  : Get Summary Label
 - [`get_trt_n()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_trt_n.md)
   : Get Treatment Group Counts
 - [`get_trt_var()`](https://sims1253.github.io/pharmhand/branch/dev/reference/get_trt_var.md)

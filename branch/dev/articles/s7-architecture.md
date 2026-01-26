@@ -393,12 +393,17 @@ word_obj <- to_word(clinical_table)   # ClinicalTable method
 # Single dispatch on first argument
 analyze(adam_data)           # Uses ADaMData method
 #> <pharmhand::AnalysisResults>
-#>  @ stats    :'data.frame':   2 obs. of  2 variables:
+#>  @ stats        :'data.frame':   2 obs. of  2 variables:
 #>  .. $ TRT01P: chr  "Placebo" "Active"
 #>  .. $ N     : int  51 49
-#>  @ type     : chr "baseline"
-#>  @ groupings: list()
-#>  @ metadata : list()
+#>  @ type         : chr "baseline"
+#>  @ groupings    : list()
+#>  @ metadata     : list()
+#>  @ n_rows       : int 2
+#>  @ n_cols       : int 2
+#>  @ is_empty     : logi FALSE
+#>  @ summary_label: chr "baseline (n=2)"
+#>  @ column_names : chr [1:2] "TRT01P" "N"
 analyze_study(one_arm_study) # Uses SingleArmStudy method
 #> <pharmhand::SingleArmStudy>
 #>  @ study_id     : chr "ONE-ARM-001"
@@ -408,7 +413,7 @@ analyze_study(one_arm_study) # Uses SingleArmStudy method
 #>  @ endpoints    : list()
 #>  @ results      :List of 2
 #>  .. $ baseline: <pharmhand::AnalysisResults>
-#>  ..  ..@ stats    : tibble [1 × 8] (S3: tbl_df/tbl/data.frame)
+#>  ..  ..@ stats        : tibble [1 × 8] (S3: tbl_df/tbl/data.frame)
 #>  $ variable: chr "AGE"
 #>  $ TRT01P  : chr "Active"
 #>  $ n       : int 50
@@ -417,16 +422,21 @@ analyze_study(one_arm_study) # Uses SingleArmStudy method
 #>  $ median  : num 60
 #>  $ min     : num 38.2
 #>  $ max     : num 81.6
-#>  ..  ..@ type     : chr "baseline"
-#>  ..  ..@ groupings: list()
-#>  ..  ..@ metadata :List of 1
+#>  ..  ..@ type         : chr "baseline"
+#>  ..  ..@ groupings    : list()
+#>  ..  ..@ metadata     :List of 1
 #>  .. .. .. $ categorical: tibble [8 × 4] (S3: tbl_df/tbl/data.frame)
 #>  .. .. ..  ..$ variable: chr [1:8] "AEBODSYS" "AEBODSYS" "AEBODSYS" "AEDECOD" ...
 #>  .. .. ..  ..$ TRT01P  : chr [1:8] "Active" "Active" "Active" "Active" ...
 #>  .. .. ..  ..$ n       : int [1:8] 15 17 18 18 13 19 35 15
 #>  .. .. ..  ..$ label   : chr [1:8] "CNS (n=15, 30%)" "GI (n=17, 34%)" "Respiratory (n=18, 36%)" "Cough (n=18, 36%)" ...
+#>  ..  ..@ n_rows       : int 1
+#>  ..  ..@ n_cols       : int 8
+#>  ..  ..@ is_empty     : logi FALSE
+#>  ..  ..@ summary_label: chr "baseline (n=1)"
+#>  ..  ..@ column_names : chr [1:8] "variable" "TRT01P" "n" "mean" ...
 #>  .. $ safety  : <pharmhand::AnalysisResults>
-#>  ..  ..@ stats    :'data.frame': 12 obs. of  8 variables:
+#>  ..  ..@ stats        :'data.frame': 12 obs. of  8 variables:
 #>  .. .. .. $ AEBODSYS: chr [1:12] "CNS" "CNS" "CNS" "CNS" ...
 #>  .. .. .. $ TRT01P  : chr [1:12] "Active" "Active" "Active" "Active" ...
 #>  .. .. .. $ n       : int [1:12] 15 8 3 4 17 4 5 8 18 6 ...
@@ -435,9 +445,14 @@ analyze_study(one_arm_study) # Uses SingleArmStudy method
 #>  .. .. .. $ level   : chr [1:12] "SOC" "PT" "PT" "PT" ...
 #>  .. .. .. $ label   : chr [1:12] "CNS" "Cough" "Headache" "Nausea" ...
 #>  .. .. .. $ AEDECOD : chr [1:12] NA "Cough" "Headache" "Nausea" ...
-#>  ..  ..@ type     : chr "safety_ae"
-#>  ..  ..@ groupings: list()
-#>  ..  ..@ metadata : list()
+#>  ..  ..@ type         : chr "safety_ae"
+#>  ..  ..@ groupings    : list()
+#>  ..  ..@ metadata     : list()
+#>  ..  ..@ n_rows       : int 12
+#>  ..  ..@ n_cols       : int 8
+#>  ..  ..@ is_empty     : logi FALSE
+#>  ..  ..@ summary_label: chr "safety_ae (n=12)"
+#>  ..  ..@ column_names : chr [1:8] "AEBODSYS" "TRT01P" "n" "N_tot" ...
 #>  @ risk_of_bias : NULL
 #>  @ metadata     : list()
 #>  @ data         :'data.frame':   50 obs. of  6 variables:

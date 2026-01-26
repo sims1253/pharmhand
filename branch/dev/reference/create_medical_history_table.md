@@ -6,8 +6,8 @@ Create Medical History Table
 
 ``` r
 create_medical_history_table(
+  data,
   adsl,
-  admh,
   title = "Medical History by Body System",
   trt_var = "TRT01P",
   soc_var = "MHBODSYS",
@@ -17,13 +17,13 @@ create_medical_history_table(
 
 ## Arguments
 
+- data:
+
+  ADMH data frame or ADaMData object
+
 - adsl:
 
-  ADSL data frame
-
-- admh:
-
-  ADMH data frame
+  ADSL data frame or ADaMData object for denominators
 
 - title:
 

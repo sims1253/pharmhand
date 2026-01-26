@@ -8,7 +8,7 @@ writes to Word.
 
 ``` r
 quick_safety_report(
-  adae,
+  data,
   adsl = NULL,
   output,
   title = "Safety Analysis",
@@ -24,7 +24,7 @@ quick_safety_report(
 
 ## Arguments
 
-- adae:
+- data:
 
   Data frame containing ADAE data
 

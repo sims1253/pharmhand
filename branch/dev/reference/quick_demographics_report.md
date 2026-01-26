@@ -8,7 +8,7 @@ Word.
 
 ``` r
 quick_demographics_report(
-  adsl_data,
+  data,
   output,
   title = "Demographics and Baseline Characteristics",
   trt_var = ph_default("trt_var"),
@@ -19,7 +19,7 @@ quick_demographics_report(
 
 ## Arguments
 
-- adsl_data:
+- data:
 
   Data frame or ADaMData object containing ADSL data
 

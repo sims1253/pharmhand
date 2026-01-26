@@ -6,8 +6,8 @@ Create Concomitant Medications Table
 
 ``` r
 create_conmeds_table(
+  data,
   adsl,
-  adcm,
   title = "Prior and Concomitant Medications by Class",
   trt_var = "TRT01P",
   class_var = "CMCLAS",
@@ -17,13 +17,13 @@ create_conmeds_table(
 
 ## Arguments
 
+- data:
+
+  ADCM data frame or ADaMData object
+
 - adsl:
 
-  ADSL data frame
-
-- adcm:
-
-  ADCM data frame
+  ADSL data frame or ADaMData object for denominators
 
 - title:
 

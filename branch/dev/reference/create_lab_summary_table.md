@@ -6,7 +6,7 @@ Create Laboratory Summary Table
 
 ``` r
 create_lab_summary_table(
-  adlb,
+  data,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -17,9 +17,9 @@ create_lab_summary_table(
 
 ## Arguments
 
-- adlb:
+- data:
 
-  ADLB data frame
+  ADLB data frame or ADaMData object
 
 - params:
 
@@ -58,6 +58,7 @@ adlb <- data.frame(
   AVAL = c(14.2, 13.8, 14.5, 14.1)
 )
 table <- create_lab_summary_table(adlb, params = "HGB", visit = "Week 24")
+#> Automatically wrapping data.frame in ADaMData object
 table@type
 #> [1] "lab_summary"
 ```

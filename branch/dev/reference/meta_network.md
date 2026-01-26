@@ -1,4 +1,4 @@
 # Network Meta-Analysis Functions
 
-Functions for performing network meta-analysis, including rankings and
-league tables.
+Functions for network meta-analysis including network structure,
+ranking, and visualization utilities.

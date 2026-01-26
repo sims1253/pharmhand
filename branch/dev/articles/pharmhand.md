@@ -41,6 +41,11 @@ Word documents with multiple tables
 
 For more control, build tables and reports step-by-step:
 
+> **Note:** Scalar inputs must be non-missing. NA values should be
+> removed or checked using
+> [`assert_no_na()`](https://sims1253.github.io/pharmhand/branch/dev/reference/assert_no_na.md)
+> before passing to validation functions.
+
 ### Simple: Pass data.frames directly
 
 ``` r

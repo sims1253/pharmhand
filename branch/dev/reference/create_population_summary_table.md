@@ -6,7 +6,7 @@ Create Analysis Populations Summary Table
 
 ``` r
 create_population_summary_table(
-  adsl,
+  data,
   title = "Analysis Populations",
   trt_var = "TRT01P",
   pop_flags = c("SAFFL"),
@@ -17,9 +17,9 @@ create_population_summary_table(
 
 ## Arguments
 
-- adsl:
+- data:
 
-  ADSL data frame
+  ADSL data frame or ADaMData object
 
 - title:
 

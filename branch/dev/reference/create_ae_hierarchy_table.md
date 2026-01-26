@@ -8,7 +8,7 @@ Term (HLT) → Preferred Term (PT).
 
 ``` r
 create_ae_hierarchy_table(
-  adae,
+  data,
   adsl,
   trt_var = "TRT01P",
   soc_var = "AEBODSYS",
@@ -16,23 +16,22 @@ create_ae_hierarchy_table(
   hlt_var = "AEHLT",
   pt_var = "AEDECOD",
   levels = c("soc", "pt"),
-  subject_var = "USUBJID",
   min_pct = 0,
   sort_by = c("frequency", "alphabetical"),
   title = NULL,
-  autofit = TRUE
+  ...
 )
 ```
 
 ## Arguments
 
-- adae:
+- data:
 
-  ADAE dataset
+  ADAE dataset (data frame or ADaMData object)
 
 - adsl:
 
-  ADSL dataset for denominators
+  ADSL dataset for denominators (data frame or ADaMData object)
 
 - trt_var:
 
@@ -59,10 +58,6 @@ create_ae_hierarchy_table(
   Character vector of hierarchy levels to include. Options: "soc",
   "hlgt", "hlt", "pt". Default: c("soc", "pt")
 
-- subject_var:
-
-  Subject ID variable. Default: "USUBJID"
-
 - min_pct:
 
   Numeric. Minimum percentage to display. Default: 0
@@ -75,9 +70,10 @@ create_ae_hierarchy_table(
 
   Character. Table title. Default: NULL (auto-generated)
 
-- autofit:
+- ...:
 
-  Logical. Whether to autofit column widths. Default: TRUE
+  Additional arguments passed to
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
 
 ## Value
 
@@ -89,7 +85,7 @@ ClinicalTable with hierarchical AE summary
 if (FALSE) { # \dontrun{
 # Create AE hierarchy table
 table <- create_ae_hierarchy_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   levels = c("soc", "pt"),
   min_pct = 5

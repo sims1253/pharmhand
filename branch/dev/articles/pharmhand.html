@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,6 +121,11 @@ tables</p>
 <h2 id="core-workflow-detailed-control">Core Workflow (Detailed Control)<a class="anchor" aria-label="anchor" href="#core-workflow-detailed-control"></a>
 </h2>
 <p>For more control, build tables and reports step-by-step:</p>
+<blockquote>
+<p><strong>Note:</strong> Scalar inputs must be non-missing. NA values
+should be removed or checked using <code><a href="../reference/assert_no_na.html">assert_no_na()</a></code> before
+passing to validation functions.</p>
+</blockquote>
 <div class="section level3">
 <h3 id="simple-pass-data-frames-directly">Simple: Pass data.frames directly<a class="anchor" aria-label="anchor" href="#simple-pass-data-frames-directly"></a>
 </h3>

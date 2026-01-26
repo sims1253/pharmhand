@@ -6,7 +6,7 @@ Generate AE table with incidence rates per X patient-years.
 
 ``` r
 create_ae_exposure_table(
-  adae,
+  data,
   adsl,
   exposure_var = "TRTDURD",
   trt_var = "TRT01P",
@@ -16,19 +16,19 @@ create_ae_exposure_table(
   conf_level = 0.95,
   threshold = 0,
   title = NULL,
-  autofit = TRUE
+  ...
 )
 ```
 
 ## Arguments
 
-- adae:
+- data:
 
-  ADAE data frame
+  ADAE data frame or ADaMData object
 
 - adsl:
 
-  ADSL data frame (must contain exposure duration)
+  ADSL data frame or ADaMData object (must contain exposure duration)
 
 - exposure_var:
 
@@ -64,9 +64,10 @@ create_ae_exposure_table(
 
   Character. Table title
 
-- autofit:
+- ...:
 
-  Logical. Autofit columns (default: TRUE)
+  Additional arguments passed to
+  [`create_clinical_table()`](https://sims1253.github.io/pharmhand/branch/dev/reference/create_clinical_table.md)
 
 ## Value
 
@@ -76,6 +77,6 @@ ClinicalTable with IDR columns
 
 ``` r
 if (FALSE) { # \dontrun{
-tbl <- create_ae_exposure_table(adae, adsl, by = "pt")
+tbl <- create_ae_exposure_table(data, adsl, by = "pt")
 } # }
 ```

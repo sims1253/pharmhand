@@ -6,7 +6,7 @@ Create Laboratory Shift Table
 
 ``` r
 create_lab_shift_table(
-  adlb,
+  data,
   paramcd = "ALT",
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -17,9 +17,9 @@ create_lab_shift_table(
 
 ## Arguments
 
-- adlb:
+- data:
 
-  ADLB data frame
+  ADLB data frame or ADaMData object
 
 - paramcd:
 
@@ -58,6 +58,7 @@ adlb <- data.frame(
   AVISIT = rep("Week 24", 4)
 )
 table <- create_lab_shift_table(adlb, paramcd = "ALT", visit = "Week 24")
+#> Automatically wrapping data.frame in ADaMData object
 table@type
 #> [1] "lab_shift"
 ```
