@@ -73,7 +73,7 @@ adam_data <- ADaMData(
 
 # Pass to table function
 demo_table_saf <- create_demographics_table(
-  adsl_data = adam_data,
+  data = adam_data,
   trt_var = "TRT01P"
 )
 
@@ -86,7 +86,7 @@ Customize variable names to match your data structure:
 ```{r demographics-custom}
 # Custom variable names
 demo_table_custom <- create_demographics_table(
-  adsl_data = adam_data,
+  data = adam_data,
   trt_var = "TRT01P",
   age_var = "AGE",
   sex_var = "SEX",
@@ -101,7 +101,7 @@ demo_table_custom@flextable
 
 ```{r region-table}
 region_table <- create_region_table(
-  adsl = adsl,
+  data = adsl,
   trt_var = "TRT01P",
   region_var = "REGION1"
 )
@@ -117,8 +117,8 @@ region_table@flextable
 
 ```{r medical-history}
 mh_table <- create_medical_history_table(
+  data = admh,
   adsl = adsl,
-  admh = admh,
   trt_var = "TRT01P",
   soc_var = "MHBODSYS"
 )
@@ -136,8 +136,8 @@ mh_table@flextable
 
 ```{r conmeds}
 cm_table <- create_conmeds_table(
+  data = adcm,
   adsl = adsl,
-  adcm = adcm,
   trt_var = "TRT01P"
 )
 
@@ -153,7 +153,7 @@ Disposition tables summarize participant flow through study phases and reasons f
 
 ```{r disposition}
 disp_table <- create_disposition_table(
-  adsl = adsl,
+  data = adsl,
   trt_var = "TRT01P"
 )
 
@@ -167,7 +167,7 @@ Population summary tables provide counts and percentages for different analysis 
 
 ```{r population-summary}
 pop_table <- create_population_summary_table(
-  adsl = adsl,
+  data = adsl,
   trt_var = "TRT01P",
   pop_flags = c("SAFFL"),
   pop_labels = c("Safety")

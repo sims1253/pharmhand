@@ -5,7 +5,7 @@
 \title{Create Demographics Table}
 \usage{
 create_demographics_table(
-  adsl_data,
+  data,
   title = "Demographics and Baseline Characteristics",
   trt_var = ph_default("trt_var"),
   age_var = "AGE",
@@ -18,7 +18,7 @@ create_demographics_table(
 )
 }
 \arguments{
-\item{adsl_data}{ADaMData object containing ADSL}
+\item{data}{ADaMData object or data.frame containing ADSL}
 
 \item{title}{Table title (default: "Demographics and Baseline")}
 

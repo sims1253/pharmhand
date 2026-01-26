@@ -169,29 +169,14 @@ bayesian_meta_analysis <- function(
 		study_labels <- paste("Study", seq_len(k))
 	}
 
-	if (!is.numeric(yi)) {
-		ph_abort("'yi' must be numeric")
-	}
-	if (!is.numeric(sei)) {
-		ph_abort("'sei' must be numeric")
-	}
-	if (anyNA(yi)) {
-		ph_abort("'yi' must not contain NA values")
-	}
-	if (anyNA(sei)) {
-		ph_abort("'sei' must not contain NA values")
-	}
-	if (length(yi) != length(sei)) {
-		ph_abort("'yi' and 'sei' must have the same length")
-	}
-	if (any(sei <= 0, na.rm = TRUE)) {
-		ph_abort("'sei' must contain only positive values")
-	}
-	if (length(study_labels) != k) {
-		ph_abort(
-			sprintf("'study_labels' must have length %d to match 'yi'", k)
-		)
-	}
+	# Validate input vectors
+	assert_numeric_vector(yi, arg = "yi")
+	assert_numeric_vector(sei, arg = "sei")
+	assert_no_na(yi, arg = "yi")
+	assert_no_na(sei, arg = "sei")
+	assert_lengths_match(yi, sei)
+	assert_all_positive(sei, arg = "sei")
+	assert_character_vector(study_labels, len = k, arg = "study_labels")
 
 	# Validate prior_mu
 	if (!is.list(prior_mu) || is.null(prior_mu$mean) || is.null(prior_mu$sd)) {
@@ -239,41 +224,13 @@ bayesian_meta_analysis <- function(
 	}
 
 	# Validate MCMC arguments
-	if (
-		!is.numeric(chains) ||
-			length(chains) != 1 ||
-			chains < 1 ||
-			chains != as.integer(chains)
-	) {
-		ph_abort("'chains' must be a positive integer")
-	}
-	if (
-		!is.numeric(iter) ||
-			length(iter) != 1 ||
-			iter < 1 ||
-			iter != as.integer(iter)
-	) {
-		ph_abort("'iter' must be a positive integer")
-	}
-	if (
-		!is.numeric(warmup) ||
-			length(warmup) != 1 ||
-			warmup < 0 ||
-			warmup != as.integer(warmup)
-	) {
-		ph_abort("'warmup' must be a non-negative integer")
-	}
+	assert_positive_integer(chains, arg = "chains")
+	assert_positive_integer(iter, arg = "iter")
+	assert_non_negative_integer(warmup, arg = "warmup")
 	if (warmup >= iter) {
 		ph_abort("'warmup' must be less than 'iter'")
 	}
-	if (
-		!is.numeric(cores) ||
-			length(cores) != 1 ||
-			cores < 1 ||
-			cores != as.integer(cores)
-	) {
-		ph_abort("'cores' must be a positive integer")
-	}
+	assert_positive_integer(cores, arg = "cores")
 
 	# Prepare data for brms
 	data <- data.frame(
@@ -828,9 +785,7 @@ create_bayesian_trace_plots <- function(
 	n_chains <- brms::nchains(fit)
 
 	if (!is.null(chains)) {
-		if (!is.numeric(chains) || length(chains) != 1 || chains < 1) {
-			ph_abort("'chains' must be a positive integer")
-		}
+		assert_positive_integer(chains, arg = "chains")
 		if (chains > n_chains) {
 			ph_abort(
 				sprintf(
@@ -977,12 +932,9 @@ prior_sensitivity_analysis <- function(
 	effect_measure <- match.arg(effect_measure)
 
 	# Validate inputs
-	if (!is.numeric(yi) || !is.numeric(sei)) {
-		ph_abort("'yi' and 'sei' must be numeric vectors")
-	}
-	if (length(yi) != length(sei)) {
-		ph_abort("'yi' and 'sei' must have the same length")
-	}
+	assert_numeric_vector(yi, arg = "yi")
+	assert_numeric_vector(sei, arg = "sei")
+	assert_lengths_match(yi, sei)
 
 	# Create default scenarios if none provided
 	if (is.null(prior_scenarios)) {
@@ -1724,6 +1676,20 @@ create_bayesian_forest_plot_iqwig <- function(
 		xlim <- xlim + c(-1, 1) * diff(xlim) * 0.1
 	} else {
 		xlim <- xlim + c(-0.1, 0.1)
+	}
+
+	# Guard for is_ratio to ensure xlim lower bound > 0 for log10
+	if (is_ratio) {
+		positive_bounds <- all_ci_bounds[all_ci_bounds > 0]
+		if (length(positive_bounds) == 0) {
+			xlim <- c(0.1, 10)
+		} else {
+			min_positive <- min(positive_bounds)
+			xlim[1] <- max(xlim[1], min_positive * 0.1)
+			if (xlim[2] <= xlim[1]) {
+				xlim[2] <- max(xlim[1] * 10, min_positive * 10)
+			}
+		}
 	}
 
 	# Build the forest plot using ggplot2

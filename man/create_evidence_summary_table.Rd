@@ -5,19 +5,18 @@
 \title{Create Evidence Summary Table}
 \usage{
 create_evidence_summary_table(
-  endpoints,
+  data,
   title = "Evidence Summary",
   columns = c("Endpoint", "N Studies", "Effect (95\% CI)", "p-value", "I2", "RoB",
     "Grade"),
   conf_level = 0.95,
   language = c("en", "de"),
   footnotes = character(),
-  col_widths = NULL,
-  autofit = TRUE
+  ...
 )
 }
 \arguments{
-\item{endpoints}{List of named elements containing endpoint data.
+\item{data}{List of named elements containing endpoint data.
 Each element should be a list with components:
 \itemize{
 \item \code{result}: MetaResult or ComparisonResult object with effect estimate,
@@ -41,9 +40,8 @@ Default: "en".}
 
 \item{footnotes}{Character vector of footnotes to add to the table.}
 
-\item{col_widths}{Named numeric vector of column widths (in inches).}
-
-\item{autofit}{Logical, whether to autofit column widths (default: TRUE).}
+\item{...}{Additional arguments passed to \code{\link[=create_clinical_table]{create_clinical_table()}},
+such as \code{col_widths}, \code{autofit}, \code{theme}, etc.}
 }
 \value{
 A ClinicalTable object containing the formatted evidence summary

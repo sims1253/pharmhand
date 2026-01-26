@@ -105,7 +105,7 @@ describe("create_ae_exposure_table()", {
 		)
 
 		tbl <- create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			by = "pt",
 			exposure_var = "TRTDURD",
@@ -175,7 +175,7 @@ describe("create_ae_exposure_table()", {
 		py_col <- "A\nPatient-Years"
 
 		tbl_days <- create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl_days,
 			by = "pt",
 			exposure_var = "TRTDURD",
@@ -184,7 +184,7 @@ describe("create_ae_exposure_table()", {
 		expect_equal(tbl_days@data[[py_col]][1], "1.00")
 
 		tbl_weeks <- create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl_weeks,
 			by = "pt",
 			exposure_var = "TRTDURD",
@@ -193,7 +193,7 @@ describe("create_ae_exposure_table()", {
 		expect_equal(tbl_weeks@data[[py_col]][1], "1.00")
 
 		tbl_months <- create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl_months,
 			by = "pt",
 			exposure_var = "TRTDURD",
@@ -338,7 +338,7 @@ test_that("create_ae_summary_table works with type='deaths'", {
 		DTHFL = c("Y", "N")
 	)
 
-	tbl <- create_ae_summary_table(adae = NULL, adsl = adsl, type = "deaths")
+	tbl <- create_ae_summary_table(data = NULL, adsl = adsl, type = "deaths")
 
 	expect_s7_class(tbl, ClinicalTable)
 	expect_equal(tbl@type, "ae_deaths")
@@ -503,7 +503,7 @@ test_that("create_ae_summary_table works without adsl (derives trt_n)", {
 
 test_that("create_ae_summary_table errors on NULL adsl for deaths type", {
 	expect_error(
-		create_ae_summary_table(adae = NULL, adsl = NULL, type = "deaths"),
+		create_ae_summary_table(data = NULL, adsl = NULL, type = "deaths"),
 		"'adsl' data frame is required for type = 'deaths'"
 	)
 })

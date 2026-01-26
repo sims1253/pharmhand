@@ -5,7 +5,7 @@
 \title{Create Enrollment by Region Table}
 \usage{
 create_region_table(
-  adsl,
+  data,
   title = "Enrollment by Region",
   trt_var = "TRT01P",
   region_var = "REGION1",
@@ -13,7 +13,7 @@ create_region_table(
 )
 }
 \arguments{
-\item{adsl}{ADSL data frame}
+\item{data}{ADSL data frame or ADaMData object}
 
 \item{title}{Table title}
 

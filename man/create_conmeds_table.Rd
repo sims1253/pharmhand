@@ -5,8 +5,8 @@
 \title{Create Concomitant Medications Table}
 \usage{
 create_conmeds_table(
+  data,
   adsl,
-  adcm,
   title = "Prior and Concomitant Medications by Class",
   trt_var = "TRT01P",
   class_var = "CMCLAS",
@@ -14,9 +14,9 @@ create_conmeds_table(
 )
 }
 \arguments{
-\item{adsl}{ADSL data frame}
+\item{data}{ADCM data frame or ADaMData object}
 
-\item{adcm}{ADCM data frame}
+\item{adsl}{ADSL data frame or ADaMData object for denominators}
 
 \item{title}{Table title}
 

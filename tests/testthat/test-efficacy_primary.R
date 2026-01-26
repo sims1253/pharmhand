@@ -36,11 +36,11 @@ test_that("create_primary_endpoint_table validates inputs", {
 	# Non-data-frame input
 	expect_error(
 		create_primary_endpoint_table(NULL),
-		"must be a data frame"
+		"must be an ADaMData object or data.frame"
 	)
 	expect_error(
 		create_primary_endpoint_table(list(a = 1)),
-		"must be a data frame"
+		"must be an ADaMData object or data.frame"
 	)
 
 	advs_missing <- advs[, setdiff(names(advs), "AVAL")]

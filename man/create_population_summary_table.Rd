@@ -5,7 +5,7 @@
 \title{Create Analysis Populations Summary Table}
 \usage{
 create_population_summary_table(
-  adsl,
+  data,
   title = "Analysis Populations",
   trt_var = "TRT01P",
   pop_flags = c("SAFFL"),
@@ -14,7 +14,7 @@ create_population_summary_table(
 )
 }
 \arguments{
-\item{adsl}{ADSL data frame}
+\item{data}{ADSL data frame or ADaMData object}
 
 \item{title}{Table title}
 

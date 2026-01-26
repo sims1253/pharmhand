@@ -16,7 +16,8 @@ create_hta_module4_table(
 )
 }
 \arguments{
-\item{data}{Data frame to display. If NULL, an empty template is created.}
+\item{data}{Data frame to display. If NULL, an empty template is created.
+Can also be an ADaMData object.}
 
 \item{title}{Table title (default: "Module 4 Summary")}
 

@@ -60,7 +60,7 @@ test_that("create_vs_by_visit_table has correct row count", {
 test_that("create_cfb_summary_table errors on NULL input", {
 	expect_error(
 		create_cfb_summary_table(NULL, params = "SYSBP"),
-		"must be a data frame"
+		"must be an ADaMData object or data.frame"
 	)
 })
 
@@ -81,7 +81,7 @@ test_that("create_cfb_summary_table errors when required columns missing", {
 test_that("create_vs_by_visit_table errors on NULL input", {
 	expect_error(
 		create_vs_by_visit_table(NULL),
-		"must be a data frame"
+		"must be an ADaMData object or data.frame"
 	)
 })
 

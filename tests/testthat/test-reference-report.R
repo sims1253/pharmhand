@@ -96,7 +96,7 @@ test_that("ClinicalReport assembles correctly", {
 	expect_equal(report@study_id, "TEST001")
 })
 
-test_that("create_hta_table applies correct styling", {
+test_that("create_clinical_table with HTA theme applies correct styling", {
 	skip_if_not_installed("flextable")
 
 	data <- data.frame(
@@ -105,12 +105,16 @@ test_that("create_hta_table applies correct styling", {
 		Events = c(15, 25)
 	)
 
-	ft <- create_hta_table(
-		data,
+	# Test through create_clinical_table factory
+	ct <- create_clinical_table(
+		data = data,
+		type = "test",
 		title = "Test Table",
-		footnotes = c("Note 1", "Note 2")
+		footnotes = c("Note 1", "Note 2"),
+		theme = "hta"
 	)
 
+	ft <- ct@flextable
 	expect_s3_class(ft, "flextable")
 })
 

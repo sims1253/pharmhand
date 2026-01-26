@@ -151,3 +151,68 @@ get_cached_bayesian_result <- function(
 	saveRDS(result, cache_file)
 	result
 }
+
+# ==============================================================================
+# Shared Bayesian Meta-Analysis for Few Studies Result
+# ==============================================================================
+
+# Cached shared result for Bayesian meta-analysis for few studies
+.shared_bayesian_few_result <- NULL
+
+#' Get shared Bayesian meta-analysis for few studies result
+#'
+#' Returns a cached BayesianMetaFewResult that is computed once per test
+#' session.
+#' This dramatically speeds up tests by avoiding redundant MCMC sampling.
+#'
+#' @return A BayesianMetaFewResult object
+get_shared_bayesian_few_result <- function() {
+	if (is.null(.shared_bayesian_few_result)) {
+		message(
+			"Fitting shared Bayesian meta-analysis for few studies model ",
+			"(will be cached)..."
+		)
+		.shared_bayesian_few_result <<- bayesian_meta_analysis_few(
+			yi = log(c(0.75, 0.82, 0.68)),
+			sei = c(0.12, 0.15, 0.18),
+			effect_measure = "hr",
+			prior_sensitivity = FALSE,
+			chains = 1,
+			iter = 400,
+			warmup = 200,
+			seed = 42
+		)
+	}
+	.shared_bayesian_few_result
+}
+
+# ==============================================================================
+# Shared MMRM Result
+# ==============================================================================
+
+# Cached shared result for MMRM analysis
+.shared_mmrm_result <- NULL
+
+#' Get shared MMRM result
+#'
+#' Returns a cached MMRMResult that is computed once per test session.
+#' This speeds up tests by avoiding redundant model fitting.
+#'
+#' @return An MMRMResult object
+get_shared_mmrm_result <- function() {
+	skip_if_not_installed("mmrm")
+
+	if (is.null(.shared_mmrm_result)) {
+		message("Fitting shared MMRM model (will be cached)...")
+		data <- create_mmrm_test_data(n_subjects = 30, seed = 123)
+		.shared_mmrm_result <<- mmrm_analysis(
+			data = data,
+			response_var = "AVAL",
+			subject_var = "USUBJID",
+			trt_var = "TRT01P",
+			time_var = "AVISITN",
+			covariates = NULL
+		)
+	}
+	.shared_mmrm_result
+}

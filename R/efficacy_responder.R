@@ -57,16 +57,18 @@ create_responder_table <- function(
 	title = "Response Rate Summary",
 	autofit = TRUE
 ) {
+	# Ensure ADaMData object with proper domain, passing trt_var for data frames
+	data <- .ensure_adam_data(data, domain = "ADRS", trt_var = trt_var)
+	df <- get_filtered_data(data)
+	# Use trt_var from ADaMData object (set during coercion)
+	trt_var_actual <- data@trt_var
+
 	ci_method <- match.arg(ci_method)
 	comparison_type <- match.arg(comparison_type)
 
 	# Define confidence level percentage for dynamic labels
 	ci_pct <- round(conf_level * 100)
 	comparison_col_name <- paste0(comparison_type, " (", ci_pct, "% CI)")
-
-	# Get filtered data
-	df <- get_filtered_data(data)
-	trt_var_actual <- get_trt_var(data, default = trt_var)
 
 	# Define responder
 	df$responder <- as.integer(df[[response_var]] %in% response_values)
@@ -181,27 +183,21 @@ create_responder_table <- function(
 	display_df <- response_summary[, display_cols, drop = FALSE]
 	names(display_df)[1] <- "Treatment"
 
-	# Create flextable
-	ft <- create_hta_table(
-		display_df,
-		title = title,
-		footnotes = c(
-			paste("Response defined as:", paste(response_values, collapse = ", ")),
-			paste0(ci_pct, "% CI calculated using ", ci_method, " method"),
-			if (length(trt_levels) > 1) {
-				paste(comparison_type, "compared to", ref_group)
-			} else {
-				NULL
-			}
-		),
-		autofit = autofit
+	# Build footnotes
+	footnotes <- c(
+		paste("Response defined as:", paste(response_values, collapse = ", ")),
+		paste0(ci_pct, "% CI calculated using ", ci_method, " method")
 	)
+	if (length(trt_levels) > 1) {
+		footnotes <- c(footnotes, paste(comparison_type, "compared to", ref_group))
+	}
 
-	ClinicalTable(
+	create_clinical_table(
 		data = display_df,
-		flextable = ft,
 		type = "responder",
 		title = title,
+		footnotes = footnotes,
+		autofit = autofit,
 		metadata = list(
 			response_values = response_values,
 			ci_method = ci_method,

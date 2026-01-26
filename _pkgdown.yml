@@ -434,7 +434,9 @@ reference:
     statistical diagnostics, and other common operations.
   contents:
   - get_filtered_data
+  - get_subject_n
   - get_subject_var
+  - get_summary_label
   - get_trt_n
   - get_trt_var
   - calculate_proportion_ci

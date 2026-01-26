@@ -1,3 +1,45 @@
+# pharmhand 0.4.1.9000
+
+## Code Quality Improvements
+
+### Validation Utilities
+
+* Added comprehensive assertion functions for input validation:
+  - `assert_all_positive()`, `assert_positive()`, `assert_non_negative()`
+  - `assert_positive_integer()`, `assert_non_negative_integer()`
+  - `assert_character_scalar()`, `assert_character_vector()`
+  - `assert_numeric_scalar()`, `assert_numeric_vector()`
+  - `assert_integer_scalar()`, `assert_logical_scalar()`
+  - `assert_data_frame()`, `assert_column_exists()`
+  - `assert_lengths_match()`, `assert_no_na()`, `assert_in_range()`
+
+### Messaging and Helpers
+
+* Added `ph_abort()` for consistent error handling with abort messaging
+* Added `ph_inform()` for informational messages
+* Added `ph_warn()` for warning messages
+* Added `get_subject_n()` for extracting subject counts from ADaM datasets
+* Added `get_summary_label()` for generating standardized summary labels
+* Added `||` operator (`grapes-or-or-grapes`) for flexible default value handling
+
+### Documentation Improvements
+
+* Added man pages for internal helper functions:
+  - `.build_evidence_summary_row()`, `.build_league_matrix()`, `.build_rob_summary_row()`
+  - `.build_study_characteristic_row()`, `.calculate_ae_comparisons()`
+  - `.empty_ae_exposure_df()`, `.ensure_adam_data()`, `.summarize_ae_exposure()`, `.summarize_ae_hierarchy()`
+* Added man pages for utility functions: `ph_abort()`, `ph_inform()`, `ph_warn()`
+* Added man pages for new helpers: `get_subject_n()`, `get_summary_label()`, `||`
+
+### Cleanup and Maintenance
+
+* Removed `.tldr/` directory and cache files (TLDR code analysis cache)
+* Deprecated `safe_pct()` function (removed man page)
+* Removed 11 old imputation test problem files from `tests/testthat/_problems/`
+* Added `.tldr/` and `vignettes/safety-tables_files/` to `.gitignore`
+* Updated README files and pkgdown configuration
+* Updated vignettes for baseline, efficacy, and safety tables
+
 # pharmhand 0.4.0.9000
 
 ## Phase 3: Quality Assessment

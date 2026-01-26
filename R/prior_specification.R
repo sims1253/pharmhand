@@ -490,9 +490,7 @@ create_prior_specification_set <- function(priors) {
 
 	# Validate that all elements are named
 	prior_names <- names(priors)
-	if (
-		is.null(prior_names) || any(prior_names == "") || any(is.na(prior_names))
-	) {
+	if (is.null(prior_names) || any(prior_names == "") || anyNA(prior_names)) {
 		ph_abort("All elements in 'priors' must be named")
 	}
 

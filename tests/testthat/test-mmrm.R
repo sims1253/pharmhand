@@ -16,7 +16,7 @@ describe("mmrm_analysis", {
 			subject_var = "USUBJID",
 			trt_var = "TRT01P",
 			time_var = "AVISITN",
-			covariates = c("BASE")
+			covariates = "BASE"
 		)
 
 		expect_true(S7::S7_inherits(result, MMRMResult))
@@ -48,6 +48,24 @@ describe("mmrm_analysis", {
 		)
 	})
 
+	it("validates covariates exist", {
+		skip_if_not_installed("mmrm")
+
+		data <- create_mmrm_test_data()
+
+		expect_error(
+			mmrm_analysis(
+				data,
+				response_var = "AVAL",
+				subject_var = "USUBJID",
+				trt_var = "TRT01P",
+				time_var = "AVISITN",
+				covariates = "MISSING_COVAR"
+			),
+			"MISSING_COVAR"
+		)
+	})
+
 	it("supports different covariance structures", {
 		skip_if_not_installed("mmrm")
 
@@ -64,6 +82,7 @@ describe("mmrm_analysis", {
 		)
 
 		expect_true(S7::S7_inherits(result_cs, MMRMResult))
+		expect_equal(result_cs@covariance, "cs")
 
 		# Unstructured
 		result_un <- mmrm_analysis(
@@ -76,6 +95,7 @@ describe("mmrm_analysis", {
 		)
 
 		expect_true(S7::S7_inherits(result_un, MMRMResult))
+		expect_equal(result_un@covariance, "us")
 	})
 
 	it("handles treatment by time interaction", {
@@ -111,6 +131,7 @@ describe("mmrm_analysis", {
 		)
 
 		expect_true(S7::S7_inherits(result, MMRMResult))
+		expect_equal(result@df_adjustment, "Kenward-Roger")
 	})
 
 	it("handles missing data appropriately", {
@@ -151,16 +172,7 @@ describe("mmrm_analysis", {
 
 describe("MMRMResult class", {
 	it("has expected properties", {
-		skip_if_not_installed("mmrm")
-
-		data <- create_mmrm_test_data(n_subjects = 30, seed = 333)
-		result <- mmrm_analysis(
-			data,
-			response_var = "AVAL",
-			subject_var = "USUBJID",
-			trt_var = "TRT01P",
-			time_var = "AVISITN"
-		)
+		result <- get_shared_mmrm_result()
 
 		# Check all expected properties exist
 		expect_true("model" %in% names(S7::props(result)))
@@ -173,6 +185,65 @@ describe("MMRMResult class", {
 		expect_true("aic" %in% names(S7::props(result)))
 		expect_true("bic" %in% names(S7::props(result)))
 	})
+
+	it("contains valid coefficients", {
+		result <- get_shared_mmrm_result()
+
+		expect_true(length(result@coefficients) > 0)
+		expect_true(!anyNA(result@coefficients))
+	})
+
+	it("contains valid standard errors", {
+		result <- get_shared_mmrm_result()
+
+		expect_true(length(result@se) > 0)
+		expect_true(!anyNA(result@se))
+		expect_true(all(result@se > 0))
+	})
+
+	it("contains valid confidence intervals", {
+		result <- get_shared_mmrm_result()
+
+		expect_true(is.matrix(result@ci))
+		expect_equal(ncol(result@ci), 2)
+		expect_true(!anyNA(result@ci))
+	})
+
+	it("contains valid p-values", {
+		result <- get_shared_mmrm_result()
+
+		expect_true(length(result@p_values) > 0)
+		expect_true(!anyNA(result@p_values))
+		expect_true(all(result@p_values >= 0 & result@p_values <= 1))
+	})
+
+	it("contains valid degrees of freedom", {
+		result <- get_shared_mmrm_result()
+
+		expect_true(length(result@df) > 0)
+		expect_true(!anyNA(result@df))
+		expect_true(all(result@df > 0))
+	})
+
+	it("contains valid model fit statistics", {
+		result <- get_shared_mmrm_result()
+
+		expect_true(result@sigma > 0)
+		expect_true(!is.na(result@log_likelihood))
+		expect_true(!is.na(result@aic))
+		expect_true(!is.na(result@bic))
+	})
+
+	it("contains metadata about the analysis", {
+		result <- get_shared_mmrm_result()
+
+		meta <- result@metadata
+		expect_true(is.list(meta))
+		expect_true("response_var" %in% names(meta))
+		expect_true("subject_var" %in% names(meta))
+		expect_true("trt_var" %in% names(meta))
+		expect_true("time_var" %in% names(meta))
+	})
 })
 
 # =============================================================================
@@ -181,11 +252,44 @@ describe("MMRMResult class", {
 
 describe("summary_mmrm", {
 	it("returns a summary data.frame", {
-		skip_if_not_installed("mmrm")
-		data <- create_mmrm_test_data()
-		result <- mmrm_analysis(data, "AVAL", "USUBJID", "TRT01P", "AVISITN")
+		result <- get_shared_mmrm_result()
 		summ <- summary_mmrm(result)
+
 		expect_s3_class(summ, "data.frame")
+	})
+
+	it("includes all expected columns", {
+		result <- get_shared_mmrm_result()
+		summ <- summary_mmrm(result)
+
+		expect_true("Parameter" %in% names(summ))
+		expect_true("Estimate" %in% names(summ))
+		expect_true("Std.Error" %in% names(summ))
+		expect_true("t value" %in% names(summ))
+		expect_true("df" %in% names(summ))
+		expect_true("Pr(>|t|)" %in% names(summ))
+		expect_true("2.5 %" %in% names(summ))
+		expect_true("97.5 %" %in% names(summ))
+	})
+
+	it("formats values with specified digits", {
+		result <- get_shared_mmrm_result()
+		summ_3 <- summary_mmrm(result, digits = 3)
+		summ_2 <- summary_mmrm(result, digits = 2)
+
+		# Check that digits parameter affects output
+		expect_true(!identical(summ_3, summ_2))
+	})
+
+	it("calculates correct t-values", {
+		result <- get_shared_mmrm_result()
+		summ <- summary_mmrm(result)
+
+		# t-value = estimate / se
+		expected_t <- round(as.vector(result@coefficients / result@se), 3)
+		actual_t <- round(as.vector(summ$`t value`), 3)
+
+		expect_equal(expected_t, actual_t)
 	})
 })
 
@@ -195,10 +299,34 @@ describe("summary_mmrm", {
 
 describe("create_mmrm_table", {
 	it("returns a ClinicalTable object", {
-		skip_if_not_installed("mmrm")
-		data <- create_mmrm_test_data()
-		result <- mmrm_analysis(data, "AVAL", "USUBJID", "TRT01P", "AVISITN")
+		result <- get_shared_mmrm_result()
 		tab <- create_mmrm_table(result)
+
+		expect_true(S7::S7_inherits(tab, ClinicalTable))
+		expect_true(!is.null(tab@flextable))
+	})
+
+	it("includes metadata in footnotes", {
+		result <- get_shared_mmrm_result()
+		tab <- create_mmrm_table(result)
+
+		# The function should add footnotes with model metadata
+		expect_true(S7::S7_inherits(tab, ClinicalTable))
+	})
+
+	it("uses custom title", {
+		result <- get_shared_mmrm_result()
+		custom_title <- "Custom MMRM Analysis Table"
+		tab <- create_mmrm_table(result, title = custom_title)
+
+		expect_equal(tab@title, custom_title)
+	})
+
+	it("includes custom footnotes", {
+		result <- get_shared_mmrm_result()
+		custom_fn <- c("Custom footnote 1", "Custom footnote 2")
+		tab <- create_mmrm_table(result, footnotes = custom_fn)
+
 		expect_true(S7::S7_inherits(tab, ClinicalTable))
 	})
 })

@@ -2,22 +2,26 @@
 % Please edit documentation in R/reporting_engine.R
 \name{create_clinical_table}
 \alias{create_clinical_table}
-\title{Create HTA-Style Table
-Create Clinical Table (Factory Function)}
+\title{Create Clinical Table (Factory Function)}
 \usage{
 create_clinical_table(
   data,
   type,
   title = NULL,
   footnotes = character(),
-  metadata = list(),
-  col_widths = NULL,
-  autofit = ph_default("autofit")
+  theme = c("hta", "iqwig", "gba", "clinical"),
+  summary_fn = NULL,
+  ...
 )
 }
 \arguments{
-\item{data}{Data frame to display, or an \code{AnalysisResults} object (in which
-case \verb{@stats} is used).}
+\item{data}{Data to display. Can be:
+\itemize{
+\item \code{ADaMData} object (uses \verb{@data} or \verb{@filtered_data})
+\item \code{LayeredTable} object (built using \code{build_table()})
+\item \code{AnalysisResults} object (uses \verb{@stats})
+\item Raw \code{data.frame}
+}}
 
 \item{type}{Character string for table type (e.g., "demographics", "ae_soc")}
 
@@ -25,27 +29,64 @@ case \verb{@stats} is used).}
 
 \item{footnotes}{Character vector of footnotes}
 
-\item{metadata}{List of additional metadata}
+\item{theme}{Theme preset: "hta", "iqwig", "gba", or "clinical"
+(default: "hta")}
 
-\item{col_widths}{Named numeric vector of column widths (optional)}
+\item{summary_fn}{Optional function for custom summarization. Receives the
+extracted data and should return a data.frame. If NULL, data is used as-is.}
 
-\item{autofit}{Logical, whether to autofit column widths}
+\item{...}{Additional arguments passed to theme functions}
 }
 \value{
 A ClinicalTable object
 }
 \description{
-Convenience factory function that creates a properly formatted clinical
-table with flextable styling. Reduces boilerplate code across the package.
+Primary factory function for creating ClinicalTable objects with proper
+styling. Supports multiple data types and themes, with optional custom
+summarization logic.
 }
 \examples{
 \dontrun{
+# Basic usage with data.frame
 df <- data.frame(Treatment = c("A", "B"), N = c(100, 95))
 table <- create_clinical_table(
   data = df,
   type = "summary",
   title = "Treatment Summary",
   footnotes = "ITT Population"
+)
+
+# With custom summary function
+table <- create_clinical_table(
+  data = adsl_data,
+  type = "demographics",
+  summary_fn = function(d) {
+    d |> dplyr::summarise(N = dplyr::n(), .by = TRT01P)
+  },
+  theme = "iqwig"
+)
+
+# With ADaMData object
+table <- create_clinical_table(
+  data = ADaMData(adsl_df, domain = "ADSL"),
+  type = "demographics",
+  title = "Baseline Characteristics",
+  theme = "gba"
+)
+
+# With LayeredTable object
+demo_lt <- LayeredTable(
+  data = adsl_df,
+  trt_var = "TRT01P",
+  layers = list(
+    CountLayer(target_var = "SEX", label = "Sex"),
+    DescriptiveLayer(target_var = "AGE", label = "Age (years)")
+  )
+)
+table <- create_clinical_table(
+  data = demo_lt,
+  type = "demographics",
+  title = "Demographics"
 )
 }
 }

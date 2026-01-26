@@ -226,7 +226,11 @@ describe("get_default_prior", {
 	})
 
 	it("returns NULL for unknown domain", {
-		prior <- get_default_prior("unknown_domain")
+		expect_warning(
+			prior <- get_default_prior("unknown_domain"),
+			"Unrecognized domain",
+			fixed = TRUE
+		)
 
 		expect_null(prior)
 	})

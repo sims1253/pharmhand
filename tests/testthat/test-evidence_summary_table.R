@@ -300,19 +300,19 @@ test_that("create_evidence_summary_table warns on missing columns", {
 test_that("create_evidence_summary_table rejects empty list", {
 	expect_error(
 		create_evidence_summary_table(list()),
-		"'endpoints' must be a non-empty list"
+		"'data' must be a non-empty list"
 	)
 })
 
 test_that("create_evidence_summary_table rejects non-list input", {
 	expect_error(
 		create_evidence_summary_table("not a list"),
-		"'endpoints' must be a non-empty list"
+		"'data' must be a non-empty list"
 	)
 
 	expect_error(
 		create_evidence_summary_table(123),
-		"'endpoints' must be a non-empty list"
+		"'data' must be a non-empty list"
 	)
 })
 
@@ -498,7 +498,7 @@ test_that("create_study_characteristics_table rejects invalid study type", {
 
 	expect_error(
 		create_study_characteristics_table(studies),
-		"Each element of 'studies' must be a Study object"
+		"Each element of 'data' must be a Study object"
 	)
 })
 
@@ -709,14 +709,14 @@ test_that("create_rob_summary_table includes justification when requested", {
 test_that("create_rob_summary_table rejects non-RoB2Result objects", {
 	expect_error(
 		create_rob_summary_table(list("not a rob result")),
-		"Element 1 of 'rob_results' must be a RoB2Result object"
+		"Element 1 of 'data' must be a RoB2Result object"
 	)
 })
 
 test_that("create_rob_summary_table rejects empty list", {
 	expect_error(
 		create_rob_summary_table(list()),
-		"'rob_results' must be a non-empty list"
+		"'data' must be a non-empty list"
 	)
 })
 

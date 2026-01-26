@@ -206,9 +206,13 @@ describe("competing_risk_analysis", {
 			event = rep(1, 10),
 			TRT01P = rep("A", 10)
 		)
-		expect_error(
-			competing_risk_analysis(data, "time", "event", "TRT01P", 1, integer(0)),
-			"Fine-Gray model fitting failed"
+		expect_warning(
+			expect_error(
+				competing_risk_analysis(data, "time", "event", "TRT01P", 1, integer(0)),
+				"Fine-Gray model fitting failed"
+			),
+			"Only one treatment level found",
+			fixed = TRUE
 		)
 	})
 })

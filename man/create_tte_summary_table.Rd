@@ -15,11 +15,16 @@ create_tte_summary_table(
   landmarks = NULL,
   time_unit = "months",
   title = "Time-to-Event Summary",
-  autofit = TRUE
+  footnotes = character(),
+  autofit = TRUE,
+  ...
 )
 }
 \arguments{
-\item{data}{ADaMData object or data frame containing TTE data}
+\item{data}{An ADaMData object (with domain "ADTTE") or an ADTTE data frame.
+Required columns include: time variable (default: "AVAL"), event variable
+(default: "CNSR"), and the treatment variable (default: "TRT01P" for data
+frames, or @trt_var for ADaMData).}
 
 \item{time_var}{Time variable name (default: "AVAL")}
 
@@ -27,7 +32,8 @@ create_tte_summary_table(
 it will be automatically inverted (0=event becomes 1=event).
 Otherwise expects 1=event, 0=censor. Default: "CNSR"}
 
-\item{trt_var}{Treatment variable name (default: "TRT01P")}
+\item{trt_var}{Treatment variable name (default: "TRT01P"). Ignored for
+ADaMData objects which use their own trt_var property.}
 
 \item{ref_group}{Reference group for HR calculation. If NULL, uses first
 level of treatment variable.}
@@ -44,7 +50,11 @@ estimates (e.g., c(12, 24) for 12 and 24 month rates). NULL for none.}
 
 \item{title}{Table title}
 
+\item{footnotes}{Character vector of footnotes to append to the table.}
+
 \item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
+
+\item{...}{Additional arguments passed to \code{\link{create_clinical_table}}}
 }
 \value{
 A ClinicalTable object with TTE summary statistics
@@ -55,21 +65,14 @@ intervals, hazard ratios, and optional landmark estimates for efficacy
 endpoints like OS, PFS, EFS.
 }
 \examples{
-\dontrun{
-# Basic usage
-tte_table <- create_tte_summary_table(
-  data = adtte,
-  time_var = "AVAL",
-  event_var = "CNSR",
-  title = "Overall Survival Summary"
+# Create time-to-event summary with data frame
+adtte <- data.frame(
+  USUBJID = sprintf("SUBJ\%02d", 1:40),
+  TRT01P = rep(c("Placebo", "Active"), each = 20),
+  AVAL = c(rexp(20, 0.05), rexp(20, 0.03)),
+  CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3))
 )
+table <- create_tte_summary_table(adtte)
+table@type
 
-# With landmark estimates
-tte_table <- create_tte_summary_table(
-  data = adtte,
-  landmarks = c(12, 24),
-  time_unit = "months",
-  title = "Progression-Free Survival"
-)
-}
 }

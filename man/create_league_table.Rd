@@ -10,7 +10,8 @@ create_league_table(
   digits = 2,
   show_ci = TRUE,
   highlight_sig = TRUE,
-  conf_level = 0.95
+  conf_level = NULL,
+  theme = c("hta", "iqwig", "gba", "clinical")
 )
 }
 \arguments{
@@ -24,9 +25,12 @@ create_league_table(
 Default: TRUE}
 
 \item{conf_level}{Numeric. Confidence level. Default: 0.95}
+
+\item{theme}{Theme preset: "hta", "iqwig", "gba", or "clinical"
+(default: "hta")}
 }
 \value{
-ClinicalTable with league table matrix
+ClinicalTable with styled league table
 }
 \description{
 Generates a league table showing all pairwise treatment comparisons

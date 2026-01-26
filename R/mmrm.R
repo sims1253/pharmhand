@@ -215,10 +215,26 @@ mmrm_analysis <- function(
 	method = c("REML", "ML"),
 	control = NULL
 ) {
-	# Validate inputs
-	if (!is.data.frame(data)) {
-		ph_abort("'data' must be a data frame")
+	# Validate inputs using assertion helpers
+	assert_data_frame(data, arg = "data")
+	assert_character_scalar(response_var, arg = "response_var")
+	assert_character_scalar(subject_var, arg = "subject_var")
+	assert_character_scalar(trt_var, arg = "trt_var")
+	assert_character_scalar(time_var, arg = "time_var")
+
+	if (!is.null(covariates)) {
+		assert_character_vector(covariates, arg = "covariates")
 	}
+
+	assert_logical_scalar(interaction, arg = "interaction")
+	# Convert to character vectors
+	cov_covariance <- match.arg(cov_covariance)
+	df_adjustment <- match.arg(df_adjustment)
+	method <- match.arg(method)
+
+	assert_character_scalar(cov_covariance, arg = "cov_covariance")
+	assert_character_scalar(df_adjustment, arg = "df_adjustment")
+	assert_character_scalar(method, arg = "method")
 
 	# Check mmrm package availability
 	if (!requireNamespace("mmrm", quietly = TRUE)) {
@@ -228,29 +244,16 @@ mmrm_analysis <- function(
 		)
 	}
 
-	# Convert to character vectors
-	cov_covariance <- match.arg(cov_covariance)
-	df_adjustment <- match.arg(df_adjustment)
-	method <- match.arg(method)
-
 	# Check required variables exist
-	required_vars <- c(response_var, subject_var, trt_var, time_var)
-	if (!all(required_vars %in% names(data))) {
-		missing <- setdiff(required_vars, names(data))
-		ph_abort(sprintf(
-			"Required variables not found: %s",
-			paste(missing, collapse = ", ")
-		))
-	}
+	assert_column_exists(data, response_var, data_arg = "data")
+	assert_column_exists(data, subject_var, data_arg = "data")
+	assert_column_exists(data, trt_var, data_arg = "data")
+	assert_column_exists(data, time_var, data_arg = "data")
 
 	# Check covariates exist
 	if (!is.null(covariates)) {
-		if (!all(covariates %in% names(data))) {
-			missing <- setdiff(covariates, names(data))
-			ph_abort(sprintf(
-				"Covariate variables not found: %s",
-				paste(missing, collapse = ", ")
-			))
+		for (cov in covariates) {
+			assert_column_exists(data, cov, data_arg = "data")
 		}
 	}
 
@@ -325,10 +328,43 @@ mmrm_analysis <- function(
 	aic_val <- AIC(fit)
 	bic_val <- BIC(fit)
 
-	# Extract components
+	# Extract components - handle variable column names
+	# Some versions use "Std. Error", others use "Std.Error"
+	se_col <- if ("Std. Error" %in% colnames(coef_summary)) {
+		"Std. Error"
+	} else if ("Std.Error" %in% colnames(coef_summary)) {
+		"Std.Error"
+	} else {
+		stop("Cannot find standard error column in summary")
+	}
+
+	df_col <- if ("df" %in% colnames(coef_summary)) {
+		"df"
+	} else if ("DF" %in% colnames(coef_summary)) {
+		"DF"
+	} else {
+		stop("Cannot find degrees of freedom column in summary")
+	}
+
+	pval_col <- if ("Pr(>|t|)" %in% colnames(coef_summary)) {
+		"Pr(>|t|)"
+	} else if ("Pr(>|t|)" %in% colnames(coef_summary)) {
+		"Pr(>|t|)"
+	} else {
+		stop("Cannot find p-value column in summary")
+	}
+
+	# Filter out NA rows (singular coefficients)
+	coef_summary <- coef_summary[complete.cases(coef_summary), ]
+
 	estimates <- coef_summary[, "Estimate"]
-	ses <- coef_summary[, "Std. Error"]
-	dfs <- coef_summary[, "df"]
+	ses <- coef_summary[, se_col]
+	dfs <- coef_summary[, df_col]
+
+	# Ensure named vectors with proper names
+	names(estimates) <- rownames(coef_summary)
+	names(ses) <- rownames(coef_summary)
+	names(dfs) <- rownames(coef_summary)
 
 	# Compute t critical values (vectorized for different df per coefficient)
 	t_crit <- qt(0.975, dfs)
@@ -339,12 +375,21 @@ mmrm_analysis <- function(
 		"97.5 %" = estimates + t_crit * ses
 	)
 
+	# Extract p-values if available, otherwise set to NA
+	p_values <- if (pval_col %in% colnames(coef_summary)) {
+		coef_summary[, pval_col]
+	} else {
+		rep(NA_real_, length(estimates))
+		names(p_values) <- rownames(coef_summary)
+		p_values
+	}
+
 	MMRMResult(
 		model = fit,
 		coefficients = estimates,
 		se = ses,
 		ci = ci_matrix,
-		p_values = coef_summary[, "Pr(>|t|)"],
+		p_values = p_values,
 		df = dfs,
 		sigma = sigma,
 		log_likelihood = loglik,
@@ -387,16 +432,19 @@ summary_mmrm <- function(result, digits = 3) {
 		ph_abort("'result' must be an MMRMResult object")
 	}
 
+	assert_positive_integer(digits, arg = "digits")
+
 	data.frame(
 		Parameter = names(result@coefficients),
 		Estimate = round(result@coefficients, digits),
-		`Std. Error` = round(result@se, digits),
-		`t-value` = round(result@coefficients / result@se, digits),
+		`Std.Error` = round(result@se, digits),
+		`t value` = round(result@coefficients / result@se, digits),
 		df = round(result@df, digits),
-		`P-value` = format_pvalue(result@p_values),
+		`Pr(>|t|)` = format_pvalue(result@p_values),
 		`2.5 %` = round(result@ci[, 1], digits),
 		`97.5 %` = round(result@ci[, 2], digits),
-		stringsAsFactors = FALSE
+		stringsAsFactors = FALSE,
+		check.names = FALSE
 	)
 }
 
@@ -425,6 +473,8 @@ create_mmrm_table <- function(
 	if (!S7::S7_inherits(result, MMRMResult)) {
 		ph_abort("'result' must be an MMRMResult object")
 	}
+
+	assert_character_scalar(title, arg = "title")
 
 	# Get summary
 	summary_df <- summary_mmrm(result)

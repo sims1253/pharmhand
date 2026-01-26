@@ -97,6 +97,45 @@ ADaMData <- S7::new_class(
 						.by = dplyr::all_of(trt_var)
 					)
 			}
+		),
+		# Computed property: total count of distinct subjects in filtered_data
+		subject_n = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) {
+				df <- self@filtered_data
+				if (nrow(df) == 0) {
+					return(0L)
+				}
+				subject_var <- self@subject_var
+				dplyr::n_distinct(df[[subject_var]])
+			}
+		),
+		# Computed property: unique levels of trt_var in filtered_data, sorted
+		trt_levels = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) {
+				df <- self@filtered_data
+				if (nrow(df) == 0) {
+					return(character())
+				}
+				trt_var <- self@trt_var
+				if (!trt_var %in% names(df)) {
+					return(character())
+				}
+				sort(unique(df[[trt_var]]))
+			}
+		),
+		# Computed property: boolean indicating if filtered_data has zero rows
+		is_empty = S7::new_property(
+			class = S7::class_logical,
+			getter = function(self) nrow(self@filtered_data) == 0
+		),
+		# Computed property: string summarizing population and N
+		summary_label = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) {
+				sprintf("%s (N=%d)", self@population, self@subject_n)
+			}
 		)
 	)
 )
@@ -122,7 +161,34 @@ AnalysisResults <- S7::new_class(
 		),
 		type = S7::new_property(S7::class_character, default = ""),
 		groupings = S7::new_property(S7::class_list, default = list()),
-		metadata = S7::new_property(S7::class_list, default = list())
+		metadata = S7::new_property(S7::class_list, default = list()),
+		# Computed properties
+		n_rows = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) nrow(self@stats)
+		),
+		n_cols = S7::new_property(
+			class = S7::class_integer,
+			getter = function(self) ncol(self@stats)
+		),
+		is_empty = S7::new_property(
+			class = S7::class_logical,
+			getter = function(self) nrow(self@stats) == 0
+		),
+		summary_label = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) {
+				if (self@is_empty) {
+					sprintf("%s (empty)", self@type)
+				} else {
+					sprintf("%s (n=%d)", self@type, self@n_rows)
+				}
+			}
+		),
+		column_names = S7::new_property(
+			class = S7::class_character,
+			getter = function(self) names(self@stats)
+		)
 	)
 )
 

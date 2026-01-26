@@ -5,7 +5,7 @@
 \title{Create AE Table with Full MedDRA Hierarchy}
 \usage{
 create_ae_hierarchy_table(
-  adae,
+  data,
   adsl,
   trt_var = "TRT01P",
   soc_var = "AEBODSYS",
@@ -13,17 +13,16 @@ create_ae_hierarchy_table(
   hlt_var = "AEHLT",
   pt_var = "AEDECOD",
   levels = c("soc", "pt"),
-  subject_var = "USUBJID",
   min_pct = 0,
   sort_by = c("frequency", "alphabetical"),
   title = NULL,
-  autofit = TRUE
+  ...
 )
 }
 \arguments{
-\item{adae}{ADAE dataset}
+\item{data}{ADAE dataset (data frame or ADaMData object)}
 
-\item{adsl}{ADSL dataset for denominators}
+\item{adsl}{ADSL dataset for denominators (data frame or ADaMData object)}
 
 \item{trt_var}{Treatment variable. Default: "TRT01P"}
 
@@ -38,8 +37,6 @@ create_ae_hierarchy_table(
 \item{levels}{Character vector of hierarchy levels to include.
 Options: "soc", "hlgt", "hlt", "pt". Default: c("soc", "pt")}
 
-\item{subject_var}{Subject ID variable. Default: "USUBJID"}
-
 \item{min_pct}{Numeric. Minimum percentage to display. Default: 0}
 
 \item{sort_by}{Character. Sort by "alphabetical" or
@@ -47,7 +44,7 @@ Options: "soc", "hlgt", "hlt", "pt". Default: c("soc", "pt")}
 
 \item{title}{Character. Table title. Default: NULL (auto-generated)}
 
-\item{autofit}{Logical. Whether to autofit column widths. Default: TRUE}
+\item{...}{Additional arguments passed to \code{\link[=create_clinical_table]{create_clinical_table()}}}
 }
 \value{
 ClinicalTable with hierarchical AE summary
@@ -61,7 +58,7 @@ High Level Term (HLT) → Preferred Term (PT).
 \dontrun{
 # Create AE hierarchy table
 table <- create_ae_hierarchy_table(
-  adae = adae,
+  data = adae,
   adsl = adsl,
   levels = c("soc", "pt"),
   min_pct = 5

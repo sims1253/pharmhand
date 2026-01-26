@@ -8,21 +8,22 @@ test_ph_assumption(
   data,
   time_var = NULL,
   event_var = NULL,
-  trt_var = NULL,
+  trt_var = "TRT01P",
   covariates = character(),
   alpha = 0.05,
   plot = FALSE
 )
 }
 \arguments{
-\item{data}{Data frame with time-to-event data, or a coxph model object}
+\item{data}{An ADaMData object (with domain "ADTTE") or an ADTTE data frame
+with time-to-event data, or a coxph model object}
 
 \item{time_var}{Character. Time variable (required if data is a data frame)}
 
 \item{event_var}{Character. Event variable (required if data is a data frame)}
 
-\item{trt_var}{Character. Treatment variable (required if data is a
-data frame)}
+\item{trt_var}{Treatment variable name (default: "TRT01P"). Ignored for
+ADaMData objects which use their own trt_var property.}
 
 \item{covariates}{Character vector. Additional covariates to include}
 

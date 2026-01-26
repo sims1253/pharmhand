@@ -43,6 +43,26 @@ test_that("Reporting Engine (flextable/gt) works", {
 	# GT
 	gt_tbl <- as_gt(results)
 	expect_s3_class(gt_tbl, "gt_tbl")
+
+	# Test AnalysisResults computed properties
+	expect_false(results@is_empty)
+	expect_equal(results@n_rows, nrow(results@stats))
+	expect_equal(results@n_cols, ncol(results@stats))
+	expect_equal(results@summary_label, "baseline (n=2)")
+	expect_identical(results@column_names, names(results@stats))
+})
+
+test_that("AnalysisResults computed properties work with empty stats", {
+	empty_results <- AnalysisResults(
+		stats = data.frame(),
+		type = "test"
+	)
+
+	expect_true(empty_results@is_empty)
+	expect_equal(empty_results@n_rows, 0L)
+	expect_equal(empty_results@n_cols, 0L)
+	expect_equal(empty_results@summary_label, "test (empty)")
+	expect_equal(empty_results@column_names, character())
 })
 
 test_that("Study Logic works", {
@@ -119,6 +139,82 @@ test_that("ADaMData trt_n respects population filter", {
 	expect_equal(sum(trt_n$N), 16) # 20 - 4 filtered out
 })
 
+test_that("ADaMData subject_n computed property works", {
+	adsl <- get_shared_adsl(n = 20)
+	adam <- ADaMData(data = adsl, population = "ITT")
+
+	expect_equal(adam@subject_n, 20L)
+})
+
+test_that("ADaMData subject_n handles empty filtered_data", {
+	empty_df <- data.frame(
+		USUBJID = character(),
+		TRT01P = character(),
+		ITTFL = character()
+	)
+	adam <- ADaMData(data = empty_df, population = "ITT")
+
+	expect_equal(adam@subject_n, 0L)
+})
+
+test_that("ADaMData trt_levels computed property works", {
+	adsl <- get_shared_adsl(n = 20)
+	adam <- ADaMData(data = adsl, population = "ITT")
+
+	levels <- adam@trt_levels
+	expect_true(is.character(levels))
+	expect_true("Placebo" %in% levels)
+	expect_true("Active" %in% levels)
+	expect_equal(sort(levels), levels) # Should be sorted
+})
+
+test_that("ADaMData trt_levels handles empty filtered_data", {
+	empty_df <- data.frame(
+		USUBJID = character(),
+		TRT01P = character(),
+		ITTFL = character()
+	)
+	adam <- ADaMData(data = empty_df, population = "ITT")
+
+	expect_equal(adam@trt_levels, character())
+})
+
+test_that("ADaMData is_empty computed property works", {
+	adsl <- get_shared_adsl(n = 20)
+	adam <- ADaMData(data = adsl, population = "ITT")
+
+	expect_false(adam@is_empty)
+})
+
+test_that("ADaMData is_empty returns TRUE for empty filtered_data", {
+	empty_df <- data.frame(
+		USUBJID = character(),
+		TRT01P = character(),
+		ITTFL = character()
+	)
+	adam <- ADaMData(data = empty_df, population = "ITT")
+
+	expect_true(adam@is_empty)
+})
+
+test_that("ADaMData summary_label computed property works", {
+	adsl <- get_shared_adsl(n = 20)
+	adam <- ADaMData(data = adsl, population = "FAS")
+
+	expect_equal(adam@summary_label, "FAS (N=20)")
+})
+
+test_that("ADaMData summary_label handles empty data", {
+	empty_df <- data.frame(
+		USUBJID = character(),
+		TRT01P = character(),
+		FASFL = character()
+	)
+	adam <- ADaMData(data = empty_df, population = "FAS")
+
+	expect_equal(adam@summary_label, "FAS (N=0)")
+})
+
 # Tests for Helper Functions ----
 
 test_that("get_trt_n works with ADaMData", {
@@ -187,4 +283,49 @@ test_that("get_subject_var returns correct variable", {
 
 	expect_equal(get_subject_var(adam), "USUBJID")
 	expect_equal(get_subject_var(adsl, default = "USUBJID"), "USUBJID")
+})
+
+test_that("get_subject_n works with ADaMData", {
+	adsl <- get_shared_adsl(n = 20)
+	adam <- ADaMData(data = adsl, population = "ITT")
+
+	expect_equal(get_subject_n(adam), 20L)
+})
+
+test_that("get_subject_n works with data frame", {
+	adsl <- get_shared_adsl(n = 20)
+
+	expect_equal(get_subject_n(adsl), 20L)
+})
+
+test_that("get_subject_n applies population filter for data frames", {
+	adsl <- get_shared_adsl(n = 20)
+	adsl$PPSFL <- "Y"
+	adsl$PPSFL[1:4] <- "N"
+
+	expect_equal(get_subject_n(adsl, population = "PPS"), 16L)
+})
+
+test_that("get_summary_label works with ADaMData", {
+	adsl <- get_shared_adsl(n = 20)
+	adam <- ADaMData(data = adsl, population = "FAS")
+
+	expect_equal(get_summary_label(adam), "FAS (N=20)")
+})
+
+test_that("get_summary_label works with AnalysisResults", {
+	adsl <- get_shared_adsl(n = 20)
+	adam <- ADaMData(data = adsl)
+	results <- calculate_baseline(adam, vars = c("AGE"))
+
+	expect_equal(get_summary_label(results), "baseline (n=2)")
+})
+
+test_that("get_summary_label works with empty AnalysisResults", {
+	empty_results <- AnalysisResults(
+		stats = data.frame(),
+		type = "test"
+	)
+
+	expect_equal(get_summary_label(empty_results), "test (empty)")
 })

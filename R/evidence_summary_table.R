@@ -13,7 +13,7 @@ NULL
 #' effect estimates, heterogeneity statistics, risk of bias assessments,
 #' and evidence grades for multiple endpoints.
 #'
-#' @param endpoints List of named elements containing endpoint data.
+#' @param data List of named elements containing endpoint data.
 #'   Each element should be a list with components:
 #'   - `result`: MetaResult or ComparisonResult object with effect estimate,
 #'     confidence interval, p-value, and study count
@@ -29,8 +29,8 @@ NULL
 #' @param language Output language: "en" for English, "de" for German.
 #'   Default: "en".
 #' @param footnotes Character vector of footnotes to add to the table.
-#' @param col_widths Named numeric vector of column widths (in inches).
-#' @param autofit Logical, whether to autofit column widths (default: TRUE).
+#' @param ... Additional arguments passed to [create_clinical_table()],
+#'   such as `col_widths`, `autofit`, `theme`, etc.
 #'
 #' @return A ClinicalTable object containing the formatted evidence summary
 #'   table.
@@ -82,7 +82,7 @@ NULL
 #' table <- create_evidence_summary_table(endpoints)
 #' }
 create_evidence_summary_table <- function(
-	endpoints,
+	data,
 	title = "Evidence Summary",
 	columns = c(
 		"Endpoint",
@@ -96,96 +96,23 @@ create_evidence_summary_table <- function(
 	conf_level = 0.95,
 	language = c("en", "de"),
 	footnotes = character(),
-	col_widths = NULL,
-	autofit = TRUE
+	...
 ) {
 	language <- match.arg(language)
 
-	# Validate endpoints input
-	if (!is.list(endpoints) || length(endpoints) == 0) {
-		ph_abort("'endpoints' must be a non-empty list")
+	# Validate data input
+	if (!is.list(data) || length(data) == 0) {
+		ph_abort("'data' must be a non-empty list")
 	}
 
 	# Build table data row by row
-	table_data <- lapply(names(endpoints), function(name) {
-		ep <- endpoints[[name]]
-
-		# Extract result object
-		result <- ep$result
-		if (is.null(result)) {
-			ph_abort(sprintf("Endpoint '%s' is missing 'result' component", name))
-		}
-
-		# Extract grade object
-		grade <- ep$grade
-
-		# Extract RoB data
-		rob <- ep$rob
-
-		# Build row data
-		row_data <- list()
-
-		# Endpoint label
-		row_data[["Endpoint"]] <- ep$label %||% name
-
-		# Number of studies
-		n_studies <- if (S7::S7_inherits(result, StatResult)) {
-			result@n
-		} else if (is.list(result) && !is.null(result$n)) {
-			result$n
-		} else {
-			NA_integer_
-		}
-		row_data[["N Studies"]] <- n_studies
-
-		# Effect estimate and CI
-		row_data[["Effect (95% CI)"]] <- .format_effect_ci(
-			result = result,
+	table_data <- lapply(names(data), function(name) {
+		.build_evidence_summary_row(
+			endpoint_data = data[[name]],
+			name = name,
 			conf_level = conf_level,
 			language = language
 		)
-
-		# P-value
-		pval <- if (S7::S7_inherits(result, StatResult)) {
-			result@p_value
-		} else if (is.list(result) && !is.null(result$p_value)) {
-			result$p_value
-		} else {
-			NA_real_
-		}
-		row_data[["p-value"]] <- format_pvalue(
-			pval,
-			locale = if (language == "de") "de" else "en"
-		)
-
-		# I2 heterogeneity
-		i2 <- if (S7::S7_inherits(result, MetaResult)) {
-			result@heterogeneity$I2
-		} else if (is.list(result) && !is.null(result$heterogeneity)) {
-			result$heterogeneity$I2
-		} else {
-			NA_real_
-		}
-		row_data[["I2"]] <- if (is.na(i2)) {
-			"--"
-		} else {
-			sprintf("%.0f%%", i2)
-		}
-
-		# Risk of bias summary
-		row_data[["RoB"]] <- .format_rob_summary(
-			rob = rob,
-			grade = grade,
-			language = language
-		)
-
-		# Evidence grade
-		row_data[["Grade"]] <- .format_grade(
-			grade = grade,
-			language = language
-		)
-
-		row_data
 	})
 
 	# Convert to data frame using dplyr::bind_rows for proper column preservation
@@ -226,14 +153,14 @@ create_evidence_summary_table <- function(
 		type = "evidence_summary",
 		title = title,
 		footnotes = all_footnotes,
+		theme = "hta",
 		metadata = list(
 			columns = columns,
 			language = language,
 			conf_level = conf_level,
-			n_endpoints = length(endpoints)
+			n_endpoints = length(data)
 		),
-		col_widths = col_widths,
-		autofit = autofit
+		...
 	)
 }
 
@@ -244,7 +171,7 @@ create_evidence_summary_table <- function(
 #' requirements, displaying design, sample size, treatment, and comparator
 #' information for each included study.
 #'
-#' @param studies List of Study objects, TwoArmStudy objects, or data frame
+#' @param data List of Study objects, TwoArmStudy objects, or data frame
 #'   with study-level characteristics.
 #' @param title Table title (default: "Study Characteristics")
 #' @param columns Character vector of column names. Default columns:
@@ -252,8 +179,8 @@ create_evidence_summary_table <- function(
 #' @param include_metadata Logical, include study metadata columns
 #'   (default: TRUE).
 #' @param footnotes Character vector of footnotes to add.
-#' @param col_widths Named numeric vector of column widths (in inches).
-#' @param autofit Logical, whether to autofit column widths (default: TRUE).
+#' @param ... Additional arguments passed to [create_clinical_table()],
+#'   such as `col_widths`, `autofit`, `theme`, etc.
 #'
 #' @return A ClinicalTable object containing the study characteristics table.
 #'
@@ -279,7 +206,7 @@ create_evidence_summary_table <- function(
 #' table <- create_study_characteristics_table(studies)
 #' }
 create_study_characteristics_table <- function(
-	studies,
+	data,
 	title = "Study Characteristics",
 	columns = c(
 		"Study",
@@ -291,77 +218,13 @@ create_study_characteristics_table <- function(
 	),
 	include_metadata = TRUE,
 	footnotes = character(),
-	col_widths = NULL,
-	autofit = TRUE
+	...
 ) {
 	# Build table data
-	study_rows <- lapply(studies, function(s) {
-		# Handle different input types
-		if (S7::S7_inherits(s, Study)) {
-			# Extract from Study object
-			study_id <- s@study_id
-			design <- s@design
-			population <- s@population
-
-			# Get treatment/comparator based on study type
-			if (S7::S7_inherits(s, TwoArmStudy)) {
-				treatment <- s@treatment_var %||% "Treatment"
-				comparator <- s@comparator
-			} else if (S7::S7_inherits(s, SingleArmStudy)) {
-				treatment <- s@treatment_var %||% s@study_id
-				comparator <- "Single arm"
-			} else {
-				treatment <- "--"
-				comparator <- "--"
-			}
-
-			# Get N from metadata or data
-			n <- if (!is.null(s@metadata$n)) {
-				sprintf("%d", s@metadata$n)
-			} else if (!is.null(s@metadata$sample_size)) {
-				sprintf("%d", s@metadata$sample_size)
-			} else {
-				"--"
-			}
-		} else if (is.data.frame(s)) {
-			# Already a data frame - use first row
-			study_id <- s$study_id[1] %||% s$Study[1] %||% "--"
-			design <- s$design[1] %||% s$Design[1] %||% "--"
-			n <- as.character(s$n[1] %||% s$N[1] %||% "--")
-			treatment <- s$treatment[1] %||% s$Treatment[1] %||% "--"
-			comparator <- s$comparator[1] %||% s$Comparator[1] %||% "--"
-			population <- s$population[1] %||% s$Population[1] %||% "--"
-		} else if (is.list(s)) {
-			# List with named elements
-			study_id <- s$study_id %||% s$Study %||% "--"
-			design <- s$design %||% s$Design %||% "--"
-			n <- as.character(s$n %||% s$N %||% "--")
-			treatment <- s$treatment %||% s$Treatment %||% "--"
-			comparator <- s$comparator %||% s$Comparator %||% "--"
-			population <- s$population %||% s$Population %||% "--"
-		} else {
-			ph_abort(
-				"Each element of 'studies' must be a Study object, list, or data.frame"
-			)
-		}
-
-		# Format design for display
-		design_label <- switch(
-			tolower(design),
-			"rct" = "Randomized Controlled Trial",
-			"observational" = "Observational Study",
-			"single-arm" = "Single-Arm Study",
-			"crossover" = "Crossover Trial",
-			toupper(design)
-		)
-
-		list(
-			Study = study_id,
-			Design = design_label,
-			N = n,
-			Treatment = treatment,
-			Comparator = comparator,
-			Population = population
+	study_rows <- lapply(data, function(s) {
+		.build_study_characteristic_row(
+			study = s,
+			include_metadata = include_metadata
 		)
 	})
 
@@ -395,12 +258,12 @@ create_study_characteristics_table <- function(
 		type = "study_characteristics",
 		title = title,
 		footnotes = c(footnotes, default_footnotes),
+		theme = "hta",
 		metadata = list(
 			columns = columns,
-			n_studies = length(studies)
+			n_studies = length(data)
 		),
-		col_widths = col_widths,
-		autofit = autofit
+		...
 	)
 }
 
@@ -481,13 +344,304 @@ export_evidence_table <- function(
 }
 
 
+#' Create Risk of Bias Summary Table
+#'
+#' Creates a summary table of risk of bias assessments across studies
+#' and domains, suitable for G-BA Module 4 requirements.
+#'
+#' @param data List of RoB2Result objects (one per study).
+#' @param title Table title (default: "Risk of Bias Assessment").
+#' @param include_justification Logical, include justification column
+#'   (default: FALSE).
+#' @param footnotes Character vector of footnotes.
+#' @param ... Additional arguments passed to [create_clinical_table()],
+#'   such as `col_widths`, `autofit`, `theme`, etc.
+#'
+#' @return A ClinicalTable object.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' rob_results <- list(
+#'   RoB2Result(study_id = "Study 1", ...),
+#'   RoB2Result(study_id = "Study 2", ...)
+#' )
+#' rob_table <- create_rob_summary_table(rob_results)
+#' }
+create_rob_summary_table <- function(
+	data,
+	title = "Risk of Bias Assessment",
+	include_justification = FALSE,
+	footnotes = character(),
+	...
+) {
+	if (!is.list(data) || length(data) == 0) {
+		ph_abort("'data' must be a non-empty list of RoB2Result objects")
+	}
+
+	# Validate all elements are RoB2Result
+	for (i in seq_along(data)) {
+		if (!S7::S7_inherits(data[[i]], RoB2Result)) {
+			ph_abort(sprintf(
+				"Element %d of 'data' must be a RoB2Result object",
+				i
+			))
+		}
+	}
+
+	# Build summary data frame
+	summary_data <- lapply(data, function(r) {
+		.build_rob_summary_row(r, include_justification)
+	})
+
+	result_df <- dplyr::bind_rows(summary_data)
+	rownames(result_df) <- NULL
+
+	# Default footnotes
+	default_footnotes <- c(
+		"D1-D5: RoB 2 domains",
+		"Overall: Overall risk of bias judgment"
+	)
+
+	create_clinical_table(
+		data = result_df,
+		type = "rob_summary",
+		title = title,
+		footnotes = c(footnotes, default_footnotes),
+		theme = "hta",
+		metadata = list(
+			n_studies = length(data),
+			include_justification = include_justification
+		),
+		...
+	)
+}
+
+
 # =============================================================================
 # Internal Helper Functions
 # =============================================================================
 
+#' Build Evidence Summary Row
+#'
+#' Internal helper to build a single row of data for the evidence summary table.
+#'
+#' @param endpoint_data List containing endpoint components (result, grade, rob)
+#' @param name Character string for endpoint name
+#' @param conf_level Numeric confidence level
+#' @param language Language setting ("en" or "de")
+#'
+#' @return List of row data with all column values
+#' @keywords internal
+.build_evidence_summary_row <- function(
+	endpoint_data,
+	name,
+	conf_level,
+	language
+) {
+	# Extract result object
+	result <- endpoint_data$result
+	if (is.null(result)) {
+		ph_abort(sprintf("Endpoint '%s' is missing 'result' component", name))
+	}
+
+	# Extract grade object
+	grade <- endpoint_data$grade
+
+	# Extract RoB data
+	rob <- endpoint_data$rob
+
+	# Build row data
+	row_data <- list()
+
+	# Endpoint label
+	row_data[["Endpoint"]] <- endpoint_data$label %||% name
+
+	# Number of studies using S7 property
+	n_studies <- if (S7::S7_inherits(result, StatResult)) {
+		result@n
+	} else if (is.list(result) && !is.null(result$n)) {
+		result$n
+	} else {
+		NA_integer_
+	}
+	row_data[["N Studies"]] <- n_studies
+
+	# Effect estimate and CI
+	row_data[["Effect (95% CI)"]] <- .format_effect_ci(
+		result = result,
+		conf_level = conf_level,
+		language = language
+	)
+
+	# P-value using S7 property
+	pval <- if (S7::S7_inherits(result, StatResult)) {
+		result@p_value
+	} else if (is.list(result) && !is.null(result$p_value)) {
+		result$p_value
+	} else {
+		NA_real_
+	}
+	row_data[["p-value"]] <- format_pvalue(
+		pval,
+		locale = if (language == "de") "de" else "en"
+	)
+
+	# I2 heterogeneity using S7 property
+	i2 <- if (S7::S7_inherits(result, MetaResult)) {
+		heterogeneity <- result@heterogeneity
+		if (is.list(heterogeneity)) heterogeneity$I2 else NA_real_
+	} else if (is.list(result) && !is.null(result$heterogeneity)) {
+		result$heterogeneity$I2
+	} else {
+		NA_real_
+	}
+	row_data[["I2"]] <- if (is.na(i2)) {
+		"--"
+	} else {
+		sprintf("%.0f%%", i2)
+	}
+
+	# Risk of bias summary
+	row_data[["RoB"]] <- .format_rob_summary(
+		rob = rob,
+		grade = grade,
+		language = language
+	)
+
+	# Evidence grade
+	row_data[["Grade"]] <- .format_grade(
+		grade = grade,
+		language = language
+	)
+
+	row_data
+}
+
+
+#' Build Study Characteristic Row
+#'
+#' Internal helper to build a single row of data for the study characteristics
+#' table.
+#'
+#' @param study Study object, list, or data frame containing study information
+#' @param include_metadata Logical, include metadata columns
+#'
+#' @return List of row data with all column values
+#' @keywords internal
+.build_study_characteristic_row <- function(study, include_metadata) {
+	# Handle different input types
+	if (S7::S7_inherits(study, Study)) {
+		# Extract from Study object using S7 properties
+		study_id <- study@study_id
+		design <- study@design
+		population <- study@population
+
+		# Get treatment/comparator based on study type
+		if (S7::S7_inherits(study, TwoArmStudy)) {
+			treatment <- study@treatment_var %||% "Treatment"
+			comparator <- study@comparator
+		} else if (S7::S7_inherits(study, SingleArmStudy)) {
+			treatment <- study@treatment_var %||% study_id
+			comparator <- "Single arm"
+		} else {
+			treatment <- "--"
+			comparator <- "--"
+		}
+
+		# Get N from metadata using S7 property
+		metadata <- study@metadata
+		n <- if (!is.null(metadata$n)) {
+			sprintf("%d", metadata$n)
+		} else if (!is.null(metadata$sample_size)) {
+			sprintf("%d", metadata$sample_size)
+		} else {
+			"--"
+		}
+	} else if (is.data.frame(study)) {
+		# Already a data frame - use first row
+		study_id <- study$study_id[1] %||% study$Study[1] %||% "--"
+		design <- study$design[1] %||% study$Design[1] %||% "--"
+		n <- as.character(study$n[1] %||% study$N[1] %||% "--")
+		treatment <- study$treatment[1] %||% study$Treatment[1] %||% "--"
+		comparator <- study$comparator[1] %||% study$Comparator[1] %||% "--"
+		population <- study$population[1] %||% study$Population[1] %||% "--"
+	} else if (is.list(study)) {
+		# List with named elements
+		study_id <- study$study_id %||% study$Study %||% "--"
+		design <- study$design %||% study$Design %||% "--"
+		n <- as.character(study$n %||% study$N %||% "--")
+		treatment <- study$treatment %||% study$Treatment %||% "--"
+		comparator <- study$comparator %||% study$Comparator %||% "--"
+		population <- study$population %||% study$Population %||% "--"
+	} else {
+		ph_abort(
+			"Each element of 'data' must be a Study object, list, or data.frame"
+		)
+	}
+
+	# Format design for display
+	design_label <- switch(
+		tolower(design),
+		"rct" = "Randomized Controlled Trial",
+		"observational" = "Observational Study",
+		"single-arm" = "Single-Arm Study",
+		"crossover" = "Crossover Trial",
+		toupper(design)
+	)
+
+	list(
+		Study = study_id,
+		Design = design_label,
+		N = n,
+		Treatment = treatment,
+		Comparator = comparator,
+		Population = population
+	)
+}
+
+
+#' Build RoB Summary Row
+#'
+#' Internal helper to build a single row of data for the RoB summary table.
+#'
+#' @param rob_result RoB2Result object containing risk of bias assessment
+#' @param include_justification Logical, include justification column
+#'
+#' @return List of row data with all column values
+#' @keywords internal
+.build_rob_summary_row <- function(rob_result, include_justification) {
+	# Extract values using S7 properties
+	study_id <- rob_result@study_id
+	outcome <- rob_result@outcome
+	overall <- rob_result@overall
+	domains <- rob_result@domains
+
+	# Build row with domain judgments using S7 properties
+	row <- list(
+		Study = study_id,
+		Outcome = outcome,
+		D1_Randomization = domains$D1_randomization$judgment,
+		D2_Deviations = domains$D2_deviations$judgment,
+		D3_Missing_Data = domains$D3_missing_data$judgment,
+		D4_Measurement = domains$D4_measurement$judgment,
+		D5_Selection = domains$D5_selection$judgment,
+		Overall = overall
+	)
+
+	if (include_justification) {
+		overall_justification <- rob_result@overall_justification
+		row$Justification <- overall_justification
+	}
+
+	row
+}
+
+
 #' @keywords internal
 .format_effect_ci <- function(result, conf_level, language) {
-	# Extract effect measure and estimate
+	# Extract effect measure and estimate using S7 property
 	if (S7::S7_inherits(result, StatResult)) {
 		effect_measure <- result@effect_measure %||% "hr"
 		estimate <- result@estimate
@@ -546,7 +700,7 @@ export_evidence_table <- function(
 
 #' @keywords internal
 .format_rob_summary <- function(rob, grade, language) {
-	# If rob is provided, extract from RoB object(s) first
+	# If rob is provided, extract from RoB object(s) first using S7 property
 	if (!is.null(rob)) {
 		if (S7::S7_inherits(rob, RoB2Result)) {
 			rob_level <- tolower(rob@overall)
@@ -567,13 +721,14 @@ export_evidence_table <- function(
 		} else {
 			rob_level <- "unknown"
 		}
-		# Otherwise, if grade is provided, extract RoB from domains
+		# Otherwise, if grade is provided, extract RoB from domains using S7 property
 	} else if (!is.null(grade) && S7::S7_inherits(grade, EvidenceGrade)) {
+		domains <- grade@domains
 		if (
-			length(grade@domains) > 0 &&
-				!is.null(grade@domains$limitations)
+			length(domains) > 0 &&
+				!is.null(domains$limitations)
 		) {
-			rob_level <- grade@domains$limitations$level
+			rob_level <- domains$limitations$level
 		} else {
 			rob_level <- "unknown"
 		}
@@ -607,13 +762,14 @@ export_evidence_table <- function(
 		if (language == "de") {
 			grade@grade_de %||% "--"
 		} else {
+			grade_value <- grade@grade
 			switch(
-				grade@grade,
+				grade_value,
 				"proof" = "Proof",
 				"indication" = "Indication",
 				"hint" = "Hint",
 				"none" = "No proof",
-				grade@grade
+				grade_value
 			)
 		}
 	} else if (is.list(grade)) {
@@ -639,12 +795,17 @@ export_evidence_table <- function(
 .export_to_word <- function(data, title, file, ...) {
 	args <- list(...)
 
-	# Create flextable
-	ft <- create_hta_table(
+	# Use create_clinical_table factory for consistency
+	ct <- create_clinical_table(
 		data = data,
+		type = "evidence_summary",
 		title = title,
-		footnotes = args$footnotes
+		footnotes = args$footnotes %||% character(),
+		theme = "hta"
 	)
+
+	# Extract flextable from ClinicalTable
+	ft <- ct@flextable
 
 	# Add to Word document
 	if (!is.null(args$template) && file.exists(args$template)) {
@@ -669,12 +830,17 @@ export_evidence_table <- function(
 .export_to_html <- function(data, title, file, ...) {
 	args <- list(...)
 
-	# Create flextable
-	ft <- create_hta_table(
+	# Use create_clinical_table factory for consistency
+	ct <- create_clinical_table(
 		data = data,
+		type = "evidence_summary",
 		title = title,
-		footnotes = args$footnotes
+		footnotes = args$footnotes %||% character(),
+		theme = "hta"
 	)
+
+	# Extract flextable from ClinicalTable
+	ft <- ct@flextable
 
 	# Convert to HTML and ensure it's character
 	html_content <- as.character(flextable::htmltools_value(ft))
@@ -748,94 +914,4 @@ export_evidence_table <- function(
 			)
 		}
 	}
-}
-
-
-# =============================================================================
-# RoB Summary Data Frame
-# =============================================================================
-
-#' Create Risk of Bias Summary Table
-#'
-#' Creates a summary table of risk of bias assessments across studies
-#' and domains, suitable for G-BA Module 4 requirements.
-#'
-#' @param rob_results List of RoB2Result objects (one per study).
-#' @param title Table title (default: "Risk of Bias Assessment").
-#' @param include_justification Logical, include justification column
-#'   (default: FALSE).
-#' @param footnotes Character vector of footnotes.
-#' @param autofit Logical, autofit column widths (default: TRUE).
-#'
-#' @return A ClinicalTable object.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' rob_results <- list(
-#'   RoB2Result(study_id = "Study 1", ...),
-#'   RoB2Result(study_id = "Study 2", ...)
-#' )
-#' rob_table <- create_rob_summary_table(rob_results)
-#' }
-create_rob_summary_table <- function(
-	rob_results,
-	title = "Risk of Bias Assessment",
-	include_justification = FALSE,
-	footnotes = character(),
-	autofit = TRUE
-) {
-	if (!is.list(rob_results) || length(rob_results) == 0) {
-		ph_abort("'rob_results' must be a non-empty list of RoB2Result objects")
-	}
-
-	# Validate all elements are RoB2Result
-	for (i in seq_along(rob_results)) {
-		if (!S7::S7_inherits(rob_results[[i]], RoB2Result)) {
-			ph_abort(sprintf(
-				"Element %d of 'rob_results' must be a RoB2Result object",
-				i
-			))
-		}
-	}
-
-	# Build summary data frame
-	summary_data <- lapply(rob_results, function(r) {
-		row <- list(
-			Study = r@study_id,
-			Outcome = r@outcome,
-			D1_Randomization = r@domains$D1_randomization$judgment,
-			D2_Deviations = r@domains$D2_deviations$judgment,
-			D3_Missing_Data = r@domains$D3_missing_data$judgment,
-			D4_Measurement = r@domains$D4_measurement$judgment,
-			D5_Selection = r@domains$D5_selection$judgment,
-			Overall = r@overall
-		)
-		if (include_justification) {
-			row$Justification <- r@overall_justification
-		}
-		row
-	})
-
-	result_df <- dplyr::bind_rows(summary_data)
-	rownames(result_df) <- NULL
-
-	# Default footnotes
-	default_footnotes <- c(
-		"D1-D5: RoB 2 domains",
-		"Overall: Overall risk of bias judgment"
-	)
-
-	create_clinical_table(
-		data = result_df,
-		type = "rob_summary",
-		title = title,
-		footnotes = c(footnotes, default_footnotes),
-		metadata = list(
-			n_studies = length(rob_results),
-			include_justification = include_justification
-		),
-		autofit = autofit
-	)
 }

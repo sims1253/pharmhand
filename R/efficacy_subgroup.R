@@ -150,21 +150,15 @@ create_subgroup_analysis_table <- function(
 			values_fill = "--"
 		)
 
-	subgroup_ft <- create_hta_table(
-		all_subgroups,
+	create_clinical_table(
+		data = all_subgroups,
+		type = "subgroup",
 		title = title,
 		footnotes = c(
 			"Safety Population",
 			"Format: n / Mean (SD)"
 		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = all_subgroups,
-		flextable = subgroup_ft,
-		type = "subgroup",
-		title = title,
+		autofit = autofit,
 		metadata = list(
 			subgroup_counts = if (length(subgroup_counts_list) > 0) {
 				dplyr::bind_rows(subgroup_counts_list)
@@ -279,6 +273,16 @@ create_subgroup_table <- function(
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
+	data <- .ensure_adam_data(
+		data,
+		domain = "ADRS",
+		trt_var = trt_var,
+		subject_var = "USUBJID"
+	)
+	df <- get_filtered_data(data)
+	trt_var_actual <- data@trt_var
+	subject_var <- data@subject_var
+
 	adjust_method <- match.arg(adjust_method)
 	endpoint_type <- match.arg(endpoint_type)
 
@@ -288,11 +292,6 @@ create_subgroup_table <- function(
 			ph_abort("'min_subgroup_size' must be >= 1")
 		}
 	}
-
-	# Get filtered data
-	df <- get_filtered_data(data)
-	trt_var_actual <- get_trt_var(data, default = trt_var)
-	subject_var <- get_subject_var(data, default = "USUBJID")
 
 	# Handle CNSR inversion for TTE
 	if (endpoint_type == "tte" && event_var == "CNSR") {
@@ -558,19 +557,57 @@ create_subgroup_table <- function(
 
 	footnotes <- c(footnotes, "NE = Not Estimable")
 
-	# Create flextable
-	ft <- create_hta_table(
-		display_df,
-		title = title,
-		footnotes = footnotes,
-		autofit = autofit
+	# Build footnotes
+	footnotes <- c(
+		paste(
+			estimate_label,
+			"=",
+			if (endpoint_type == "tte") {
+				"Hazard Ratio"
+			} else {
+				"Odds Ratio"
+			}
+		),
+		paste("Reference group:", ref_group)
 	)
 
-	ClinicalTable(
+	if (show_interaction) {
+		if (adjust_method != "none" && length(names(subgroups)) > 1) {
+			method_name <- switch(
+				adjust_method,
+				"holm" = "Holm-Bonferroni",
+				"hochberg" = "Hochberg",
+				"hommel" = "Hommel",
+				"bonferroni" = "Bonferroni",
+				"BH" = "Benjamini-Hochberg (FDR)",
+				"fdr" = "Benjamini-Hochberg (FDR)",
+				"BY" = "Benjamini-Yekutieli",
+				adjust_method
+			)
+			footnotes <- c(
+				footnotes,
+				paste0(
+					"Interaction p-values adjusted for multiple comparisons (",
+					method_name,
+					" method)"
+				)
+			)
+		} else {
+			footnotes <- c(
+				footnotes,
+				"Interaction p-value from likelihood ratio test"
+			)
+		}
+	}
+
+	footnotes <- c(footnotes, "NE = Not Estimable")
+
+	create_clinical_table(
 		data = display_df,
-		flextable = ft,
 		type = "subgroup",
 		title = title,
+		footnotes = footnotes,
+		autofit = autofit,
 		metadata = list(
 			subgroups = subgroups,
 			endpoint_type = endpoint_type,

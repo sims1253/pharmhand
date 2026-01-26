@@ -89,6 +89,16 @@ create_km_plot <- function(
 
 	type <- match.arg(type)
 
+	# Ensure ADaMData object with proper trt_var
+	data <- .ensure_adam_data(
+		data,
+		"ADTTE",
+		trt_var = trt_var,
+		subject_var = "USUBJID"
+	)
+	df <- get_filtered_data(data)
+	trt_var_actual <- data@trt_var
+
 	if (type == "loglog") {
 		loglog_title <- if (missing(title)) {
 			"Log-Log Survival Plot"
@@ -119,10 +129,6 @@ create_km_plot <- function(
 			base_size = base_size
 		))
 	}
-
-	# Get filtered data if ADaMData
-	df <- get_filtered_data(data)
-	trt_var_actual <- get_trt_var(data, default = trt_var)
 
 	# Handle CNSR inversion (ADaM: 0=event, 1=censor -> survival: 1=event)
 	if (event_var == "CNSR") {

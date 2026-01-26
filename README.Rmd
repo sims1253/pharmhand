@@ -15,13 +15,12 @@ knitr::opts_chunk$set(
 
 # pharmhand <img src="man/figures/logo.png" align="right" height="139" alt="pharmhand logo" />
 
-<!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+ <!-- badges: start -->
 [![R-CMD-check](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg)](https://codecov.io/gh/sims1253/pharmhand)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pkgdown.yaml/badge.svg)](https://sims1253.github.io/pharmhand/)
-<!-- badges: end -->
+[![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/sims1253/pharmhand/)
+ <!-- badges: end -->
 
 pharmhand creates clinical study tables and reports from ADaM datasets. It uses S7 classes to structure clinical data and outputs formatted tables and plots for Word documents.
 

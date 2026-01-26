@@ -9,8 +9,8 @@ NULL
 #' System Organ Class (SOC) → High Level Group Term (HLGT) →
 #' High Level Term (HLT) → Preferred Term (PT).
 #'
-#' @param adae ADAE dataset
-#' @param adsl ADSL dataset for denominators
+#' @param data ADAE dataset (data frame or ADaMData object)
+#' @param adsl ADSL dataset for denominators (data frame or ADaMData object)
 #' @param trt_var Treatment variable. Default: "TRT01P"
 #' @param soc_var SOC variable. Default: "AEBODSYS"
 #' @param hlgt_var HLGT variable. Default: "AEHLTGT"
@@ -18,12 +18,11 @@ NULL
 #' @param pt_var PT variable. Default: "AEDECOD"
 #' @param levels Character vector of hierarchy levels to include.
 #'   Options: "soc", "hlgt", "hlt", "pt". Default: c("soc", "pt")
-#' @param subject_var Subject ID variable. Default: "USUBJID"
 #' @param min_pct Numeric. Minimum percentage to display. Default: 0
 #' @param sort_by Character. Sort by "alphabetical" or
 #'   "frequency". Default: "frequency"
 #' @param title Character. Table title. Default: NULL (auto-generated)
-#' @param autofit Logical. Whether to autofit column widths. Default: TRUE
+#' @param ... Additional arguments passed to [create_clinical_table()]
 #'
 #' @return ClinicalTable with hierarchical AE summary
 #'
@@ -31,7 +30,7 @@ NULL
 #' \dontrun{
 #' # Create AE hierarchy table
 #' table <- create_ae_hierarchy_table(
-#'   adae = adae,
+#'   data = adae,
 #'   adsl = adsl,
 #'   levels = c("soc", "pt"),
 #'   min_pct = 5
@@ -41,7 +40,7 @@ NULL
 #'
 #' @export
 create_ae_hierarchy_table <- function(
-	adae,
+	data,
 	adsl,
 	trt_var = "TRT01P",
 	soc_var = "AEBODSYS",
@@ -49,17 +48,23 @@ create_ae_hierarchy_table <- function(
 	hlt_var = "AEHLT",
 	pt_var = "AEDECOD",
 	levels = c("soc", "pt"),
-	subject_var = "USUBJID",
 	min_pct = 0,
 	sort_by = c("frequency", "alphabetical"),
 	title = NULL,
-	autofit = TRUE
+	...
 ) {
 	sort_by <- match.arg(sort_by)
 
-	# Validate inputs
-	assert_data_frame(adae, "adae")
-	assert_data_frame(adsl, "adsl")
+	# Ensure ADaMData objects, passing trt_var for data frames
+	data <- .ensure_adam_data(data, domain = "ADAE", trt_var = trt_var)
+	adsl <- .ensure_adam_data(adsl, domain = "ADSL", trt_var = trt_var)
+
+	# Use trt_var from ADaMData object (set during coercion)
+	trt_var <- data@trt_var
+
+	# Get treatment counts from ADaMData property
+	trt_n <- adsl@trt_n
+	trt_levels <- adsl@trt_levels
 
 	# Map level names to variables
 	level_vars <- list(
@@ -70,10 +75,11 @@ create_ae_hierarchy_table <- function(
 	)
 
 	# Check which levels are requested and available
+	df <- data@filtered_data
 	available_levels <- character()
 	for (lvl in levels) {
 		var <- level_vars[[lvl]]
-		if (!is.null(var) && var %in% names(adae)) {
+		if (!is.null(var) && var %in% names(df)) {
 			available_levels <- c(available_levels, lvl)
 		} else if (lvl %in% c("hlgt", "hlt")) {
 			ph_inform(sprintf(
@@ -94,19 +100,69 @@ create_ae_hierarchy_table <- function(
 		ph_abort("No valid MedDRA hierarchy levels found in data")
 	}
 
-	# Get treatment counts from ADSL
-	trt_n <- adsl |>
-		dplyr::summarise(
-			N = dplyr::n_distinct(.data[[subject_var]]),
-			.by = dplyr::all_of(trt_var)
-		)
+	# Summarize AE hierarchy data
+	summary_df <- .summarize_ae_hierarchy(
+		adae = data,
+		trt_n = trt_n,
+		trt_var = trt_var,
+		level_vars = level_vars,
+		available_levels = available_levels,
+		min_pct = min_pct,
+		sort_by = sort_by
+	)
 
-	treatments <- sort(unique(adsl[[trt_var]]))
+	# Auto-generate title if not provided
+	if (is.null(title)) {
+		title <- "Adverse Events by MedDRA Hierarchy"
+	}
+
+	# Create footnotes
+	footnotes <- c(
+		sprintf("%s (N=%d)", adsl@population, adsl@subject_n),
+		sprintf("Minimum threshold: %.1f%%", min_pct)
+	)
+
+	# Create ClinicalTable using unified engine
+	create_clinical_table(
+		data = summary_df,
+		type = "ae_hierarchy",
+		title = title,
+		footnotes = footnotes,
+		theme = "hta",
+		...
+	)
+}
+
+#' Summarize AE Hierarchy Data
+#'
+#' Internal function to summarize AE data by MedDRA hierarchy levels.
+#'
+#' @param adae ADaMData object with ADAE data
+#' @param trt_n Treatment counts from ADaMData property
+#' @param trt_var Treatment variable name
+#' @param level_vars Named list mapping level names to variable names
+#' @param available_levels Character vector of available hierarchy levels
+#' @param min_pct Minimum percentage threshold
+#' @param sort_by Sort method ("frequency" or "alphabetical")
+#'
+#' @return Data frame with summarized AE hierarchy data
+#' @keywords internal
+.summarize_ae_hierarchy <- function(
+	adae,
+	trt_n,
+	trt_var,
+	level_vars,
+	available_levels,
+	min_pct,
+	sort_by
+) {
+	df <- adae@filtered_data
+	subject_var <- adae@subject_var
+	treatments <- adae@trt_levels
 
 	# Helper function to count subjects at each level
-	count_at_level <- function(data, group_vars, subject_var) {
+	count_at_level <- function(data, group_vars) {
 		by_vars <- c(trt_var, group_vars)
-		# Use base R split-apply pattern for dynamic column selection
 		split_data <- split(data, interaction(data[by_vars], drop = TRUE))
 		result_list <- lapply(split_data, function(x) {
 			val <- unique(x[, by_vars, drop = FALSE])
@@ -131,7 +187,7 @@ create_ae_hierarchy_table <- function(
 			group_vars <- c(sapply(parent_levels, function(l) level_vars[[l]]), var)
 		}
 
-		counts <- count_at_level(adae, group_vars, subject_var)
+		counts <- count_at_level(df, group_vars)
 
 		# Pivot wider for treatments
 		wide_counts <- counts |>
@@ -152,7 +208,7 @@ create_ae_hierarchy_table <- function(
 	# Combine results
 	combined <- dplyr::bind_rows(results_list)
 
-	# Format n (%) for each treatment
+	# Format n (%) for each treatment using trt_n property
 	for (trt in treatments) {
 		n_col <- as.character(trt)
 		N_total <- trt_n$N[trt_n[[trt_var]] == trt]
@@ -215,32 +271,5 @@ create_ae_hierarchy_table <- function(
 		display_df$Term
 	)
 
-	# Auto-generate title if not provided
-	if (is.null(title)) {
-		title <- "Adverse Events by MedDRA Hierarchy"
-	}
-
-	# Create flextable
-	ft <- create_hta_table(
-		display_df,
-		title = title,
-		footnotes = c(
-			"Safety Population",
-			sprintf("Minimum threshold: %.1f%%", min_pct)
-		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = display_df,
-		flextable = ft,
-		type = "ae_hierarchy",
-		title = title,
-		metadata = list(
-			levels = available_levels,
-			trt_n = trt_n,
-			min_pct = min_pct,
-			sort_by = sort_by
-		)
-	)
+	display_df
 }

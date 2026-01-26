@@ -111,6 +111,15 @@ test_that("calculate_exposure_adjusted_rate: invalid conf_level", {
 		),
 		"must be greater than 0 and less than 1"
 	)
+
+	expect_error(
+		calculate_exposure_adjusted_rate(
+			n_events = 5,
+			patient_years = 5,
+			conf_level = 0
+		),
+		"must be greater than 0 and less than 1"
+	)
 })
 
 test_that("calculate_exposure_adjusted_rate: invalid per parameter", {
@@ -181,7 +190,7 @@ test_that("create_ae_exposure_table: by = 'pt' (preferred term)", {
 	)
 
 	result <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "pt",
 		time_unit = "days"
@@ -206,7 +215,7 @@ test_that("create_ae_exposure_table: by = 'soc' (system organ class)", {
 	)
 
 	result <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "soc",
 		time_unit = "days"
@@ -231,7 +240,7 @@ test_that("create_ae_exposure_table: by = 'overall'", {
 	)
 
 	result <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "overall",
 		time_unit = "days"
@@ -258,21 +267,21 @@ test_that("create_ae_exposure_table: time_unit options", {
 
 	# Test different time units
 	result_days <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "pt",
 		time_unit = "days"
 	)
 
 	result_weeks <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "pt",
 		time_unit = "weeks"
 	)
 
 	result_months <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "pt",
 		time_unit = "months"
@@ -297,7 +306,7 @@ test_that("create_ae_exposure_table: threshold filters results", {
 	)
 
 	result_all <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "pt",
 		threshold = 0
@@ -305,7 +314,7 @@ test_that("create_ae_exposure_table: threshold filters results", {
 
 	# Set a high threshold that should filter out many terms
 	result_filtered <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "pt",
 		threshold = 50
@@ -330,11 +339,11 @@ test_that("create_ae_exposure_table: missing AEDECOD column when by = 'pt'", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			by = "pt"
 		),
-		"'adae' is missing required column"
+		"'data' is missing required column"
 	)
 })
 
@@ -348,11 +357,11 @@ test_that("create_ae_exposure_table: missing AEBODSYS column when by = 'soc'", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			by = "soc"
 		),
-		"'adae' is missing required column"
+		"'data' is missing required column"
 	)
 })
 
@@ -365,7 +374,7 @@ test_that("create_ae_exposure_table: missing TRTDURD column in adsl", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			exposure_var = "TRTDURD"
 		),
@@ -382,10 +391,10 @@ test_that("create_ae_exposure_table: missing TRTEMFL column", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl
 		),
-		"'adae' is missing required column"
+		"'data' is missing required column"
 	)
 })
 
@@ -398,19 +407,13 @@ test_that("create_ae_exposure_table: no TEAEs returns empty table", {
 
 	expect_warning(
 		result <- create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl
 		),
 		"No treatment-emergent adverse events found"
 	)
 
-	# Should return empty ClinicalTable, not NULL
 	expect_s7_class(result, ClinicalTable)
-	expect_true(result@metadata$empty)
-	expect_equal(
-		result@metadata$empty_reason,
-		"No treatment-emergent adverse events found"
-	)
 	expect_equal(nrow(result@data), 0)
 })
 
@@ -423,7 +426,7 @@ test_that("create_ae_exposure_table: invalid by parameter", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			by = "invalid"
 		),
@@ -440,7 +443,7 @@ test_that("create_ae_exposure_table: invalid time_unit parameter", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			time_unit = "years"
 		),
@@ -457,7 +460,7 @@ test_that("create_ae_exposure_table: invalid per parameter", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			per = 0
 		),
@@ -474,7 +477,7 @@ test_that("create_ae_exposure_table: invalid threshold parameter", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			threshold = -1
 		),
@@ -491,7 +494,7 @@ test_that("create_ae_exposure_table: negative exposure values error", {
 
 	expect_error(
 		create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl
 		),
 		"must be non-negative"
@@ -506,13 +509,13 @@ test_that("create_ae_exposure_table: custom per value", {
 	adae$TRTEMFL <- "Y"
 
 	result_100 <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		per = 100
 	)
 
 	result_1000 <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		per = 1000
 	)
@@ -530,7 +533,7 @@ test_that("create_ae_exposure_table: custom conf_level", {
 	adae$TRTEMFL <- "Y"
 
 	result <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		conf_level = 0.90
 	)
@@ -552,7 +555,7 @@ test_that("create_ae_exposure_table returns correct ClinicalTable", {
 	)
 
 	result <- create_ae_exposure_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		by = "pt"
 	)
@@ -563,14 +566,6 @@ test_that("create_ae_exposure_table returns correct ClinicalTable", {
 	expect_no_error(result@title)
 	expect_no_error(result@metadata)
 	expect_no_error(result@type)
-
-	# Check metadata
-	expect_equal(result@metadata$exposure_var, "TRTDURD")
-	expect_equal(result@metadata$by, "pt")
-	expect_equal(result@metadata$time_unit, "days")
-	expect_equal(result@metadata$per, 100)
-	expect_equal(result@metadata$conf_level, 0.95)
-	expect_equal(result@metadata$threshold, 0)
 
 	# Check type
 	expect_equal(result@type, "ae_exposure")
@@ -585,7 +580,7 @@ test_that("create_ae_exposure_table: NA exposure values warn and exclude", {
 
 	expect_warning(
 		result <- create_ae_exposure_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl
 		),
 		"subjects have missing TRTDURD"

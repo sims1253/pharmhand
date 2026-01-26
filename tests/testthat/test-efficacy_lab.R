@@ -43,20 +43,20 @@ test_that("create_lab_shift_table has expected columns", {
 test_that("create_lab_shift_table errors on NULL input", {
 	expect_error(
 		create_lab_shift_table(NULL),
-		"must be a data frame"
+		"must be an ADaMData object or data.frame"
 	)
 })
 
 test_that("create_lab_summary_table errors on NULL input", {
 	expect_error(
 		create_lab_summary_table(NULL),
-		"must be a data frame"
+		"must be an ADaMData object or data.frame"
 	)
 })
 
 test_that("create_lab_summary_table errors when required columns missing", {
 	expect_error(
 		create_lab_summary_table(data.frame()),
-		"missing required columns"
+		"'data' is missing required columns"
 	)
 })

@@ -1,93 +1,29 @@
 # =============================================================================
-# Internal validation helpers (replacing cli dependency)
-# =============================================================================
-
-#' @keywords internal
-ph_abort <- function(...) {
-	args <- list(...)
-	args$call. <- FALSE
-	do.call(stop, args)
-}
-
-#' @keywords internal
-ph_warn <- function(...) {
-	args <- list(...)
-	args$call. <- FALSE
-	do.call(warning, args)
-}
-
-#' @keywords internal
-ph_inform <- function(...) {
-	args <- list(...)
-	do.call(message, args)
-}
-
-#' @keywords internal
-assert_data_frame <- function(x, arg = deparse(substitute(x))) {
-	if (!is.data.frame(x)) {
-		ph_abort(sprintf("'%s' must be a data frame", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_numeric_scalar <- function(x, arg = deparse(substitute(x))) {
-	if (!is.numeric(x) || length(x) != 1) {
-		ph_abort(sprintf("'%s' must be a single numeric value", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_character_scalar <- function(x, arg = deparse(substitute(x))) {
-	if (!is.character(x) || length(x) != 1 || is.na(x) || nchar(x) == 0) {
-		ph_abort(sprintf("'%s' must be a non-empty character string", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_in_range <- function(x, lower, upper, arg = deparse(substitute(x))) {
-	if (x <= lower || x >= upper) {
-		ph_abort(sprintf(
-			"'%s' must be greater than %s and less than %s",
-			arg,
-			lower,
-			upper
-		))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_positive <- function(x, arg = deparse(substitute(x))) {
-	if (!is.numeric(x) || length(x) != 1 || x <= 0) {
-		ph_abort(sprintf("'%s' must be a single positive number", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_column_exists <- function(data, col, data_arg = "data") {
-	if (!col %in% names(data)) {
-		ph_abort(sprintf("Column '%s' not found in '%s'", col, data_arg))
-	}
-	invisible(TRUE)
-}
-
-#' Get NA String
-#'
-#' Returns the string to display for NA values.
-#'
-#' @return Character string for NA display
-#' @keywords internal
-get_na_string <- function() {
-	ph_default("na_string", "--")
-}
-
-# =============================================================================
 # Package Defaults System
 # =============================================================================
+
+#' Null Coalescing Operator
+#'
+#' Return first value if not NULL, otherwise return second value.
+#' This is a common pattern in functional programming for providing defaults.
+#'
+#' @param x First value to check
+#' @param y Second value to return if x is NULL
+#'
+#' @return x if not NULL, otherwise y
+#'
+#' @name grapes-or-or-grapes
+#' @aliases %||%
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' NULL %||% "default"  # "default"
+#' "value" %||% "default"  # "value"
+#' }
+`%||%` <- function(x, y) {
+	if (is.null(x)) y else x
+}
 
 #' Package-wide default values
 #'
@@ -184,6 +120,20 @@ ph_default <- function(name, default = NULL) {
 	}
 
 	default
+}
+
+# =============================================================================
+# NA Display Helpers
+# =============================================================================
+
+#' Get NA String
+#'
+#' Returns the string to display for NA values.
+#'
+#' @return Character string for NA display
+#' @keywords internal
+get_na_string <- function() {
+	ph_default("na_string", "--")
 }
 
 # =============================================================================
