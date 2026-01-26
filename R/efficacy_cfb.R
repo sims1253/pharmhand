@@ -17,7 +17,7 @@ NULL
 			n = dplyr::n(),
 			Mean_CFB = round(mean(.data$CHG, na.rm = TRUE), 2),
 			SD_CFB = round(sd(.data$CHG, na.rm = TRUE), 2),
-			.by = c(dplyr::all_of(trt_var), "PARAM")
+			.by = dplyr::all_of(c(trt_var, "PARAM"))
 		) |>
 		dplyr::mutate(
 			display = paste0(.data$Mean_CFB, " (", .data$SD_CFB, ")"),
@@ -80,8 +80,8 @@ NULL
 #' @examples
 #' # Create change from baseline summary
 #' advs <- data.frame(
-#'   USUBJID = c("01", "02", "03", "04"),
-#'   TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+#'   USUBJID = rep(c("01", "02", "03", "04"), each = 1),
+#'   TRT01P = rep(c("Placebo", "Placebo", "Active", "Active"), each = 1),
 #'   PARAMCD = rep("SYSBP", 4),
 #'   PARAM = rep("Systolic Blood Pressure", 4),
 #'   AVISIT = rep("End of Treatment", 4),
@@ -133,6 +133,17 @@ create_cfb_summary_table <- function(
 		.summarize_cfb(trt_var = trt_var) |>
 		dplyr::select("PARAM", dplyr::all_of(trt_var), "n", "display")
 
+	# Warn if no data found
+	if (nrow(cfb_data) == 0) {
+		ph_warn(
+			sprintf(
+				"No data found for create_cfb_summary_table: PARAMCD=%s, AVISIT='%s'",
+				paste(params, collapse = ", "),
+				visit
+			)
+		)
+	}
+
 	# Format for display
 	cfb_wide <- .format_cfb_table(cfb_data, trt_var)
 
@@ -167,7 +178,7 @@ create_cfb_summary_table <- function(
 			n = dplyr::n(),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
 			SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
-			.by = c(dplyr::all_of(trt_var), "AVISIT")
+			.by = dplyr::all_of(c(trt_var, "AVISIT"))
 		) |>
 		dplyr::mutate(
 			display = paste0(.data$n, " / ", .data$Mean, " (", .data$SD, ")")
@@ -225,8 +236,8 @@ create_cfb_summary_table <- function(
 #' @examples
 #' # Create vital signs by visit table
 #' advs <- data.frame(
-#'   USUBJID = c("01", "02", "03", "04"),
-#'   TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+#'   USUBJID = rep(c("01", "02", "03", "04"), each = 2),
+#'   TRT01P = rep(c("Placebo", "Placebo", "Active", "Active"), each = 2),
 #'   PARAMCD = rep("SYSBP", 8),
 #'   AVISIT = c("Baseline", "Week 2", "Baseline", "Week 2",
 #'              "Baseline", "Week 2", "Baseline", "Week 2"),
@@ -275,6 +286,17 @@ create_vs_by_visit_table <- function(
 			.data$AVISIT %in% visits
 		) |>
 		.summarize_vs_by_visit(trt_var = trt_var)
+
+	# Warn if no data found
+	if (nrow(vs_data) == 0) {
+		ph_warn(
+			sprintf(
+				"No data found for create_vs_by_visit_table: PARAMCD='%s', visits=%s",
+				paramcd,
+				paste(visits, collapse = ", ")
+			)
+		)
+	}
 
 	# Format for display
 	vs_wide <- .format_vs_by_visit_table(vs_data, trt_var, visits)

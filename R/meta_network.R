@@ -451,7 +451,7 @@ node_splitting <- function(
 	}
 	if (is.null(data) || !is.data.frame(data)) {
 		ph_abort(paste0(
-			"node_splitting requires the original NMA data: pass \`data=\` ",
+			"node_splitting requires the original NMA data: pass `data=` ",
 			"or use an NMAResult created by network_meta()"
 		))
 	}
@@ -768,7 +768,7 @@ calculate_sucra <- function(
 #' @param theme Theme preset: "hta", "iqwig", "gba", or "clinical"
 #'   (default: "hta")
 #'
-#' @return ClinicalTable with styled league table
+#' @return \link{ClinicalTable} with styled league table
 #' @export
 #' @examples
 #' # Create league table for NMA
@@ -781,7 +781,7 @@ calculate_sucra <- function(
 #' )
 #' nma_result <- network_meta(nma_data, effect_measure = "hr")
 #' table <- create_league_table(nma_result)
-#' table@type
+#' print(table)
 create_league_table <- function(
 	nma_result,
 	digits = 2,
@@ -797,13 +797,7 @@ create_league_table <- function(
 	}
 
 	# Use NMA result's confidence level if not specified
-	if (is.null(conf_level)) {
-		conf_level <- if (is.null(nma_result@conf_level)) {
-			0.95
-		} else {
-			nma_result@conf_level
-		}
-	}
+	conf_level <- conf_level %||% nma_result@conf_level %||% 0.95
 
 	# Build league matrix using internal helper
 	league_df <- .build_league_matrix(

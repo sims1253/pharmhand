@@ -57,8 +57,9 @@ NULL
 #'       n_studies = 3L
 #'     ),
 #'     rob = list(
-#'       RoB2Result(study_id = "Study1", ...),
-#'       RoB2Result(study_id = "Study2", ...)
+#'       # Additional RoB2Result objects with required arguments would go here
+#'       # e.g., RoB2Result(study_id = "Study1", outcome = "...", overall = "...", domains = list(...))
+#'       # e.g., RoB2Result(study_id = "Study2", outcome = "...", overall = "...", domains = list(...))
 #'     )
 #'   ),
 #'   "Progression-Free Survival" = list(
@@ -220,6 +221,11 @@ create_study_characteristics_table <- function(
 	footnotes = character(),
 	...
 ) {
+	# Validate data input
+	if (!is.list(data) || length(data) == 0) {
+		ph_abort("'data' must be a non-empty list of Study objects or data frames")
+	}
+
 	# Build table data
 	study_rows <- lapply(data, function(s) {
 		.build_study_characteristic_row(
@@ -335,8 +341,8 @@ export_evidence_table <- function(
 	# Dispatch to appropriate export function
 	switch(
 		ext,
-		docx = .export_to_word(table_data, table_title, file, ...),
-		html = .export_to_html(table_data, table_title, file, ...),
+		docx = .export_to_word(table, table_title, file, ...),
+		html = .export_to_html(table, table_title, file, ...),
 		xlsx = .export_to_excel(table_data, file, ...)
 	)
 
@@ -364,8 +370,9 @@ export_evidence_table <- function(
 #' @examples
 #' \dontrun{
 #' rob_results <- list(
-#'   RoB2Result(study_id = "Study 1", ...),
-#'   RoB2Result(study_id = "Study 2", ...)
+#'   # RoB2Result objects with required arguments would go here
+#'   # e.g., RoB2Result(study_id = "Study 1", outcome = "...", overall = "...", domains = list(...))
+#'   # e.g., RoB2Result(study_id = "Study 2", outcome = "...", overall = "...", domains = list(...))
 #' )
 #' rob_table <- create_rob_summary_table(rob_results)
 #' }
@@ -622,11 +629,11 @@ create_rob_summary_table <- function(
 	row <- list(
 		Study = study_id,
 		Outcome = outcome,
-		D1_Randomization = domains$D1_randomization$judgment,
-		D2_Deviations = domains$D2_deviations$judgment,
-		D3_Missing_Data = domains$D3_missing_data$judgment,
-		D4_Measurement = domains$D4_measurement$judgment,
-		D5_Selection = domains$D5_selection$judgment,
+		D1_Randomization = domains$D1_randomization$judgment %||% NA_character_,
+		D2_Deviations = domains$D2_deviations$judgment %||% NA_character_,
+		D3_Missing_Data = domains$D3_missing_data$judgment %||% NA_character_,
+		D4_Measurement = domains$D4_measurement$judgment %||% NA_character_,
+		D5_Selection = domains$D5_selection$judgment %||% NA_character_,
 		Overall = overall
 	)
 
@@ -792,20 +799,11 @@ create_rob_summary_table <- function(
 
 
 #' @keywords internal
-.export_to_word <- function(data, title, file, ...) {
+.export_to_word <- function(table, title, file, ...) {
 	args <- list(...)
 
-	# Use create_clinical_table factory for consistency
-	ct <- create_clinical_table(
-		data = data,
-		type = "evidence_summary",
-		title = title,
-		footnotes = args$footnotes %||% character(),
-		theme = "hta"
-	)
-
 	# Extract flextable from ClinicalTable
-	ft <- ct@flextable
+	ft <- table@flextable
 
 	# Add to Word document
 	if (!is.null(args$template) && file.exists(args$template)) {
@@ -827,23 +825,24 @@ create_rob_summary_table <- function(
 
 
 #' @keywords internal
-.export_to_html <- function(data, title, file, ...) {
+.export_to_html <- function(table, title, file, ...) {
 	args <- list(...)
 
-	# Use create_clinical_table factory for consistency
-	ct <- create_clinical_table(
-		data = data,
-		type = "evidence_summary",
-		title = title,
-		footnotes = args$footnotes %||% character(),
-		theme = "hta"
-	)
-
 	# Extract flextable from ClinicalTable
-	ft <- ct@flextable
+	ft <- table@flextable
 
 	# Convert to HTML and ensure it's character
 	html_content <- as.character(flextable::htmltools_value(ft))
+
+	# Add title div for non-standalone output
+	if (!isTRUE(args$standalone)) {
+		html_content <- paste0(
+			"<div class='title'>",
+			title,
+			"</div>\n",
+			html_content
+		)
+	}
 
 	# Wrap in standalone HTML if requested
 	if (isTRUE(args$standalone)) {

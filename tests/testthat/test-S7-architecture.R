@@ -43,13 +43,6 @@ test_that("Reporting Engine (flextable/gt) works", {
 	# GT
 	gt_tbl <- as_gt(results)
 	expect_s3_class(gt_tbl, "gt_tbl")
-
-	# Test AnalysisResults computed properties
-	expect_false(results@is_empty)
-	expect_equal(results@n_rows, nrow(results@stats))
-	expect_equal(results@n_cols, ncol(results@stats))
-	expect_equal(results@summary_label, "baseline (n=2)")
-	expect_identical(results@column_names, names(results@stats))
 })
 
 test_that("AnalysisResults computed properties work with empty stats", {

@@ -190,7 +190,6 @@ create_ae_summary_table <- function(
 				"Specify which treatment to use as reference. ",
 				trt_values
 			)
-			adsl <- .ensure_adam_data(adsl, "ADSL", trt_var = trt_var)
 		}
 		adsl <- .ensure_adam_data(adsl, "ADSL", trt_var = trt_var)
 	}

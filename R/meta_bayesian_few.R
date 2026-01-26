@@ -608,7 +608,7 @@ summary_bayesian_few <- function(result, digits = 3) {
 		ph_abort("'result' must be a BayesianMetaFewResult object")
 	}
 
-	assert_positive_integer(digits, arg = "digits")
+	assert_non_negative_integer(digits, arg = "digits")
 
 	# Combine posterior and credible interval information
 	summary_df <- result@posterior_summary

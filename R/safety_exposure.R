@@ -30,13 +30,21 @@ calculate_exposure_adjusted_rate <- function(
 	conf_level = 0.95,
 	per = 100
 ) {
-	assert_numeric_scalar(n_events, "n_events")
-	if (is.na(n_events) || n_events < 0) {
+	if (
+		!is.numeric(n_events) ||
+			length(n_events) != 1 ||
+			is.na(n_events) ||
+			n_events < 0
+	) {
 		ph_abort("'n_events' must be a non-negative number")
 	}
 
-	assert_numeric_scalar(patient_years, "patient_years")
-	if (is.na(patient_years) || patient_years <= 0) {
+	if (
+		!is.numeric(patient_years) ||
+			length(patient_years) != 1 ||
+			is.na(patient_years) ||
+			patient_years <= 0
+	) {
 		ph_abort("'patient_years' must be a positive number")
 	}
 

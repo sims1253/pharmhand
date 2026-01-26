@@ -30,7 +30,7 @@ Default: TRUE}
 (default: "hta")}
 }
 \value{
-ClinicalTable with styled league table
+\link{ClinicalTable} with styled league table
 }
 \description{
 Generates a league table showing all pairwise treatment comparisons
@@ -47,5 +47,5 @@ nma_data <- data.frame(
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
 table <- create_league_table(nma_result)
-table@type
+print(table)
 }

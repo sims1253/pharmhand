@@ -73,6 +73,6 @@ adtte <- data.frame(
   CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3))
 )
 table <- create_tte_summary_table(adtte)
-table@type
+print(table)
 
 }

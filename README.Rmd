@@ -120,6 +120,10 @@ options(
 create_demographics_table(adsl)  # Uses ARM instead of TRT01P
 ```
 
+### Validation
+
+Scalar validation helpers reject NA values. Use `assert_no_na()` for explicit NA checking or remove NA values before passing to validation functions.
+
 ## Advanced: ADaMData Wrapper
 
 For population filtering and computed properties:

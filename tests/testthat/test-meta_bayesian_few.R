@@ -305,7 +305,7 @@ describe("plot_bayesian_few", {
 		result <- suppressWarnings(get_shared_bayesian_few_result())
 		p <- plot_bayesian_few(result)
 
-		expect_true(inherits(p@plot, "ggplot"))
+		expect_s3_class(p@plot, "ggplot")
 	})
 })
 

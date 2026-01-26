@@ -111,9 +111,8 @@ create_responder_table <- function(
 	}
 
 	# Format for display
-	response_summary$`n/N` <- paste0(
+	response_summary$`n/N` <- .format_n_over_n(
 		response_summary$responders,
-		"/",
 		response_summary$N
 	)
 	response_summary$`Rate (%)` <- sprintf("%.1f", response_summary$rate * 100)

@@ -78,7 +78,7 @@ NULL
 
 	# Build results data frame
 	results <- data.frame(
-		Treatment = gsub(paste0(trt_var, "="), "", rownames(km_summary)),
+		Treatment = sub(paste0("^", trt_var, "="), "", rownames(km_summary)),
 		stringsAsFactors = FALSE
 	)
 
@@ -277,7 +277,8 @@ NULL
 
 		# Other groups get HR values
 		for (j in seq_len(nrow(hr_table))) {
-			trt_name <- gsub(trt_var, "", rownames(hr_table)[j])
+			trt_name <- sub(paste0("^", trt_var), "", rownames(hr_table)[j])
+			trt_name <- sub("^[,\\s]+", "", trt_name)
 			trt_idx <- which(results$Treatment == trt_name)
 
 			if (length(trt_idx) > 0) {
@@ -405,7 +406,7 @@ NULL
 #'   CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3))
 #' )
 #' table <- create_tte_summary_table(adtte)
-#' table@type
+#' print(table)
 #'
 #' @export
 create_tte_summary_table <- function(

@@ -53,6 +53,7 @@ ph_inform <- function(...) {
 #' Assert Numeric Scalar
 #'
 #' Validates that x is a single numeric value (length 1).
+#' NA values are rejected.
 #'
 #' @param x Value to check
 #' @param arg Character string describing the argument (for error messages)
@@ -62,6 +63,9 @@ ph_inform <- function(...) {
 #' @keywords internal
 assert_numeric_scalar <- function(x, arg = deparse(substitute(x))) {
 	if (!is.numeric(x) || length(x) != 1) {
+		ph_abort(sprintf("'%s' must be a single numeric value", arg))
+	}
+	if (is.na(x)) {
 		ph_abort(sprintf("'%s' must be a single numeric value", arg))
 	}
 	invisible(x)
@@ -113,6 +117,7 @@ assert_logical_scalar <- function(x, arg = deparse(substitute(x))) {
 #' Assert Integer Scalar
 #'
 #' Validates that x is a single integer value.
+#' NA values are rejected.
 #'
 #' @param x Value to check
 #' @param arg Character string describing the argument (for error messages)
@@ -121,7 +126,13 @@ assert_logical_scalar <- function(x, arg = deparse(substitute(x))) {
 #'
 #' @keywords internal
 assert_integer_scalar <- function(x, arg = deparse(substitute(x))) {
-	if (!is.numeric(x) || length(x) != 1 || x != as.integer(x)) {
+	if (!is.numeric(x) || length(x) != 1) {
+		ph_abort(sprintf("'%s' must be a single integer value", arg))
+	}
+	if (is.na(x)) {
+		ph_abort(sprintf("'%s' must be a single integer value", arg))
+	}
+	if (x != as.integer(x)) {
 		ph_abort(sprintf("'%s' must be a single integer value", arg))
 	}
 	invisible(x)
@@ -130,6 +141,7 @@ assert_integer_scalar <- function(x, arg = deparse(substitute(x))) {
 #' Assert Positive Integer Scalar
 #'
 #' Validates that x is a single positive integer value (>= 1).
+#' NA values are rejected.
 #'
 #' @param x Value to check
 #' @param arg Character string describing the argument (for error messages)
@@ -141,6 +153,9 @@ assert_positive_integer <- function(x, arg = deparse(substitute(x))) {
 	if (!is.numeric(x) || length(x) != 1) {
 		ph_abort(sprintf("'%s' must be a single numeric value", arg))
 	}
+	if (is.na(x)) {
+		ph_abort(sprintf("'%s' must be a single numeric value", arg))
+	}
 	if (x < 1 || x != as.integer(x)) {
 		ph_abort(sprintf("'%s' must be a positive integer", arg))
 	}
@@ -150,6 +165,7 @@ assert_positive_integer <- function(x, arg = deparse(substitute(x))) {
 #' Assert Non-Negative Integer Scalar
 #'
 #' Validates that x is a single non-negative integer value (>= 0).
+#' NA values are rejected.
 #'
 #' @param x Value to check
 #' @param arg Character string describing the argument (for error messages)
@@ -159,6 +175,9 @@ assert_positive_integer <- function(x, arg = deparse(substitute(x))) {
 #' @keywords internal
 assert_non_negative_integer <- function(x, arg = deparse(substitute(x))) {
 	if (!is.numeric(x) || length(x) != 1) {
+		ph_abort(sprintf("'%s' must be a single numeric value", arg))
+	}
+	if (is.na(x)) {
 		ph_abort(sprintf("'%s' must be a single numeric value", arg))
 	}
 	if (x < 0 || x != as.integer(x)) {
@@ -273,6 +292,7 @@ assert_data_frame <- function(x, ...) {
 #' Assert In Range
 #'
 #' Validates that x is within the specified range (exclusive bounds).
+#' NA values are rejected.
 #'
 #' @param x Value to check
 #' @param lower Lower bound (exclusive)
@@ -288,6 +308,9 @@ assert_in_range <- function(
 	upper = Inf,
 	arg = deparse(substitute(x))
 ) {
+	if (anyNA(x)) {
+		ph_abort(sprintf("'%s' must not contain NA values", arg))
+	}
 	if (x <= lower || x >= upper) {
 		ph_abort(sprintf(
 			"'%s' must be greater than %s and less than %s",
@@ -302,6 +325,7 @@ assert_in_range <- function(
 #' Assert All Positive
 #'
 #' Validates that all elements in x are positive (> 0).
+#' NA values are rejected.
 #'
 #' @param x Numeric vector to check
 #' @param arg Character string describing the argument (for error messages)
@@ -310,6 +334,9 @@ assert_in_range <- function(
 #'
 #' @keywords internal
 assert_all_positive <- function(x, arg = deparse(substitute(x))) {
+	if (anyNA(x)) {
+		ph_abort(sprintf("'%s' must not contain NA values", arg))
+	}
 	if (!is.numeric(x)) {
 		ph_abort(sprintf("'%s' must be numeric", arg))
 	}
@@ -369,6 +396,7 @@ assert_lengths_match <- function(...) {
 #' Assert Positive
 #'
 #' Validates that x is a single positive number (> 0).
+#' NA values are rejected.
 #'
 #' @param x Value to check
 #' @param arg Character string describing the argument (for error messages)
@@ -377,7 +405,13 @@ assert_lengths_match <- function(...) {
 #'
 #' @keywords internal
 assert_positive <- function(x, arg = deparse(substitute(x))) {
-	if (!is.numeric(x) || length(x) != 1 || x <= 0) {
+	if (!is.numeric(x) || length(x) != 1) {
+		ph_abort(sprintf("'%s' must be a single positive number", arg))
+	}
+	if (is.na(x)) {
+		ph_abort(sprintf("'%s' must be a single positive number", arg))
+	}
+	if (x <= 0) {
 		ph_abort(sprintf("'%s' must be a single positive number", arg))
 	}
 	invisible(x)
@@ -409,6 +443,7 @@ assert_column_exists <- function(data, col, data_arg = "data") {
 #' Assert Non-Negative
 #'
 #' Validates that x is a single non-negative number (>= 0).
+#' NA values are rejected.
 #'
 #' @param x Value to check
 #' @param arg Character string describing the argument (for error messages)
@@ -416,9 +451,14 @@ assert_column_exists <- function(data, col, data_arg = "data") {
 #' @return Invisibly returns x if validation passes
 #'
 #' @export
-#' @keywords internal
 assert_non_negative <- function(x, arg = deparse(substitute(x))) {
-	if (!is.numeric(x) || length(x) != 1 || x < 0) {
+	if (!is.numeric(x) || length(x) != 1) {
+		ph_abort(sprintf("'%s' must be a single non-negative number", arg))
+	}
+	if (is.na(x)) {
+		ph_abort(sprintf("'%s' must be a single non-negative number", arg))
+	}
+	if (x < 0) {
 		ph_abort(sprintf("'%s' must be a single non-negative number", arg))
 	}
 	invisible(x)

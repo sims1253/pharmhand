@@ -433,6 +433,7 @@ reference:
     Helper functions for data filtering, treatment information,
     statistical diagnostics, and other common operations.
   contents:
+  - assert_non_negative
   - get_filtered_data
   - get_subject_n
   - get_subject_var

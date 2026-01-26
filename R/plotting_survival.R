@@ -96,8 +96,6 @@ create_km_plot <- function(
 		trt_var = trt_var,
 		subject_var = "USUBJID"
 	)
-	df <- get_filtered_data(data)
-	trt_var_actual <- data@trt_var
 
 	if (type == "loglog") {
 		loglog_title <- if (missing(title)) {
@@ -129,6 +127,9 @@ create_km_plot <- function(
 			base_size = base_size
 		))
 	}
+
+	df <- get_filtered_data(data)
+	trt_var_actual <- get_trt_var(data, default = trt_var)
 
 	# Handle CNSR inversion (ADaM: 0=event, 1=censor -> survival: 1=event)
 	if (event_var == "CNSR") {

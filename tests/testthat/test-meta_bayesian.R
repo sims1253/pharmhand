@@ -572,13 +572,13 @@ describe("Predictive Checks", {
 			)
 		})
 
-		it("supports different pp_check types", {
+		it("supports dens_overlay pp_check type", {
 			skip_if_brms_unavailable()
 
 			yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
 			sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
 
-			result_dens <- bayesian_meta_analysis(
+			result <- bayesian_meta_analysis(
 				yi = yi,
 				sei = sei,
 				effect_measure = "hr",
@@ -591,12 +591,19 @@ describe("Predictive Checks", {
 				seed = 42,
 				adapt_delta = 0.99
 			)
-			expect_true("posterior_predictive" %in% names(result_dens))
+			expect_true("posterior_predictive" %in% names(result))
 			expect_true(
-				"ggplot" %in% class(result_dens$posterior_predictive$pp_check_plot)
+				"ggplot" %in% class(result$posterior_predictive$pp_check_plot)
 			)
+		})
 
-			result_hist <- bayesian_meta_analysis(
+		it("supports hist pp_check type", {
+			skip_if_brms_unavailable()
+
+			yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
+			sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
+
+			result <- bayesian_meta_analysis(
 				yi = yi,
 				sei = sei,
 				effect_measure = "hr",
@@ -609,12 +616,19 @@ describe("Predictive Checks", {
 				seed = 42,
 				adapt_delta = 0.99
 			)
-			expect_true("posterior_predictive" %in% names(result_hist))
+			expect_true("posterior_predictive" %in% names(result))
 			expect_true(
-				"ggplot" %in% class(result_hist$posterior_predictive$pp_check_plot)
+				"ggplot" %in% class(result$posterior_predictive$pp_check_plot)
 			)
+		})
 
-			result_ecdf <- bayesian_meta_analysis(
+		it("supports ecdf_overlay pp_check type", {
+			skip_if_brms_unavailable()
+
+			yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77, 0.83, 0.79, 0.81))
+			sei <- c(0.10, 0.12, 0.11, 0.10, 0.12, 0.11, 0.10, 0.12)
+
+			result <- bayesian_meta_analysis(
 				yi = yi,
 				sei = sei,
 				effect_measure = "hr",
@@ -627,9 +641,9 @@ describe("Predictive Checks", {
 				seed = 42,
 				adapt_delta = 0.99
 			)
-			expect_true("posterior_predictive" %in% names(result_ecdf))
+			expect_true("posterior_predictive" %in% names(result))
 			expect_true(
-				"ggplot" %in% class(result_ecdf$posterior_predictive$pp_check_plot)
+				"ggplot" %in% class(result$posterior_predictive$pp_check_plot)
 			)
 		})
 	})
@@ -777,20 +791,28 @@ describe("Trace Plots", {
 			)
 		})
 
-		it("works with bayesplot", {
+		it("works with bayesplot installed", {
 			skip_if_brms_unavailable()
+			skip_if_not_installed("bayesplot")
 
 			result <- get_shared_bayesian_result()
 
+			plots <- create_bayesian_trace_plots(result)
+			expect_true(inherits(plots, "list") || inherits(plots, "ggplot"))
+		})
+
+		it("works without bayesplot installed", {
+			skip_if_brms_unavailable()
 			if (requireNamespace("bayesplot", quietly = TRUE)) {
-				plots <- create_bayesian_trace_plots(result)
-				expect_true(inherits(plots, "list") || inherits(plots, "ggplot"))
-			} else {
-				expect_error(
-					create_bayesian_trace_plots(result),
-					NA
-				)
+				skip("bayesplot is installed")
 			}
+
+			result <- get_shared_bayesian_result()
+
+			expect_error(
+				create_bayesian_trace_plots(result),
+				NA
+			)
 		})
 	})
 })

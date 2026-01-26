@@ -168,9 +168,19 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 		})
 
 		# Extract risk difference statistics
-		ae_wide[[paste0("rd_", trt)]] <- sapply(stats_list, `[[`, "rd")
-		ae_wide[[paste0("rd_lower_", trt)]] <- sapply(stats_list, `[[`, "rd_lower")
-		ae_wide[[paste0("rd_upper_", trt)]] <- sapply(stats_list, `[[`, "rd_upper")
+		ae_wide[[paste0("rd_", trt)]] <- vapply(stats_list, `[[`, numeric(1), "rd")
+		ae_wide[[paste0("rd_lower_", trt)]] <- vapply(
+			stats_list,
+			`[[`,
+			numeric(1),
+			"rd_lower"
+		)
+		ae_wide[[paste0("rd_upper_", trt)]] <- vapply(
+			stats_list,
+			`[[`,
+			numeric(1),
+			"rd_upper"
+		)
 
 		# Calculate NNH if requested
 		if (include_nnh) {
@@ -186,17 +196,23 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 			# NNH reported as positive (absolute value of NNT for harm)
 			ae_wide[[paste0("nnh_", trt)]] <- vapply(
 				nnh_list,
-				function(stats) abs(stats$nnt),
+				function(stats) abs(stats$nnt), # nnh (main) as abs(nnt)
 				numeric(1)
 			)
 			ae_wide[[paste0("nnh_lower_", trt)]] <- vapply(
 				nnh_list,
-				function(stats) abs(stats$nnt_lower),
+				function(stats) {
+					# Ensure nnh_lower <= nnh_upper by using pmin of absolute values
+					pmin(abs(stats$nnt_lower), abs(stats$nnt_upper))
+				},
 				numeric(1)
 			)
 			ae_wide[[paste0("nnh_upper_", trt)]] <- vapply(
 				nnh_list,
-				function(stats) abs(stats$nnt_upper),
+				function(stats) {
+					# Ensure nnh_lower <= nnh_upper by using pmax of absolute values
+					pmax(abs(stats$nnt_lower), abs(stats$nnt_upper))
+				},
 				numeric(1)
 			)
 			ae_wide[[paste0("nnh_estimable_", trt)]] <- vapply(
@@ -207,10 +223,25 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 		}
 
 		# Extract risk ratio statistics
-		ae_wide[[paste0("rr_", trt)]] <- sapply(stats_list, `[[`, "rr")
-		ae_wide[[paste0("rr_lower_", trt)]] <- sapply(stats_list, `[[`, "rr_lower")
-		ae_wide[[paste0("rr_upper_", trt)]] <- sapply(stats_list, `[[`, "rr_upper")
-		ae_wide[[paste0("pvalue_", trt)]] <- sapply(stats_list, `[[`, "p_value")
+		ae_wide[[paste0("rr_", trt)]] <- vapply(stats_list, `[[`, numeric(1), "rr")
+		ae_wide[[paste0("rr_lower_", trt)]] <- vapply(
+			stats_list,
+			`[[`,
+			numeric(1),
+			"rr_lower"
+		)
+		ae_wide[[paste0("rr_upper_", trt)]] <- vapply(
+			stats_list,
+			`[[`,
+			numeric(1),
+			"rr_upper"
+		)
+		ae_wide[[paste0("pvalue_", trt)]] <- vapply(
+			stats_list,
+			`[[`,
+			numeric(1),
+			"p_value"
+		)
 	}
 
 	ae_wide
@@ -520,11 +551,13 @@ create_ae_comparison_table <- function(
 			N_ref <- 0
 		}
 
-		output_df[[paste0(ref_group, "\nn/N (%)")]] <- sprintf(
-			"%d/%d (%.1f%%)",
+		# Format reference group column
+		ref_col_name <- paste0(ref_group, "\nn/N (%)")
+		output_df[[ref_col_name]] <- .format_n_over_n(
 			ae_wide_df[[n_ref_col]],
 			N_ref,
-			ae_wide_df[[pct_ref_col]]
+			ae_wide_df[[pct_ref_col]],
+			digits = 1
 		)
 
 		# Add treatment group columns with comparisons
@@ -540,11 +573,13 @@ create_ae_comparison_table <- function(
 				N_trt <- 0
 			}
 
-			output_df[[paste0(trt, "\nn/N (%)")]] <- sprintf(
-				"%d/%d (%.1f%%)",
+			# Format treatment group column
+			trt_col_name <- paste0(trt, "\nn/N (%)")
+			output_df[[trt_col_name]] <- .format_n_over_n(
 				ae_wide_df[[n_trt_col]],
 				N_trt,
-				ae_wide_df[[pct_trt_col]]
+				ae_wide_df[[pct_trt_col]],
+				digits = 1
 			)
 
 			# Risk Difference

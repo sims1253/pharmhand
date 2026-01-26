@@ -16,5 +16,6 @@ Invisibly returns x if validation passes
 }
 \description{
 Validates that x is a single numeric value (length 1).
+NA values are rejected.
 }
 \keyword{internal}

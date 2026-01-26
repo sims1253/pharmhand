@@ -281,7 +281,7 @@ create_medical_history_table <- function(
 		admh_data |>
 			dplyr::summarise(
 				n_subj = dplyr::n_distinct(.data$USUBJID),
-				.by = c(!!dplyr::sym(adsl@trt_var), !!dplyr::sym(soc_var))
+				.by = c(!!rlang::sym(adsl@trt_var), !!rlang::sym(soc_var))
 			) |>
 			dplyr::left_join(trt_n, by = adsl@trt_var) |>
 			dplyr::mutate(
@@ -298,7 +298,7 @@ create_medical_history_table <- function(
 				values_from = "display",
 				values_fill = "0 (0.0%)"
 			) |>
-			dplyr::rename(`Body System` = !!dplyr::sym(soc_var)) |>
+			dplyr::rename(`Body System` = !!rlang::sym(soc_var)) |>
 			dplyr::arrange(.data$`Body System`)
 	}
 
@@ -421,7 +421,7 @@ create_disposition_table <- function(
 
 		if (reason_var %in% names(adsl_data)) {
 			disc_reasons <- adsl_data |>
-				dplyr::filter(!!rlang::sym(status_var) == "DISCONTINUED") |>
+				dplyr::filter(toupper(!!rlang::sym(status_var)) == "DISCONTINUED") |>
 				dplyr::summarise(
 					n = dplyr::n(),
 					.by = c(!!dplyr::sym(data@trt_var), !!dplyr::sym(reason_var))
@@ -472,13 +472,16 @@ create_population_summary_table <- function(
 	data <- .ensure_adam_data(data, "ADSL", trt_var = trt_var)
 	adsl <- data@data
 
+	if (length(pop_flags) != length(pop_labels)) {
+		ph_abort("pop_flags and pop_labels must have the same length")
+	}
+
 	summary_fn <- function(adsl_data) {
 		existing_vars <- pop_flags[pop_flags %in% names(adsl_data)]
 		existing_labels <- pop_labels[pop_flags %in% names(adsl_data)]
 
 		pop_summary <- data.frame(
-			Population = character(),
-			stringsAsFactors = FALSE
+			Population = character()
 		)
 
 		for (i in seq_along(existing_vars)) {

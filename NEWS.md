@@ -1,3 +1,12 @@
+# pharmhand 0.4.2.9000
+
+* Validation helpers now reject NA consistently across assertion functions.
+* Reporting engine refactor: title/footnotes helper, ADaMData coercion, empty gt styling.
+* Export improvements: preserve ClinicalTable styling, HTML title handling.
+* Safety/efficacy robustness: NNH bounds ordering, warnings on empty filters, Treatment column guard, case-insensitive DISCONTINUED matching.
+* Added .format_n_over_n formatting helper for n/N display.
+* Test refactors for clarity and maintainability.
+
 # pharmhand 0.4.1.9000
 
 ## Code Quality Improvements

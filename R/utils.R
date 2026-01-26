@@ -4,26 +4,13 @@
 
 #' Null Coalescing Operator
 #'
-#' Return first value if not NULL, otherwise return second value.
-#' This is a common pattern in functional programming for providing defaults.
-#'
-#' @param x First value to check
-#' @param y Second value to return if x is NULL
-#'
-#' @return x if not NULL, otherwise y
+#' Re-export of rlang's null coalescing operator.
+#' See \code{\link[rlang]{\%||\%}} for details.
 #'
 #' @name grapes-or-or-grapes
 #' @aliases %||%
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' NULL %||% "default"  # "default"
-#' "value" %||% "default"  # "value"
-#' }
-`%||%` <- function(x, y) {
-	if (is.null(x)) y else x
-}
+#' @importFrom rlang %||%
+#' @export
 
 #' Package-wide default values
 #'
@@ -155,4 +142,45 @@ get_na_string <- function() {
 		return(as.character(row[[col_name]]))
 	}
 	return(default)
+}
+
+#' Format n/N Values
+#'
+#' Vectorized helper for formatting n/N strings with optional percentage.
+#'
+#' @param n Numeric vector of numerators
+#' @param N Numeric vector of denominators (recycled to length of n)
+#' @param pct Numeric vector of percentages (optional, recycled to length of n)
+#' @param digits Integer, digits for percentage formatting (default: 1)
+#' @param na_label Character string to use when N is NA or 0 (default: "N/A")
+#'
+#' @return Character vector of formatted n/N strings
+#' @keywords internal
+.format_n_over_n <- function(n, N, pct = NULL, digits = 1, na_label = "N/A") {
+	# Recycle N and pct to length of n
+	N <- rep_len(N, length(n))
+	if (!is.null(pct)) {
+		pct <- rep_len(pct, length(n))
+	}
+
+	# Handle NA or zero N
+	is_na_N <- is.na(N) | N == 0
+
+	result <- character(length(n))
+	pct_format <- paste0("%.", digits, "f%%")
+
+	if (is.null(pct)) {
+		result[is_na_N] <- sprintf("%d/%s", n[is_na_N], na_label)
+		result[!is_na_N] <- sprintf("%d/%d", n[!is_na_N], N[!is_na_N])
+	} else {
+		result[is_na_N] <- sprintf("%d/%s", n[is_na_N], na_label)
+		result[!is_na_N] <- sprintf(
+			paste0("%d/%d (", pct_format, ")"),
+			n[!is_na_N],
+			N[!is_na_N],
+			pct[!is_na_N]
+		)
+	}
+
+	result
 }

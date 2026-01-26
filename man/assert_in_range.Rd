@@ -20,5 +20,6 @@ Invisibly returns x if validation passes
 }
 \description{
 Validates that x is within the specified range (exclusive bounds).
+NA values are rejected.
 }
 \keyword{internal}

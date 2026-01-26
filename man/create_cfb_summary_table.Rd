@@ -55,8 +55,8 @@ by treatment group for an analysis visit.
 \examples{
 # Create change from baseline summary
 advs <- data.frame(
-  USUBJID = c("01", "02", "03", "04"),
-  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  USUBJID = rep(c("01", "02", "03", "04"), each = 1),
+  TRT01P = rep(c("Placebo", "Placebo", "Active", "Active"), each = 1),
   PARAMCD = rep("SYSBP", 4),
   PARAM = rep("Systolic Blood Pressure", 4),
   AVISIT = rep("End of Treatment", 4),

@@ -16,5 +16,6 @@ Invisibly returns x if validation passes
 }
 \description{
 Validates that all elements in x are positive (> 0).
+NA values are rejected.
 }
 \keyword{internal}

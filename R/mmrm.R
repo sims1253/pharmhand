@@ -232,10 +232,6 @@ mmrm_analysis <- function(
 	df_adjustment <- match.arg(df_adjustment)
 	method <- match.arg(method)
 
-	assert_character_scalar(cov_covariance, arg = "cov_covariance")
-	assert_character_scalar(df_adjustment, arg = "df_adjustment")
-	assert_character_scalar(method, arg = "method")
-
 	# Check mmrm package availability
 	if (!requireNamespace("mmrm", quietly = TRUE)) {
 		ph_abort(
@@ -335,7 +331,7 @@ mmrm_analysis <- function(
 	} else if ("Std.Error" %in% colnames(coef_summary)) {
 		"Std.Error"
 	} else {
-		stop("Cannot find standard error column in summary")
+		ph_abort("Cannot find standard error column in summary")
 	}
 
 	df_col <- if ("df" %in% colnames(coef_summary)) {
@@ -343,15 +339,18 @@ mmrm_analysis <- function(
 	} else if ("DF" %in% colnames(coef_summary)) {
 		"DF"
 	} else {
-		stop("Cannot find degrees of freedom column in summary")
+		ph_abort("Cannot find degrees of freedom column in summary")
 	}
 
-	pval_col <- if ("Pr(>|t|)" %in% colnames(coef_summary)) {
-		"Pr(>|t|)"
-	} else if ("Pr(>|t|)" %in% colnames(coef_summary)) {
-		"Pr(>|t|)"
-	} else {
-		stop("Cannot find p-value column in summary")
+	pval_col <- NULL
+	for (col in c("Pr(>|t|)", "Pr(>|z|)", "p.value", "p")) {
+		if (col %in% colnames(coef_summary)) {
+			pval_col <- col
+			break
+		}
+	}
+	if (is.null(pval_col)) {
+		ph_abort("Cannot find p-value column in summary")
 	}
 
 	# Filter out NA rows (singular coefficients)
@@ -375,14 +374,9 @@ mmrm_analysis <- function(
 		"97.5 %" = estimates + t_crit * ses
 	)
 
-	# Extract p-values if available, otherwise set to NA
-	p_values <- if (pval_col %in% colnames(coef_summary)) {
-		coef_summary[, pval_col]
-	} else {
-		rep(NA_real_, length(estimates))
-		names(p_values) <- rownames(coef_summary)
-		p_values
-	}
+	# Extract p-values
+	p_values <- coef_summary[, pval_col]
+	names(p_values) <- rownames(coef_summary)
 
 	MMRMResult(
 		model = fit,

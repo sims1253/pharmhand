@@ -152,14 +152,25 @@ create_lab_shift_table <- function(
 		) |>
 		dplyr::rename(`Baseline Status` = "BNRIND")
 
-	shift_wide <- shift_data |>
-		dplyr::mutate(Treatment = !!rlang::sym(trt_var_actual)) |>
-		dplyr::select(
-			"Treatment",
-			"Baseline Status",
-			dplyr::everything(),
-			-dplyr::all_of(trt_var_actual)
-		)
+	# Guard against trt_var_actual == "Treatment" to avoid name conflicts
+	if (trt_var_actual == "Treatment") {
+		shift_wide <- shift_data |>
+			dplyr::select(
+				"Treatment",
+				"Baseline Status",
+				dplyr::everything()
+			)
+	} else {
+		shift_wide <- shift_data |>
+			dplyr::mutate(tmp_treatment = !!rlang::sym(trt_var_actual)) |>
+			dplyr::rename(Treatment = "tmp_treatment") |>
+			dplyr::select(
+				"Treatment",
+				"Baseline Status",
+				dplyr::everything(),
+				-dplyr::all_of(trt_var_actual)
+			)
+	}
 
 	create_clinical_table(
 		data = shift_wide,

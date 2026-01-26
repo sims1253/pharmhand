@@ -47,8 +47,8 @@ showing sample size, mean, and standard deviation by treatment group.
 \examples{
 # Create vital signs by visit table
 advs <- data.frame(
-  USUBJID = c("01", "02", "03", "04"),
-  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  USUBJID = rep(c("01", "02", "03", "04"), each = 2),
+  TRT01P = rep(c("Placebo", "Placebo", "Active", "Active"), each = 2),
   PARAMCD = rep("SYSBP", 8),
   AVISIT = c("Baseline", "Week 2", "Baseline", "Week 2",
              "Baseline", "Week 2", "Baseline", "Week 2"),

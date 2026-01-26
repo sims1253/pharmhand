@@ -40,7 +40,6 @@ get_trt_n <- function(
 	if (S7::S7_inherits(data, ADaMData)) {
 		# Warn if user passed arguments that are ignored for ADaMData
 		# Check if trt_var was explicitly passed (not default)
-		calling_env <- parent.frame()
 		trt_var_explicit <- !missing(trt_var)
 		population_explicit <- !missing(population)
 		subject_var_explicit <- !missing(subject_var)
@@ -187,6 +186,24 @@ get_subject_var <- function(data, default = "USUBJID") {
 get_subject_n <- function(data, population = NULL, subject_var = "USUBJID") {
 	# If ADaMData, use computed property
 	if (S7::S7_inherits(data, ADaMData)) {
+		# Warn if user passed arguments that are ignored for ADaMData
+		# Check if population was explicitly passed (not default)
+		population_explicit <- !missing(population)
+		subject_var_explicit <- !missing(subject_var)
+
+		if (population_explicit) {
+			ph_warn(
+				"'population' argument is ignored for ADaMData objects. ",
+				"Using stored 'population' property."
+			)
+		}
+		if (subject_var_explicit) {
+			ph_warn(
+				"'subject_var' argument is ignored for ADaMData objects. ",
+				"Using stored 'subject_var' property."
+			)
+		}
+
 		return(data@subject_n)
 	}
 
@@ -237,7 +254,7 @@ get_summary_label <- function(object) {
 	}
 
 	# Fallback for other objects
-	stop("'object' must be an ADaMData or AnalysisResults object")
+	ph_abort("'object' must be an ADaMData or AnalysisResults object")
 }
 
 # Analysis Functions ----

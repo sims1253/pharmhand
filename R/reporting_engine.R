@@ -85,7 +85,10 @@ as_gt_AnalysisResults <- S7::method(as_gt, AnalysisResults) <- function(
 ) {
 	# Handle empty results gracefully
 	if (x@is_empty) {
-		return(gt::gt(data.frame(Message = "No data available")))
+		return(
+			gt::gt(data.frame(Message = "No data available")) |>
+				gt::tab_options(table.font.size = "small")
+		)
 	}
 
 	df <- x@stats
@@ -206,6 +209,36 @@ clinical_table_from_results <- function(res, title = "") {
 		type = res@type,
 		title = title
 	)
+}
+
+#' Add title and footnotes to flextable
+#'
+#' Internal helper function to add title and footnotes to a flextable
+#' with consistent styling.
+#'
+#' @param ft A flextable object
+#' @param title Character string title (NULL, NA, or empty string to skip)
+#' @param footnotes Character vector of footnotes
+#'
+#' @return The modified flextable object
+#' @keywords internal
+.add_title_and_footnotes <- function(ft, title, footnotes) {
+	# Add title if provided (NA-safe)
+	if (!is.null(title) && !is.na(title) && nzchar(title)) {
+		ft <- ft |>
+			flextable::add_header_lines(title) |>
+			flextable::bold(i = 1, part = "header")
+	}
+	# Add footnotes if provided
+	if (length(footnotes) > 0) {
+		for (fn in footnotes) {
+			ft <- ft |> flextable::add_footer_lines(fn)
+		}
+		ft <- ft |>
+			flextable::fontsize(size = 8, part = "footer") |>
+			flextable::italic(part = "footer")
+	}
+	ft
 }
 
 #' Apply Clinical Table Styling
@@ -697,7 +730,8 @@ create_clinical_table <- function(
 
 	# Extract data based on input type
 	if (S7::S7_inherits(data, ADaMData)) {
-		table_data <- data@data
+		# Prefer filtered data if available
+		table_data <- get_filtered_data(data)
 	} else if (S7::S7_inherits(data, LayeredTable)) {
 		table_data <- build_table(data)
 	} else if (S7::S7_inherits(data, AnalysisResults)) {
@@ -740,62 +774,17 @@ create_clinical_table <- function(
 		"iqwig" = {
 			ft <- flextable::flextable(table_data)
 			ft <- do.call(theme_iqwig, c(list(ft), dots))
-			# Add title if provided
-			if (!is.null(title) && nchar(title) > 0) {
-				ft <- ft |>
-					flextable::add_header_lines(title) |>
-					flextable::bold(i = 1, part = "header")
-			}
-			# Add footnotes
-			if (length(footnotes) > 0) {
-				for (fn in footnotes) {
-					ft <- ft |> flextable::add_footer_lines(fn)
-				}
-				ft <- ft |>
-					flextable::fontsize(size = 8, part = "footer") |>
-					flextable::italic(part = "footer")
-			}
-			ft
+			.add_title_and_footnotes(ft, title, footnotes)
 		},
 		"gba" = {
 			ft <- flextable::flextable(table_data)
 			ft <- do.call(theme_gba, c(list(ft), dots))
-			# Add title if provided
-			if (!is.null(title) && nchar(title) > 0) {
-				ft <- ft |>
-					flextable::add_header_lines(title) |>
-					flextable::bold(i = 1, part = "header")
-			}
-			# Add footnotes
-			if (length(footnotes) > 0) {
-				for (fn in footnotes) {
-					ft <- ft |> flextable::add_footer_lines(fn)
-				}
-				ft <- ft |>
-					flextable::fontsize(size = 8, part = "footer") |>
-					flextable::italic(part = "footer")
-			}
-			ft
+			.add_title_and_footnotes(ft, title, footnotes)
 		},
 		"clinical" = {
 			ft <- flextable::flextable(table_data)
 			ft <- do.call(apply_clinical_style, c(list(ft, style = "clinical"), dots))
-			# Add title if provided
-			if (!is.null(title) && nchar(title) > 0) {
-				ft <- ft |>
-					flextable::add_header_lines(title) |>
-					flextable::bold(i = 1, part = "header")
-			}
-			# Add footnotes
-			if (length(footnotes) > 0) {
-				for (fn in footnotes) {
-					ft <- ft |> flextable::add_footer_lines(fn)
-				}
-				ft <- ft |>
-					flextable::fontsize(size = 8, part = "footer") |>
-					flextable::italic(part = "footer")
-			}
-			ft
+			.add_title_and_footnotes(ft, title, footnotes)
 		}
 	)
 
@@ -1006,9 +995,7 @@ quick_demographics_report <- function(
 	...
 ) {
 	# Auto-coerce if needed
-	if (is.data.frame(data) && !S7::S7_inherits(data, ADaMData)) {
-		data <- ADaMData(data = data, domain = "ADSL")
-	}
+	data <- .ensure_adam_data(data, domain = "ADSL", trt_var = trt_var)
 
 	# Create demographics table
 	demo_table <- create_demographics_table(
@@ -1084,6 +1071,12 @@ quick_safety_report <- function(
 	include_title = TRUE,
 	...
 ) {
+	# Auto-coerce if needed
+	data <- .ensure_adam_data(data, domain = "ADAE", trt_var = trt_var)
+	if (!is.null(adsl)) {
+		adsl <- .ensure_adam_data(adsl, domain = "ADSL", trt_var = trt_var)
+	}
+
 	# Create report
 	report <- ClinicalReport(
 		study_id = "QUICK_SAFETY",
