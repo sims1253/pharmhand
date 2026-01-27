@@ -1,6 +1,7 @@
 # Abort with Error
 
-Internal wrapper for stop() that provides consistent error formatting.
+Internal wrapper for rlang::abort() that provides consistent error
+formatting.
 
 ## Usage
 
@@ -12,4 +13,4 @@ ph_abort(...)
 
 - ...:
 
-  Arguments passed to stop()
+  Arguments passed to rlang::abort()

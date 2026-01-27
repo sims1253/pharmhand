@@ -6,7 +6,7 @@ columns.
 ## Usage
 
 ``` r
-assert_data_frame(x, ...)
+assert_data_frame(x, required_cols = NULL, arg = deparse(substitute(x)))
 ```
 
 ## Arguments
@@ -15,11 +15,13 @@ assert_data_frame(x, ...)
 
   Value to check
 
-- ...:
+- required_cols:
 
-  Either `arg` as character string (argument name for error messages),
-  or `required_cols` (character vector of required column names)
-  followed by `arg`
+  Optional character vector of required column names
+
+- arg:
+
+  Character string describing the argument (for error messages)
 
 ## Value
 

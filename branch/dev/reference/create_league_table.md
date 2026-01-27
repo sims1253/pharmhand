@@ -36,7 +36,8 @@ create_league_table(
 
 - conf_level:
 
-  Numeric. Confidence level. Default: 0.95
+  Numeric. Confidence level. If NULL (default), uses the level from the
+  NMA result or falls back to 0.95.
 
 - theme:
 
@@ -2394,6 +2395,7 @@ print(table)
 #>  ..  ..$ word_title      : NULL
 #>  ..  ..$ word_description: NULL
 #>  .. - attr(*, "class")= chr "flextable"
+#>  @ footnotes   : chr "Row treatment vs Column treatment. * indicates statistical significance at 95% confidence level."
 #>  @ n_rows      : int 3
 #>  @ n_cols      : int 4
 #>  @ column_names: chr [1:4] "Treatment" "A" "B" "C"

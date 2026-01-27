@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,18 @@
       <small>Source: <a href="https://github.com/sims1253/pharmhand/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.3.9000" id="pharmhand-0439000">pharmhand 0.4.3.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0439000"></a></h2>
+<ul><li>Safety hierarchy tables now retain treatment groups with zero events using <code>names_expand = TRUE</code>.</li>
+<li>Improved robustness in AE comparisons by short-circuiting when denominators are zero.</li>
+<li>Efficacy baseline calculations now use accessor helpers (<code>get_filtered_data</code>, <code>get_trt_var</code>) instead of direct slot access.</li>
+<li>Added input validation for treatment variables in laboratory tables to prevent unsafe glue syntax.</li>
+<li>Bayesian meta-analysis <code>warmup</code> parameter now requires a positive integer (&gt;= 1) for consistency with brms.</li>
+<li>Standardized on <code><a href="https://rlang.r-lib.org/reference/sym.html" class="external-link">rlang::sym</a></code> across all table creator functions.</li>
+<li>Added <code>footnotes</code> property to <code>ClinicalTable</code> class and updated reporting engine to populate it.</li>
+<li>Fixed <code><a href="../reference/ph_abort.html">ph_abort()</a></code> to properly concatenate multiple arguments before passing to <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code>.</li>
+<li>Documentation and test suite improvements, including explicit skip guards for <code>mmrm</code> and <code>cmdstanr</code> dependencies.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.2.9000" id="pharmhand-0429000">pharmhand 0.4.2.9000<a class="anchor" aria-label="anchor" href="#pharmhand-0429000"></a></h2>
 <ul><li>Validation helpers now reject NA consistently across assertion functions.</li>

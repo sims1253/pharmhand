@@ -12,7 +12,8 @@ Internal function to summarize AE data by MedDRA hierarchy levels.
   level_vars,
   available_levels,
   min_pct,
-  sort_by
+  sort_by,
+  trt_levels
 )
 ```
 

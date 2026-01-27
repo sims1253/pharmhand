@@ -12,7 +12,7 @@ Safely extract a column value, returning a default if not present or NA.
 
 - row:
 
-  A data frame row or named list
+  A single-row data frame or named list (not a multi-row data frame)
 
 - col_name:
 

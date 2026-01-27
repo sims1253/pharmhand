@@ -9,7 +9,7 @@ and domains, suitable for G-BA Module 4 requirements."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,8 +94,12 @@ such as <code>col_widths</code>, <code>autofit</code>, <code>theme</code>, etc.<
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">rob_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="co"># RoB2Result objects with required arguments would go here</span></span></span>
-<span class="r-in"><span>  <span class="co"># e.g., RoB2Result(study_id = "Study 1", outcome = "...", overall = "...", domains = list(...))</span></span></span>
-<span class="r-in"><span>  <span class="co"># e.g., RoB2Result(study_id = "Study 2", outcome = "...", overall = "...", domains = list(...))</span></span></span>
+<span class="r-in"><span>  <span class="co"># e.g., RoB2Result(study_id = "Study 1",</span></span></span>
+<span class="r-in"><span>  <span class="co">#   outcome = "...", overall = "...",</span></span></span>
+<span class="r-in"><span>  <span class="co">#   domains = list(...))</span></span></span>
+<span class="r-in"><span>  <span class="co"># e.g., RoB2Result(study_id = "Study 2",</span></span></span>
+<span class="r-in"><span>  <span class="co">#   outcome = "...", overall = "...",</span></span></span>
+<span class="r-in"><span>  <span class="co">#   domains = list(...))</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rob_table</span> <span class="op">&lt;-</span> <span class="fu">create_rob_summary_table</span><span class="op">(</span><span class="va">rob_results</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>

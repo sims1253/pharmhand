@@ -9,7 +9,7 @@ from a network meta-analysis."><meta property="og:image" content="https://sims12
 
     <a class="navbar-brand me-2" href="../index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,8 @@ Default: TRUE</p></dd>
 
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
-<dd><p>Numeric. Confidence level. Default: 0.95</p></dd>
+<dd><p>Numeric. Confidence level. If NULL (default), uses the level
+from the NMA result or falls back to 0.95.</p></dd>
 
 
 <dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
@@ -2440,6 +2441,7 @@ Default: TRUE</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ..  ..$ word_title      : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ..  ..$ word_description: NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. - attr(*, "class")= chr "flextable"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ footnotes   : chr "Row treatment vs Column treatment. * indicates statistical significance at 95% confidence level."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ n_rows      : int 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ n_cols      : int 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ column_names: chr [1:4] "Treatment" "A" "B" "C"</span>

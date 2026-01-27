@@ -96,6 +96,14 @@ Scalar validation helpers reject NA values. Use
 for explicit NA checking or remove NA values before passing to
 validation functions.
 
+``` r
+# Validate and throw error if NA is present
+assert_no_na(adsl$AGE, "Age variable contains NA values")
+
+# Or filter NA values before validation
+adsl_clean <- adsl[!is.na(adsl$AGE), ]
+```
+
 ## Advanced: ADaMData Wrapper
 
 For population filtering and computed properties:

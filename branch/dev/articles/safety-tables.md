@@ -720,10 +720,10 @@ soc_ft
 ``` r
 # Create multiple safety tables
 safety_tables <- list(
-  overview = create_ae_summary_table(adae, adsl, type = "overview"),
-  soc = create_ae_summary_table(adae, adsl, type = "soc"),
-  common = create_ae_summary_table(adae, adsl, type = "common", n_top = 10),
-  sae = create_ae_summary_table(adae, adsl, type = "sae")
+  overview = create_ae_summary_table(data = adae, adsl = adsl, type = "overview"),
+  soc = create_ae_summary_table(data = adae, adsl = adsl, type = "soc"),
+  common = create_ae_summary_table(data = adae, adsl = adsl, type = "common", n_top = 10),
+  sae = create_ae_summary_table(data = adae, adsl = adsl, type = "sae")
 )
 
 # Create report sections

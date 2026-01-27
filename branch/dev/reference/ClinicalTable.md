@@ -11,7 +11,8 @@ ClinicalTable(
   title = NULL,
   metadata = list(),
   data = data.frame(),
-  flextable = NULL
+  flextable = NULL,
+  footnotes = character(0)
 )
 ```
 
@@ -37,6 +38,10 @@ ClinicalTable(
 - flextable:
 
   A flextable object (optional, created if not provided)
+
+- footnotes:
+
+  Character vector of table footnotes
 
 ## Value
 

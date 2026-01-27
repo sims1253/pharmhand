@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html">pharmhand</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,13 +157,19 @@
 <h3 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
 </h3>
 <p>Scalar validation helpers reject NA values. Use <code><a href="reference/assert_no_na.html">assert_no_na()</a></code> for explicit NA checking or remove NA values before passing to validation functions.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Validate and throw error if NA is present</span></span>
+<span><span class="fu"><a href="reference/assert_no_na.html">assert_no_na</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">$</span><span class="va">AGE</span>, <span class="st">"Age variable contains NA values"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or filter NA values before validation</span></span>
+<span><span class="va">adsl_clean</span> <span class="op">&lt;-</span> <span class="va">adsl</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">adsl</span><span class="op">$</span><span class="va">AGE</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="advanced-adamdata-wrapper">Advanced: ADaMData Wrapper<a class="anchor" aria-label="anchor" href="#advanced-adamdata-wrapper"></a>
 </h2>
 <p>For population filtering and computed properties:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Wrap ADaM data with automatic population filtering</span></span>
 <span><span class="va">adam_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ADaMData.html">ADaMData</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">adsl</span>,</span>
@@ -182,7 +188,7 @@
 <div class="section level3">
 <h3 id="efficacy-tables">Efficacy Tables<a class="anchor" aria-label="anchor" href="#efficacy-tables"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-to-event summary with median, HR, and landmarks</span></span>
 <span><span class="va">tte_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_tte_summary_table.html">create_tte_summary_table</a></span><span class="op">(</span></span>
 <span>  <span class="va">adtte</span>,</span>
@@ -203,7 +209,7 @@
 <div class="section level3">
 <h3 id="safety-tables">Safety Tables<a class="anchor" aria-label="anchor" href="#safety-tables"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># AE Overview, by SOC, most common</span></span>
 <span><span class="fu"><a href="reference/create_ae_summary_table.html">create_ae_summary_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"overview"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/create_ae_summary_table.html">create_ae_summary_table</a></span><span class="op">(</span><span class="va">adae</span>, <span class="va">adsl</span>, type <span class="op">=</span> <span class="st">"soc"</span><span class="op">)</span></span>
@@ -212,7 +218,7 @@
 <div class="section level3">
 <h3 id="report-generation">Report Generation<a class="anchor" aria-label="anchor" href="#report-generation"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build and export a complete report</span></span>
 <span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ClinicalReport.html">ClinicalReport</a></span><span class="op">(</span></span>
 <span>  study_id <span class="op">=</span> <span class="st">"STUDY-001"</span>,</span>
@@ -229,7 +235,7 @@
 <div class="section level3">
 <h3 id="g-ba-module-4-compliance">G-BA Module 4 Compliance<a class="anchor" aria-label="anchor" href="#g-ba-module-4-compliance"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create and validate G-BA compliant tables</span></span>
 <span><span class="va">module4_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_hta_module4_table.html">create_hta_module4_table</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">module4_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/to_gba_template.html">to_gba_template</a></span><span class="op">(</span><span class="va">module4_table</span><span class="op">)</span></span>
@@ -238,7 +244,7 @@
 <div class="section level3">
 <h3 id="meta-analysis--evidence-synthesis">Meta-Analysis &amp; Evidence Synthesis<a class="anchor" aria-label="anchor" href="#meta-analysis--evidence-synthesis"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Random-effects meta-analysis</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/meta_analysis.html">meta_analysis</a></span><span class="op">(</span></span>
 <span>  yi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">0.82</span>, <span class="fl">0.68</span>, <span class="fl">0.91</span>, <span class="fl">0.77</span><span class="op">)</span><span class="op">)</span>,</span>

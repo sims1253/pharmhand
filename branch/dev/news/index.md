@@ -1,5 +1,29 @@
 # Changelog
 
+## pharmhand 0.4.3.9000
+
+- Safety hierarchy tables now retain treatment groups with zero events
+  using `names_expand = TRUE`.
+- Improved robustness in AE comparisons by short-circuiting when
+  denominators are zero.
+- Efficacy baseline calculations now use accessor helpers
+  (`get_filtered_data`, `get_trt_var`) instead of direct slot access.
+- Added input validation for treatment variables in laboratory tables to
+  prevent unsafe glue syntax.
+- Bayesian meta-analysis `warmup` parameter now requires a positive
+  integer (\>= 1) for consistency with brms.
+- Standardized on
+  [`rlang::sym`](https://rlang.r-lib.org/reference/sym.html) across all
+  table creator functions.
+- Added `footnotes` property to `ClinicalTable` class and updated
+  reporting engine to populate it.
+- Fixed
+  [`ph_abort()`](https://sims1253.github.io/pharmhand/branch/dev/reference/ph_abort.md)
+  to properly concatenate multiple arguments before passing to
+  [`rlang::abort()`](https://rlang.r-lib.org/reference/abort.html).
+- Documentation and test suite improvements, including explicit skip
+  guards for `mmrm` and `cmdstanr` dependencies.
+
 ## pharmhand 0.4.2.9000
 
 - Validation helpers now reject NA consistently across assertion
