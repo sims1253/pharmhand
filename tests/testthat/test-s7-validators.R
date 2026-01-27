@@ -2,730 +2,742 @@
 
 # ComparisonResult validators ----
 
-test_that("ComparisonResult accepts valid effect_measure", {
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		effect_measure = "hr"
-	))
-
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		effect_measure = "or"
-	))
-
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		effect_measure = "rr"
-	))
-
-	expect_no_error(ComparisonResult(
-		estimate = -0.15,
-		ci = c(-0.25, -0.05),
-		effect_measure = "rd"
-	))
-
-	expect_no_error(ComparisonResult(
-		estimate = 2.5,
-		ci = c(1.0, 4.0),
-		effect_measure = "md"
-	))
-
-	expect_no_error(ComparisonResult(
-		estimate = 0.5,
-		ci = c(0.2, 0.8),
-		effect_measure = "smd"
-	))
-
-	expect_no_error(ComparisonResult(
-		estimate = 0.85,
-		ci = c(0.70, 1.03),
-		effect_measure = "irr"
-	))
-})
-
-test_that("ComparisonResult rejects invalid effect_measure", {
-	expect_error(
-		ComparisonResult(
+describe("s7-validators", {
+	it("ComparisonResult accepts valid effect_measure", {
+		expect_no_error(ComparisonResult(
 			estimate = 0.75,
 			ci = c(0.60, 0.93),
-			effect_measure = "invalid"
-		),
-		"effect_measure must be one of"
-	)
-})
+			effect_measure = "hr"
+		))
 
-test_that("ComparisonResult validates treatment is scalar", {
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		treatment = "Drug A"
-	))
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			effect_measure = "or"
+		))
 
-	# Empty string is valid (scalar character)
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		treatment = ""
-	))
-})
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			effect_measure = "rr"
+		))
 
-test_that("ComparisonResult validates control is scalar", {
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		control = "Placebo"
-	))
+		expect_no_error(ComparisonResult(
+			estimate = -0.15,
+			ci = c(-0.25, -0.05),
+			effect_measure = "rd"
+		))
 
-	# Empty string is valid (scalar character)
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		control = ""
-	))
-})
+		expect_no_error(ComparisonResult(
+			estimate = 2.5,
+			ci = c(1.0, 4.0),
+			effect_measure = "md"
+		))
 
-# StatResult validators (tested through ComparisonResult) ----
+		expect_no_error(ComparisonResult(
+			estimate = 0.5,
+			ci = c(0.2, 0.8),
+			effect_measure = "smd"
+		))
 
-test_that("StatResult estimate must be length 1", {
-	# Valid: single value
-	expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93)))
+		expect_no_error(ComparisonResult(
+			estimate = 0.85,
+			ci = c(0.70, 1.03),
+			effect_measure = "irr"
+		))
+	})
 
-	# Invalid: vector of length > 1
-	expect_error(
-		ComparisonResult(estimate = c(0.75, 0.80), ci = c(0.60, 0.93)),
-		"estimate must be a single numeric value"
-	)
+	it("ComparisonResult rejects invalid effect_measure", {
+		expect_error(
+			ComparisonResult(
+				estimate = 0.75,
+				ci = c(0.60, 0.93),
+				effect_measure = "invalid"
+			),
+			"effect_measure must be one of"
+		)
+	})
 
-	# Invalid: empty vector
-	expect_error(
-		ComparisonResult(estimate = numeric(), ci = c(0.60, 0.93)),
-		"estimate must be a single numeric value"
-	)
-})
+	it("ComparisonResult validates treatment is scalar", {
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			treatment = "Drug A"
+		))
 
-test_that("StatResult ci must be length 2", {
-	# Valid: length 2
-	expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93)))
+		# Empty string is valid (scalar character)
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			treatment = ""
+		))
+	})
 
-	# Invalid: length 1
-	expect_error(
-		ComparisonResult(estimate = 0.75, ci = c(0.60)),
-		"ci must be a numeric vector of length 2"
-	)
+	it("ComparisonResult validates control is scalar", {
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			control = "Placebo"
+		))
 
-	# Invalid: length 3
-	expect_error(
-		ComparisonResult(estimate = 0.75, ci = c(0.60, 0.75, 0.93)),
-		"ci must be a numeric vector of length 2"
-	)
-})
+		# Empty string is valid (scalar character)
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			control = ""
+		))
+	})
 
-test_that("StatResult ci lower must be <= upper", {
-	# Valid: lower < upper
-	expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93)))
+	# StatResult validators (tested through ComparisonResult) ----
 
-	# Valid: lower == upper (edge case)
-	expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.75, 0.75)))
+	it("StatResult estimate must be length 1", {
+		# Valid: single value
+		expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93)))
 
-	# Invalid: lower > upper
-	expect_error(
-		ComparisonResult(estimate = 0.75, ci = c(0.93, 0.60)),
-		"ci lower bound must be <= upper bound"
-	)
-})
+		# Invalid: vector of length > 1
+		expect_error(
+			ComparisonResult(estimate = c(0.75, 0.80), ci = c(0.60, 0.93)),
+			"estimate must be a single numeric value"
+		)
 
-test_that("StatResult ci_level must be between 0 and 1", {
-	# Valid: common values
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		ci_level = 0.95
-	))
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		ci_level = 0.90
-	))
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		ci_level = 0.99
-	))
+		# Invalid: empty vector
+		expect_error(
+			ComparisonResult(estimate = numeric(), ci = c(0.60, 0.93)),
+			"estimate must be a single numeric value"
+		)
+	})
 
-	# Invalid: ci_level <= 0
-	expect_error(
-		ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = 0),
-		"ci_level must be a single value between 0 and 1"
-	)
-	expect_error(
-		ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = -0.1),
-		"ci_level must be a single value between 0 and 1"
-	)
+	it("StatResult ci must be length 2", {
+		# Valid: length 2
+		expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93)))
 
-	# Invalid: ci_level >= 1
-	expect_error(
-		ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = 1),
-		"ci_level must be a single value between 0 and 1"
-	)
-	expect_error(
-		ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = 1.5),
-		"ci_level must be a single value between 0 and 1"
-	)
-})
+		# Invalid: length 1
+		expect_error(
+			ComparisonResult(estimate = 0.75, ci = c(0.60)),
+			"ci must be a numeric vector of length 2"
+		)
 
-test_that("StatResult method must be scalar", {
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		method = "Cox proportional hazards"
-	))
+		# Invalid: length 3
+		expect_error(
+			ComparisonResult(estimate = 0.75, ci = c(0.60, 0.75, 0.93)),
+			"ci must be a numeric vector of length 2"
+		)
+	})
 
-	expect_no_error(ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		method = ""
-	))
-})
+	it("StatResult ci lower must be <= upper", {
+		# Valid: lower < upper
+		expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93)))
 
-# MetaResult validators ----
+		# Valid: lower == upper (edge case)
+		expect_no_error(ComparisonResult(estimate = 0.75, ci = c(0.75, 0.75)))
 
-test_that("MetaResult accepts valid model", {
-	expect_no_error(MetaResult(
-		estimate = 0.80,
-		ci = c(0.70, 0.91),
-		model = "fixed"
-	))
+		# Invalid: lower > upper
+		expect_error(
+			ComparisonResult(estimate = 0.75, ci = c(0.93, 0.60)),
+			"ci lower bound must be <= upper bound"
+		)
+	})
 
-	expect_no_error(MetaResult(
-		estimate = 0.80,
-		ci = c(0.70, 0.91),
-		model = "random"
-	))
-})
+	it("StatResult ci_level must be between 0 and 1", {
+		# Valid: common values
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			ci_level = 0.95
+		))
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			ci_level = 0.90
+		))
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			ci_level = 0.99
+		))
 
-test_that("MetaResult rejects invalid model", {
-	expect_error(
-		MetaResult(estimate = 0.80, ci = c(0.70, 0.91), model = "mixed"),
-		"model must be 'fixed' or 'random'"
-	)
+		# Invalid: ci_level <= 0
+		expect_error(
+			ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = 0),
+			"ci_level must be a single value between 0 and 1"
+		)
+		expect_error(
+			ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = -0.1),
+			"ci_level must be a single value between 0 and 1"
+		)
 
-	expect_error(
-		MetaResult(estimate = 0.80, ci = c(0.70, 0.91), model = "invalid"),
-		"model must be 'fixed' or 'random'"
-	)
-})
+		# Invalid: ci_level >= 1
+		expect_error(
+			ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = 1),
+			"ci_level must be a single value between 0 and 1"
+		)
+		expect_error(
+			ComparisonResult(estimate = 0.75, ci = c(0.60, 0.93), ci_level = 1.5),
+			"ci_level must be a single value between 0 and 1"
+		)
+	})
 
-test_that("MetaResult effect_measure validation works", {
-	# All valid effect measures should work
-	valid_measures <- c("hr", "or", "rr", "rd", "md", "smd", "irr")
+	it("StatResult method must be scalar", {
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			method = "Cox proportional hazards"
+		))
 
-	for (measure in valid_measures) {
-		expect_no_error(
+		expect_no_error(ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			method = ""
+		))
+	})
+
+	# MetaResult validators ----
+
+	it("MetaResult accepts valid model", {
+		expect_no_error(MetaResult(
+			estimate = 0.80,
+			ci = c(0.70, 0.91),
+			model = "fixed"
+		))
+
+		expect_no_error(MetaResult(
+			estimate = 0.80,
+			ci = c(0.70, 0.91),
+			model = "random"
+		))
+	})
+
+	it("MetaResult rejects invalid model", {
+		expect_error(
+			MetaResult(estimate = 0.80, ci = c(0.70, 0.91), model = "mixed"),
+			"model must be 'fixed' or 'random'"
+		)
+
+		expect_error(
+			MetaResult(estimate = 0.80, ci = c(0.70, 0.91), model = "invalid"),
+			"model must be 'fixed' or 'random'"
+		)
+	})
+
+	it("MetaResult effect_measure validation works", {
+		# All valid effect measures should work
+		valid_measures <- c("hr", "or", "rr", "rd", "md", "smd", "irr")
+
+		for (measure in valid_measures) {
+			expect_no_error(
+				MetaResult(
+					estimate = 0.80,
+					ci = c(0.70, 0.91),
+					effect_measure = measure
+				)
+			)
+		}
+
+		# Invalid effect measure should error
+		expect_error(
 			MetaResult(
 				estimate = 0.80,
 				ci = c(0.70, 0.91),
-				effect_measure = measure
+				effect_measure = "invalid"
+			),
+			"effect_measure must be one of"
+		)
+	})
+
+	# EvidenceGrade validators ----
+
+	it("EvidenceGrade accepts valid grade", {
+		valid_grades <- c("proof", "indication", "hint", "none")
+
+		for (grade in valid_grades) {
+			expect_no_error(
+				EvidenceGrade(grade = grade, direction = "benefit")
 			)
+		}
+	})
+
+	it("EvidenceGrade rejects invalid grade", {
+		expect_error(
+			EvidenceGrade(grade = "invalid", direction = "benefit"),
+			"grade must be one of"
 		)
-	}
+	})
 
-	# Invalid effect measure should error
-	expect_error(
-		MetaResult(estimate = 0.80, ci = c(0.70, 0.91), effect_measure = "invalid"),
-		"effect_measure must be one of"
-	)
-})
+	it("EvidenceGrade accepts valid direction", {
+		valid_directions <- c("benefit", "harm", "none")
 
-# EvidenceGrade validators ----
+		for (dir in valid_directions) {
+			expect_no_error(
+				EvidenceGrade(grade = "proof", direction = dir)
+			)
+		}
+	})
 
-test_that("EvidenceGrade accepts valid grade", {
-	valid_grades <- c("proof", "indication", "hint", "none")
-
-	for (grade in valid_grades) {
-		expect_no_error(
-			EvidenceGrade(grade = grade, direction = "benefit")
+	it("EvidenceGrade rejects invalid direction", {
+		expect_error(
+			EvidenceGrade(grade = "proof", direction = "invalid"),
+			"direction must be 'benefit', 'harm', or 'none'"
 		)
-	}
-})
+	})
 
-test_that("EvidenceGrade rejects invalid grade", {
-	expect_error(
-		EvidenceGrade(grade = "invalid", direction = "benefit"),
-		"grade must be one of"
-	)
-})
+	# Study validators ----
 
-test_that("EvidenceGrade accepts valid direction", {
-	valid_directions <- c("benefit", "harm", "none")
+	it("Study accepts valid design", {
+		valid_designs <- c("rct", "observational", "single-arm", "crossover")
 
-	for (dir in valid_directions) {
-		expect_no_error(
-			EvidenceGrade(grade = "proof", direction = dir)
-		)
-	}
-})
+		for (design in valid_designs) {
+			expect_no_error(
+				TwoArmStudy(
+					data = data.frame(),
+					study_id = "TEST",
+					study_title = "Test Study",
+					design = design
+				)
+			)
+		}
+	})
 
-test_that("EvidenceGrade rejects invalid direction", {
-	expect_error(
-		EvidenceGrade(grade = "proof", direction = "invalid"),
-		"direction must be 'benefit', 'harm', or 'none'"
-	)
-})
-
-# Study validators ----
-
-test_that("Study accepts valid design", {
-	valid_designs <- c("rct", "observational", "single-arm", "crossover")
-
-	for (design in valid_designs) {
-		expect_no_error(
+	it("Study rejects invalid design", {
+		# TwoArmStudy doesn't override design property, so it inherits the validator
+		expect_error(
 			TwoArmStudy(
 				data = data.frame(),
 				study_id = "TEST",
 				study_title = "Test Study",
-				design = design
+				design = "invalid"
+			),
+			"design must be one of"
+		)
+	})
+
+	it("Study accepts all valid design types individually", {
+		# TwoArmStudy doesn't override design property, so it inherits the validator
+		expect_no_error(TwoArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			design = "rct"
+		))
+		expect_no_error(TwoArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			design = "observational"
+		))
+		expect_no_error(TwoArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			design = "single-arm"
+		))
+		expect_no_error(TwoArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study",
+			design = "crossover"
+		))
+	})
+
+	it("Study design defaults correctly", {
+		study <- SingleArmStudy(
+			data = data.frame(),
+			study_id = "TEST",
+			study_title = "Test Study"
+		)
+
+		expect_equal(study@design, "single-arm")
+	})
+
+	# MultiArmStudy validators ----
+
+	it("MultiArmStudy accepts valid arms with 3+ elements", {
+		expect_no_error(
+			MultiArmStudy(
+				data = data.frame(),
+				study_id = "TEST",
+				study_title = "Test Study",
+				arms = c("Drug A", "Drug B", "Placebo"),
+				reference_arm = "Placebo"
 			)
 		)
-	}
-})
+	})
 
-test_that("Study rejects invalid design", {
-	# TwoArmStudy doesn't override design property, so it inherits the validator
-	expect_error(
-		TwoArmStudy(
+	it("MultiArmStudy rejects arms with fewer than 3 elements", {
+		expect_error(
+			MultiArmStudy(
+				data = data.frame(),
+				study_id = "TEST",
+				study_title = "Test Study",
+				arms = c("Drug A", "Placebo"),
+				reference_arm = "Placebo"
+			),
+			"arms must have at least 3 elements"
+		)
+
+		expect_error(
+			MultiArmStudy(
+				data = data.frame(),
+				study_id = "TEST",
+				study_title = "Test Study",
+				arms = c("Drug A"),
+				reference_arm = "Drug A"
+			),
+			"arms must have at least 3 elements"
+		)
+	})
+
+	it("MultiArmStudy treatment_var defaults correctly", {
+		study <- MultiArmStudy(
 			data = data.frame(),
 			study_id = "TEST",
 			study_title = "Test Study",
-			design = "invalid"
-		),
-		"design must be one of"
-	)
-})
+			arms = c("Arm A", "Arm B", "Arm C")
+		)
+		expect_equal(study@treatment_var, "TRT01P")
+	})
 
-test_that("Study accepts all valid design types individually", {
-	# TwoArmStudy doesn't override design property, so it inherits the validator
-	expect_no_error(TwoArmStudy(
-		data = data.frame(),
-		study_id = "TEST",
-		study_title = "Test Study",
-		design = "rct"
-	))
-	expect_no_error(TwoArmStudy(
-		data = data.frame(),
-		study_id = "TEST",
-		study_title = "Test Study",
-		design = "observational"
-	))
-	expect_no_error(TwoArmStudy(
-		data = data.frame(),
-		study_id = "TEST",
-		study_title = "Test Study",
-		design = "single-arm"
-	))
-	expect_no_error(TwoArmStudy(
-		data = data.frame(),
-		study_id = "TEST",
-		study_title = "Test Study",
-		design = "crossover"
-	))
-})
-
-test_that("Study design defaults correctly", {
-	study <- SingleArmStudy(
-		data = data.frame(),
-		study_id = "TEST",
-		study_title = "Test Study"
-	)
-
-	expect_equal(study@design, "single-arm")
-})
-
-# MultiArmStudy validators ----
-
-test_that("MultiArmStudy accepts valid arms with 3+ elements", {
-	expect_no_error(
-		MultiArmStudy(
-			data = data.frame(),
-			study_id = "TEST",
-			study_title = "Test Study",
+	it("Can create complete MultiArmStudy with all properties", {
+		study <- MultiArmStudy(
+			data = data.frame(
+				USUBJID = c("01", "02", "03"),
+				TRT01P = c("Drug A", "Drug B", "Placebo")
+			),
+			study_id = "MULTI001",
+			study_title = "Multi-Arm Trial",
+			design = "rct",
+			treatment_var = "TRT01P",
 			arms = c("Drug A", "Drug B", "Placebo"),
-			reference_arm = "Placebo"
+			reference_arm = "Placebo",
+			population = "ITT"
 		)
-	)
-})
 
-test_that("MultiArmStudy rejects arms with fewer than 3 elements", {
-	expect_error(
-		MultiArmStudy(
+		expect_true(S7::S7_inherits(study, MultiArmStudy))
+		expect_equal(study@study_id, "MULTI001")
+		expect_equal(length(study@arms), 3)
+		expect_equal(study@reference_arm, "Placebo")
+	})
+
+	# Endpoint validators ----
+
+	it("Endpoint accepts valid type", {
+		valid_types <- c("continuous", "binary", "tte", "count", "pro")
+
+		for (type in valid_types) {
+			expect_no_error(
+				Endpoint(
+					name = "Test Endpoint",
+					variable = "AVAL",
+					type = type
+				)
+			)
+		}
+	})
+
+	it("Endpoint rejects invalid type", {
+		expect_error(
+			Endpoint(name = "Test", variable = "AVAL", type = "invalid"),
+			"type must be one of"
+		)
+	})
+
+	it("Endpoint accepts all valid type types individually", {
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			type = "continuous"
+		))
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "binary"))
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "tte"))
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "count"))
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "pro"))
+	})
+
+	it("Endpoint accepts valid category", {
+		valid_categories <- c("primary", "secondary", "safety", "exploratory")
+
+		for (cat in valid_categories) {
+			expect_no_error(
+				Endpoint(
+					name = "Test Endpoint",
+					variable = "AVAL",
+					category = cat
+				)
+			)
+		}
+	})
+
+	it("Endpoint rejects invalid category", {
+		expect_error(
+			Endpoint(name = "Test", variable = "AVAL", category = "invalid"),
+			"category must be one of"
+		)
+	})
+
+	it("Endpoint accepts all valid category types individually", {
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			category = "primary"
+		))
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			category = "secondary"
+		))
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			category = "safety"
+		))
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			category = "exploratory"
+		))
+	})
+
+	it("Endpoint accepts valid hypothesis", {
+		valid_hypotheses <- c("superiority", "non-inferiority", "equivalence")
+
+		for (hyp in valid_hypotheses) {
+			expect_no_error(
+				Endpoint(
+					name = "Test Endpoint",
+					variable = "AVAL",
+					hypothesis = hyp
+				)
+			)
+		}
+	})
+
+	it("Endpoint rejects invalid hypothesis", {
+		expect_error(
+			Endpoint(name = "Test", variable = "AVAL", hypothesis = "invalid"),
+			"hypothesis must be one of"
+		)
+	})
+
+	it("Endpoint accepts all valid hypothesis types individually", {
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			hypothesis = "superiority"
+		))
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			hypothesis = "non-inferiority"
+		))
+		expect_no_error(Endpoint(
+			name = "Test",
+			variable = "AVAL",
+			hypothesis = "equivalence"
+		))
+	})
+
+	it("Endpoint alpha must be between 0 and 1", {
+		# Valid values
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.05))
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.01))
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.10))
+		expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.5))
+
+		# Invalid: alpha <= 0
+		expect_error(
+			Endpoint(name = "Test", variable = "AVAL", alpha = 0),
+			"alpha must be between 0 and 1"
+		)
+		expect_error(
+			Endpoint(name = "Test", variable = "AVAL", alpha = -0.01),
+			"alpha must be between 0 and 1"
+		)
+
+		# Invalid: alpha >= 1
+		expect_error(
+			Endpoint(name = "Test", variable = "AVAL", alpha = 1),
+			"alpha must be between 0 and 1"
+		)
+		expect_error(
+			Endpoint(name = "Test", variable = "AVAL", alpha = 1.5),
+			"alpha must be between 0 and 1"
+		)
+	})
+
+	# StudySet validators ----
+
+	it("StudySet accepts valid studies list", {
+		study1 <- SingleArmStudy(
 			data = data.frame(),
-			study_id = "TEST",
-			study_title = "Test Study",
-			arms = c("Drug A", "Placebo"),
-			reference_arm = "Placebo"
-		),
-		"arms must have at least 3 elements"
-	)
-
-	expect_error(
-		MultiArmStudy(
+			study_id = "STUDY001",
+			study_title = "Study 1"
+		)
+		study2 <- SingleArmStudy(
 			data = data.frame(),
-			study_id = "TEST",
-			study_title = "Test Study",
-			arms = c("Drug A"),
-			reference_arm = "Drug A"
-		),
-		"arms must have at least 3 elements"
-	)
-})
+			study_id = "STUDY002",
+			study_title = "Study 2"
+		)
 
-test_that("MultiArmStudy treatment_var defaults correctly", {
-	study <- MultiArmStudy(
-		data = data.frame(),
-		study_id = "TEST",
-		study_title = "Test Study",
-		arms = c("Arm A", "Arm B", "Arm C")
-	)
-	expect_equal(study@treatment_var, "TRT01P")
-})
+		expect_no_error(StudySet(
+			studies = list(study1, study2),
+			comparison_type = "direct"
+		))
+	})
 
-test_that("Can create complete MultiArmStudy with all properties", {
-	study <- MultiArmStudy(
-		data = data.frame(
-			USUBJID = c("01", "02", "03"),
-			TRT01P = c("Drug A", "Drug B", "Placebo")
-		),
-		study_id = "MULTI001",
-		study_title = "Multi-Arm Trial",
-		design = "rct",
-		treatment_var = "TRT01P",
-		arms = c("Drug A", "Drug B", "Placebo"),
-		reference_arm = "Placebo",
-		population = "ITT"
-	)
+	it("StudySet accepts empty studies list", {
+		expect_no_error(StudySet(
+			studies = list(),
+			comparison_type = "direct"
+		))
+	})
 
-	expect_true(S7::S7_inherits(study, MultiArmStudy))
-	expect_equal(study@study_id, "MULTI001")
-	expect_equal(length(study@arms), 3)
-	expect_equal(study@reference_arm, "Placebo")
-})
+	it("StudySet rejects non-Study objects in studies list", {
+		study1 <- SingleArmStudy(
+			data = data.frame(),
+			study_id = "STUDY001",
+			study_title = "Study 1"
+		)
 
-# Endpoint validators ----
+		expect_error(
+			StudySet(
+				studies = list(study1, "not a study"),
+				comparison_type = "direct"
+			),
+			"must be a Study object"
+		)
 
-test_that("Endpoint accepts valid type", {
-	valid_types <- c("continuous", "binary", "tte", "count", "pro")
+		expect_error(
+			StudySet(
+				studies = list(study1, data.frame()),
+				comparison_type = "direct"
+			),
+			"must be a Study object"
+		)
+	})
 
-	for (type in valid_types) {
-		expect_no_error(
-			Endpoint(
-				name = "Test Endpoint",
-				variable = "AVAL",
-				type = type
+	it("StudySet accepts valid comparison_type", {
+		valid_types <- c("direct", "indirect", "network")
+
+		for (type in valid_types) {
+			expect_no_error(
+				StudySet(comparison_type = type)
 			)
+		}
+	})
+
+	it("StudySet rejects invalid comparison_type", {
+		expect_error(
+			StudySet(comparison_type = "invalid"),
+			"comparison_type must be one of"
 		)
-	}
-})
+	})
 
-test_that("Endpoint rejects invalid type", {
-	expect_error(
-		Endpoint(name = "Test", variable = "AVAL", type = "invalid"),
-		"type must be one of"
-	)
-})
+	it("StudySet accepts all valid comparison types individually", {
+		expect_no_error(StudySet(comparison_type = "direct"))
+		expect_no_error(StudySet(comparison_type = "indirect"))
+		expect_no_error(StudySet(comparison_type = "network"))
+	})
 
-test_that("Endpoint accepts all valid type types individually", {
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		type = "continuous"
-	))
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "binary"))
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "tte"))
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "count"))
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", type = "pro"))
-})
+	it("StudySet comparison_type defaults correctly", {
+		study_set <- StudySet()
 
-test_that("Endpoint accepts valid category", {
-	valid_categories <- c("primary", "secondary", "safety", "exploratory")
+		expect_equal(study_set@comparison_type, "direct")
+	})
 
-	for (cat in valid_categories) {
-		expect_no_error(
-			Endpoint(
-				name = "Test Endpoint",
-				variable = "AVAL",
-				category = cat
-			)
+	# Integration tests ----
+
+	it("Can create complete ComparisonResult with all properties", {
+		result <- ComparisonResult(
+			estimate = 0.75,
+			ci = c(0.60, 0.93),
+			ci_level = 0.95,
+			p_value = 0.008,
+			method = "Cox proportional hazards model",
+			effect_measure = "hr",
+			treatment = "Drug A",
+			control = "Placebo"
 		)
-	}
-})
 
-test_that("Endpoint rejects invalid category", {
-	expect_error(
-		Endpoint(name = "Test", variable = "AVAL", category = "invalid"),
-		"category must be one of"
-	)
-})
+		expect_true(S7::S7_inherits(result, ComparisonResult))
+		expect_equal(result@estimate, 0.75)
+		expect_equal(result@ci, c(0.60, 0.93))
+		expect_equal(result@effect_measure, "hr")
+	})
 
-test_that("Endpoint accepts all valid category types individually", {
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		category = "primary"
-	))
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		category = "secondary"
-	))
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		category = "safety"
-	))
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		category = "exploratory"
-	))
-})
-
-test_that("Endpoint accepts valid hypothesis", {
-	valid_hypotheses <- c("superiority", "non-inferiority", "equivalence")
-
-	for (hyp in valid_hypotheses) {
-		expect_no_error(
-			Endpoint(
-				name = "Test Endpoint",
-				variable = "AVAL",
-				hypothesis = hyp
-			)
+	it("Can create complete MetaResult with all properties", {
+		result <- MetaResult(
+			estimate = 0.80,
+			ci = c(0.70, 0.91),
+			ci_level = 0.95,
+			p_value = 0.001,
+			method = "REML with Knapp-Hartung",
+			effect_measure = "hr",
+			model = "random",
+			heterogeneity = list(Q = 15.2, I2 = 0.45, tau2 = 0.02),
+			n = 5L
 		)
-	}
-})
 
-test_that("Endpoint rejects invalid hypothesis", {
-	expect_error(
-		Endpoint(name = "Test", variable = "AVAL", hypothesis = "invalid"),
-		"hypothesis must be one of"
-	)
-})
+		expect_true(S7::S7_inherits(result, MetaResult))
+		expect_equal(result@estimate, 0.80)
+		expect_equal(result@model, "random")
+	})
 
-test_that("Endpoint accepts all valid hypothesis types individually", {
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		hypothesis = "superiority"
-	))
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		hypothesis = "non-inferiority"
-	))
-	expect_no_error(Endpoint(
-		name = "Test",
-		variable = "AVAL",
-		hypothesis = "equivalence"
-	))
-})
-
-test_that("Endpoint alpha must be between 0 and 1", {
-	# Valid values
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.05))
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.01))
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.10))
-	expect_no_error(Endpoint(name = "Test", variable = "AVAL", alpha = 0.5))
-
-	# Invalid: alpha <= 0
-	expect_error(
-		Endpoint(name = "Test", variable = "AVAL", alpha = 0),
-		"alpha must be between 0 and 1"
-	)
-	expect_error(
-		Endpoint(name = "Test", variable = "AVAL", alpha = -0.01),
-		"alpha must be between 0 and 1"
-	)
-
-	# Invalid: alpha >= 1
-	expect_error(
-		Endpoint(name = "Test", variable = "AVAL", alpha = 1),
-		"alpha must be between 0 and 1"
-	)
-	expect_error(
-		Endpoint(name = "Test", variable = "AVAL", alpha = 1.5),
-		"alpha must be between 0 and 1"
-	)
-})
-
-# StudySet validators ----
-
-test_that("StudySet accepts valid studies list", {
-	study1 <- SingleArmStudy(
-		data = data.frame(),
-		study_id = "STUDY001",
-		study_title = "Study 1"
-	)
-	study2 <- SingleArmStudy(
-		data = data.frame(),
-		study_id = "STUDY002",
-		study_title = "Study 2"
-	)
-
-	expect_no_error(StudySet(
-		studies = list(study1, study2),
-		comparison_type = "direct"
-	))
-})
-
-test_that("StudySet accepts empty studies list", {
-	expect_no_error(StudySet(
-		studies = list(),
-		comparison_type = "direct"
-	))
-})
-
-test_that("StudySet rejects non-Study objects in studies list", {
-	study1 <- SingleArmStudy(
-		data = data.frame(),
-		study_id = "STUDY001",
-		study_title = "Study 1"
-	)
-
-	expect_error(
-		StudySet(studies = list(study1, "not a study"), comparison_type = "direct"),
-		"must be a Study object"
-	)
-
-	expect_error(
-		StudySet(studies = list(study1, data.frame()), comparison_type = "direct"),
-		"must be a Study object"
-	)
-})
-
-test_that("StudySet accepts valid comparison_type", {
-	valid_types <- c("direct", "indirect", "network")
-
-	for (type in valid_types) {
-		expect_no_error(
-			StudySet(comparison_type = type)
+	it("Can create complete EvidenceGrade with all properties", {
+		grade <- EvidenceGrade(
+			grade = "indication",
+			grade_de = "Hinweis",
+			direction = "benefit",
+			certainty = 0.6,
+			n_studies = 3L,
+			justification = "Consistent results from 3 RCTs with moderate risk of bias"
 		)
-	}
-})
 
-test_that("StudySet rejects invalid comparison_type", {
-	expect_error(
-		StudySet(comparison_type = "invalid"),
-		"comparison_type must be one of"
-	)
-})
+		expect_true(S7::S7_inherits(grade, EvidenceGrade))
+		expect_equal(grade@grade, "indication")
+		expect_equal(grade@direction, "benefit")
+	})
 
-test_that("StudySet accepts all valid comparison types individually", {
-	expect_no_error(StudySet(comparison_type = "direct"))
-	expect_no_error(StudySet(comparison_type = "indirect"))
-	expect_no_error(StudySet(comparison_type = "network"))
-})
+	it("Can create complete Endpoint with all properties", {
+		endpoint <- Endpoint(
+			name = "Overall Survival",
+			variable = "AVAL",
+			type = "tte",
+			category = "primary",
+			description = "Time from randomization to death",
+			hypothesis = "superiority",
+			margin = NULL,
+			alpha = 0.05,
+			priority = 1
+		)
 
-test_that("StudySet comparison_type defaults correctly", {
-	study_set <- StudySet()
+		expect_true(S7::S7_inherits(endpoint, Endpoint))
+		expect_equal(endpoint@type, "tte")
+		expect_equal(endpoint@category, "primary")
+	})
 
-	expect_equal(study_set@comparison_type, "direct")
-})
+	it("Can create complete StudySet with all properties", {
+		study1 <- SingleArmStudy(
+			data = data.frame(),
+			study_id = "STUDY001",
+			study_title = "Study 1"
+		)
 
-# Integration tests ----
+		endpoint <- Endpoint(
+			name = "OS",
+			variable = "AVAL",
+			type = "tte",
+			category = "primary"
+		)
 
-test_that("Can create complete ComparisonResult with all properties", {
-	result <- ComparisonResult(
-		estimate = 0.75,
-		ci = c(0.60, 0.93),
-		ci_level = 0.95,
-		p_value = 0.008,
-		method = "Cox proportional hazards model",
-		effect_measure = "hr",
-		treatment = "Drug A",
-		control = "Placebo"
-	)
+		study_set <- StudySet(
+			studies = list(study1),
+			endpoint = endpoint,
+			comparison_type = "direct",
+			common_comparator = "Placebo",
+			characteristics = data.frame(study_id = "STUDY001", n = 100)
+		)
 
-	expect_true(S7::S7_inherits(result, ComparisonResult))
-	expect_equal(result@estimate, 0.75)
-	expect_equal(result@ci, c(0.60, 0.93))
-	expect_equal(result@effect_measure, "hr")
-})
-
-test_that("Can create complete MetaResult with all properties", {
-	result <- MetaResult(
-		estimate = 0.80,
-		ci = c(0.70, 0.91),
-		ci_level = 0.95,
-		p_value = 0.001,
-		method = "REML with Knapp-Hartung",
-		effect_measure = "hr",
-		model = "random",
-		heterogeneity = list(Q = 15.2, I2 = 0.45, tau2 = 0.02),
-		n = 5L
-	)
-
-	expect_true(S7::S7_inherits(result, MetaResult))
-	expect_equal(result@estimate, 0.80)
-	expect_equal(result@model, "random")
-})
-
-test_that("Can create complete EvidenceGrade with all properties", {
-	grade <- EvidenceGrade(
-		grade = "indication",
-		grade_de = "Hinweis",
-		direction = "benefit",
-		certainty = 0.6,
-		n_studies = 3L,
-		justification = "Consistent results from 3 RCTs with moderate risk of bias"
-	)
-
-	expect_true(S7::S7_inherits(grade, EvidenceGrade))
-	expect_equal(grade@grade, "indication")
-	expect_equal(grade@direction, "benefit")
-})
-
-test_that("Can create complete Endpoint with all properties", {
-	endpoint <- Endpoint(
-		name = "Overall Survival",
-		variable = "AVAL",
-		type = "tte",
-		category = "primary",
-		description = "Time from randomization to death",
-		hypothesis = "superiority",
-		margin = NULL,
-		alpha = 0.05,
-		priority = 1
-	)
-
-	expect_true(S7::S7_inherits(endpoint, Endpoint))
-	expect_equal(endpoint@type, "tte")
-	expect_equal(endpoint@category, "primary")
-})
-
-test_that("Can create complete StudySet with all properties", {
-	study1 <- SingleArmStudy(
-		data = data.frame(),
-		study_id = "STUDY001",
-		study_title = "Study 1"
-	)
-
-	endpoint <- Endpoint(
-		name = "OS",
-		variable = "AVAL",
-		type = "tte",
-		category = "primary"
-	)
-
-	study_set <- StudySet(
-		studies = list(study1),
-		endpoint = endpoint,
-		comparison_type = "direct",
-		common_comparator = "Placebo",
-		characteristics = data.frame(study_id = "STUDY001", n = 100)
-	)
-
-	expect_true(S7::S7_inherits(study_set, StudySet))
-	expect_equal(study_set@comparison_type, "direct")
-	expect_equal(study_set@n_studies, 1)
+		expect_true(S7::S7_inherits(study_set, StudySet))
+		expect_equal(study_set@comparison_type, "direct")
+		expect_equal(study_set@n_studies, 1)
+	})
 })
