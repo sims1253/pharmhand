@@ -467,7 +467,7 @@ calculate_smd_from_data <- function(
 ) {
 	method <- match.arg(method)
 
-	assert_data_frame(data, "data")
+	assert_data_frame(data, arg = "data")
 	assert_column_exists(data, var, "data")
 	assert_column_exists(data, trt_var, "data")
 	assert_positive(continuous_threshold, "continuous_threshold")
@@ -722,7 +722,7 @@ add_smd_to_table <- function(
 	continuous_threshold = 10,
 	flag_symbol = "*"
 ) {
-	assert_data_frame(data, "data")
+	assert_data_frame(data, arg = "data")
 	assert_column_exists(data, trt_var, "data")
 	assert_positive(threshold, "threshold")
 
@@ -880,7 +880,7 @@ assess_baseline_balance <- function(
 	continuous_method <- match.arg(continuous_method)
 	categorical_method <- match.arg(categorical_method)
 
-	assert_data_frame(data, "data")
+	assert_data_frame(data, arg = "data")
 	assert_column_exists(data, trt_var, "data")
 	assert_positive(threshold, "threshold")
 

@@ -200,8 +200,6 @@ get_shared_bayesian_few_result <- function() {
 #'
 #' @return An MMRMResult object
 get_shared_mmrm_result <- function() {
-	skip_if_not_installed("mmrm")
-
 	if (is.null(.shared_mmrm_result)) {
 		message("Fitting shared MMRM model (will be cached)...")
 		data <- create_mmrm_test_data(n_subjects = 30, seed = 123)
@@ -215,4 +213,21 @@ get_shared_mmrm_result <- function() {
 		)
 	}
 	.shared_mmrm_result
+}
+
+#' Skip tests if cmdstanr is not available or functional
+#'
+#' Checks if cmdstanr is installed and cmdstan can be found.
+#' This is necessary because cmdstanr depends on Stan which requires proper
+#' toolchains and a compiled cmdstan binary.
+skip_if_cmdstanr_unavailable <- function() {
+	skip_if_not_installed("cmdstanr")
+
+	# Check if cmdstanr is available and cmdstan is installed
+	if (
+		!requireNamespace("cmdstanr", quietly = TRUE) ||
+			is.null(cmdstanr::cmdstan_path())
+	) {
+		skip("cmdstanr not available or cmdstan not installed")
+	}
 }

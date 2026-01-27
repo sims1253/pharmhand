@@ -350,7 +350,7 @@ create_conmeds_table <- function(
 		adcm_data |>
 			dplyr::summarise(
 				n_subj = dplyr::n_distinct(.data$USUBJID),
-				.by = c(!!dplyr::sym(adsl@trt_var), !!dplyr::sym(class_var))
+				.by = c(!!rlang::sym(adsl@trt_var), !!rlang::sym(class_var))
 			) |>
 			dplyr::left_join(trt_n, by = adsl@trt_var) |>
 			dplyr::mutate(
@@ -367,7 +367,7 @@ create_conmeds_table <- function(
 				values_from = "display",
 				values_fill = "0 (0.0%)"
 			) |>
-			dplyr::rename(`Medication Class` = !!dplyr::sym(class_var)) |>
+			dplyr::rename(`Medication Class` = !!rlang::sym(class_var)) |>
 			dplyr::arrange(.data$`Medication Class`)
 	}
 
@@ -410,28 +410,28 @@ create_disposition_table <- function(
 		disp_data <- adsl_data |>
 			dplyr::summarise(
 				n = dplyr::n(),
-				.by = c(!!dplyr::sym(data@trt_var), !!dplyr::sym(status_var))
+				.by = c(!!rlang::sym(data@trt_var), !!rlang::sym(status_var))
 			) |>
 			tidyr::pivot_wider(
-				names_from = !!dplyr::sym(data@trt_var),
+				names_from = !!rlang::sym(data@trt_var),
 				values_from = "n",
 				values_fill = 0
 			) |>
-			dplyr::rename(`Study Status` = !!dplyr::sym(status_var))
+			dplyr::rename(`Study Status` = !!rlang::sym(status_var))
 
 		if (reason_var %in% names(adsl_data)) {
 			disc_reasons <- adsl_data |>
 				dplyr::filter(toupper(!!rlang::sym(status_var)) == "DISCONTINUED") |>
 				dplyr::summarise(
 					n = dplyr::n(),
-					.by = c(!!dplyr::sym(data@trt_var), !!dplyr::sym(reason_var))
+					.by = c(!!rlang::sym(data@trt_var), !!rlang::sym(reason_var))
 				) |>
 				tidyr::pivot_wider(
-					names_from = !!dplyr::sym(data@trt_var),
+					names_from = !!rlang::sym(data@trt_var),
 					values_from = "n",
 					values_fill = 0
 				) |>
-				dplyr::rename(`Study Status` = !!dplyr::sym(reason_var)) |>
+				dplyr::rename(`Study Status` = !!rlang::sym(reason_var)) |>
 				dplyr::mutate(`Study Status` = paste0("  ", .data$`Study Status`))
 
 			disp_data <- dplyr::bind_rows(disp_data, disc_reasons)

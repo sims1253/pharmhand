@@ -584,6 +584,9 @@ test_ph_assumption <- function(
 	# Save whether original input was a data frame (before coercion)
 	was_data_frame <- !inherits(data, "coxph") && !S7::S7_inherits(data, ADaMData)
 
+	# Save original trt_var argument value before any modification
+	trt_var_orig <- trt_var
+
 	if (inherits(data, "coxph")) {
 		model <- data
 	} else {
@@ -595,15 +598,16 @@ test_ph_assumption <- function(
 			subject_var = "USUBJID"
 		)
 
-		# Use trt_var from ADaMData object, warn if explicitly passed for ADaMData
-		if (missing(trt_var) || trt_var == "TRT01P") {
-			trt_var <- data@trt_var
-		} else if (S7::S7_inherits(data, ADaMData) && !was_data_frame) {
+		# Use trt_var from ADaMData object unconditionally after coercion
+		trt_var <- data@trt_var
+
+		# Warn only if original input was already ADaMData AND user provided
+		# an explicit non-default trt_var (non-missing and not "TRT01P")
+		if (!was_data_frame && !missing(trt_var_orig) && trt_var_orig != "TRT01P") {
 			ph_warn(
 				"'trt_var' argument is ignored for ADaMData objects. ",
 				"Using stored 'trt_var' property."
 			)
-			trt_var <- data@trt_var
 		}
 
 		# Use filtered_data (respects population filter)

@@ -72,9 +72,14 @@ endpoints <- list(
       n_studies = 3L
     ),
     rob = list(
-      # Additional RoB2Result objects with required arguments would go here
-      # e.g., RoB2Result(study_id = "Study1", outcome = "...", overall = "...", domains = list(...))
-      # e.g., RoB2Result(study_id = "Study2", outcome = "...", overall = "...", domains = list(...))
+      # Additional RoB2Result objects with required arguments
+      # would go here
+      # e.g., RoB2Result(study_id = "Study1",
+      #   outcome = "...", overall = "...",
+      #   domains = list(...))
+      # e.g., RoB2Result(study_id = "Study2",
+      #   outcome = "...", overall = "...",
+      #   domains = list(...))
     )
   ),
   "Progression-Free Survival" = list(

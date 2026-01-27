@@ -33,8 +33,8 @@ create_subgroup_analysis_table <- function(
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
-	assert_data_frame(adsl, "adsl")
-	assert_data_frame(advs, "advs")
+	assert_data_frame(adsl, arg = "adsl")
+	assert_data_frame(advs, arg = "advs")
 
 	if (!is.null(min_subgroup_size)) {
 		assert_numeric_scalar(min_subgroup_size, "min_subgroup_size")
@@ -273,18 +273,21 @@ create_subgroup_table <- function(
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
+	adjust_method <- match.arg(adjust_method)
+	endpoint_type <- match.arg(endpoint_type)
+
+	# Set domain dynamically based on endpoint type
+	domain <- if (endpoint_type == "tte") "ADTTE" else "ADRS"
+
 	data <- .ensure_adam_data(
 		data,
-		domain = "ADRS",
+		domain = domain,
 		trt_var = trt_var,
 		subject_var = "USUBJID"
 	)
 	df <- get_filtered_data(data)
 	trt_var_actual <- data@trt_var
 	subject_var <- data@subject_var
-
-	adjust_method <- match.arg(adjust_method)
-	endpoint_type <- match.arg(endpoint_type)
 
 	if (!is.null(min_subgroup_size)) {
 		assert_numeric_scalar(min_subgroup_size, "min_subgroup_size")
@@ -511,51 +514,6 @@ create_subgroup_table <- function(
 		paste0("n (", ref_group, ")")
 	names(display_df)[names(display_df) == "n (Treatment)"] <-
 		paste0("n (", other_trt, ")")
-
-	# Build footnotes
-	footnotes <- c(
-		paste(
-			estimate_label,
-			"=",
-			if (endpoint_type == "tte") {
-				"Hazard Ratio"
-			} else {
-				"Odds Ratio"
-			}
-		),
-		paste("Reference group:", ref_group)
-	)
-
-	if (show_interaction) {
-		if (adjust_method != "none" && length(names(subgroups)) > 1) {
-			method_name <- switch(
-				adjust_method,
-				"holm" = "Holm-Bonferroni",
-				"hochberg" = "Hochberg",
-				"hommel" = "Hommel",
-				"bonferroni" = "Bonferroni",
-				"BH" = "Benjamini-Hochberg (FDR)",
-				"fdr" = "Benjamini-Hochberg (FDR)",
-				"BY" = "Benjamini-Yekutieli",
-				adjust_method
-			)
-			footnotes <- c(
-				footnotes,
-				paste0(
-					"Interaction p-values adjusted for multiple comparisons (",
-					method_name,
-					" method)"
-				)
-			)
-		} else {
-			footnotes <- c(
-				footnotes,
-				"Interaction p-value from likelihood ratio test"
-			)
-		}
-	}
-
-	footnotes <- c(footnotes, "NE = Not Estimable")
 
 	# Build footnotes
 	footnotes <- c(

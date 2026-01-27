@@ -292,7 +292,7 @@ test_non_inferiority <- function(
 	type <- match.arg(type)
 	method <- match.arg(method)
 
-	assert_data_frame(data, "data")
+	assert_data_frame(data, arg = "data")
 	assert_character_scalar(outcome_var, "outcome_var")
 	assert_character_scalar(trt_var, "trt_var")
 	assert_character_scalar(ref_group, "ref_group")
@@ -530,7 +530,7 @@ ancova_adjust_continuous <- function(
 	ref_group = NULL,
 	conf_level = 0.95
 ) {
-	assert_data_frame(data, "data")
+	assert_data_frame(data, arg = "data")
 	assert_character_scalar(outcome_var, "outcome_var")
 	assert_character_scalar(trt_var, "trt_var")
 	assert_character_scalar(baseline_var, "baseline_var")

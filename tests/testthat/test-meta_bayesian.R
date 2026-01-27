@@ -383,6 +383,7 @@ describe("Convergence Diagnostics", {
 	describe("Convergence warnings", {
 		it("warns when Rhat > 1.01", {
 			skip_if_brms_unavailable()
+			skip_if_cmdstanr_unavailable()
 
 			yi <- log(c(0.78, 0.82, 0.75))
 			sei <- c(0.10, 0.12, 0.11)
@@ -410,6 +411,7 @@ describe("Convergence Diagnostics", {
 
 		it("warns when ESS < 400", {
 			skip_if_brms_unavailable()
+			skip_if_cmdstanr_unavailable()
 
 			yi <- log(c(0.78, 0.82, 0.75))
 			sei <- c(0.10, 0.12, 0.11)
@@ -441,6 +443,7 @@ describe("Convergence Diagnostics", {
 
 		it("warns when divergent transitions > 0", {
 			skip_if_brms_unavailable()
+			skip_if_cmdstanr_unavailable()
 
 			yi <- log(c(0.78, 0.82, 0.75, 0.80, 0.77))
 			sei <- c(0.10, 0.12, 0.11, 0.10, 0.12)

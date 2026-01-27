@@ -131,13 +131,14 @@ get_na_string <- function() {
 #'
 #' Safely extract a column value, returning a default if not present or NA.
 #'
-#' @param row A data frame row or named list
+#' @param row A single-row data frame or named list (not a multi-row data frame)
 #' @param col_name Character. Column name to extract.
 #' @param default Default value if column missing or NA. Default: ""
 #'
 #' @return The column value or default
 #' @keywords internal
 .get_optional_col <- function(row, col_name, default = "") {
+	# Note: Assumes row is a single-row entity; multi-row inputs will only check first value
 	if (col_name %in% names(row) && !is.na(row[[col_name]])) {
 		return(as.character(row[[col_name]]))
 	}
@@ -165,20 +166,43 @@ get_na_string <- function() {
 
 	# Handle NA or zero N
 	is_na_N <- is.na(N) | N == 0
+	# Handle NA in numerator n
+	is_na_n <- is.na(n)
 
 	result <- character(length(n))
 	pct_format <- paste0("%.", digits, "f%%")
 
 	if (is.null(pct)) {
+		# When N is NA or 0, use na_label for denominator
 		result[is_na_N] <- sprintf("%d/%s", n[is_na_N], na_label)
-		result[!is_na_N] <- sprintf("%d/%d", n[!is_na_N], N[!is_na_N])
+		# When n is NA, use na_label for numerator
+		result[!is_na_N & is_na_n] <- sprintf(
+			"%s/%d",
+			na_label,
+			N[!is_na_N & is_na_n]
+		)
+		# Normal case
+		result[!is_na_N & !is_na_n] <- sprintf(
+			"%d/%d",
+			n[!is_na_N & !is_na_n],
+			N[!is_na_N & !is_na_n]
+		)
 	} else {
+		# When N is NA or 0, use na_label for denominator
 		result[is_na_N] <- sprintf("%d/%s", n[is_na_N], na_label)
-		result[!is_na_N] <- sprintf(
+		# When n is NA, use na_label for numerator with percentage
+		result[!is_na_N & is_na_n] <- sprintf(
+			paste0("%s/%d (", pct_format, ")"),
+			na_label,
+			N[!is_na_N & is_na_n],
+			pct[!is_na_N & is_na_n]
+		)
+		# Normal case with percentage
+		result[!is_na_N & !is_na_n] <- sprintf(
 			paste0("%d/%d (", pct_format, ")"),
-			n[!is_na_N],
-			N[!is_na_N],
-			pct[!is_na_N]
+			n[!is_na_N & !is_na_n],
+			N[!is_na_N & !is_na_n],
+			pct[!is_na_N & !is_na_n]
 		)
 	}
 

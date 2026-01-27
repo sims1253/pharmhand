@@ -59,10 +59,12 @@ NULL
 #'     rob = list(
 #'       # Additional RoB2Result objects with required arguments
 #'       # would go here
-#'       # e.g., RoB2Result(study_id = "Study1", outcome = "...",
-#'       #   overall = "...", domains = list(...))
-#'       # e.g., RoB2Result(study_id = "Study2", outcome = "...",
-#'       #   overall = "...", domains = list(...))
+#'       # e.g., RoB2Result(study_id = "Study1",
+#'       #   outcome = "...", overall = "...",
+#'       #   domains = list(...))
+#'       # e.g., RoB2Result(study_id = "Study2",
+#'       #   outcome = "...", overall = "...",
+#'       #   domains = list(...))
 #'     )
 #'   ),
 #'   "Progression-Free Survival" = list(
@@ -374,10 +376,12 @@ export_evidence_table <- function(
 #' \dontrun{
 #' rob_results <- list(
 #'   # RoB2Result objects with required arguments would go here
-#'   # e.g., RoB2Result(study_id = "Study 1", outcome = "...",
-#'   #   overall = "...", domains = list(...))
-#'   # e.g., RoB2Result(study_id = "Study 2", outcome = "...",
-#'   #   overall = "...", domains = list(...))
+#'   # e.g., RoB2Result(study_id = "Study 1",
+#'   #   outcome = "...", overall = "...",
+#'   #   domains = list(...))
+#'   # e.g., RoB2Result(study_id = "Study 2",
+#'   #   outcome = "...", overall = "...",
+#'   #   domains = list(...))
 #' )
 #' rob_table <- create_rob_summary_table(rob_results)
 #' }

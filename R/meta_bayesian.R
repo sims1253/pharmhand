@@ -226,7 +226,7 @@ bayesian_meta_analysis <- function(
 	# Validate MCMC arguments
 	assert_positive_integer(chains, arg = "chains")
 	assert_positive_integer(iter, arg = "iter")
-	assert_non_negative_integer(warmup, arg = "warmup")
+	assert_positive_integer(warmup, arg = "warmup")
 	if (warmup >= iter) {
 		ph_abort("'warmup' must be less than 'iter'")
 	}

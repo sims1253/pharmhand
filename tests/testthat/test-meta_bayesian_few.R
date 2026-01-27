@@ -265,8 +265,24 @@ describe("summary_bayesian_few", {
 		summ_3 <- summary_bayesian_few(result, digits = 3)
 		summ_2 <- summary_bayesian_few(result, digits = 2)
 
-		# Check that digits parameter affects output
+		# Check that digits parameter affects output with specific assertions
+		# Find the Posterior Mean column and check formatting
 		expect_true(!identical(summ_3, summ_2))
+
+		# Assert that summ_3 contains a value formatted with three decimal places
+		# while summ_2 contains the same value formatted with two decimal places
+		posterior_vals_3 <- summ_3$posterior$`Posterior Mean`
+		posterior_vals_2 <- summ_2$posterior$`Posterior Mean`
+
+		# Convert to character to check decimal places
+		char_vals_3 <- as.character(posterior_vals_3)
+		char_vals_2 <- as.character(posterior_vals_2)
+
+		# At least one value should have 3 decimal places in summ_3
+		expect_true(any(grepl("\\.[0-9]{3}\\b", char_vals_3)))
+
+		# The corresponding value in summ_2 should have 2 decimal places
+		expect_true(any(grepl("\\.[0-9]{2}\\b", char_vals_2)))
 	})
 
 	it("includes credible interval column", {
@@ -327,8 +343,17 @@ describe("create_bayesian_few_table", {
 		custom_fn <- c("Custom footnote 1", "Custom footnote 2")
 		tab <- create_bayesian_few_table(result, footnotes = custom_fn)
 
-		# Check that footnotes are in flextable footer
+		# Check that table has custom footnotes
 		expect_true(S7::S7_inherits(tab, ClinicalTable))
+
+		# Extract footnotes from the table
+		footnotes <- tab@footnotes
+
+		# Assert that each custom footnote appears in the footnotes
+		expect_true(length(footnotes) >= length(custom_fn))
+		for (fn in custom_fn) {
+			expect_true(any(grepl(fn, footnotes, fixed = TRUE)))
+		}
 	})
 
 	it("uses custom title", {

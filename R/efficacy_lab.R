@@ -66,7 +66,19 @@ create_lab_summary_table <- function(
 			display = paste0(.data$Mean, " (", .data$SD, ")"),
 			n = as.character(.data$n)
 		) |>
-		dplyr::select("PARAM", dplyr::all_of(trt_var_actual), "n", "display") |>
+		dplyr::select("PARAM", dplyr::all_of(trt_var_actual), "n", "display")
+
+	# Validate trt_var_actual before using in names_glue (security check)
+	if (!grepl("^[A-Za-z0-9_]+$", trt_var_actual)) {
+		ph_abort(
+			sprintf(
+				"'trt_var' contains unsafe characters: '%s'. Only alphanumeric and underscore are allowed.",
+				trt_var_actual
+			)
+		)
+	}
+
+	lab_data <- lab_data |>
 		tidyr::pivot_wider(
 			names_from = dplyr::all_of(trt_var_actual),
 			values_from = c("n", "display"),

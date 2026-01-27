@@ -108,7 +108,8 @@ create_ae_hierarchy_table <- function(
 		level_vars = level_vars,
 		available_levels = available_levels,
 		min_pct = min_pct,
-		sort_by = sort_by
+		sort_by = sort_by,
+		trt_levels = trt_levels
 	)
 
 	# Auto-generate title if not provided
@@ -154,11 +155,13 @@ create_ae_hierarchy_table <- function(
 	level_vars,
 	available_levels,
 	min_pct,
-	sort_by
+	sort_by,
+	trt_levels
 ) {
 	df <- adae@filtered_data
 	subject_var <- adae@subject_var
-	treatments <- adae@trt_levels
+	treatments <- trt_levels
+	df[[trt_var]] <- factor(df[[trt_var]], levels = treatments)
 
 	# Helper function to count subjects at each level
 	count_at_level <- function(data, group_vars) {
@@ -194,7 +197,8 @@ create_ae_hierarchy_table <- function(
 			tidyr::pivot_wider(
 				names_from = dplyr::all_of(trt_var),
 				values_from = "n",
-				values_fill = 0
+				values_fill = 0,
+				names_expand = TRUE
 			)
 
 		# Add level indicator

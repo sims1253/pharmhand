@@ -764,7 +764,8 @@ calculate_sucra <- function(
 #' @param show_ci Logical. Show confidence intervals. Default: TRUE
 #' @param highlight_sig Logical. Highlight significant comparisons.
 #'   Default: TRUE
-#' @param conf_level Numeric. Confidence level. Default: 0.95
+#' @param conf_level Numeric. Confidence level. If NULL (default), uses the level
+#'   from the NMA result or falls back to 0.95.
 #' @param theme Theme preset: "hta", "iqwig", "gba", or "clinical"
 #'   (default: "hta")
 #'

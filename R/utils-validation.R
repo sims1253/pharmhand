@@ -10,15 +10,13 @@
 
 #' Abort with Error
 #'
-#' Internal wrapper for stop() that provides consistent error formatting.
+#' Internal wrapper for rlang::abort() that provides consistent error formatting.
 #'
-#' @param ... Arguments passed to stop()
+#' @param ... Arguments passed to rlang::abort()
 #'
 #' @keywords internal
 ph_abort <- function(...) {
-	args <- list(...)
-	args$call. <- FALSE
-	do.call(stop, args)
+	rlang::abort(paste0(...), call = NULL)
 }
 
 #' Issue Warning
@@ -247,28 +245,17 @@ assert_character_vector <- function(
 #' Validates that x is a data frame and optionally checks for required columns.
 #'
 #' @param x Value to check
-#' @param ... Either `arg` as character string (argument name for error
-#'   messages), or `required_cols` (character vector of required column names)
-#'   followed by `arg`
+#' @param required_cols Optional character vector of required column names
+#' @param arg Character string describing the argument (for error messages)
 #'
 #' @return Invisibly returns x if validation passes
 #'
 #' @keywords internal
-assert_data_frame <- function(x, ...) {
-	args <- list(...)
-
-	# Handle flexible arguments
-	if (length(args) == 1 && is.character(args[[1]])) {
-		arg <- args[[1]]
-		required_cols <- NULL
-	} else if (length(args) >= 2) {
-		required_cols <- args[[1]]
-		arg <- args[[2]]
-	} else {
-		arg <- deparse(substitute(x))
-		required_cols <- NULL
-	}
-
+assert_data_frame <- function(
+	x,
+	required_cols = NULL,
+	arg = deparse(substitute(x))
+) {
 	if (!is.data.frame(x)) {
 		ph_abort(sprintf("'%s' must be a data frame", arg))
 	}
@@ -340,7 +327,7 @@ assert_all_positive <- function(x, arg = deparse(substitute(x))) {
 	if (!is.numeric(x)) {
 		ph_abort(sprintf("'%s' must be numeric", arg))
 	}
-	if (any(x <= 0, na.rm = TRUE)) {
+	if (any(x <= 0)) {
 		ph_abort(sprintf("'%s' must contain only positive values", arg))
 	}
 	invisible(x)

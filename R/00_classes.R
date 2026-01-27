@@ -674,6 +674,7 @@ ClinicalContent <- S7::new_class(
 #'   (e.g., "demographics", "adverse_events")
 #' @param title Character string for table title
 #' @param metadata List of additional metadata
+#' @param footnotes Character vector of table footnotes
 #'
 #' @return A ClinicalTable object
 #'
@@ -703,6 +704,7 @@ ClinicalTable <- S7::new_class(
 		type = S7::new_property(S7::class_character),
 		title = S7::new_property(S7::class_any),
 		metadata = S7::new_property(S7::class_list, default = list()),
+		footnotes = S7::new_property(S7::class_character, default = character()),
 		# Computed properties (read-only)
 		n_rows = S7::new_property(
 			class = S7::class_integer,

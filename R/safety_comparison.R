@@ -164,6 +164,19 @@ calculate_ae_risk_difference <- function(n1, N1, n2, N2, conf_level = 0.95) {
 				n2 <- 0
 			}
 
+			# Short-circuit when either N_trt == 0 or N_ref == 0
+			if (N_trt == 0 || N_ref == 0) {
+				return(list(
+					rd = NA_real_,
+					rd_lower = NA_real_,
+					rd_upper = NA_real_,
+					rr = NA_real_,
+					rr_lower = NA_real_,
+					rr_upper = NA_real_,
+					p_value = NA_real_
+				))
+			}
+
 			calculate_ae_risk_difference(n1, N_trt, n2, N_ref, conf_level)
 		})
 

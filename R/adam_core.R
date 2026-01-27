@@ -301,9 +301,17 @@ analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
 #' @return AnalysisResults object
 #' @export
 calculate_baseline <- function(data, vars) {
-	# Use computed property for filtered data (respects population filter)
-	df <- data@filtered_data
-	trt_var <- data@trt_var
+	# Use helper functions for consistent data access
+	df <- get_filtered_data(data)
+	trt_var <- get_trt_var(data)
+
+	# Validate that helpers returned expected types
+	if (is.null(df) || !is.data.frame(df)) {
+		ph_abort("get_filtered_data() did not return a valid data frame")
+	}
+	if (is.null(trt_var) || !is.character(trt_var)) {
+		ph_abort("get_trt_var() did not return a valid character string")
+	}
 
 	# Separate numeric and categorical analysis for robustness
 	num_vars <- df |>
@@ -315,7 +323,7 @@ calculate_baseline <- function(data, vars) {
 	res_num <- NULL
 	if (length(num_vars) > 0) {
 		res_num <- df |>
-			dplyr::select(!!dplyr::sym(trt_var), dplyr::all_of(num_vars)) |>
+			dplyr::select(!!rlang::sym(trt_var), dplyr::all_of(num_vars)) |>
 			tidyr::pivot_longer(
 				cols = dplyr::all_of(num_vars),
 				names_to = "variable",
@@ -328,14 +336,14 @@ calculate_baseline <- function(data, vars) {
 				median = median(.data$value, na.rm = TRUE),
 				min = min(.data$value, na.rm = TRUE),
 				max = max(.data$value, na.rm = TRUE),
-				.by = c("variable", !!dplyr::sym(trt_var))
+				.by = c("variable", !!rlang::sym(trt_var))
 			)
 	}
 
 	res_cat <- NULL
 	if (length(cat_vars) > 0) {
 		res_cat <- df |>
-			dplyr::select(!!dplyr::sym(trt_var), dplyr::all_of(cat_vars)) |>
+			dplyr::select(!!rlang::sym(trt_var), dplyr::all_of(cat_vars)) |>
 			tidyr::pivot_longer(
 				cols = dplyr::all_of(cat_vars),
 				names_to = "variable",
@@ -343,7 +351,7 @@ calculate_baseline <- function(data, vars) {
 			) |>
 			dplyr::group_by(
 				.data$variable,
-				!!dplyr::sym(trt_var),
+				!!rlang::sym(trt_var),
 				.data$value
 			) |>
 			dplyr::summarise(n = dplyr::n(), .groups = "drop_last") |>
@@ -361,7 +369,7 @@ calculate_baseline <- function(data, vars) {
 			) |>
 			dplyr::select(
 				"variable",
-				!!dplyr::sym(trt_var),
+				!!rlang::sym(trt_var),
 				"n",
 				"label"
 			)
@@ -406,43 +414,43 @@ analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
 	} else {
 		big_n <- df |>
 			dplyr::summarise(
-				N_tot = dplyr::n_distinct(!!dplyr::sym(sub_var)),
-				.by = !!dplyr::sym(trt_var)
+				N_tot = dplyr::n_distinct(!!rlang::sym(sub_var)),
+				.by = !!rlang::sym(trt_var)
 			)
 	}
 
 	# SOC Level Stats
 	soc_stats <- df |>
 		dplyr::summarise(
-			n = dplyr::n_distinct(!!dplyr::sym(sub_var)),
-			.by = c(!!dplyr::sym(soc_var), !!dplyr::sym(trt_var))
+			n = dplyr::n_distinct(!!rlang::sym(sub_var)),
+			.by = c(!!rlang::sym(soc_var), !!rlang::sym(trt_var))
 		) |>
 		dplyr::left_join(big_n, by = trt_var) |>
 		dplyr::mutate(
 			pct = (n / N_tot) * 100,
 			level = "SOC",
-			label = !!dplyr::sym(soc_var)
+			label = !!rlang::sym(soc_var)
 		)
 
 	# PT Level Stats
 	pt_stats <- df |>
 		dplyr::summarise(
-			n = dplyr::n_distinct(!!dplyr::sym(sub_var)),
+			n = dplyr::n_distinct(!!rlang::sym(sub_var)),
 			.by = c(
-				!!dplyr::sym(soc_var),
-				!!dplyr::sym(pt_var),
-				!!dplyr::sym(trt_var)
+				!!rlang::sym(soc_var),
+				!!rlang::sym(pt_var),
+				!!rlang::sym(trt_var)
 			)
 		) |>
 		dplyr::left_join(big_n, by = trt_var) |>
 		dplyr::mutate(
 			pct = (n / N_tot) * 100,
 			level = "PT",
-			label = !!dplyr::sym(pt_var)
+			label = !!rlang::sym(pt_var)
 		)
 
 	combined <- dplyr::bind_rows(soc_stats, pt_stats) |>
-		dplyr::arrange(!!dplyr::sym(soc_var), .data$level == "PT", .data$label)
+		dplyr::arrange(!!rlang::sym(soc_var), .data$level == "PT", .data$label)
 
 	AnalysisResults(stats = combined, type = "safety_ae")
 }

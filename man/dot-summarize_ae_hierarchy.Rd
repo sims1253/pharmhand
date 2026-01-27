@@ -11,7 +11,8 @@
   level_vars,
   available_levels,
   min_pct,
-  sort_by
+  sort_by,
+  trt_levels
 )
 }
 \arguments{

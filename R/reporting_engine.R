@@ -794,6 +794,7 @@ create_clinical_table <- function(
 		flextable = ft,
 		type = type,
 		title = title,
+		footnotes = footnotes,
 		metadata = table_metadata
 	)
 }

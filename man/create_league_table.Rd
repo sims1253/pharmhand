@@ -24,7 +24,8 @@ create_league_table(
 \item{highlight_sig}{Logical. Highlight significant comparisons.
 Default: TRUE}
 
-\item{conf_level}{Numeric. Confidence level. Default: 0.95}
+\item{conf_level}{Numeric. Confidence level. If NULL (default), uses the level
+from the NMA result or falls back to 0.95.}
 
 \item{theme}{Theme preset: "hta", "iqwig", "gba", or "clinical"
 (default: "hta")}

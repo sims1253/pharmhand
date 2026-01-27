@@ -9,7 +9,7 @@
 coverage](https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg)](https://codecov.io/gh/sims1253/pharmhand)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/sims1253/pharmhand/)
+[![pkgdown](https://github.com/sims1253/pharmhand/actions/workflows/pkgdown.yaml/badge.svg)](https://sims1253.github.io/pharmhand/)
 <!-- badges: end -->
 
 pharmhand creates clinical study tables and reports from ADaM datasets.
@@ -104,6 +104,14 @@ create_demographics_table(adsl)  # Uses ARM instead of TRT01P
 ### Validation
 
 Scalar validation helpers reject NA values. Use `assert_no_na()` for explicit NA checking or remove NA values before passing to validation functions.
+
+```r
+# Validate and throw error if NA is present
+assert_no_na(adsl$AGE, "Age variable contains NA values")
+
+# Or filter NA values before validation
+adsl_clean <- adsl[!is.na(adsl$AGE), ]
+```
 
 ## Advanced: ADaMData Wrapper
 

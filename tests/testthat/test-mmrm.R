@@ -172,6 +172,7 @@ describe("mmrm_analysis", {
 
 describe("MMRMResult class", {
 	it("has expected properties", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		# Check all expected properties exist
@@ -187,6 +188,7 @@ describe("MMRMResult class", {
 	})
 
 	it("contains valid coefficients", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		expect_true(length(result@coefficients) > 0)
@@ -194,6 +196,7 @@ describe("MMRMResult class", {
 	})
 
 	it("contains valid standard errors", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		expect_true(length(result@se) > 0)
@@ -202,6 +205,7 @@ describe("MMRMResult class", {
 	})
 
 	it("contains valid confidence intervals", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		expect_true(is.matrix(result@ci))
@@ -210,6 +214,7 @@ describe("MMRMResult class", {
 	})
 
 	it("contains valid p-values", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		expect_true(length(result@p_values) > 0)
@@ -218,6 +223,7 @@ describe("MMRMResult class", {
 	})
 
 	it("contains valid degrees of freedom", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		expect_true(length(result@df) > 0)
@@ -226,6 +232,7 @@ describe("MMRMResult class", {
 	})
 
 	it("contains valid model fit statistics", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		expect_true(result@sigma > 0)
@@ -235,6 +242,7 @@ describe("MMRMResult class", {
 	})
 
 	it("contains metadata about the analysis", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 
 		meta <- result@metadata
@@ -252,6 +260,7 @@ describe("MMRMResult class", {
 
 describe("summary_mmrm", {
 	it("returns a summary data.frame", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		summ <- summary_mmrm(result)
 
@@ -259,6 +268,7 @@ describe("summary_mmrm", {
 	})
 
 	it("includes all expected columns", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		summ <- summary_mmrm(result)
 
@@ -273,6 +283,7 @@ describe("summary_mmrm", {
 	})
 
 	it("formats values with specified digits", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		summ_3 <- summary_mmrm(result, digits = 3)
 		summ_2 <- summary_mmrm(result, digits = 2)
@@ -282,6 +293,7 @@ describe("summary_mmrm", {
 	})
 
 	it("calculates correct t-values", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		summ <- summary_mmrm(result)
 
@@ -299,6 +311,7 @@ describe("summary_mmrm", {
 
 describe("create_mmrm_table", {
 	it("returns a ClinicalTable object", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		tab <- create_mmrm_table(result)
 
@@ -307,14 +320,28 @@ describe("create_mmrm_table", {
 	})
 
 	it("includes metadata in footnotes", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		tab <- create_mmrm_table(result)
 
 		# The function should add footnotes with model metadata
-		expect_true(S7::S7_inherits(tab, ClinicalTable))
+		# Check that footnotes exist and contain expected metadata
+		footnotes <- tab@footnotes
+		expect_true(length(footnotes) > 0)
+
+		# Check for model metadata in footnotes (formula, estimation method, or degrees of freedom)
+		footnote_text <- paste(footnotes, collapse = " ")
+		expect_true(
+			grepl(
+				"formula|Model|MMRM|Kenward-Roger|degrees of freedom",
+				footnote_text,
+				ignore.case = TRUE
+			)
+		)
 	})
 
 	it("uses custom title", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		custom_title <- "Custom MMRM Analysis Table"
 		tab <- create_mmrm_table(result, title = custom_title)
@@ -323,6 +350,7 @@ describe("create_mmrm_table", {
 	})
 
 	it("includes custom footnotes", {
+		skip_if_not_installed("mmrm")
 		result <- get_shared_mmrm_result()
 		custom_fn <- c("Custom footnote 1", "Custom footnote 2")
 		tab <- create_mmrm_table(result, footnotes = custom_fn)

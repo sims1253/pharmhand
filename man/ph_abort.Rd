@@ -7,9 +7,9 @@
 ph_abort(...)
 }
 \arguments{
-\item{...}{Arguments passed to stop()}
+\item{...}{Arguments passed to rlang::abort()}
 }
 \description{
-Internal wrapper for stop() that provides consistent error formatting.
+Internal wrapper for rlang::abort() that provides consistent error formatting.
 }
 \keyword{internal}

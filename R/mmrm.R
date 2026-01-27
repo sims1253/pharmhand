@@ -426,7 +426,7 @@ summary_mmrm <- function(result, digits = 3) {
 		ph_abort("'result' must be an MMRMResult object")
 	}
 
-	assert_positive_integer(digits, arg = "digits")
+	assert_non_negative_integer(digits, arg = "digits")
 
 	data.frame(
 		Parameter = names(result@coefficients),

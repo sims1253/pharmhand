@@ -209,7 +209,7 @@ create_ae_summary_table <- function(
 	trt_n <- if (!is.null(adsl)) {
 		# adsl was already converted to ADaMData above for deaths/comparison
 		# If provided for other types, convert it now
-		if (!is.null(adsl) && !S7::S7_inherits(adsl, ADaMData)) {
+		if (!S7::S7_inherits(adsl, ADaMData)) {
 			adsl <- ADaMData(data = adsl, domain = "ADSL")
 		}
 		adsl@trt_n

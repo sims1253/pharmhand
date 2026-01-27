@@ -5,8 +5,8 @@ NULL
 
 #' Create Primary Endpoint Summary Table
 #'
-#' @param data ADVS data frame or ADaMData object (data frames are coerced
-#'   via .ensure_adam_data())
+#' @param data ADVS data frame or ADaMData object (data frames are
+#'   coerced via .ensure_adam_data())
 #' @param paramcd Parameter code to analyze (default: "SYSBP")
 #' @param visit Visit to analyze (default: "End of Treatment")
 #' @param trt_var Treatment variable name (default: "TRT01P")

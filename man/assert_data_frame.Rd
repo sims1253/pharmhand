@@ -4,14 +4,14 @@
 \alias{assert_data_frame}
 \title{Assert Data Frame}
 \usage{
-assert_data_frame(x, ...)
+assert_data_frame(x, required_cols = NULL, arg = deparse(substitute(x)))
 }
 \arguments{
 \item{x}{Value to check}
 
-\item{...}{Either \code{arg} as character string (argument name for error
-messages), or \code{required_cols} (character vector of required column names)
-followed by \code{arg}}
+\item{required_cols}{Optional character vector of required column names}
+
+\item{arg}{Character string describing the argument (for error messages)}
 }
 \value{
 Invisibly returns x if validation passes

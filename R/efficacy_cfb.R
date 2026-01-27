@@ -175,7 +175,7 @@ create_cfb_summary_table <- function(
 .summarize_vs_by_visit <- function(data, trt_var) {
 	data |>
 		dplyr::summarise(
-			n = dplyr::n(),
+			n = sum(!is.na(.data$AVAL)),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 1),
 			SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
 			.by = dplyr::all_of(c(trt_var, "AVISIT"))
@@ -365,7 +365,7 @@ detect_floor_ceiling <- function(
 	threshold = 0.15,
 	subject_var = "USUBJID"
 ) {
-	assert_data_frame(data, "data")
+	assert_data_frame(data, arg = "data")
 	assert_character_scalar(score_var, "score_var")
 	assert_numeric_scalar(min_score, "min_score")
 	assert_numeric_scalar(max_score, "max_score")
