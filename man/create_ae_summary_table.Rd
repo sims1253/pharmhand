@@ -5,7 +5,7 @@
 \title{Create Adverse Event Summary Table}
 \usage{
 create_ae_summary_table(
-  adae,
+  data,
   adsl = NULL,
   type = c("overview", "soc", "soc_pt", "pt", "common", "severity", "relationship",
     "sae", "discontinuation", "deaths", "comparison"),
@@ -13,7 +13,8 @@ create_ae_summary_table(
   n_top = ph_default("n_top"),
   soc = NULL,
   title = NULL,
-  autofit = ph_default("autofit"),
+  footnotes = character(),
+  theme = "hta",
   ref_group = NULL,
   by = "pt",
   threshold = 0,
@@ -21,16 +22,19 @@ create_ae_summary_table(
   conf_level = ph_default("conf_level"),
   include_nnh = TRUE,
   soc_order = NULL,
-  severity_levels = c("MILD", "MODERATE", "SEVERE")
+  severity_levels = c("MILD", "MODERATE", "SEVERE"),
+  ...
 )
 }
 \arguments{
-\item{adae}{ADAE data frame (ADaM Adverse Events dataset)}
+\item{data}{ADAE data frame or ADaMData object containing ADaM Adverse Events
+dataset}
 
-\item{adsl}{ADSL data frame (optional, required for some table types
+\item{adsl}{ADSL data frame or ADaMData object (optional, required for some
+table types
 like "deaths", "comparison", or for denominator calculation)}
 
-\item{type}{Character string specifying the table type:
+\item{type}{Character string specifying table type:
 \itemize{
 \item "overview" - Summary of TEAEs, related AEs, SAEs, discontinuations
 \item "soc" - AEs by System Organ Class
@@ -53,9 +57,11 @@ like "deaths", "comparison", or for denominator calculation)}
 
 \item{title}{Table title (auto-generated if NULL)}
 
-\item{autofit}{Logical, whether to autofit column widths (default: TRUE)}
+\item{footnotes}{Character vector of footnotes (optional)}
 
-\item{ref_group}{For type="comparison", the reference group for comparisons}
+\item{theme}{Theme for table styling (default: "hta")}
+
+\item{ref_group}{For type="comparison", reference group for comparisons}
 
 \item{by}{For type="comparison", grouping level: "soc", "pt", or "overall"}
 
@@ -72,6 +78,8 @@ like "deaths", "comparison", or for denominator calculation)}
 
 \item{severity_levels}{For type="severity", severity levels ordering
 (character vector). Default: c("MILD", "MODERATE", "SEVERE")}
+
+\item{...}{Additional arguments passed to \code{\link[=create_clinical_table]{create_clinical_table()}}}
 }
 \value{
 A ClinicalTable object
@@ -82,23 +90,23 @@ Generate AE summary tables for clinical study reports.
 \examples{
 \dontrun{
 # AE Overview
-overview <- create_ae_summary_table(adae, adsl, type = "overview")
+overview <- create_ae_summary_table(data, adsl, type = "overview")
 
 # SOC table
-soc_table <- create_ae_summary_table(adae, adsl, type = "soc")
+soc_table <- create_ae_summary_table(data, adsl, type = "soc")
 
 # SOC/PT hierarchical table
-soc_pt <- create_ae_summary_table(adae, adsl, type = "soc_pt")
+soc_pt <- create_ae_summary_table(data, adsl, type = "soc_pt")
 
 # Most common AEs (top 20)
-common <- create_ae_summary_table(adae, adsl, type = "common", n_top = 20)
+common <- create_ae_summary_table(data, adsl, type = "common", n_top = 20)
 
 # SAE table
-sae <- create_ae_summary_table(adae, adsl, type = "sae")
+sae <- create_ae_summary_table(data, adsl, type = "sae")
 
 # AE comparison with risk differences
 comparison <- create_ae_summary_table(
-  adae, adsl,
+  data, adsl,
   type = "comparison",
   ref_group = "Placebo",
   by = "pt",
@@ -107,7 +115,7 @@ comparison <- create_ae_summary_table(
 
 # SOC table with custom ordering
 soc_ordered <- create_ae_summary_table(
-  adae, adsl,
+  data, adsl,
   type = "soc",
   soc_order = c(
     "Infections",

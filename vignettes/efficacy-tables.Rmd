@@ -283,7 +283,7 @@ subgroup_binary@flextable
 ```{r cfb-vitals}
 # Create change from baseline table for vital signs
 cfb_table <- create_cfb_summary_table(
-  advs = advs,
+  data = advs,
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
   title = "Change from Baseline in Vital Signs"
@@ -298,7 +298,7 @@ cfb_table@flextable
 ```{r cfb-custom}
 # Change from baseline for specific parameters
 cfb_custom <- create_cfb_summary_table(
-  advs = advs,
+  data = advs,
   params = c("SYSBP"),  # Only systolic blood pressure
   visit = "Week 8",
   title = "Systolic Blood Pressure Change from Baseline at Week 8"
@@ -317,7 +317,7 @@ create_primary_endpoint_table() creates summary tables for primary and secondary
 ```{r primary-endpoint}
 # Create primary endpoint summary table
 primary_table <- create_primary_endpoint_table(
-  advs = advs,
+  data = advs,
   paramcd = "SYSBP",
   visit = "End of Treatment",
   title = "Primary Endpoint Summary: Systolic Blood Pressure"
@@ -332,7 +332,7 @@ primary_table@flextable
 ```{r secondary-endpoint}
 # Secondary endpoint analysis
 secondary_table <- create_primary_endpoint_table(
-  advs = advs,
+  data = advs,
   paramcd = "DIABP",
   visit = "Week 8",
   title = "Secondary Endpoint: Diastolic Blood Pressure at Week 8"
@@ -354,7 +354,7 @@ Analyze laboratory parameters with shift tables and summary statistics.
 ```{r lab-summary}
 # Create laboratory parameters summary
 lab_summary <- create_lab_summary_table(
-  adlb = adlb,
+  data = adlb,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST"),
   visit = "Week 24",
   title = "Laboratory Parameters Summary at Week 24"
@@ -374,7 +374,7 @@ lab_summary@flextable
 ```{r lab-shift}
 # Create laboratory shift table for liver function test
 shift_table <- create_lab_shift_table(
-  adlb = adlb,
+  data = adlb,
   paramcd = "ALT",
   visit = "Week 24",
   title = "ALT Shift from Baseline to Week 24"
@@ -396,7 +396,7 @@ create_vs_by_visit_table() tracks vital signs across study visits.
 ```{r vs-by-visit}
 # Vital signs by visit table
 vs_visit_table <- create_vs_by_visit_table(
-  advs = advs,
+  data = advs,
   paramcd = "SYSBP",
   visits = c("Baseline", "Week 2", "Week 4", "Week 8", "End of Treatment"),
   title = "Systolic Blood Pressure by Study Visit"
@@ -467,7 +467,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
 
   # Section 1: Primary Endpoint Summary
   primary_content <- create_primary_endpoint_table(
-    advs = advs,
+    data = advs,
     paramcd = "SYSBP",
     visit = "End of Treatment",
     title = "Table 3.1: Primary Endpoint Summary (Systolic BP)"
@@ -475,7 +475,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
 
   # Section 2: Change from Baseline
   cfb_content <- create_cfb_summary_table(
-    advs = advs,
+    data = advs,
     params = c("SYSBP", "DIABP", "PULSE"),
     visit = "End of Treatment",
     title = "Table 3.2: Change from Baseline Summary"
@@ -483,20 +483,20 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
 
   # Section 3: Vital Signs by Visit
   vs_content <- create_vs_by_visit_table(
-    advs = advs,
+    data = advs,
     paramcd = "SYSBP",
     title = "Table 3.3: Vital Signs by Visit"
   )
 
   # Section 4: Laboratory Parameters
   lab_content <- create_lab_summary_table(
-    adlb = adlb,
+    data = adlb,
     title = "Table 3.4: Laboratory Parameters Summary"
   )
 
   # Section 5: Laboratory Shift Table
   shift_content <- create_lab_shift_table(
-    adlb = adlb,
+    data = adlb,
     paramcd = "ALT",
     title = "Table 3.5: ALT Shift from Baseline"
   )
@@ -504,7 +504,7 @@ generate_efficacy_report <- function(output_path = "Efficacy_Report.docx") {
   # Section 6: Subgroup Analysis
   subgroup_content <- create_subgroup_analysis_table(
     adsl = adsl,
-    advs = advs,
+    data = advs,
     title = "Table 3.6: Subgroup Analysis by Age Group"
   )
 

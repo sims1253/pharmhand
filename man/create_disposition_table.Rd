@@ -5,7 +5,7 @@
 \title{Create Subject Disposition Table}
 \usage{
 create_disposition_table(
-  adsl,
+  data,
   title = "Subject Disposition",
   trt_var = "TRT01P",
   status_var = "EOSSTT",
@@ -14,7 +14,7 @@ create_disposition_table(
 )
 }
 \arguments{
-\item{adsl}{ADSL data frame}
+\item{data}{ADSL data frame or ADaMData object}
 
 \item{title}{Table title}
 

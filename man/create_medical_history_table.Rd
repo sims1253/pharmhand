@@ -5,8 +5,8 @@
 \title{Create Medical History Table}
 \usage{
 create_medical_history_table(
+  data,
   adsl,
-  admh,
   title = "Medical History by Body System",
   trt_var = "TRT01P",
   soc_var = "MHBODSYS",
@@ -14,9 +14,9 @@ create_medical_history_table(
 )
 }
 \arguments{
-\item{adsl}{ADSL data frame}
+\item{data}{ADMH data frame or ADaMData object}
 
-\item{admh}{ADMH data frame}
+\item{adsl}{ADSL data frame or ADaMData object for denominators}
 
 \item{title}{Table title}
 

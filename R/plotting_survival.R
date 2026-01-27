@@ -89,6 +89,14 @@ create_km_plot <- function(
 
 	type <- match.arg(type)
 
+	# Ensure ADaMData object with proper trt_var
+	data <- .ensure_adam_data(
+		data,
+		"ADTTE",
+		trt_var = trt_var,
+		subject_var = "USUBJID"
+	)
+
 	if (type == "loglog") {
 		loglog_title <- if (missing(title)) {
 			"Log-Log Survival Plot"
@@ -120,7 +128,6 @@ create_km_plot <- function(
 		))
 	}
 
-	# Get filtered data if ADaMData
 	df <- get_filtered_data(data)
 	trt_var_actual <- get_trt_var(data, default = trt_var)
 

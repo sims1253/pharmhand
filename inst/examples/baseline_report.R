@@ -56,6 +56,9 @@ generate_baseline_report <- function(
 
 	message("\n=== Generating Baseline Characteristics Report ===\n")
 
+	# create_*_table functions accept either raw data.frames or ADaMData wrappers
+	# Using ADaMData wrapper (adsl_data) consistently across examples below.
+
 	# Create ADaMData wrappers
 	message("Wrapping ADaM datasets")
 	adsl_data <- ADaMData(
@@ -68,7 +71,7 @@ generate_baseline_report <- function(
 	# Section 1.1: Demographics
 	message("Building Demographics section (Table 1.1)")
 	demo_content <- create_demographics_table(
-		adsl_data = adsl_data,
+		data = adsl_data,
 		title = "Table 1.1: Demographics and Baseline Characteristics",
 		autofit = FALSE # For performance test
 	)
@@ -81,7 +84,7 @@ generate_baseline_report <- function(
 	# Section 1.2: Enrollment by Region
 	message("Building Enrollment by Region (Table 1.2)")
 	region_content <- create_region_table(
-		adsl = adsl,
+		data = adsl_data,
 		title = "Table 1.2: Enrollment by Region"
 	)
 	region_section <- ReportSection(
@@ -93,8 +96,8 @@ generate_baseline_report <- function(
 	# Section 1.3: Medical History
 	message("Building Medical History section (Table 1.3)")
 	mh_content <- create_medical_history_table(
-		adsl = adsl,
-		admh = admh,
+		data = admh,
+		adsl = adsl_data,
 		title = "Table 1.3: Medical History by Body System"
 	)
 	mh_section <- ReportSection(
@@ -106,8 +109,8 @@ generate_baseline_report <- function(
 	# Section 1.4: Concomitant Medications
 	message("Building Concomitant Medications section (Table 1.4)")
 	cm_content <- create_conmeds_table(
-		adsl = adsl,
-		adcm = adcm,
+		data = adcm,
+		adsl = adsl_data,
 		title = "Table 1.4: Prior and Concomitant Medications by Class"
 	)
 	cm_section <- ReportSection(
@@ -119,7 +122,7 @@ generate_baseline_report <- function(
 	# Section 1.5: Disposition
 	message("Building Disposition section (Table 1.5)")
 	disp_content <- create_disposition_table(
-		adsl = adsl,
+		data = adsl_data,
 		title = "Table 1.5: Subject Disposition"
 	)
 	disp_section <- ReportSection(
@@ -131,7 +134,7 @@ generate_baseline_report <- function(
 	# Section 1.6: Analysis Populations
 	message("Building Analysis Populations section (Table 1.6)")
 	pop_content <- create_population_summary_table(
-		adsl = adsl,
+		data = adsl_data,
 		title = "Table 1.6: Analysis Populations"
 	)
 	pop_section <- ReportSection(

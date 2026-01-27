@@ -20,7 +20,8 @@ Set to NULL for non-deterministic results.}
 }
 \value{
 List with rankings, SUCRA/P-scores, and rankogram data. When
-\code{n_treatments == 1}, the returned \code{sucra} value is set to \code{1.0} (the single
+\code{n_treatments == 1}, the returned \code{sucra} value is set to \code{1.0} (the
+single
 treatment is trivially best).
 }
 \description{

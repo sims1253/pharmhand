@@ -261,10 +261,10 @@ rmst_analysis <- function(
 
 	# Convert treatment factor to 0/1 numeric for survRM2
 	# 0 = reference/control, 1 = active/treatment
-	if (length(levels(complete_data$treatment)) != 2) {
+	if (nlevels(complete_data$treatment) != 2) {
 		ph_abort(sprintf(
 			"RMST analysis requires exactly 2 treatment groups, found %d: %s",
-			length(levels(complete_data$treatment)),
+			nlevels(complete_data$treatment),
 			paste(levels(complete_data$treatment), collapse = ", ")
 		))
 	}

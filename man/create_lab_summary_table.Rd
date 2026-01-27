@@ -5,7 +5,7 @@
 \title{Create Laboratory Summary Table}
 \usage{
 create_lab_summary_table(
-  adlb,
+  data,
   params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -14,7 +14,7 @@ create_lab_summary_table(
 )
 }
 \arguments{
-\item{adlb}{ADLB data frame}
+\item{data}{ADLB data frame or ADaMData object}
 
 \item{params}{Vector of parameter codes to analyze}
 

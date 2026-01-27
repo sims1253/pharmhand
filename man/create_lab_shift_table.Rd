@@ -5,7 +5,7 @@
 \title{Create Laboratory Shift Table}
 \usage{
 create_lab_shift_table(
-  adlb,
+  data,
   paramcd = "ALT",
   visit = "Week 24",
   trt_var = "TRT01P",
@@ -14,7 +14,7 @@ create_lab_shift_table(
 )
 }
 \arguments{
-\item{adlb}{ADLB data frame}
+\item{data}{ADLB data frame or ADaMData object}
 
 \item{paramcd}{Parameter code to analyze}
 

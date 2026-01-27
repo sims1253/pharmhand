@@ -30,6 +30,8 @@ utils::globalVariables(c(
 ))
 
 #' @importFrom stats sd median quantile setNames as.formula na.omit
+#' @importFrom stats AIC BIC complete.cases logLik model.matrix
+#' @importFrom stats pnorm qt
 #' @importFrom rlang %||% .data :=
 #' @importFrom admiraldev assert_data_frame assert_character_scalar
 #'   assert_character_vector assert_numeric_vector

@@ -38,6 +38,31 @@ get_trt_n <- function(
 ) {
 	# If ADaMData, use computed property
 	if (S7::S7_inherits(data, ADaMData)) {
+		# Warn if user passed arguments that are ignored for ADaMData
+		# Check if trt_var was explicitly passed (not default)
+		trt_var_explicit <- !missing(trt_var)
+		population_explicit <- !missing(population)
+		subject_var_explicit <- !missing(subject_var)
+
+		if (trt_var_explicit) {
+			ph_warn(
+				"'trt_var' argument is ignored for ADaMData objects. ",
+				"Using stored 'trt_var' property."
+			)
+		}
+		if (population_explicit) {
+			ph_warn(
+				"'population' argument is ignored for ADaMData objects. ",
+				"Using stored 'population' property."
+			)
+		}
+		if (subject_var_explicit) {
+			ph_warn(
+				"'subject_var' argument is ignored for ADaMData objects. ",
+				"Using stored 'subject_var' property."
+			)
+		}
+
 		return(data@trt_n)
 	}
 
@@ -136,6 +161,102 @@ get_subject_var <- function(data, default = "USUBJID") {
 	default
 }
 
+#' Get Total Subject Count
+#'
+#' Extract total subject count from ADaMData or calculate from data frame.
+#' For ADaMData, uses the computed `subject_n` property which respects
+#' population filters.
+#'
+#' @param data ADaMData object or data frame
+#' @param population Population filter for data frames (optional)
+#' @param subject_var Subject variable name for data frames (optional)
+#'
+#' @return Integer count of distinct subjects
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # From ADaMData - uses computed property
+#' adam <- ADaMData(data = adsl, domain = "ADSL", population = "FAS")
+#' n_subj <- get_subject_n(adam)
+#'
+#' # From data frame
+#' n_subj <- get_subject_n(adsl, population = "FAS")
+#' }
+get_subject_n <- function(data, population = NULL, subject_var = "USUBJID") {
+	# If ADaMData, use computed property
+	if (S7::S7_inherits(data, ADaMData)) {
+		# Warn if user passed arguments that are ignored for ADaMData
+		# Check if population was explicitly passed (not default)
+		population_explicit <- !missing(population)
+		subject_var_explicit <- !missing(subject_var)
+
+		if (population_explicit) {
+			ph_warn(
+				"'population' argument is ignored for ADaMData objects. ",
+				"Using stored 'population' property."
+			)
+		}
+		if (subject_var_explicit) {
+			ph_warn(
+				"'subject_var' argument is ignored for ADaMData objects. ",
+				"Using stored 'subject_var' property."
+			)
+		}
+
+		return(data@subject_n)
+	}
+
+	# For data frames, compute directly
+	df <- data
+
+	# Apply population filter if specified
+	if (!is.null(population) && population != "ALL") {
+		pop_fl <- paste0(population, "FL")
+		if (pop_fl %in% names(df)) {
+			df <- df[df[[pop_fl]] == "Y", , drop = FALSE]
+		}
+	}
+
+	if (nrow(df) == 0) {
+		return(0L)
+	}
+
+	dplyr::n_distinct(df[[subject_var]])
+}
+
+#' Get Summary Label
+#'
+#' Get a summary label for ADaMData or AnalysisResults.
+#' For ADaMData, returns "Population (N=X)".
+#' For AnalysisResults, returns "type (n=Y)" or "type (empty)".
+#'
+#' @param object ADaMData or AnalysisResults object
+#'
+#' @return Character string summary label
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' adam <- ADaMData(data = adsl, domain = "ADSL", population = "FAS")
+#' get_summary_label(adam)  # "FAS (N=150)"
+#'
+#' results <- calculate_baseline(adam, vars = c("AGE"))
+#' get_summary_label(results)  # "baseline (n=2)"
+#' }
+get_summary_label <- function(object) {
+	if (S7::S7_inherits(object, ADaMData)) {
+		return(object@summary_label)
+	}
+
+	if (S7::S7_inherits(object, AnalysisResults)) {
+		return(object@summary_label)
+	}
+
+	# Fallback for other objects
+	ph_abort("'object' must be an ADaMData or AnalysisResults object")
+}
+
 # Analysis Functions ----
 
 #' Analyze ADaMData
@@ -149,16 +270,13 @@ get_subject_var <- function(data, default = "USUBJID") {
 #' @export
 #' @name analyze_ADaMData
 analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
-	# Apply population filter using admiral utilities if applicable
-	df <- x@data
+	# Use computed properties for filtered data and treatment counts
+	df <- x@filtered_data
 
-	# Ensure population filter is valid
+	# Check if population filter was applied successfully
 	if (x@population != "ALL") {
 		pop_fl <- paste0(x@population, "FL")
-		if (pop_fl %in% names(df)) {
-			# Use standard filter for population flags
-			df <- df |> dplyr::filter(!!dplyr::sym(pop_fl) == "Y")
-		} else {
+		if (!pop_fl %in% names(x@data)) {
 			ph_warn(
 				paste0(
 					"Population flag '",
@@ -169,12 +287,8 @@ analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
 		}
 	}
 
-	# Basic summary stats (Baseline)
-	stats <- df |>
-		dplyr::summarise(
-			N = dplyr::n_distinct(!!dplyr::sym(x@subject_var)),
-			.by = !!dplyr::sym(x@trt_var)
-		)
+	# Use computed property for treatment counts
+	stats <- x@trt_n
 
 	AnalysisResults(stats = stats, type = "baseline", metadata = x@metadata)
 }
@@ -187,15 +301,16 @@ analyze_ADaMData <- S7::method(analyze, ADaMData) <- function(x, ...) {
 #' @return AnalysisResults object
 #' @export
 calculate_baseline <- function(data, vars) {
-	df <- data@data
-	trt_var <- data@trt_var
+	# Use helper functions for consistent data access
+	df <- get_filtered_data(data)
+	trt_var <- get_trt_var(data)
 
-	# Apply population filter
-	if (
-		data@population != "ALL" && paste0(data@population, "FL") %in% names(df)
-	) {
-		df <- df |>
-			dplyr::filter(!!dplyr::sym(paste0(data@population, "FL")) == "Y")
+	# Validate that helpers returned expected types
+	if (is.null(df) || !is.data.frame(df)) {
+		ph_abort("get_filtered_data() did not return a valid data frame")
+	}
+	if (is.null(trt_var) || !is.character(trt_var)) {
+		ph_abort("get_trt_var() did not return a valid character string")
 	}
 
 	# Separate numeric and categorical analysis for robustness
@@ -208,7 +323,7 @@ calculate_baseline <- function(data, vars) {
 	res_num <- NULL
 	if (length(num_vars) > 0) {
 		res_num <- df |>
-			dplyr::select(!!dplyr::sym(trt_var), dplyr::all_of(num_vars)) |>
+			dplyr::select(!!rlang::sym(trt_var), dplyr::all_of(num_vars)) |>
 			tidyr::pivot_longer(
 				cols = dplyr::all_of(num_vars),
 				names_to = "variable",
@@ -221,14 +336,14 @@ calculate_baseline <- function(data, vars) {
 				median = median(.data$value, na.rm = TRUE),
 				min = min(.data$value, na.rm = TRUE),
 				max = max(.data$value, na.rm = TRUE),
-				.by = c("variable", !!dplyr::sym(trt_var))
+				.by = c("variable", !!rlang::sym(trt_var))
 			)
 	}
 
 	res_cat <- NULL
 	if (length(cat_vars) > 0) {
 		res_cat <- df |>
-			dplyr::select(!!dplyr::sym(trt_var), dplyr::all_of(cat_vars)) |>
+			dplyr::select(!!rlang::sym(trt_var), dplyr::all_of(cat_vars)) |>
 			tidyr::pivot_longer(
 				cols = dplyr::all_of(cat_vars),
 				names_to = "variable",
@@ -236,7 +351,7 @@ calculate_baseline <- function(data, vars) {
 			) |>
 			dplyr::group_by(
 				.data$variable,
-				!!dplyr::sym(trt_var),
+				!!rlang::sym(trt_var),
 				.data$value
 			) |>
 			dplyr::summarise(n = dplyr::n(), .groups = "drop_last") |>
@@ -254,7 +369,7 @@ calculate_baseline <- function(data, vars) {
 			) |>
 			dplyr::select(
 				"variable",
-				!!dplyr::sym(trt_var),
+				!!rlang::sym(trt_var),
 				"n",
 				"label"
 			)
@@ -284,57 +399,58 @@ calculate_baseline <- function(data, vars) {
 #' @return AnalysisResults object
 #' @export
 analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
-	is_adam <- S7::S7_inherits(data, ADaMData)
+	# Use helper functions for consistent variable access
+	trt_var <- get_trt_var(data)
+	sub_var <- get_subject_var(data)
 
-	if (is_adam) {
-		df <- data@data
-		trt_var <- data@trt_var
-		sub_var <- data@subject_var
-	} else {
-		df <- data
-		trt_var <- "TRT01P"
-		sub_var <- "USUBJID"
-	}
+	# Use filtered_data for ADaMData (respects population filter)
+	df <- if (S7::S7_inherits(data, ADaMData)) data@filtered_data else data
 
 	# Total subjects per treatment arm for percentages
-	big_n <- df |>
-		dplyr::summarise(
-			N_tot = dplyr::n_distinct(!!dplyr::sym(sub_var)),
-			.by = !!dplyr::sym(trt_var)
-		)
+	# For ADaMData, get_trt_n already computes this efficiently
+	if (S7::S7_inherits(data, ADaMData)) {
+		big_n <- data@trt_n
+		names(big_n)[names(big_n) == "N"] <- "N_tot"
+	} else {
+		big_n <- df |>
+			dplyr::summarise(
+				N_tot = dplyr::n_distinct(!!rlang::sym(sub_var)),
+				.by = !!rlang::sym(trt_var)
+			)
+	}
 
 	# SOC Level Stats
 	soc_stats <- df |>
 		dplyr::summarise(
-			n = dplyr::n_distinct(!!dplyr::sym(sub_var)),
-			.by = c(!!dplyr::sym(soc_var), !!dplyr::sym(trt_var))
+			n = dplyr::n_distinct(!!rlang::sym(sub_var)),
+			.by = c(!!rlang::sym(soc_var), !!rlang::sym(trt_var))
 		) |>
 		dplyr::left_join(big_n, by = trt_var) |>
 		dplyr::mutate(
 			pct = (n / N_tot) * 100,
 			level = "SOC",
-			label = !!dplyr::sym(soc_var)
+			label = !!rlang::sym(soc_var)
 		)
 
 	# PT Level Stats
 	pt_stats <- df |>
 		dplyr::summarise(
-			n = dplyr::n_distinct(!!dplyr::sym(sub_var)),
+			n = dplyr::n_distinct(!!rlang::sym(sub_var)),
 			.by = c(
-				!!dplyr::sym(soc_var),
-				!!dplyr::sym(pt_var),
-				!!dplyr::sym(trt_var)
+				!!rlang::sym(soc_var),
+				!!rlang::sym(pt_var),
+				!!rlang::sym(trt_var)
 			)
 		) |>
 		dplyr::left_join(big_n, by = trt_var) |>
 		dplyr::mutate(
 			pct = (n / N_tot) * 100,
 			level = "PT",
-			label = !!dplyr::sym(pt_var)
+			label = !!rlang::sym(pt_var)
 		)
 
 	combined <- dplyr::bind_rows(soc_stats, pt_stats) |>
-		dplyr::arrange(!!dplyr::sym(soc_var), .data$level == "PT", .data$label)
+		dplyr::arrange(!!rlang::sym(soc_var), .data$level == "PT", .data$label)
 
 	AnalysisResults(stats = combined, type = "safety_ae")
 }
@@ -350,7 +466,9 @@ analyze_soc_pt <- function(data, soc_var = "AEBODSYS", pt_var = "AEDECOD") {
 #' @export
 apply_subgroups <- function(data, subgroup_var, analysis_fn, ...) {
 	is_adam <- S7::S7_inherits(data, ADaMData)
-	df <- if (is_adam) data@data else data
+
+	# Use filtered_data for ADaMData to respect population filter
+	df <- if (is_adam) data@filtered_data else data
 
 	subgroups <- unique(df[[subgroup_var]])
 	subgroups <- subgroups[!is.na(subgroups)]
@@ -359,12 +477,13 @@ apply_subgroups <- function(data, subgroup_var, analysis_fn, ...) {
 		sg_data <- df[df[[subgroup_var]] == sg, ]
 		if (is_adam) {
 			# Create a new ADaMData object to avoid mutating the original
+			# Use helper functions for consistency
 			data_sg <- ADaMData(
 				data = sg_data,
 				domain = data@domain,
 				population = data@population,
-				subject_var = data@subject_var,
-				trt_var = data@trt_var,
+				subject_var = get_subject_var(data),
+				trt_var = get_trt_var(data),
 				metadata = data@metadata
 			)
 			res <- analysis_fn(data_sg, ...)

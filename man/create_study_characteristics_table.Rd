@@ -5,17 +5,16 @@
 \title{Create Study Characteristics Table}
 \usage{
 create_study_characteristics_table(
-  studies,
+  data,
   title = "Study Characteristics",
   columns = c("Study", "Design", "N", "Treatment", "Comparator", "Population"),
   include_metadata = TRUE,
   footnotes = character(),
-  col_widths = NULL,
-  autofit = TRUE
+  ...
 )
 }
 \arguments{
-\item{studies}{List of Study objects, TwoArmStudy objects, or data frame
+\item{data}{List of Study objects, TwoArmStudy objects, or data frame
 with study-level characteristics.}
 
 \item{title}{Table title (default: "Study Characteristics")}
@@ -28,9 +27,8 @@ with study-level characteristics.}
 
 \item{footnotes}{Character vector of footnotes to add.}
 
-\item{col_widths}{Named numeric vector of column widths (in inches).}
-
-\item{autofit}{Logical, whether to autofit column widths (default: TRUE).}
+\item{...}{Additional arguments passed to \code{\link[=create_clinical_table]{create_clinical_table()}},
+such as \code{col_widths}, \code{autofit}, \code{theme}, etc.}
 }
 \value{
 A ClinicalTable object containing the study characteristics table.

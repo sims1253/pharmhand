@@ -5,7 +5,7 @@
 \title{Quick Safety Report}
 \usage{
 quick_safety_report(
-  adae,
+  data,
   adsl = NULL,
   output,
   title = "Safety Analysis",
@@ -19,7 +19,7 @@ quick_safety_report(
 )
 }
 \arguments{
-\item{adae}{Data frame containing ADAE data}
+\item{data}{Data frame containing ADAE data}
 
 \item{adsl}{Data frame containing ADSL data (optional, for denominators)}
 

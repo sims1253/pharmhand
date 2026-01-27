@@ -16,6 +16,18 @@ as_flextable_AnalysisResults <- S7::method(
 	as_flextable,
 	AnalysisResults
 ) <- function(x, ...) {
+	# Handle empty results gracefully
+	if (x@is_empty) {
+		# Return empty flextable with appropriate message
+		ft <- flextable::flextable(data.frame(Message = "No data available"))
+		return(
+			ft |>
+				flextable::theme_booktabs() |>
+				flextable::autofit() |>
+				flextable::fontsize(size = 9, part = "all")
+		)
+	}
+
 	df <- x@stats
 
 	if (x@type == "baseline") {
@@ -71,6 +83,14 @@ as_gt_AnalysisResults <- S7::method(as_gt, AnalysisResults) <- function(
 	x,
 	...
 ) {
+	# Handle empty results gracefully
+	if (x@is_empty) {
+		return(
+			gt::gt(data.frame(Message = "No data available")) |>
+				gt::tab_options(table.font.size = "small")
+		)
+	}
+
 	df <- x@stats
 
 	gt_tbl <- gt::gt(df)
@@ -191,6 +211,36 @@ clinical_table_from_results <- function(res, title = "") {
 	)
 }
 
+#' Add title and footnotes to flextable
+#'
+#' Internal helper function to add title and footnotes to a flextable
+#' with consistent styling.
+#'
+#' @param ft A flextable object
+#' @param title Character string title (NULL, NA, or empty string to skip)
+#' @param footnotes Character vector of footnotes
+#'
+#' @return The modified flextable object
+#' @keywords internal
+.add_title_and_footnotes <- function(ft, title, footnotes) {
+	# Add title if provided (NA-safe)
+	if (!is.null(title) && !is.na(title) && nzchar(title)) {
+		ft <- ft |>
+			flextable::add_header_lines(title) |>
+			flextable::bold(i = 1, part = "header")
+	}
+	# Add footnotes if provided
+	if (length(footnotes) > 0) {
+		for (fn in footnotes) {
+			ft <- ft |> flextable::add_footer_lines(fn)
+		}
+		ft <- ft |>
+			flextable::fontsize(size = 8, part = "footer") |>
+			flextable::italic(part = "footer")
+	}
+	ft
+}
+
 #' Apply Clinical Table Styling
 #'
 #' Apply standardized clinical table styling to a flextable,
@@ -301,6 +351,77 @@ apply_clinical_style <- function(
 	}
 
 	ft
+}
+
+# =============================================================================
+# Helper Functions
+# =============================================================================
+
+#' Ensure ADaMData
+#'
+#' Helper function that coerces raw data frames to ADaMData if they aren't
+#' already ADaMData objects.
+#'
+#' @param data A data frame or ADaMData object
+#' @param domain Character string for the ADaM domain (used when wrapping
+#'   data frames)
+#' @param trt_var Treatment variable name (passed to ADaMData constructor
+#'   when wrapping data frames)
+#' @param subject_var Subject ID variable name (passed to ADaMData constructor
+#'   when wrapping data frames)
+#'
+#' @return An ADaMData object
+#' @keywords internal
+.ensure_adam_data <- function(
+	data,
+	domain = "ADSL",
+	trt_var = NULL,
+	subject_var = NULL
+) {
+	if (S7::S7_inherits(data, ADaMData)) {
+		# Warn if trt_var provided and differs from object's property
+		if (!is.null(trt_var) && trt_var != data@trt_var) {
+			ph_warn(
+				"'trt_var' argument provided (",
+				trt_var,
+				") differs from ADaMData object's 'trt_var' property (",
+				data@trt_var,
+				"). Using the object's property."
+			)
+		}
+		# Warn if subject_var provided and differs from object's property
+		if (!is.null(subject_var) && subject_var != data@subject_var) {
+			ph_warn(
+				"'subject_var' argument provided (",
+				subject_var,
+				") differs from ADaMData object's 'subject_var' property (",
+				data@subject_var,
+				"). Using the object's property."
+			)
+		}
+		return(data)
+	}
+
+	if (is.data.frame(data)) {
+		ph_inform("Automatically wrapping data.frame in ADaMData object")
+
+		# Build constructor arguments
+		constructor_args <- list(data = data, domain = domain)
+		if (!is.null(trt_var)) {
+			constructor_args$trt_var <- trt_var
+		}
+		if (!is.null(subject_var)) {
+			constructor_args$subject_var <- subject_var
+		}
+
+		return(do.call(ADaMData, constructor_args))
+	}
+
+	ph_abort(
+		"'data' must be an ADaMData object or data.frame. ",
+		"Got: ",
+		class(data)[1]
+	)
 }
 
 # =============================================================================
@@ -519,26 +640,32 @@ theme_gba <- function(
 	ft
 }
 
-#' Create HTA-Style Table
 #' Create Clinical Table (Factory Function)
 #'
-#' Convenience factory function that creates a properly formatted clinical
-#' table with flextable styling. Reduces boilerplate code across the package.
+#' Primary factory function for creating ClinicalTable objects with proper
+#' styling. Supports multiple data types and themes, with optional custom
+#' summarization logic.
 #'
-#' @param data Data frame to display, or an `AnalysisResults` object (in which
-#'   case `@stats` is used).
+#' @param data Data to display. Can be:
+#'   - `ADaMData` object (uses `@data` or `@filtered_data`)
+#'   - `LayeredTable` object (built using `build_table()`)
+#'   - `AnalysisResults` object (uses `@stats`)
+#'   - Raw `data.frame`
 #' @param type Character string for table type (e.g., "demographics", "ae_soc")
 #' @param title Table title
 #' @param footnotes Character vector of footnotes
-#' @param metadata List of additional metadata
-#' @param col_widths Named numeric vector of column widths (optional)
-#' @param autofit Logical, whether to autofit column widths
+#' @param theme Theme preset: "hta", "iqwig", "gba", or "clinical"
+#'   (default: "hta")
+#' @param summary_fn Optional function for custom summarization. Receives the
+#'   extracted data and should return a data.frame. If NULL, data is used as-is.
+#' @param ... Additional arguments passed to theme functions
 #'
 #' @return A ClinicalTable object
 #' @export
 #'
 #' @examples
 #' \dontrun{
+#' # Basic usage with data.frame
 #' df <- data.frame(Treatment = c("A", "B"), N = c(100, 95))
 #' table <- create_clinical_table(
 #'   data = df,
@@ -546,36 +673,129 @@ theme_gba <- function(
 #'   title = "Treatment Summary",
 #'   footnotes = "ITT Population"
 #' )
+#'
+#' # With custom summary function
+#' table <- create_clinical_table(
+#'   data = adsl_data,
+#'   type = "demographics",
+#'   summary_fn = function(d) {
+#'     d |> dplyr::summarise(N = dplyr::n(), .by = TRT01P)
+#'   },
+#'   theme = "iqwig"
+#' )
+#'
+#' # With ADaMData object
+#' table <- create_clinical_table(
+#'   data = ADaMData(adsl_df, domain = "ADSL"),
+#'   type = "demographics",
+#'   title = "Baseline Characteristics",
+#'   theme = "gba"
+#' )
+#'
+#' # With LayeredTable object
+#' demo_lt <- LayeredTable(
+#'   data = adsl_df,
+#'   trt_var = "TRT01P",
+#'   layers = list(
+#'     CountLayer(target_var = "SEX", label = "Sex"),
+#'     DescriptiveLayer(target_var = "AGE", label = "Age (years)")
+#'   )
+#' )
+#' table <- create_clinical_table(
+#'   data = demo_lt,
+#'   type = "demographics",
+#'   title = "Demographics"
+#' )
 #' }
 create_clinical_table <- function(
 	data,
 	type,
 	title = NULL,
 	footnotes = character(),
-	metadata = list(),
-	col_widths = NULL,
-	autofit = ph_default("autofit")
+	theme = c("hta", "iqwig", "gba", "clinical"),
+	summary_fn = NULL,
+	...
 ) {
-	if (S7::S7_inherits(data, AnalysisResults)) {
-		data <- data@stats
+	theme <- match.arg(theme)
+
+	# Capture ... args for theme functions
+	dots <- list(...)
+
+	# Table metadata - merge theme metadata with any custom metadata passed via ...
+	table_metadata <- list(theme = theme)
+	if ("metadata" %in% names(dots)) {
+		table_metadata <- c(table_metadata, dots$metadata)
+		dots$metadata <- NULL # Remove so it's not passed to theme functions
 	}
 
-	# Create flextable
-	ft <- create_hta_table(
-		data = data,
-		title = title,
-		footnotes = footnotes,
-		col_widths = col_widths,
-		autofit = autofit
+	# Extract data based on input type
+	if (S7::S7_inherits(data, ADaMData)) {
+		# Prefer filtered data if available
+		table_data <- get_filtered_data(data)
+	} else if (S7::S7_inherits(data, LayeredTable)) {
+		table_data <- build_table(data)
+	} else if (S7::S7_inherits(data, AnalysisResults)) {
+		table_data <- data@stats
+	} else if (is.data.frame(data)) {
+		table_data <- data
+	} else {
+		ph_abort(
+			"'data' must be an ADaMData, LayeredTable, AnalysisResults, ",
+			"or data.frame object. Got: ",
+			class(data)[1]
+		)
+	}
+
+	# Apply custom summary function if provided
+	if (!is.null(summary_fn)) {
+		if (!is.function(summary_fn)) {
+			ph_abort("'summary_fn' must be a function or NULL")
+		}
+		table_data <- summary_fn(table_data)
+		if (!is.data.frame(table_data)) {
+			ph_abort("'summary_fn' must return a data.frame")
+		}
+	}
+
+	# Apply theme styling
+	ft <- switch(
+		theme,
+		"hta" = do.call(
+			create_hta_table,
+			c(
+				list(
+					data = table_data,
+					title = title,
+					footnotes = footnotes
+				),
+				dots
+			)
+		),
+		"iqwig" = {
+			ft <- flextable::flextable(table_data)
+			ft <- do.call(theme_iqwig, c(list(ft), dots))
+			.add_title_and_footnotes(ft, title, footnotes)
+		},
+		"gba" = {
+			ft <- flextable::flextable(table_data)
+			ft <- do.call(theme_gba, c(list(ft), dots))
+			.add_title_and_footnotes(ft, title, footnotes)
+		},
+		"clinical" = {
+			ft <- flextable::flextable(table_data)
+			ft <- do.call(apply_clinical_style, c(list(ft, style = "clinical"), dots))
+			.add_title_and_footnotes(ft, title, footnotes)
+		}
 	)
 
 	# Wrap in ClinicalTable
 	ClinicalTable(
-		data = data,
+		data = table_data,
 		flextable = ft,
 		type = type,
 		title = title,
-		metadata = metadata
+		footnotes = footnotes,
+		metadata = table_metadata
 	)
 }
 
@@ -744,7 +964,7 @@ layered_to_flextable <- function(x, style = "clinical", ...) {
 #' High-level convenience function to generate a demographics report from
 #' ADSL data in a single call. Creates demographics table and writes to Word.
 #'
-#' @param adsl_data Data frame or ADaMData object containing ADSL data
+#' @param data Data frame or ADaMData object containing ADSL data
 #' @param output Character string output file path (e.g., "demographics.docx")
 #' @param title Character string report title
 #' @param trt_var Character string treatment variable name
@@ -768,7 +988,7 @@ layered_to_flextable <- function(x, style = "clinical", ...) {
 #' )
 #' }
 quick_demographics_report <- function(
-	adsl_data,
+	data,
 	output,
 	title = "Demographics and Baseline Characteristics",
 	trt_var = ph_default("trt_var"),
@@ -776,13 +996,11 @@ quick_demographics_report <- function(
 	...
 ) {
 	# Auto-coerce if needed
-	if (is.data.frame(adsl_data) && !S7::S7_inherits(adsl_data, ADaMData)) {
-		adsl_data <- ADaMData(data = adsl_data, domain = "ADSL")
-	}
+	data <- .ensure_adam_data(data, domain = "ADSL", trt_var = trt_var)
 
 	# Create demographics table
 	demo_table <- create_demographics_table(
-		adsl_data = adsl_data,
+		data = data,
 		title = title,
 		trt_var = trt_var,
 		...
@@ -813,7 +1031,7 @@ quick_demographics_report <- function(
 #' High-level convenience function to generate a safety report from ADAE/ADSL
 #' data in a single call. Creates multiple safety tables and writes to Word.
 #'
-#' @param adae Data frame containing ADAE data
+#' @param data Data frame containing ADAE data
 #' @param adsl Data frame containing ADSL data (optional, for denominators)
 #' @param output Character string output file path (e.g., "safety.docx")
 #' @param title Character string report title
@@ -842,7 +1060,7 @@ quick_demographics_report <- function(
 #' )
 #' }
 quick_safety_report <- function(
-	adae,
+	data,
 	adsl = NULL,
 	output,
 	title = "Safety Analysis",
@@ -854,6 +1072,12 @@ quick_safety_report <- function(
 	include_title = TRUE,
 	...
 ) {
+	# Auto-coerce if needed
+	data <- .ensure_adam_data(data, domain = "ADAE", trt_var = trt_var)
+	if (!is.null(adsl)) {
+		adsl <- .ensure_adam_data(adsl, domain = "ADSL", trt_var = trt_var)
+	}
+
 	# Create report
 	report <- ClinicalReport(
 		study_id = "QUICK_SAFETY",
@@ -865,7 +1089,7 @@ quick_safety_report <- function(
 	# Add overview table
 	if (include_overview) {
 		content_list$overview <- create_ae_summary_table(
-			adae = adae,
+			data = data,
 			adsl = adsl,
 			type = "overview",
 			trt_var = trt_var,
@@ -876,7 +1100,7 @@ quick_safety_report <- function(
 	# Add SOC table
 	if (include_soc) {
 		content_list$soc <- create_ae_summary_table(
-			adae = adae,
+			data = data,
 			adsl = adsl,
 			type = "soc",
 			trt_var = trt_var,
@@ -887,7 +1111,7 @@ quick_safety_report <- function(
 	# Add SOC/PT table
 	if (include_soc_pt) {
 		content_list$soc_pt <- create_ae_summary_table(
-			adae = adae,
+			data = data,
 			adsl = adsl,
 			type = "soc_pt",
 			trt_var = trt_var,
@@ -898,7 +1122,7 @@ quick_safety_report <- function(
 	# Add SAE table
 	if (include_sae) {
 		content_list$sae <- create_ae_summary_table(
-			adae = adae,
+			data = data,
 			adsl = adsl,
 			type = "sae",
 			trt_var = trt_var,

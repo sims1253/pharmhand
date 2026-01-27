@@ -5,7 +5,7 @@
 \title{Quick Demographics Report}
 \usage{
 quick_demographics_report(
-  adsl_data,
+  data,
   output,
   title = "Demographics and Baseline Characteristics",
   trt_var = ph_default("trt_var"),
@@ -14,7 +14,7 @@ quick_demographics_report(
 )
 }
 \arguments{
-\item{adsl_data}{Data frame or ADaMData object containing ADSL data}
+\item{data}{Data frame or ADaMData object containing ADSL data}
 
 \item{output}{Character string output file path (e.g., "demographics.docx")}
 

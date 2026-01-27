@@ -30,8 +30,8 @@ calculate_ae_tte_data <- function(
 	soc,
 	trt_var = "TRT01P"
 ) {
-	assert_data_frame(adsl, "adsl")
-	assert_data_frame(adae, "adae")
+	assert_data_frame(adsl, arg = "adsl")
+	assert_data_frame(adae, arg = "adae")
 
 	adae_cols <- c("AEBODSYS", "TRTEMFL", "USUBJID", "ASTDY")
 	missing_adae <- setdiff(adae_cols, names(adae))
@@ -189,8 +189,8 @@ create_time_to_first_ae <- function(
 	title = NULL,
 	autofit = TRUE
 ) {
-	assert_data_frame(adae, "adae")
-	assert_data_frame(adsl, "adsl")
+	assert_data_frame(adae, arg = "adae")
+	assert_data_frame(adsl, arg = "adsl")
 	assert_character_scalar(trt_var, "trt_var")
 	assert_character_scalar(time_var, "time_var")
 	assert_character_scalar(censor_var, "censor_var")

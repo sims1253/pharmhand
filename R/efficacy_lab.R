@@ -5,7 +5,7 @@ NULL
 
 #' Create Laboratory Summary Table
 #'
-#' @param adlb ADLB data frame
+#' @param data ADLB data frame or ADaMData object
 #' @param params Vector of parameter codes to analyze
 #' @param visit Visit to analyze
 #' @param trt_var Treatment variable name (default: "TRT01P")
@@ -26,28 +26,32 @@ NULL
 #' table@type
 #' @export
 create_lab_summary_table <- function(
-	adlb,
+	data,
 	params = c("HGB", "WBC", "PLAT", "ALT", "AST", "BILI", "CREAT"),
 	visit = "Week 24",
 	trt_var = "TRT01P",
 	title = "Laboratory Parameters Summary",
 	autofit = TRUE
 ) {
-	assert_data_frame(adlb, "adlb")
+	# Ensure ADaMData object with proper domain, passing trt_var for data frames
+	data <- .ensure_adam_data(data, domain = "ADLB", trt_var = trt_var)
+	df <- get_filtered_data(data)
+	# Use trt_var from ADaMData object (set during coercion)
+	trt_var_actual <- data@trt_var
 
-	required_cols <- c("PARAMCD", "AVISIT", trt_var, "PARAM", "AVAL")
-	missing_cols <- setdiff(required_cols, names(adlb))
+	required_cols <- c("PARAMCD", "AVISIT", trt_var_actual, "PARAM", "AVAL")
+	missing_cols <- setdiff(required_cols, names(df))
 	if (length(missing_cols) > 0) {
 		ph_abort(
 			sprintf(
-				"'adlb' is missing required columns: %s. Required: %s",
+				"'data' is missing required columns: %s. Required: %s",
 				paste(missing_cols, collapse = ", "),
 				paste(required_cols, collapse = ", ")
 			)
 		)
 	}
 
-	lab_data <- adlb |>
+	lab_data <- df |>
 		dplyr::filter(
 			.data$PARAMCD %in% params,
 			.data$AVISIT == visit
@@ -56,41 +60,47 @@ create_lab_summary_table <- function(
 			n = dplyr::n(),
 			Mean = round(mean(.data$AVAL, na.rm = TRUE), 2),
 			SD = round(sd(.data$AVAL, na.rm = TRUE), 2),
-			.by = c(dplyr::all_of(trt_var), "PARAM")
+			.by = c(dplyr::all_of(trt_var_actual), "PARAM")
 		) |>
 		dplyr::mutate(
 			display = paste0(.data$Mean, " (", .data$SD, ")"),
 			n = as.character(.data$n)
 		) |>
-		dplyr::select("PARAM", dplyr::all_of(trt_var), "n", "display") |>
+		dplyr::select("PARAM", dplyr::all_of(trt_var_actual), "n", "display")
+
+	# Validate trt_var_actual before using in names_glue (security check)
+	if (!grepl("^[A-Za-z0-9_]+$", trt_var_actual)) {
+		ph_abort(
+			sprintf(
+				"'trt_var' contains unsafe characters: '%s'. Only alphanumeric and underscore are allowed.",
+				trt_var_actual
+			)
+		)
+	}
+
+	lab_data <- lab_data |>
 		tidyr::pivot_wider(
-			names_from = dplyr::all_of(trt_var),
+			names_from = dplyr::all_of(trt_var_actual),
 			values_from = c("n", "display"),
-			names_glue = paste0("{", trt_var, "}_{.value}")
+			names_glue = paste0("{", trt_var_actual, "}_{.value}")
 		)
 
 	names(lab_data) <- gsub("_display$", " Mean (SD)", names(lab_data))
 	names(lab_data) <- gsub("_n$", " n", names(lab_data))
 	names(lab_data) <- gsub("^PARAM$", "Parameter", names(lab_data))
 
-	lab_ft <- create_hta_table(
-		lab_data,
+	create_clinical_table(
+		data = lab_data,
+		type = "lab_summary",
 		title = title,
 		footnotes = c("Safety Population", "Mean (SD) presented"),
 		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = lab_data,
-		flextable = lab_ft,
-		type = "lab_summary",
-		title = title
 	)
 }
 
 #' Create Laboratory Shift Table
 #'
-#' @param adlb ADLB data frame
+#' @param data ADLB data frame or ADaMData object
 #' @param paramcd Parameter code to analyze
 #' @param visit Visit to analyze
 #' @param trt_var Treatment variable name (default: "TRT01P")
@@ -111,28 +121,32 @@ create_lab_summary_table <- function(
 #' table@type
 #' @export
 create_lab_shift_table <- function(
-	adlb,
+	data,
 	paramcd = "ALT",
 	visit = "Week 24",
 	trt_var = "TRT01P",
 	title = "Laboratory Shift Table",
 	autofit = TRUE
 ) {
-	assert_data_frame(adlb, "adlb")
+	# Ensure ADaMData object with proper domain, passing trt_var for data frames
+	data <- .ensure_adam_data(data, domain = "ADLB", trt_var = trt_var)
+	df <- get_filtered_data(data)
+	# Use trt_var from ADaMData object (set during coercion)
+	trt_var_actual <- data@trt_var
 
-	required_cols <- c("PARAMCD", "BNRIND", "ANRIND", "AVISIT", trt_var)
-	missing_cols <- setdiff(required_cols, names(adlb))
+	required_cols <- c("PARAMCD", "BNRIND", "ANRIND", "AVISIT", trt_var_actual)
+	missing_cols <- setdiff(required_cols, names(df))
 	if (length(missing_cols) > 0) {
 		ph_abort(
 			sprintf(
-				"'adlb' is missing required columns: %s. Required: %s",
+				"'data' is missing required columns: %s. Required: %s",
 				paste(missing_cols, collapse = ", "),
 				paste(required_cols, collapse = ", ")
 			)
 		)
 	}
 
-	shift_data <- adlb |>
+	shift_data <- df |>
 		dplyr::filter(
 			.data$PARAMCD == paramcd,
 			!is.na(.data$BNRIND),
@@ -141,7 +155,7 @@ create_lab_shift_table <- function(
 		) |>
 		dplyr::summarise(
 			n = dplyr::n(),
-			.by = c(dplyr::all_of(trt_var), "BNRIND", "ANRIND")
+			.by = c(dplyr::all_of(trt_var_actual), "BNRIND", "ANRIND")
 		) |>
 		tidyr::pivot_wider(
 			names_from = "ANRIND",
@@ -150,29 +164,34 @@ create_lab_shift_table <- function(
 		) |>
 		dplyr::rename(`Baseline Status` = "BNRIND")
 
-	shift_wide <- shift_data |>
-		dplyr::mutate(Treatment = !!rlang::sym(trt_var)) |>
-		dplyr::select(
-			"Treatment",
-			"Baseline Status",
-			dplyr::everything(),
-			-dplyr::all_of(trt_var)
-		)
+	# Guard against trt_var_actual == "Treatment" to avoid name conflicts
+	if (trt_var_actual == "Treatment") {
+		shift_wide <- shift_data |>
+			dplyr::select(
+				"Treatment",
+				"Baseline Status",
+				dplyr::everything()
+			)
+	} else {
+		shift_wide <- shift_data |>
+			dplyr::mutate(tmp_treatment = !!rlang::sym(trt_var_actual)) |>
+			dplyr::rename(Treatment = "tmp_treatment") |>
+			dplyr::select(
+				"Treatment",
+				"Baseline Status",
+				dplyr::everything(),
+				-dplyr::all_of(trt_var_actual)
+			)
+	}
 
-	shift_ft <- create_hta_table(
-		shift_wide,
+	create_clinical_table(
+		data = shift_wide,
+		type = "lab_shift",
 		title = title,
 		footnotes = c(
 			"Safety Population",
 			"Shift from baseline normal range indicator"
 		),
 		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = shift_wide,
-		flextable = shift_ft,
-		type = "lab_shift",
-		title = title
 	)
 }

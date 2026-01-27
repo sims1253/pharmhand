@@ -1,7 +1,11 @@
+# =============================================================================
+# Helper Functions for Network Meta-Analysis
+# =============================================================================
+
 #' @title Network Meta-Analysis Functions
 #' @name meta_network
-#' @description Functions for performing network meta-analysis, including
-#'   rankings and league tables.
+#' @description Functions for network meta-analysis including network structure,
+#'   ranking, and visualization utilities.
 NULL
 
 .extract_pairwise_data <- function(df, t1, t2) {
@@ -93,6 +97,10 @@ NULL
 
 	all(visited)
 }
+
+# =============================================================================
+# Network Meta-Analysis Functions
+# =============================================================================
 
 #'
 #' Conducts network meta-analysis (NMA) to compare multiple treatments
@@ -582,7 +590,8 @@ node_splitting <- function(
 #' This imputation can affect ranking probabilities and SUCRA values.
 #'
 #' @return List with rankings, SUCRA/P-scores, and rankogram data. When
-#'   `n_treatments == 1`, the returned `sucra` value is set to `1.0` (the single
+#'   `n_treatments == 1`, the returned `sucra` value is set to `1.0` (the
+#'   single
 #'   treatment is trivially best).
 #' @note RNG state is isolated via `withr::with_seed` during simulation,
 #'   so calling this function does not alter the global RNG state.
@@ -755,9 +764,12 @@ calculate_sucra <- function(
 #' @param show_ci Logical. Show confidence intervals. Default: TRUE
 #' @param highlight_sig Logical. Highlight significant comparisons.
 #'   Default: TRUE
-#' @param conf_level Numeric. Confidence level. Default: 0.95
+#' @param conf_level Numeric. Confidence level. If NULL (default), uses the level
+#'   from the NMA result or falls back to 0.95.
+#' @param theme Theme preset: "hta", "iqwig", "gba", or "clinical"
+#'   (default: "hta")
 #'
-#' @return ClinicalTable with league table matrix
+#' @return \link{ClinicalTable} with styled league table
 #' @export
 #' @examples
 #' # Create league table for NMA
@@ -770,23 +782,77 @@ calculate_sucra <- function(
 #' )
 #' nma_result <- network_meta(nma_data, effect_measure = "hr")
 #' table <- create_league_table(nma_result)
-#' table@type
+#' print(table)
 create_league_table <- function(
+	nma_result,
+	digits = 2,
+	show_ci = TRUE,
+	highlight_sig = TRUE,
+	conf_level = NULL,
+	theme = c("hta", "iqwig", "gba", "clinical")
+) {
+	theme <- match.arg(theme)
+
+	if (!S7::S7_inherits(nma_result, NMAResult)) {
+		ph_abort("nma_result must be an NMAResult object from network_meta()")
+	}
+
+	# Use NMA result's confidence level if not specified
+	conf_level <- conf_level %||% nma_result@conf_level %||% 0.95
+
+	# Build league matrix using internal helper
+	league_df <- .build_league_matrix(
+		nma_result = nma_result,
+		digits = digits,
+		show_ci = show_ci,
+		highlight_sig = highlight_sig,
+		conf_level = conf_level
+	)
+
+	effect_measure <- nma_result@effect_measure
+	n_treat <- length(nma_result@network$treatments)
+	ref <- nma_result@network$reference
+
+	# Use create_clinical_table factory with HTA theme for consistent styling
+	create_clinical_table(
+		data = league_df,
+		type = "league_table",
+		title = sprintf("League Table (%s)", toupper(effect_measure)),
+		theme = theme,
+		footnotes = paste0(
+			"Row treatment vs Column treatment. ",
+			"* indicates statistical significance at ",
+			conf_level * 100,
+			"% confidence level."
+		),
+		metadata = list(
+			effect_measure = effect_measure,
+			n_treatments = n_treat,
+			reference = ref
+		)
+	)
+}
+
+#' Build League Table Matrix
+#'
+#' Internal helper to construct the league table data frame from NMA results.
+#' Calculates all pairwise comparisons and formats them into a matrix structure.
+#'
+#' @param nma_result Result from network_meta()
+#' @param digits Integer. Decimal places for estimates
+#' @param show_ci Logical. Show confidence intervals
+#' @param highlight_sig Logical. Highlight significant comparisons
+#' @param conf_level Numeric. Confidence level
+#'
+#' @return Data frame with league table matrix
+#' @keywords internal
+.build_league_matrix <- function(
 	nma_result,
 	digits = 2,
 	show_ci = TRUE,
 	highlight_sig = TRUE,
 	conf_level = 0.95
 ) {
-	if (!S7::S7_inherits(nma_result, NMAResult)) {
-		ph_abort("nma_result must be an NMAResult object from network_meta()")
-	}
-
-	# Use NMA result's confidence level if available
-	if (!is.null(nma_result@conf_level)) {
-		conf_level <- nma_result@conf_level
-	}
-
 	comparisons <- nma_result@comparisons
 	treatments <- nma_result@network$treatments
 	n_treat <- length(treatments)
@@ -851,7 +917,7 @@ create_league_table <- function(
 	min_se <- if (length(positives) > 0) min(positives) else NA_real_
 	se_floor <- if (!is.na(min_se)) min_se / 100 else sqrt(.Machine$double.eps)
 
-	# Calculate all pairwise
+	# Calculate all pairwise comparisons
 	for (i in seq_len(n_treat)) {
 		for (j in seq_len(n_treat)) {
 			if (i == j) {
@@ -924,20 +990,5 @@ create_league_table <- function(
 	}
 
 	# Convert to data frame
-	league_df <- tibble::as_tibble(league_matrix, rownames = "Treatment")
-
-	ClinicalTable(
-		data = league_df,
-		type = "league_table",
-		title = sprintf("League Table (%s)", toupper(effect_measure)),
-		metadata = list(
-			effect_measure = effect_measure,
-			n_treatments = n_treat,
-			reference = ref,
-			note = paste0(
-				"Row treatment vs Column treatment. ",
-				"* indicates statistical significance."
-			)
-		)
-	)
+	tibble::as_tibble(league_matrix, rownames = "Treatment")
 }

@@ -5,7 +5,8 @@ NULL
 
 #' Create Primary Endpoint Summary Table
 #'
-#' @param advs ADVS data frame
+#' @param data ADVS data frame or ADaMData object (data frames are
+#'   coerced via .ensure_adam_data())
 #' @param paramcd Parameter code to analyze (default: "SYSBP")
 #' @param visit Visit to analyze (default: "End of Treatment")
 #' @param trt_var Treatment variable name (default: "TRT01P")
@@ -25,20 +26,28 @@ NULL
 #' table@type
 #' @export
 create_primary_endpoint_table <- function(
-	advs,
+	data,
 	paramcd = "SYSBP",
 	visit = "End of Treatment",
 	trt_var = ph_default("trt_var"),
 	title = "Primary Endpoint Summary",
 	autofit = ph_default("autofit")
 ) {
-	assert_data_frame(advs, "advs")
+	# Ensure ADaMData object with proper domain, passing trt_var for data frames
+	data <- .ensure_adam_data(data, "ADVS", trt_var = trt_var)
 
+	# Use trt_var from ADaMData object (set during coercion)
+	trt_var <- data@trt_var
+
+	# Use filtered_data (respects population filter)
+	df <- data@filtered_data
+
+	# Validate required columns
 	required_cols <- c("PARAMCD", "AVISIT", trt_var, "AVAL")
-	missing_cols <- setdiff(required_cols, names(advs))
+	missing_cols <- setdiff(required_cols, names(df))
 	if (length(missing_cols) > 0) {
 		ph_abort(
-			"'advs' data frame is missing required columns.\n",
+			"'data' data frame is missing required columns.\n",
 			"  Missing: ",
 			paste(missing_cols, collapse = ", "),
 			"\n",
@@ -46,12 +55,12 @@ create_primary_endpoint_table <- function(
 			paste(required_cols, collapse = ", "),
 			"\n",
 			"  Available: ",
-			paste(names(advs), collapse = ", ")
+			paste(names(df), collapse = ", ")
 		)
 	}
 
 	# Filter and summarize
-	primary_data <- advs |>
+	primary_data <- df |>
 		dplyr::filter(
 			.data$PARAMCD == paramcd,
 			.data$AVISIT == visit
@@ -123,7 +132,7 @@ create_primary_endpoint_table <- function(
 		type = "primary_endpoint",
 		title = title,
 		footnotes = c(
-			"Safety Population",
+			paste(data@population, "Population"),
 			paste("Parameter:", paramcd, "at", visit)
 		),
 		metadata = list(param = paramcd, visit = visit),

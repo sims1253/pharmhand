@@ -174,19 +174,19 @@ describe("create_ae_comparison_table()", {
 
 	it("returns a ClinicalTable object", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		expect_equal(tbl@type, "ae_comparison")
 	})
 
 	it("includes NNH column by default", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt"
@@ -198,13 +198,13 @@ describe("create_ae_comparison_table()", {
 
 	it("works with 'soc' grouping", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "soc"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Should have SOC-level rows
 		expect_true("Term" %in% names(tbl@data))
 		# Should have fewer rows than PT grouping (4 SOCs vs 4 PTs in our test data)
@@ -213,13 +213,13 @@ describe("create_ae_comparison_table()", {
 
 	it("works with 'pt' grouping", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		expect_true("Term" %in% names(tbl@data))
 		# Should have 4 PT-level rows (Headache, Nausea, Fatigue, Rash)
 		expect_equal(nrow(tbl@data), 4)
@@ -227,7 +227,7 @@ describe("create_ae_comparison_table()", {
 
 	it("calculates NNH as inverse of absolute RD", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt"
@@ -243,7 +243,7 @@ describe("create_ae_comparison_table()", {
 
 	it("shows NE when RD CI crosses zero", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt"
@@ -256,7 +256,7 @@ describe("create_ae_comparison_table()", {
 
 	it("allows excluding NNH column", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt",
@@ -292,7 +292,7 @@ describe("create_ae_comparison_table()", {
 		)
 
 		tbl <- create_ae_comparison_table(
-			adae = adae_beneficial,
+			data = adae_beneficial,
 			adsl = adsl_beneficial,
 			ref_group = "Placebo",
 			by = "pt"
@@ -314,13 +314,13 @@ describe("create_ae_comparison_table()", {
 
 	it("works with 'overall' grouping", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "overall"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Should have exactly 1 row for "Any TEAE"
 		expect_equal(nrow(tbl@data), 1)
 		expect_true(any(grepl("Any TEAE", tbl@data$Term, fixed = TRUE)))
@@ -329,14 +329,14 @@ describe("create_ae_comparison_table()", {
 	it("filters by threshold correctly", {
 		# Set threshold to 10% - should exclude Fatigue (5% in Active) and Rash (8%)
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt",
 			threshold = 10
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Should have 3 rows: Headache (20%), Nausea (15%), Fatigue (10% in Placebo)
 		expect_equal(nrow(tbl@data), 3)
 		# Rash should be excluded (8% max)
@@ -345,14 +345,14 @@ describe("create_ae_comparison_table()", {
 
 	it("sorts by 'rd' correctly", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt",
 			sort_by = "rd"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Headache RD = +10%, Rash = +8%, Nausea = 0%, Fatigue = -5%
 		# Should be sorted by absolute RD descending
 		expect_equal(tbl@data$Term[1], "Headache")
@@ -360,14 +360,14 @@ describe("create_ae_comparison_table()", {
 
 	it("sorts by 'rr' correctly", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt",
 			sort_by = "rr"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Rash has highest RR (infinite without correction, very high with)
 		# Should be sorted by RR descending
 		expect_equal(tbl@data$Term[1], "Rash")
@@ -375,14 +375,14 @@ describe("create_ae_comparison_table()", {
 
 	it("sorts by 'incidence' correctly", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt",
 			sort_by = "incidence"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Headache has highest incidence (20% in Active)
 		expect_equal(tbl@data$Term[1], "Headache")
 	})
@@ -390,7 +390,7 @@ describe("create_ae_comparison_table()", {
 	it("errors when ref_group is NULL", {
 		expect_error(
 			create_ae_comparison_table(
-				adae = test_data$adae,
+				data = test_data$adae,
 				adsl = test_data$adsl,
 				ref_group = NULL,
 				by = "pt"
@@ -402,7 +402,7 @@ describe("create_ae_comparison_table()", {
 	it("errors when ref_group is invalid", {
 		expect_error(
 			create_ae_comparison_table(
-				adae = test_data$adae,
+				data = test_data$adae,
 				adsl = test_data$adsl,
 				ref_group = "NonexistentGroup",
 				by = "pt"
@@ -414,18 +414,18 @@ describe("create_ae_comparison_table()", {
 	it("errors when adsl is missing", {
 		expect_error(
 			create_ae_comparison_table(
-				adae = test_data$adae,
+				data = test_data$adae,
 				adsl = NULL,
 				ref_group = "Placebo",
 				by = "pt"
 			),
-			"adsl.*must be a data frame"
+			"'data' must be an ADaMData object or data.frame"
 		)
 	})
 
 	it("stores metadata correctly", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt",
@@ -441,7 +441,7 @@ describe("create_ae_comparison_table()", {
 
 	it("generates appropriate title when not provided", {
 		tbl_pt <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt"
@@ -449,7 +449,7 @@ describe("create_ae_comparison_table()", {
 		expect_true(grepl("Preferred Term", tbl_pt@title, fixed = TRUE))
 
 		tbl_soc <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "soc"
@@ -459,7 +459,7 @@ describe("create_ae_comparison_table()", {
 
 	it("respects custom title", {
 		tbl <- create_ae_comparison_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			ref_group = "Placebo",
 			by = "pt",
@@ -506,13 +506,13 @@ describe("create_ae_comparison_table() with multiple treatment groups", {
 		)
 
 		tbl <- create_ae_comparison_table(
-			adae = adae_3arm,
+			data = adae_3arm,
 			adsl = adsl_3arm,
 			ref_group = "Placebo",
 			by = "pt"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Should have columns for each treatment group comparison
 		expect_true(any(grepl(
 			"RD Low Dose vs Placebo",
@@ -556,21 +556,21 @@ describe("create_ae_summary_table() with type = 'comparison'", {
 
 	it("dispatches to create_ae_comparison_table correctly", {
 		tbl <- create_ae_summary_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			type = "comparison",
 			ref_group = "Placebo",
 			by = "pt"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		expect_equal(tbl@type, "ae_comparison")
 	})
 
 	it("errors when ref_group is not provided for comparison type", {
 		expect_error(
 			create_ae_summary_table(
-				adae = test_data$adae,
+				data = test_data$adae,
 				adsl = test_data$adsl,
 				type = "comparison"
 			),
@@ -581,7 +581,7 @@ describe("create_ae_summary_table() with type = 'comparison'", {
 	it("errors when adsl is not provided for comparison type", {
 		expect_error(
 			create_ae_summary_table(
-				adae = test_data$adae,
+				data = test_data$adae,
 				adsl = NULL,
 				type = "comparison",
 				ref_group = "Placebo"
@@ -592,7 +592,7 @@ describe("create_ae_summary_table() with type = 'comparison'", {
 
 	it("passes through all comparison parameters correctly", {
 		tbl <- create_ae_summary_table(
-			adae = test_data$adae,
+			data = test_data$adae,
 			adsl = test_data$adsl,
 			type = "comparison",
 			ref_group = "Placebo",
@@ -644,13 +644,13 @@ describe("AE comparison edge cases", {
 		)
 
 		tbl <- create_ae_comparison_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			ref_group = "Placebo",
 			by = "pt"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 		# Should have 2 rows: Headache and Nausea
 		expect_equal(nrow(tbl@data), 2)
 	})
@@ -661,7 +661,7 @@ describe("AE comparison edge cases", {
 		# Set very high threshold that excludes everything
 		expect_warning(
 			tbl <- create_ae_comparison_table(
-				adae = test_data$adae,
+				data = test_data$adae,
 				adsl = test_data$adsl,
 				ref_group = "Placebo",
 				by = "pt",
@@ -692,13 +692,13 @@ describe("AE comparison edge cases", {
 
 		# Should work for PT grouping without AEBODSYS
 		tbl <- create_ae_comparison_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			ref_group = "Placebo",
 			by = "pt"
 		)
 
-		expect_s7_class(tbl, ClinicalTable)
+		expect_true(S7::S7_inherits(tbl, ClinicalTable))
 	})
 
 	it("errors appropriately for soc grouping without AEBODSYS", {
@@ -720,7 +720,7 @@ describe("AE comparison edge cases", {
 
 		expect_error(
 			create_ae_comparison_table(
-				adae = adae,
+				data = adae,
 				adsl = adsl,
 				ref_group = "Placebo",
 				by = "soc"

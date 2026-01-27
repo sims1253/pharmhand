@@ -9,7 +9,8 @@ ClinicalTable(
   title = NULL,
   metadata = list(),
   data = data.frame(),
-  flextable = NULL
+  flextable = NULL,
+  footnotes = character(0)
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ ClinicalTable(
 \item{data}{A data frame containing the table data}
 
 \item{flextable}{A flextable object (optional, created if not provided)}
+
+\item{footnotes}{Character vector of table footnotes}
 }
 \value{
 A ClinicalTable object

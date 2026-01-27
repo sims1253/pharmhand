@@ -5,23 +5,26 @@
 \title{Create AE Comparison Table with Risk Differences}
 \usage{
 create_ae_comparison_table(
-  adae,
+  data,
   adsl,
   ref_group,
   trt_var = "TRT01P",
   by = c("pt", "soc", "overall"),
   threshold = 0,
   sort_by = c("incidence", "rd", "rr"),
-  conf_level = 0.95,
+  conf_level = ph_default("conf_level"),
   include_nnh = TRUE,
   title = NULL,
-  autofit = TRUE
+  footnotes = character(),
+  theme = "hta",
+  ...
 )
 }
 \arguments{
-\item{adae}{ADAE data frame}
+\item{data}{ADAE data frame or ADaMData object containing ADaM Adverse Events
+dataset}
 
-\item{adsl}{ADSL data frame for denominators}
+\item{adsl}{ADSL data frame or ADaMData object for denominators}
 
 \item{ref_group}{Character. Reference (control) group for comparison}
 
@@ -41,7 +44,11 @@ create_ae_comparison_table(
 
 \item{title}{Table title (auto-generated if NULL)}
 
-\item{autofit}{Logical (default: TRUE)}
+\item{footnotes}{Character vector of footnotes (optional)}
+
+\item{theme}{Theme for table styling (default: "hta")}
+
+\item{...}{Additional arguments passed to \code{\link[=create_clinical_table]{create_clinical_table()}}}
 }
 \value{
 ClinicalTable with columns for each group's n(\%), RD, 95\% CI, NNH,
@@ -55,14 +62,16 @@ between treatment groups. Essential for GBA/AMNOG safety assessments.
 \dontrun{
 # AE comparison by PT
 ae_comp <- create_ae_comparison_table(
-  adae, adsl,
+  data = adae,
+  adsl = adsl,
   ref_group = "Placebo",
   by = "pt"
 )
 
 # AE comparison by SOC with 5\% threshold
 ae_comp_soc <- create_ae_comparison_table(
-  adae, adsl,
+  data = adae,
+  adsl = adsl,
   ref_group = "Placebo",
   by = "soc",
   threshold = 5

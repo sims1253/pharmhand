@@ -10,7 +10,8 @@ create_league_table(
   digits = 2,
   show_ci = TRUE,
   highlight_sig = TRUE,
-  conf_level = 0.95
+  conf_level = NULL,
+  theme = c("hta", "iqwig", "gba", "clinical")
 )
 }
 \arguments{
@@ -23,10 +24,14 @@ create_league_table(
 \item{highlight_sig}{Logical. Highlight significant comparisons.
 Default: TRUE}
 
-\item{conf_level}{Numeric. Confidence level. Default: 0.95}
+\item{conf_level}{Numeric. Confidence level. If NULL (default), uses the level
+from the NMA result or falls back to 0.95.}
+
+\item{theme}{Theme preset: "hta", "iqwig", "gba", or "clinical"
+(default: "hta")}
 }
 \value{
-ClinicalTable with league table matrix
+\link{ClinicalTable} with styled league table
 }
 \description{
 Generates a league table showing all pairwise treatment comparisons
@@ -43,5 +48,5 @@ nma_data <- data.frame(
 )
 nma_result <- network_meta(nma_data, effect_measure = "hr")
 table <- create_league_table(nma_result)
-table@type
+print(table)
 }

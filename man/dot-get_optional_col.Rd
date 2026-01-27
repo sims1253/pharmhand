@@ -7,7 +7,7 @@
 .get_optional_col(row, col_name, default = "")
 }
 \arguments{
-\item{row}{A data frame row or named list}
+\item{row}{A single-row data frame or named list (not a multi-row data frame)}
 
 \item{col_name}{Character. Column name to extract.}
 

@@ -5,34 +5,41 @@
 \title{Create Change from Baseline Summary Table}
 \usage{
 create_cfb_summary_table(
-  advs,
+  data,
   params = c("SYSBP", "DIABP", "PULSE"),
   visit = "End of Treatment",
   trt_var = "TRT01P",
   title = "Change from Baseline Summary",
-  autofit = TRUE
+  footnotes = character(),
+  autofit = TRUE,
+  ...
 )
 }
 \arguments{
-\item{advs}{An ADaM ADVS (Analysis Data Vital Signs) data frame. Required
-columns include: USUBJID, PARAMCD (parameter code), PARAM (parameter name),
+\item{data}{An ADaMData object (with domain "ADVS") or an ADVS data frame.
+Required columns include: PARAMCD (parameter code), PARAM (parameter name),
 AVISIT (analysis visit), CHG (change from baseline), and the treatment
-variable (typically TRT01P).}
+variable (default: "TRT01P" for data frames, or @trt_var for ADaMData).}
 
 \item{params}{Character vector of PARAMCD values identifying which vital sign
 parameters to include in the table (e.g., c("SYSBP", "DIABP", "PULSE")).
-Must match values in the PARAMCD column of advs.}
+Must match values in the PARAMCD column of data.}
 
 \item{visit}{Character string specifying the analysis visit to summarize.
-Must match a value in the AVISIT column of advs (e.g., "End of Treatment",
+Must match a value in the AVISIT column of data (e.g., "End of Treatment",
 "Week 12").}
 
-\item{trt_var}{Treatment variable name (default: "TRT01P")}
+\item{trt_var}{Treatment variable name (default: "TRT01P"). Ignored for
+ADaMData objects which use their own trt_var property.}
 
 \item{title}{Character string for the table title.}
 
+\item{footnotes}{Character vector of footnotes to append to the table.}
+
 \item{autofit}{Logical, whether to automatically adjust column widths to fit
 content. Default is TRUE.}
+
+\item{...}{Additional arguments passed to \code{\link{create_clinical_table}}}
 }
 \value{
 A ClinicalTable S7 object with the formatted change-from-baseline
@@ -48,8 +55,8 @@ by treatment group for an analysis visit.
 \examples{
 # Create change from baseline summary
 advs <- data.frame(
-  USUBJID = c("01", "02", "03", "04"),
-  TRT01P = c("Placebo", "Placebo", "Active", "Active"),
+  USUBJID = rep(c("01", "02", "03", "04"), each = 1),
+  TRT01P = rep(c("Placebo", "Placebo", "Active", "Active"), each = 1),
   PARAMCD = rep("SYSBP", 4),
   PARAM = rep("Systolic Blood Pressure", 4),
   AVISIT = rep("End of Treatment", 4),

@@ -1,93 +1,16 @@
 # =============================================================================
-# Internal validation helpers (replacing cli dependency)
-# =============================================================================
-
-#' @keywords internal
-ph_abort <- function(...) {
-	args <- list(...)
-	args$call. <- FALSE
-	do.call(stop, args)
-}
-
-#' @keywords internal
-ph_warn <- function(...) {
-	args <- list(...)
-	args$call. <- FALSE
-	do.call(warning, args)
-}
-
-#' @keywords internal
-ph_inform <- function(...) {
-	args <- list(...)
-	do.call(message, args)
-}
-
-#' @keywords internal
-assert_data_frame <- function(x, arg = deparse(substitute(x))) {
-	if (!is.data.frame(x)) {
-		ph_abort(sprintf("'%s' must be a data frame", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_numeric_scalar <- function(x, arg = deparse(substitute(x))) {
-	if (!is.numeric(x) || length(x) != 1) {
-		ph_abort(sprintf("'%s' must be a single numeric value", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_character_scalar <- function(x, arg = deparse(substitute(x))) {
-	if (!is.character(x) || length(x) != 1 || is.na(x) || nchar(x) == 0) {
-		ph_abort(sprintf("'%s' must be a non-empty character string", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_in_range <- function(x, lower, upper, arg = deparse(substitute(x))) {
-	if (x <= lower || x >= upper) {
-		ph_abort(sprintf(
-			"'%s' must be greater than %s and less than %s",
-			arg,
-			lower,
-			upper
-		))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_positive <- function(x, arg = deparse(substitute(x))) {
-	if (!is.numeric(x) || length(x) != 1 || x <= 0) {
-		ph_abort(sprintf("'%s' must be a single positive number", arg))
-	}
-	invisible(x)
-}
-
-#' @keywords internal
-assert_column_exists <- function(data, col, data_arg = "data") {
-	if (!col %in% names(data)) {
-		ph_abort(sprintf("Column '%s' not found in '%s'", col, data_arg))
-	}
-	invisible(TRUE)
-}
-
-#' Get NA String
-#'
-#' Returns the string to display for NA values.
-#'
-#' @return Character string for NA display
-#' @keywords internal
-get_na_string <- function() {
-	ph_default("na_string", "--")
-}
-
-# =============================================================================
 # Package Defaults System
 # =============================================================================
+
+#' Null Coalescing Operator
+#'
+#' Re-export of rlang's null coalescing operator.
+#' See \code{\link[rlang]{\%||\%}} for details.
+#'
+#' @name grapes-or-or-grapes
+#' @aliases %||%
+#' @importFrom rlang %||%
+#' @export
 
 #' Package-wide default values
 #'
@@ -187,6 +110,20 @@ ph_default <- function(name, default = NULL) {
 }
 
 # =============================================================================
+# NA Display Helpers
+# =============================================================================
+
+#' Get NA String
+#'
+#' Returns the string to display for NA values.
+#'
+#' @return Character string for NA display
+#' @keywords internal
+get_na_string <- function() {
+	ph_default("na_string", "--")
+}
+
+# =============================================================================
 # Data Frame Utilities
 # =============================================================================
 
@@ -194,15 +131,80 @@ ph_default <- function(name, default = NULL) {
 #'
 #' Safely extract a column value, returning a default if not present or NA.
 #'
-#' @param row A data frame row or named list
+#' @param row A single-row data frame or named list (not a multi-row data frame)
 #' @param col_name Character. Column name to extract.
 #' @param default Default value if column missing or NA. Default: ""
 #'
 #' @return The column value or default
 #' @keywords internal
 .get_optional_col <- function(row, col_name, default = "") {
+	# Note: Assumes row is a single-row entity; multi-row inputs will only check first value
 	if (col_name %in% names(row) && !is.na(row[[col_name]])) {
 		return(as.character(row[[col_name]]))
 	}
 	return(default)
+}
+
+#' Format n/N Values
+#'
+#' Vectorized helper for formatting n/N strings with optional percentage.
+#'
+#' @param n Numeric vector of numerators
+#' @param N Numeric vector of denominators (recycled to length of n)
+#' @param pct Numeric vector of percentages (optional, recycled to length of n)
+#' @param digits Integer, digits for percentage formatting (default: 1)
+#' @param na_label Character string to use when N is NA or 0 (default: "N/A")
+#'
+#' @return Character vector of formatted n/N strings
+#' @keywords internal
+.format_n_over_n <- function(n, N, pct = NULL, digits = 1, na_label = "N/A") {
+	# Recycle N and pct to length of n
+	N <- rep_len(N, length(n))
+	if (!is.null(pct)) {
+		pct <- rep_len(pct, length(n))
+	}
+
+	# Handle NA or zero N
+	is_na_N <- is.na(N) | N == 0
+	# Handle NA in numerator n
+	is_na_n <- is.na(n)
+
+	result <- character(length(n))
+	pct_format <- paste0("%.", digits, "f%%")
+
+	if (is.null(pct)) {
+		# When N is NA or 0, use na_label for denominator
+		result[is_na_N] <- sprintf("%d/%s", n[is_na_N], na_label)
+		# When n is NA, use na_label for numerator
+		result[!is_na_N & is_na_n] <- sprintf(
+			"%s/%d",
+			na_label,
+			N[!is_na_N & is_na_n]
+		)
+		# Normal case
+		result[!is_na_N & !is_na_n] <- sprintf(
+			"%d/%d",
+			n[!is_na_N & !is_na_n],
+			N[!is_na_N & !is_na_n]
+		)
+	} else {
+		# When N is NA or 0, use na_label for denominator
+		result[is_na_N] <- sprintf("%d/%s", n[is_na_N], na_label)
+		# When n is NA, use na_label for numerator with percentage
+		result[!is_na_N & is_na_n] <- sprintf(
+			paste0("%s/%d (", pct_format, ")"),
+			na_label,
+			N[!is_na_N & is_na_n],
+			pct[!is_na_N & is_na_n]
+		)
+		# Normal case with percentage
+		result[!is_na_N & !is_na_n] <- sprintf(
+			paste0("%d/%d (", pct_format, ")"),
+			n[!is_na_N & !is_na_n],
+			N[!is_na_N & !is_na_n],
+			pct[!is_na_N & !is_na_n]
+		)
+	}
+
+	result
 }

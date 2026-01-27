@@ -156,20 +156,17 @@ build_demographics_section <- function(adsl_data) {
 
 	# Build and convert to flextable
 	demo_data <- build_table(demo_table)
-	demo_ft <- create_hta_table(
-		demo_data,
+
+	# Use create_clinical_table factory function
+	demo_content <- create_clinical_table(
+		data = demo_data,
+		type = "demographics",
 		title = "Table 1: Demographics and Baseline Characteristics",
 		footnotes = c(
 			"ITT Population",
 			"Age is summarized as mean (SD), median, min-max"
-		)
-	)
-
-	demo_content <- ClinicalTable(
-		data = demo_data,
-		flextable = demo_ft,
-		type = "demographics",
-		title = "Demographics and Baseline Characteristics",
+		),
+		theme = "hta",
 		metadata = list(
 			population = "ITT",
 			n_subjects = nrow(adsl)
@@ -201,16 +198,12 @@ build_disposition_section <- function(adsl_data) {
 			values_fill = 0
 		)
 
-	disp_ft <- create_hta_table(
-		disp_data,
-		title = "Table 2: Patient Disposition"
-	)
-
-	disp_content <- ClinicalTable(
+	# Use create_clinical_table factory function
+	disp_content <- create_clinical_table(
 		data = disp_data,
-		flextable = disp_ft,
 		type = "disposition",
-		title = "Patient Disposition"
+		title = "Table 2: Patient Disposition",
+		theme = "hta"
 	)
 
 	ReportSection(
@@ -259,20 +252,16 @@ build_ae_section <- function(adae_data, adsl_data) {
 		) |>
 		dplyr::rename(`System Organ Class` = "AEBODSYS")
 
-	ae_ft <- create_hta_table(
-		soc_wide,
+	# Use create_clinical_table factory function
+	ae_content <- create_clinical_table(
+		data = soc_wide,
+		type = "safety_ae",
 		title = "Table 3: Adverse Events by System Organ Class",
 		footnotes = c(
 			"Safety Population",
 			"n (%) = Number (percentage) of subjects with at least one event"
-		)
-	)
-
-	ae_content <- ClinicalTable(
-		data = soc_wide,
-		flextable = ae_ft,
-		type = "safety_ae",
-		title = "Adverse Events by System Organ Class"
+		),
+		theme = "hta"
 	)
 
 	SOCPTSection(
@@ -332,17 +321,13 @@ build_sae_section <- function(adae_data, adsl_data) {
 			)
 	}
 
-	sae_ft <- create_hta_table(
-		sae_data,
-		title = "Table 4: Serious Adverse Events",
-		footnotes = "Safety Population; AESER = 'Y'"
-	)
-
-	sae_content <- ClinicalTable(
+	# Use create_clinical_table factory function
+	sae_content <- create_clinical_table(
 		data = sae_data,
-		flextable = sae_ft,
 		type = "safety_sae",
-		title = "Serious Adverse Events"
+		title = "Table 4: Serious Adverse Events",
+		footnotes = "Safety Population; AESER = 'Y'",
+		theme = "hta"
 	)
 
 	ReportSection(
@@ -404,21 +389,17 @@ build_hta_section <- function(adsl_data, adae_data) {
 			`SAE %` = "pct_sae"
 		)
 
-	hta_ft <- create_hta_table(
-		hta_summary,
+	# Use create_clinical_table factory function
+	hta_content <- create_clinical_table(
+		data = hta_summary,
+		type = "hta_safety",
 		title = "Table 5: Safety Overview for HTA Submission",
 		footnotes = c(
 			"Safety Population",
 			"AE = Adverse Event; SAE = Serious Adverse Event",
 			"Prepared for G-BA Module 4 submission"
-		)
-	)
-
-	hta_content <- ClinicalTable(
-		data = hta_summary,
-		flextable = hta_ft,
-		type = "hta_safety",
-		title = "Safety Overview for HTA"
+		),
+		theme = "hta"
 	)
 
 	HTASection(

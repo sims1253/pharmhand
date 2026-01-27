@@ -5,7 +5,7 @@
 \title{Create Exposure-Adjusted AE Table}
 \usage{
 create_ae_exposure_table(
-  adae,
+  data,
   adsl,
   exposure_var = "TRTDURD",
   trt_var = "TRT01P",
@@ -15,13 +15,14 @@ create_ae_exposure_table(
   conf_level = 0.95,
   threshold = 0,
   title = NULL,
-  autofit = TRUE
+  ...
 )
 }
 \arguments{
-\item{adae}{ADAE data frame}
+\item{data}{ADAE data frame or ADaMData object}
 
-\item{adsl}{ADSL data frame (must contain exposure duration)}
+\item{adsl}{ADSL data frame or ADaMData object (must contain exposure
+duration)}
 
 \item{exposure_var}{Character. Exposure duration variable
 (default: "TRTDURD")}
@@ -42,7 +43,7 @@ Used to convert exposure to patient-years.}
 
 \item{title}{Character. Table title}
 
-\item{autofit}{Logical. Autofit columns (default: TRUE)}
+\item{...}{Additional arguments passed to \code{\link[=create_clinical_table]{create_clinical_table()}}}
 }
 \value{
 ClinicalTable with IDR columns
@@ -52,6 +53,6 @@ Generate AE table with incidence rates per X patient-years.
 }
 \examples{
 \dontrun{
-tbl <- create_ae_exposure_table(adae, adsl, by = "pt")
+tbl <- create_ae_exposure_table(data, adsl, by = "pt")
 }
 }

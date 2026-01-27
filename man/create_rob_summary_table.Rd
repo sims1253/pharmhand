@@ -5,15 +5,15 @@
 \title{Create Risk of Bias Summary Table}
 \usage{
 create_rob_summary_table(
-  rob_results,
+  data,
   title = "Risk of Bias Assessment",
   include_justification = FALSE,
   footnotes = character(),
-  autofit = TRUE
+  ...
 )
 }
 \arguments{
-\item{rob_results}{List of RoB2Result objects (one per study).}
+\item{data}{List of RoB2Result objects (one per study).}
 
 \item{title}{Table title (default: "Risk of Bias Assessment").}
 
@@ -22,7 +22,8 @@ create_rob_summary_table(
 
 \item{footnotes}{Character vector of footnotes.}
 
-\item{autofit}{Logical, autofit column widths (default: TRUE).}
+\item{...}{Additional arguments passed to \code{\link[=create_clinical_table]{create_clinical_table()}},
+such as \code{col_widths}, \code{autofit}, \code{theme}, etc.}
 }
 \value{
 A ClinicalTable object.
@@ -34,8 +35,13 @@ and domains, suitable for G-BA Module 4 requirements.
 \examples{
 \dontrun{
 rob_results <- list(
-  RoB2Result(study_id = "Study 1", ...),
-  RoB2Result(study_id = "Study 2", ...)
+  # RoB2Result objects with required arguments would go here
+  # e.g., RoB2Result(study_id = "Study 1",
+  #   outcome = "...", overall = "...",
+  #   domains = list(...))
+  # e.g., RoB2Result(study_id = "Study 2",
+  #   outcome = "...", overall = "...",
+  #   domains = list(...))
 )
 rob_table <- create_rob_summary_table(rob_results)
 }

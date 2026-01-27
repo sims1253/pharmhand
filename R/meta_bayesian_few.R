@@ -227,6 +227,22 @@ bayesian_meta_analysis_few <- function(
 	backend <- match.arg(backend)
 	k <- as.integer(length(yi))
 
+	# Validate inputs using assertion helpers
+	assert_numeric_vector(yi, arg = "yi")
+	assert_numeric_vector(sei, arg = "sei")
+	assert_lengths_match(yi, sei)
+	assert_positive_integer(k, arg = "length(yi)")
+	assert_positive_integer(chains, arg = "chains")
+	assert_positive_integer(iter, arg = "iter")
+	assert_positive_integer(warmup, arg = "warmup")
+	assert_character_scalar(backend, arg = "backend")
+	assert_in_range(adapt_delta, 0.5, 1, arg = "adapt_delta")
+	assert_positive_integer(max_treedepth, arg = "max_treedepth")
+
+	if (!is.null(seed)) {
+		assert_numeric_scalar(seed, arg = "seed")
+	}
+
 	# Check for brms availability
 	if (!requireNamespace("brms", quietly = TRUE)) {
 		ph_abort(
@@ -235,7 +251,6 @@ bayesian_meta_analysis_few <- function(
 		)
 	}
 
-	# Validate inputs
 	if (k < 2) {
 		ph_abort("At least 2 studies are required for meta-analysis")
 	}
@@ -253,6 +268,8 @@ bayesian_meta_analysis_few <- function(
 	# Generate study labels if not provided
 	if (is.null(study_labels)) {
 		study_labels <- paste("Study", seq_len(k))
+	} else {
+		assert_character_vector(study_labels, len = k, arg = "study_labels")
 	}
 
 	# Validate priors for few studies
@@ -278,7 +295,8 @@ bayesian_meta_analysis_few <- function(
 	data <- data.frame(
 		yi = yi,
 		sei = sei,
-		study = study_labels
+		study = study_labels,
+		stringsAsFactors = FALSE
 	)
 
 	# Determine Stan backend
@@ -587,6 +605,8 @@ summary_bayesian_few <- function(result, digits = 3) {
 		ph_abort("'result' must be a BayesianMetaFewResult object")
 	}
 
+	assert_non_negative_integer(digits, arg = "digits")
+
 	# Combine posterior and credible interval information
 	summary_df <- result@posterior_summary
 	summary_df$ci_lower <- result@credible_intervals$ci_lower
@@ -653,6 +673,11 @@ create_bayesian_few_table <- function(
 		ph_abort("'result' must be a BayesianMetaFewResult object")
 	}
 
+	assert_character_scalar(title, arg = "title")
+	if (!is.null(subtitle)) {
+		assert_character_scalar(subtitle, arg = "subtitle")
+	}
+
 	# Get summary statistics
 	summary_list <- summary_bayesian_few(result)
 	summary_df <- summary_list$posterior
@@ -667,9 +692,6 @@ create_bayesian_few_table <- function(
 		stringsAsFactors = FALSE,
 		check.names = FALSE
 	)
-
-	# Rename for consistency
-	colnames(prob_row)[5] <- "95% Credible Interval"
 
 	summary_df <- rbind(summary_df, prob_row)
 
@@ -688,9 +710,6 @@ create_bayesian_few_table <- function(
 			stringsAsFactors = FALSE,
 			check.names = FALSE
 		)
-
-		# Rename for consistency
-		colnames(het_row)[5] <- "95% Credible Interval"
 		summary_df <- rbind(summary_df, het_row)
 	}
 
@@ -735,6 +754,8 @@ plot_bayesian_few <- function(
 	if (!S7::S7_inherits(result, BayesianMetaFewResult)) {
 		ph_abort("'result' must be a BayesianMetaFewResult object")
 	}
+
+	assert_character_scalar(title, arg = "title")
 
 	# Extract posterior summary for plotting
 	post_summary <- result@posterior_summary
@@ -782,9 +803,10 @@ plot_bayesian_few <- function(
 		ggplot2::aes(x = .data$estimate, y = .data$study)
 	) +
 		ggplot2::geom_point(size = 3) +
-		ggplot2::geom_errorbarh(
+		ggplot2::geom_errorbar(
 			ggplot2::aes(xmin = .data$ci_lower, xmax = .data$ci_upper),
-			height = 0.2
+			height = 0.2,
+			orientation = "y"
 		) +
 		ggplot2::geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
 		ggplot2::labs(

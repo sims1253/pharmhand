@@ -433,8 +433,11 @@ reference:
     Helper functions for data filtering, treatment information,
     statistical diagnostics, and other common operations.
   contents:
+  - assert_non_negative
   - get_filtered_data
+  - get_subject_n
   - get_subject_var
+  - get_summary_label
   - get_trt_n
   - get_trt_var
   - calculate_proportion_ci

@@ -54,6 +54,11 @@ rsconnect/
 # Claude AI assistant files
 .claude/
 
+# TLDR code analysis cache
+.tldr/
+
 # Project notes (not for distribution)
 notes/
 plans/
+
+vignettes/safety-tables_files/

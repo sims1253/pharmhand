@@ -5,7 +5,7 @@
 \title{Create Primary Endpoint Summary Table}
 \usage{
 create_primary_endpoint_table(
-  advs,
+  data,
   paramcd = "SYSBP",
   visit = "End of Treatment",
   trt_var = ph_default("trt_var"),
@@ -14,7 +14,8 @@ create_primary_endpoint_table(
 )
 }
 \arguments{
-\item{advs}{ADVS data frame}
+\item{data}{ADVS data frame or ADaMData object (data frames are
+coerced via .ensure_adam_data())}
 
 \item{paramcd}{Parameter code to analyze (default: "SYSBP")}
 

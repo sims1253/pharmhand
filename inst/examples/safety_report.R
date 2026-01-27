@@ -141,7 +141,7 @@ generate_safety_report <- function(
 build_ae_overview <- function(adae, adsl) {
 	# Use unified create_ae_summary_table function
 	overview_content <- pharmhand::create_ae_summary_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		type = "overview",
 		title = "Table 2.1: Treatment-Emergent Adverse Events Overview"
@@ -268,7 +268,7 @@ build_ae_by_soc <- function(adae, adsl) {
 	for (soc in socs) {
 		# Table for SOC using unified function with PT type and SOC filter
 		tbl <- pharmhand::create_ae_summary_table(
-			adae = adae,
+			data = adae,
 			adsl = adsl,
 			type = "pt",
 			soc = soc,
@@ -305,7 +305,7 @@ build_ae_by_soc <- function(adae, adsl) {
 #' @keywords internal
 build_common_aes <- function(adae, adsl) {
 	common_content <- pharmhand::create_ae_summary_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		type = "common",
 		title = "Table 2.3: Most Common Adverse Events (>=2% in any treatment group)"
@@ -326,7 +326,7 @@ build_common_aes <- function(adae, adsl) {
 #' @keywords internal
 build_ae_by_severity <- function(adae, adsl) {
 	severity_content <- pharmhand::create_ae_summary_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		type = "severity",
 		title = "Table 2.4: Subjects by Maximum Adverse Event Severity"
@@ -347,7 +347,7 @@ build_ae_by_severity <- function(adae, adsl) {
 #' @keywords internal
 build_ae_by_relationship <- function(adae, adsl) {
 	rel_content <- pharmhand::create_ae_summary_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		type = "relationship",
 		title = "Table 2.5: Adverse Events by Relationship to Study Drug"
@@ -368,7 +368,7 @@ build_ae_by_relationship <- function(adae, adsl) {
 #' @keywords internal
 build_sae_summary <- function(adae, adsl) {
 	sae_content <- pharmhand::create_ae_summary_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		type = "sae",
 		title = "Table 2.6: Serious Adverse Events"
@@ -389,7 +389,7 @@ build_sae_summary <- function(adae, adsl) {
 #' @keywords internal
 build_ae_disc <- function(adae, adsl) {
 	disc_content <- pharmhand::create_ae_summary_table(
-		adae = adae,
+		data = adae,
 		adsl = adsl,
 		type = "discontinuation",
 		title = "Table 2.7: Adverse Events Leading to Study Drug Discontinuation"
@@ -409,7 +409,7 @@ build_ae_disc <- function(adae, adsl) {
 #' @keywords internal
 build_deaths_summary <- function(adsl) {
 	death_content <- pharmhand::create_ae_summary_table(
-		adae = NULL,
+		data = NULL,
 		adsl = adsl,
 		type = "deaths",
 		title = "Table 2.8: Deaths Summary"

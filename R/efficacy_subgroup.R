@@ -33,8 +33,8 @@ create_subgroup_analysis_table <- function(
 	title = "Subgroup Analysis",
 	autofit = TRUE
 ) {
-	assert_data_frame(adsl, "adsl")
-	assert_data_frame(advs, "advs")
+	assert_data_frame(adsl, arg = "adsl")
+	assert_data_frame(advs, arg = "advs")
 
 	if (!is.null(min_subgroup_size)) {
 		assert_numeric_scalar(min_subgroup_size, "min_subgroup_size")
@@ -150,21 +150,15 @@ create_subgroup_analysis_table <- function(
 			values_fill = "--"
 		)
 
-	subgroup_ft <- create_hta_table(
-		all_subgroups,
+	create_clinical_table(
+		data = all_subgroups,
+		type = "subgroup",
 		title = title,
 		footnotes = c(
 			"Safety Population",
 			"Format: n / Mean (SD)"
 		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = all_subgroups,
-		flextable = subgroup_ft,
-		type = "subgroup",
-		title = title,
+		autofit = autofit,
 		metadata = list(
 			subgroup_counts = if (length(subgroup_counts_list) > 0) {
 				dplyr::bind_rows(subgroup_counts_list)
@@ -282,17 +276,25 @@ create_subgroup_table <- function(
 	adjust_method <- match.arg(adjust_method)
 	endpoint_type <- match.arg(endpoint_type)
 
+	# Set domain dynamically based on endpoint type
+	domain <- if (endpoint_type == "tte") "ADTTE" else "ADRS"
+
+	data <- .ensure_adam_data(
+		data,
+		domain = domain,
+		trt_var = trt_var,
+		subject_var = "USUBJID"
+	)
+	df <- get_filtered_data(data)
+	trt_var_actual <- data@trt_var
+	subject_var <- data@subject_var
+
 	if (!is.null(min_subgroup_size)) {
 		assert_numeric_scalar(min_subgroup_size, "min_subgroup_size")
 		if (min_subgroup_size < 1) {
 			ph_abort("'min_subgroup_size' must be >= 1")
 		}
 	}
-
-	# Get filtered data
-	df <- get_filtered_data(data)
-	trt_var_actual <- get_trt_var(data, default = trt_var)
-	subject_var <- get_subject_var(data, default = "USUBJID")
 
 	# Handle CNSR inversion for TTE
 	if (endpoint_type == "tte" && event_var == "CNSR") {
@@ -558,19 +560,12 @@ create_subgroup_table <- function(
 
 	footnotes <- c(footnotes, "NE = Not Estimable")
 
-	# Create flextable
-	ft <- create_hta_table(
-		display_df,
-		title = title,
-		footnotes = footnotes,
-		autofit = autofit
-	)
-
-	ClinicalTable(
+	create_clinical_table(
 		data = display_df,
-		flextable = ft,
 		type = "subgroup",
 		title = title,
+		footnotes = footnotes,
+		autofit = autofit,
 		metadata = list(
 			subgroups = subgroups,
 			endpoint_type = endpoint_type,

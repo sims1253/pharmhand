@@ -14,24 +14,16 @@ AEREL_RELATED_VALUES <- c(
 	"DEFINITELY RELATED"
 )
 
-#' Safe percentage calculation
-#' @keywords internal
-safe_pct <- function(n, N, digits = 1) {
-	dplyr::if_else(
-		N == 0 | is.na(N),
-		NA_real_,
-		round(n / N * 100, digits)
-	)
-}
-
 #' Create Adverse Event Summary Table
 #'
 #' Generate AE summary tables for clinical study reports.
 #'
-#' @param adae ADAE data frame (ADaM Adverse Events dataset)
-#' @param adsl ADSL data frame (optional, required for some table types
+#' @param data ADAE data frame or ADaMData object containing ADaM Adverse Events
+#'   dataset
+#' @param adsl ADSL data frame or ADaMData object (optional, required for some
+#'   table types
 #'   like "deaths", "comparison", or for denominator calculation)
-#' @param type Character string specifying the table type:
+#' @param type Character string specifying table type:
 #'   \itemize{
 #'     \item "overview" - Summary of TEAEs, related AEs, SAEs, discontinuations
 #'     \item "soc" - AEs by System Organ Class
@@ -49,8 +41,9 @@ safe_pct <- function(n, N, digits = 1) {
 #' @param n_top For type="common", number of top PTs to show (default: 15)
 #' @param soc For type="pt", filter to specific SOC (optional)
 #' @param title Table title (auto-generated if NULL)
-#' @param autofit Logical, whether to autofit column widths (default: TRUE)
-#' @param ref_group For type="comparison", the reference group for comparisons
+#' @param footnotes Character vector of footnotes (optional)
+#' @param theme Theme for table styling (default: "hta")
+#' @param ref_group For type="comparison", reference group for comparisons
 #' @param by For type="comparison", grouping level: "soc", "pt", or "overall"
 #' @param threshold For type="comparison", minimum incidence pct (default: 0)
 #' @param sort_by For type="comparison", sort by "rd", "rr", or "incidence"
@@ -60,6 +53,7 @@ safe_pct <- function(n, N, digits = 1) {
 #'   (character vector). If NULL, SOCs are sorted alphabetically (default: NULL)
 #' @param severity_levels For type="severity", severity levels ordering
 #'   (character vector). Default: c("MILD", "MODERATE", "SEVERE")
+#' @param ... Additional arguments passed to [create_clinical_table()]
 #'
 #' @return A ClinicalTable object
 #' @export
@@ -67,23 +61,23 @@ safe_pct <- function(n, N, digits = 1) {
 #' @examples
 #' \dontrun{
 #' # AE Overview
-#' overview <- create_ae_summary_table(adae, adsl, type = "overview")
+#' overview <- create_ae_summary_table(data, adsl, type = "overview")
 #'
 #' # SOC table
-#' soc_table <- create_ae_summary_table(adae, adsl, type = "soc")
+#' soc_table <- create_ae_summary_table(data, adsl, type = "soc")
 #'
 #' # SOC/PT hierarchical table
-#' soc_pt <- create_ae_summary_table(adae, adsl, type = "soc_pt")
+#' soc_pt <- create_ae_summary_table(data, adsl, type = "soc_pt")
 #'
 #' # Most common AEs (top 20)
-#' common <- create_ae_summary_table(adae, adsl, type = "common", n_top = 20)
+#' common <- create_ae_summary_table(data, adsl, type = "common", n_top = 20)
 #'
 #' # SAE table
-#' sae <- create_ae_summary_table(adae, adsl, type = "sae")
+#' sae <- create_ae_summary_table(data, adsl, type = "sae")
 #'
 #' # AE comparison with risk differences
 #' comparison <- create_ae_summary_table(
-#'   adae, adsl,
+#'   data, adsl,
 #'   type = "comparison",
 #'   ref_group = "Placebo",
 #'   by = "pt",
@@ -92,7 +86,7 @@ safe_pct <- function(n, N, digits = 1) {
 #'
 #' # SOC table with custom ordering
 #' soc_ordered <- create_ae_summary_table(
-#'   adae, adsl,
+#'   data, adsl,
 #'   type = "soc",
 #'   soc_order = c(
 #'     "Infections",
@@ -102,7 +96,7 @@ safe_pct <- function(n, N, digits = 1) {
 #' )
 #' }
 create_ae_summary_table <- function(
-	adae,
+	data,
 	adsl = NULL,
 	type = c(
 		"overview",
@@ -121,7 +115,8 @@ create_ae_summary_table <- function(
 	n_top = ph_default("n_top"),
 	soc = NULL,
 	title = NULL,
-	autofit = ph_default("autofit"),
+	footnotes = character(),
+	theme = "hta",
 	ref_group = NULL,
 	by = "pt",
 	threshold = 0,
@@ -129,82 +124,97 @@ create_ae_summary_table <- function(
 	conf_level = ph_default("conf_level"),
 	include_nnh = TRUE,
 	soc_order = NULL,
-	severity_levels = c("MILD", "MODERATE", "SEVERE")
+	severity_levels = c("MILD", "MODERATE", "SEVERE"),
+	...
 ) {
 	type <- match.arg(type)
 
-	# Input validation with improved messages
-	if (type != "deaths" && !is.data.frame(adae)) {
+	# Ensure ADaMData objects for consistent internal handling
+	# Only validate data if type actually needs ADAE data
+	types_needing_adae <- c(
+		"overview",
+		"soc",
+		"soc_pt",
+		"pt",
+		"common",
+		"severity",
+		"relationship",
+		"sae",
+		"discontinuation",
+		"comparison"
+	)
+	if (type %in% types_needing_adae && !is.null(data)) {
+		adae <- .ensure_adam_data(data, "ADAE", trt_var = trt_var)
+	} else if (type %in% types_needing_adae) {
 		ph_abort(
-			"'adae' must be a data frame for type = '",
+			"'data' must be provided for type = '",
 			type,
 			"'. ",
-			"Got: ",
-			class(adae)[1]
+			"Got: NULL"
 		)
-	}
-	if (type == "deaths" && !is.data.frame(adsl)) {
-		ph_abort(
-			"'adsl' data frame is required for type = 'deaths'. ",
-			"Got: ",
-			if (is.null(adsl)) "NULL" else class(adsl)[1]
-		)
-	}
-	if (type == "comparison" && !is.data.frame(adsl)) {
-		ph_abort(
-			"'adsl' data frame is required for type = 'comparison'. ",
-			"Cannot calculate risk differences. ",
-			"Got: ",
-			if (is.null(adsl)) "NULL" else class(adsl)[1]
-		)
-	}
-	if (type == "comparison" && is.null(ref_group)) {
-		trt_display <- if (
-			is.data.frame(adae) &&
-				trt_var %in% names(adae)
-		) {
-			paste(unique(adae[[trt_var]]), collapse = ", ")
-		} else {
-			""
-		}
-		trt_values <- if (nchar(trt_display) > 0) {
-			paste0("Available in data: ", trt_display)
-		} else {
-			""
-		}
-		ph_abort(
-			"'ref_group' is required for type = 'comparison'. ",
-			"Specify which treatment to use as reference. ",
-			trt_values
-		)
+	} else {
+		adae <- NULL
 	}
 
-	# Validate required columns when deriving trt_n from adae
-	if (is.null(adsl) || !is.data.frame(adsl)) {
-		required_cols <- c("TRTEMFL", "USUBJID", trt_var)
-		missing_cols <- setdiff(required_cols, names(adae))
-		if (length(missing_cols) > 0) {
+	# Validate and ensure adsl if needed for specific types
+	if (type == "deaths") {
+		if (is.null(adsl)) {
 			ph_abort(
-				sprintf(
-					"Column(s) %s required in 'adae' when 'adsl' is not provided",
-					paste(missing_cols, collapse = ", ")
-				)
+				"'adsl' data frame is required for type = 'deaths'"
 			)
 		}
+		adsl <- .ensure_adam_data(adsl, "ADSL", trt_var = trt_var)
 	}
 
-	# Get treatment counts - prefer from adsl if available
-	trt_n <- if (!is.null(adsl) && is.data.frame(adsl)) {
-		get_trt_n(adsl, trt_var = trt_var, population = "SAF")
-	} else {
+	if (type == "comparison") {
+		if (is.null(adsl)) {
+			ph_abort(
+				"'adsl' is required for type = 'comparison'. ",
+				"Cannot calculate risk differences. Got: NULL"
+			)
+		}
+		if (is.null(ref_group)) {
+			trt_levels <- adae@trt_levels
+			trt_display <- if (length(trt_levels) > 0) {
+				paste(trt_levels, collapse = ", ")
+			} else {
+				""
+			}
+			trt_values <- if (nchar(trt_display) > 0) {
+				paste0("Available in data: ", trt_display)
+			} else {
+				""
+			}
+			ph_abort(
+				"'ref_group' is required for type = 'comparison'. ",
+				"Specify which treatment to use as reference. ",
+				trt_values
+			)
+		}
+		adsl <- .ensure_adam_data(adsl, "ADSL", trt_var = trt_var)
+	}
+
+	# Validate required columns for trt_n derivation when adsl not provided
+	if (is.null(adsl)) {
 		ph_warn(
 			"adsl not provided; deriving trt_n from subjects with TEAEs in adae. ",
-			"This may underestimate the safety population ",
+			"This may underestimate safety population ",
 			"(excludes subjects without TEAEs). ",
 			"Provide adsl for accurate safety population counts.",
 			call. = FALSE
 		)
-		adae |>
+	}
+
+	# Get treatment counts - prefer from adsl if available
+	trt_n <- if (!is.null(adsl)) {
+		# adsl was already converted to ADaMData above for deaths/comparison
+		# If provided for other types, convert it now
+		if (!S7::S7_inherits(adsl, ADaMData)) {
+			adsl <- ADaMData(data = adsl, domain = "ADSL")
+		}
+		adsl@trt_n
+	} else {
+		adae@filtered_data |>
 			dplyr::filter(.data$TRTEMFL == "Y") |>
 			dplyr::summarise(
 				N = dplyr::n_distinct(.data$USUBJID),
@@ -233,51 +243,102 @@ create_ae_summary_table <- function(
 	# Dispatch to appropriate handler
 	result <- switch(
 		type,
-		overview = create_ae_table_overview(adae, trt_n, trt_var, title, autofit),
-		soc = create_ae_table_soc(adae, trt_n, trt_var, title, autofit, soc_order),
-		soc_pt = create_ae_table_soc_pt(
-			adae,
-			trt_n,
-			trt_var,
-			title,
-			autofit,
-			soc_order
+		overview = create_ae_table_overview(
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
 		),
-		pt = create_ae_table_pt(adae, trt_n, trt_var, soc, title, autofit),
+		soc = create_ae_table_soc(
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			soc_order = soc_order,
+			...
+		),
+		soc_pt = create_ae_table_soc_pt(
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			soc_order = soc_order,
+			...
+		),
+		pt = create_ae_table_pt(
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			soc = soc,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
+		),
 		common = create_ae_table_common(
-			adae,
-			trt_n,
-			trt_var,
-			n_top,
-			title,
-			autofit
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			n_top = n_top,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
 		),
 		severity = create_ae_table_severity(
-			adae,
-			trt_n,
-			trt_var,
-			title,
-			autofit,
-			severity_levels
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			severity_levels = severity_levels,
+			...
 		),
 		relationship = create_ae_table_relationship(
-			adae,
-			trt_n,
-			trt_var,
-			title,
-			autofit
-		),
-		sae = create_ae_table_sae(adae, trt_n, trt_var, title, autofit),
-		discontinuation = create_ae_table_discontinuation(
-			adae,
-			trt_n,
-			trt_var,
-			title,
-			autofit
-		),
-		deaths = create_ae_table_deaths(adsl, trt_var, title, autofit),
-		comparison = create_ae_comparison_table(
 			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
+		),
+		sae = create_ae_table_sae(
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
+		),
+		discontinuation = create_ae_table_discontinuation(
+			adae = adae,
+			trt_n = trt_n,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
+		),
+		deaths = create_ae_table_deaths(
+			adsl = adsl,
+			trt_var = trt_var,
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
+		),
+		comparison = create_ae_comparison_table(
+			data = adae,
 			adsl = adsl,
 			ref_group = ref_group,
 			trt_var = trt_var,
@@ -286,8 +347,7 @@ create_ae_summary_table <- function(
 			sort_by = sort_by,
 			conf_level = conf_level,
 			include_nnh = include_nnh,
-			title = title,
-			autofit = autofit
+			title = title
 		)
 	)
 
@@ -297,12 +357,25 @@ create_ae_summary_table <- function(
 # Internal handler functions for create_ae_summary_table ----
 
 #' @keywords internal
-create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
+create_ae_table_overview <- function(
+	adae,
+	trt_n,
+	trt_var,
+	title,
+	footnotes,
+	theme,
+	...
+) {
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
+	}
+
 	summarize_category <- function(data, category_label) {
 		if (nrow(data) == 0) {
 			return(NULL)
 		}
-		result <- data |>
+		data |>
 			dplyr::summarise(
 				n = dplyr::n_distinct(.data$USUBJID),
 				.by = dplyr::all_of(trt_var)
@@ -314,24 +387,24 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 					NA_real_,
 					round(.data$n / .data$N * 100, 1)
 				)
-			)
-
-		result |>
+			) |>
 			dplyr::mutate(Category = category_label)
 	}
 
+	teae_data <- adae@filtered_data
+
 	categories <- list()
 
-	if ("TRTEMFL" %in% names(adae)) {
-		teae <- adae |> dplyr::filter(.data$TRTEMFL == "Y")
+	if ("TRTEMFL" %in% names(teae_data)) {
+		teae <- teae_data |> dplyr::filter(.data$TRTEMFL == "Y")
 		categories[[1]] <- summarize_category(
 			teae,
 			"Subjects with at least one TEAE"
 		)
 	}
 
-	if ("TRTEMFL" %in% names(adae) && "AEREL" %in% names(adae)) {
-		rel_teae <- adae |>
+	if ("TRTEMFL" %in% names(teae_data) && "AEREL" %in% names(teae_data)) {
+		rel_teae <- teae_data |>
 			dplyr::filter(
 				.data$TRTEMFL == "Y",
 				.data$AEREL %in% AEREL_RELATED_VALUES
@@ -342,13 +415,13 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 		)
 	}
 
-	if ("TRTEMFL" %in% names(adae) && "AESER" %in% names(adae)) {
-		sae <- adae |> dplyr::filter(.data$TRTEMFL == "Y", .data$AESER == "Y")
+	if ("TRTEMFL" %in% names(teae_data) && "AESER" %in% names(teae_data)) {
+		sae <- teae_data |> dplyr::filter(.data$TRTEMFL == "Y", .data$AESER == "Y")
 		categories[[3]] <- summarize_category(sae, "Subjects with at least one SAE")
 	}
 
-	if ("TRTEMFL" %in% names(adae) && "AEACN" %in% names(adae)) {
-		disc <- adae |>
+	if ("TRTEMFL" %in% names(teae_data) && "AEACN" %in% names(teae_data)) {
+		disc <- teae_data |>
 			dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == AEACN_DRUG_WITHDRAWN)
 		categories[[4]] <- summarize_category(
 			disc,
@@ -356,8 +429,9 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 		)
 	}
 
-	if ("TRTEMFL" %in% names(adae) && "AEOUT" %in% names(adae)) {
-		fatal <- adae |> dplyr::filter(.data$TRTEMFL == "Y", .data$AEOUT == "FATAL")
+	if ("TRTEMFL" %in% names(teae_data) && "AEOUT" %in% names(teae_data)) {
+		fatal <- teae_data |>
+			dplyr::filter(.data$TRTEMFL == "Y", .data$AEOUT == "FATAL")
 		categories[[5]] <- summarize_category(fatal, "Deaths")
 	}
 
@@ -382,13 +456,13 @@ create_ae_table_overview <- function(adae, trt_n, trt_var, title, autofit) {
 			values_fill = "0 (0.0%)"
 		)
 
-	ft <- create_hta_table(overview_formatted, title = title, autofit = autofit)
-
-	ClinicalTable(
+	create_clinical_table(
 		data = overview_formatted,
-		flextable = ft,
 		type = "ae_overview",
-		title = title
+		title = title,
+		footnotes = footnotes,
+		theme = theme,
+		...
 	)
 }
 
@@ -398,18 +472,31 @@ create_ae_table_soc <- function(
 	trt_n,
 	trt_var,
 	title,
-	autofit,
-	soc_order = NULL
+	footnotes,
+	theme,
+	soc_order = NULL,
+	...
 ) {
-	soc_summary <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y") |>
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
+	}
+
+	teae_data <- adae@filtered_data |>
+		dplyr::filter(.data$TRTEMFL == "Y")
+
+	soc_summary <- teae_data |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
 			.by = c(dplyr::all_of(trt_var), "AEBODSYS")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = safe_pct(.data$n_subj, .data$N),
+			pct = dplyr::if_else(
+				.data$N == 0 | is.na(.data$N),
+				NA_real_,
+				round(.data$n_subj / .data$N * 100, 1)
+			),
 			display = dplyr::if_else(
 				is.na(.data$pct),
 				paste0(.data$n_subj, " (--)"),
@@ -443,25 +530,20 @@ create_ae_table_soc <- function(
 				`System Organ Class` = as.character(.data$`System Organ Class`)
 			)
 	} else {
-		soc_summary <- soc_summary |>
-			dplyr::arrange(.data$`System Organ Class`)
+		soc_summary <- soc_summary |> dplyr::arrange(.data$`System Organ Class`)
 	}
 
-	ft <- create_hta_table(
-		soc_summary,
+	create_clinical_table(
+		data = soc_summary,
+		type = "ae_soc",
 		title = title,
 		footnotes = c(
+			footnotes,
 			"Safety Population",
 			"n (%) = Number (percentage) of subjects with at least one event"
 		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = soc_summary,
-		flextable = ft,
-		type = "ae_soc",
-		title = title
+		theme = theme,
+		...
 	)
 }
 
@@ -471,18 +553,31 @@ create_ae_table_soc_pt <- function(
 	trt_n,
 	trt_var,
 	title,
-	autofit,
-	soc_order = NULL
+	footnotes,
+	theme,
+	soc_order = NULL,
+	...
 ) {
-	soc_pt_summary <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y") |>
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
+	}
+
+	teae_data <- adae@filtered_data |>
+		dplyr::filter(.data$TRTEMFL == "Y")
+
+	soc_pt_summary <- teae_data |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
 			.by = c(dplyr::all_of(trt_var), "AEBODSYS", "AEDECOD")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = safe_pct(.data$n_subj, .data$N),
+			pct = dplyr::if_else(
+				.data$N == 0 | is.na(.data$N),
+				NA_real_,
+				round(.data$n_subj / .data$N * 100, 1)
+			),
 			display = dplyr::if_else(
 				is.na(.data$pct),
 				paste0(.data$n_subj, " (--)"),
@@ -523,39 +618,55 @@ create_ae_table_soc_pt <- function(
 			dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`)
 	}
 
-	ft <- create_hta_table(
-		soc_pt_summary,
+	create_clinical_table(
+		data = soc_pt_summary,
+		type = "ae_soc_pt",
 		title = title,
 		footnotes = c(
+			footnotes,
 			"Safety Population",
 			"n (%) = Number (percentage) of subjects with at least one event"
 		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = soc_pt_summary,
-		flextable = ft,
-		type = "ae_soc_pt",
-		title = title
+		theme = theme,
+		...
 	)
 }
 
 #' @keywords internal
-create_ae_table_pt <- function(adae, trt_n, trt_var, soc, title, autofit) {
-	data <- adae |> dplyr::filter(.data$TRTEMFL == "Y")
-	if (!is.null(soc)) {
-		data <- data |> dplyr::filter(.data$AEBODSYS == soc)
+create_ae_table_pt <- function(
+	adae,
+	trt_n,
+	trt_var,
+	soc,
+	title,
+	footnotes,
+	theme,
+	...
+) {
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
 	}
 
-	pt_summary <- data |>
+	teae_data <- adae@filtered_data |>
+		dplyr::filter(.data$TRTEMFL == "Y")
+
+	if (!is.null(soc)) {
+		teae_data <- teae_data |> dplyr::filter(.data$AEBODSYS == soc)
+	}
+
+	pt_summary <- teae_data |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
 			.by = c(dplyr::all_of(trt_var), "AEDECOD")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = safe_pct(.data$n_subj, .data$N),
+			pct = dplyr::if_else(
+				.data$N == 0 | is.na(.data$N),
+				NA_real_,
+				round(.data$n_subj / .data$N * 100, 1)
+			),
 			display = dplyr::if_else(
 				is.na(.data$pct),
 				paste0(.data$n_subj, " (--)"),
@@ -571,13 +682,13 @@ create_ae_table_pt <- function(adae, trt_n, trt_var, soc, title, autofit) {
 		dplyr::rename(`Preferred Term` = "AEDECOD") |>
 		dplyr::arrange(.data$`Preferred Term`)
 
-	ft <- create_hta_table(pt_summary, title = title, autofit = autofit)
-
-	ClinicalTable(
+	create_clinical_table(
 		data = pt_summary,
-		flextable = ft,
 		type = "ae_pt",
-		title = title
+		title = title,
+		footnotes = footnotes,
+		theme = theme,
+		...
 	)
 }
 
@@ -588,10 +699,19 @@ create_ae_table_common <- function(
 	trt_var,
 	n_top,
 	title,
-	autofit
+	footnotes,
+	theme,
+	...
 ) {
-	top_pts <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y") |>
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
+	}
+
+	teae_data <- adae@filtered_data |>
+		dplyr::filter(.data$TRTEMFL == "Y")
+
+	top_pts <- teae_data |>
 		dplyr::summarise(
 			n = dplyr::n_distinct(.data$USUBJID),
 			.by = "AEDECOD"
@@ -600,15 +720,19 @@ create_ae_table_common <- function(
 		dplyr::slice_head(n = n_top) |>
 		dplyr::pull(.data$AEDECOD)
 
-	common_summary <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y", .data$AEDECOD %in% top_pts) |>
+	common_summary <- teae_data |>
+		dplyr::filter(.data$AEDECOD %in% top_pts) |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
 			.by = c(dplyr::all_of(trt_var), "AEBODSYS", "AEDECOD")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = safe_pct(.data$n_subj, .data$N),
+			pct = dplyr::if_else(
+				.data$N == 0 | is.na(.data$N),
+				NA_real_,
+				round(.data$n_subj / .data$N * 100, 1)
+			),
 			display = dplyr::if_else(
 				is.na(.data$pct),
 				paste0(.data$n_subj, " (--)"),
@@ -627,21 +751,17 @@ create_ae_table_common <- function(
 		) |>
 		dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`)
 
-	ft <- create_hta_table(
-		common_summary,
+	create_clinical_table(
+		data = common_summary,
+		type = "ae_common",
 		title = title,
 		footnotes = c(
+			footnotes,
 			"Safety Population",
 			sprintf("Showing top %d most frequently reported Preferred Terms", n_top)
 		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = common_summary,
-		flextable = ft,
-		type = "ae_common",
-		title = title
+		theme = theme,
+		...
 	)
 }
 
@@ -651,93 +771,137 @@ create_ae_table_severity <- function(
 	trt_n,
 	trt_var,
 	title,
-	autofit,
-	severity_levels = c("MILD", "MODERATE", "SEVERE")
+	footnotes,
+	theme,
+	severity_levels = c("MILD", "MODERATE", "SEVERE"),
+	...
 ) {
-	# Validate AESEV values match expected levels
-	observed_sev <- unique(adae$AESEV[adae$TRTEMFL == "Y"])
-	unmatched <- setdiff(observed_sev, c(severity_levels, NA))
-	if (length(unmatched) > 0) {
-		ph_warn(
-			sprintf(
-				"AESEV values %s not in severity_levels and will be treated as NA",
-				paste(unmatched, collapse = ", ")
-			)
-		)
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
 	}
 
-	severity_summary <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y") |>
-		dplyr::mutate(
-			AESEV_ord = factor(
-				.data$AESEV,
-				levels = severity_levels,
-				ordered = TRUE
-			)
-		) |>
-		dplyr::summarise(
-			max_sev = as.character(max(.data$AESEV_ord, na.rm = TRUE)),
-			.by = c(dplyr::all_of(trt_var), "USUBJID")
-		) |>
-		dplyr::mutate(
-			max_sev = dplyr::if_else(
-				.data$max_sev == "-Inf",
-				NA_character_,
-				.data$max_sev
-			)
-		) |>
-		dplyr::filter(!is.na(.data$max_sev)) |>
-		dplyr::summarise(
-			n = dplyr::n(),
-			.by = c(dplyr::all_of(trt_var), "max_sev")
-		) |>
-		dplyr::left_join(trt_n, by = trt_var) |>
-		dplyr::mutate(
-			pct = safe_pct(.data$n, .data$N),
-			display = dplyr::if_else(
-				is.na(.data$pct),
-				paste0(.data$n, " (--)"),
-				paste0(.data$n, " (", .data$pct, "%)")
-			)
-		) |>
-		dplyr::select("max_sev", dplyr::all_of(trt_var), "display") |>
-		tidyr::pivot_wider(
-			names_from = dplyr::all_of(trt_var),
-			values_from = "display",
-			values_fill = "0 (0.0%)"
-		) |>
-		dplyr::rename(`Maximum Severity` = "max_sev")
+	teae_data <- adae@filtered_data |>
+		dplyr::filter(.data$TRTEMFL == "Y")
 
-	ft <- create_hta_table(
-		severity_summary,
-		title = title,
-		footnotes = c(
-			"Safety Population",
-			"Maximum severity across all TEAEs per subject"
-		),
-		autofit = autofit
-	)
+	# Validate AESEV values match expected levels
+	if ("AESEV" %in% names(teae_data)) {
+		observed_sev <- unique(teae_data$AESEV)
+		unmatched <- setdiff(observed_sev, c(severity_levels, NA))
+		if (length(unmatched) > 0) {
+			ph_warn(
+				sprintf(
+					"AESEV values %s not in severity_levels and will be treated as NA",
+					paste(unmatched, collapse = ", ")
+				)
+			)
+		}
 
-	ClinicalTable(
-		data = severity_summary,
-		flextable = ft,
-		type = "ae_severity",
-		title = title
-	)
+		severity_summary <- teae_data |>
+			dplyr::mutate(
+				AESEV_ord = factor(
+					.data$AESEV,
+					levels = severity_levels,
+					ordered = TRUE
+				)
+			) |>
+			dplyr::summarise(
+				max_sev = as.character(max(.data$AESEV_ord, na.rm = TRUE)),
+				.by = c(dplyr::all_of(trt_var), "USUBJID")
+			) |>
+			dplyr::mutate(
+				max_sev = dplyr::if_else(
+					.data$max_sev == "-Inf",
+					NA_character_,
+					.data$max_sev
+				)
+			) |>
+			dplyr::filter(!is.na(.data$max_sev)) |>
+			dplyr::summarise(
+				n = dplyr::n(),
+				.by = c(dplyr::all_of(trt_var), "max_sev")
+			) |>
+			dplyr::left_join(trt_n, by = trt_var) |>
+			dplyr::mutate(
+				pct = dplyr::if_else(
+					.data$N == 0 | is.na(.data$N),
+					NA_real_,
+					round(.data$n / .data$N * 100, 1)
+				),
+				display = dplyr::if_else(
+					is.na(.data$pct),
+					paste0(.data$n, " (--)"),
+					paste0(.data$n, " (", .data$pct, "%)")
+				)
+			) |>
+			dplyr::select("max_sev", dplyr::all_of(trt_var), "display") |>
+			tidyr::pivot_wider(
+				names_from = dplyr::all_of(trt_var),
+				values_from = "display",
+				values_fill = "0 (0.0%)"
+			) |>
+			dplyr::rename(`Maximum Severity` = "max_sev")
+
+		create_clinical_table(
+			data = severity_summary,
+			type = "ae_severity",
+			title = title,
+			footnotes = c(
+				footnotes,
+				"Safety Population",
+				"Maximum severity across all TEAEs per subject"
+			),
+			theme = theme,
+			...
+		)
+	} else {
+		# No AESEV column
+		summary_df <- data.frame(
+			Message = "AESEV column not found in data"
+		)
+
+		create_clinical_table(
+			data = summary_df,
+			type = "ae_severity",
+			title = title,
+			footnotes = footnotes,
+			theme = theme,
+			...
+		)
+	}
 }
 
 #' @keywords internal
-create_ae_table_relationship <- function(adae, trt_n, trt_var, title, autofit) {
+create_ae_table_relationship <- function(
+	adae,
+	trt_n,
+	trt_var,
+	title,
+	footnotes,
+	theme,
+	...
+) {
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
+	}
+
+	teae_data <- adae@filtered_data |>
+		dplyr::filter(.data$TRTEMFL == "Y")
+
 	# Shows all AEREL categories including NA/unknown
-	rel_summary <- adae |>
-		dplyr::filter(.data$TRTEMFL == "Y") |>
+	rel_summary <- teae_data |>
 		dplyr::summarise(
 			n_subj = dplyr::n_distinct(.data$USUBJID),
 			.by = c(dplyr::all_of(trt_var), "AEREL")
 		) |>
 		dplyr::left_join(trt_n, by = trt_var) |>
 		dplyr::mutate(
-			pct = safe_pct(.data$n_subj, .data$N),
+			pct = dplyr::if_else(
+				.data$N == 0 | is.na(.data$N),
+				NA_real_,
+				round(.data$n_subj / .data$N * 100, 1)
+			),
 			display = dplyr::if_else(
 				is.na(.data$pct),
 				paste0(.data$n_subj, " (--)"),
@@ -752,27 +916,37 @@ create_ae_table_relationship <- function(adae, trt_n, trt_var, title, autofit) {
 		) |>
 		dplyr::rename(`Relationship to Study Drug` = "AEREL")
 
-	ft <- create_hta_table(
-		rel_summary,
+	create_clinical_table(
+		data = rel_summary,
+		type = "ae_relationship",
 		title = title,
 		footnotes = c(
+			footnotes,
 			"Safety Population",
 			"Subjects counted once per relationship category"
 		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = rel_summary,
-		flextable = ft,
-		type = "ae_relationship",
-		title = title
+		theme = theme,
+		...
 	)
 }
 
 #' @keywords internal
-create_ae_table_sae <- function(adae, trt_n, trt_var, title, autofit) {
-	sae <- adae |> dplyr::filter(.data$TRTEMFL == "Y", .data$AESER == "Y")
+create_ae_table_sae <- function(
+	adae,
+	trt_n,
+	trt_var,
+	title,
+	footnotes,
+	theme,
+	...
+) {
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
+	}
+
+	teae_data <- adae@filtered_data
+	sae <- teae_data |> dplyr::filter(.data$TRTEMFL == "Y", .data$AESER == "Y")
 
 	if (nrow(sae) == 0) {
 		summary_df <- data.frame(
@@ -786,7 +960,11 @@ create_ae_table_sae <- function(adae, trt_n, trt_var, title, autofit) {
 			) |>
 			dplyr::left_join(trt_n, by = trt_var) |>
 			dplyr::mutate(
-				pct = safe_pct(.data$n_subj, .data$N),
+				pct = dplyr::if_else(
+					.data$N == 0 | is.na(.data$N),
+					NA_real_,
+					round(.data$n_subj / .data$N * 100, 1)
+				),
 				display = dplyr::if_else(
 					is.na(.data$pct),
 					paste0(.data$n_subj, " (--)"),
@@ -806,21 +984,17 @@ create_ae_table_sae <- function(adae, trt_n, trt_var, title, autofit) {
 			dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`)
 	}
 
-	ft <- create_hta_table(
-		summary_df,
+	create_clinical_table(
+		data = summary_df,
+		type = "ae_sae",
 		title = title,
 		footnotes = c(
+			footnotes,
 			"Safety Population",
 			"SAE = Serious Adverse Event (AESER = 'Y')"
 		),
-		autofit = autofit
-	)
-
-	ClinicalTable(
-		data = summary_df,
-		flextable = ft,
-		type = "ae_sae",
-		title = title
+		theme = theme,
+		...
 	)
 }
 
@@ -830,9 +1004,17 @@ create_ae_table_discontinuation <- function(
 	trt_n,
 	trt_var,
 	title,
-	autofit
+	footnotes,
+	theme,
+	...
 ) {
-	disc <- adae |>
+	# Ensure adae is ADaMData
+	if (!S7::S7_inherits(adae, ADaMData)) {
+		adae <- ADaMData(data = adae, domain = "ADAE")
+	}
+
+	teae_data <- adae@filtered_data
+	disc <- teae_data |>
 		dplyr::filter(.data$TRTEMFL == "Y", .data$AEACN == AEACN_DRUG_WITHDRAWN)
 
 	if (nrow(disc) == 0) {
@@ -847,7 +1029,11 @@ create_ae_table_discontinuation <- function(
 			) |>
 			dplyr::left_join(trt_n, by = trt_var) |>
 			dplyr::mutate(
-				pct = safe_pct(.data$n_subj, .data$N),
+				pct = dplyr::if_else(
+					.data$N == 0 | is.na(.data$N),
+					NA_real_,
+					round(.data$n_subj / .data$N * 100, 1)
+				),
 				display = dplyr::if_else(
 					is.na(.data$pct),
 					paste0(.data$n_subj, " (--)"),
@@ -867,24 +1053,33 @@ create_ae_table_discontinuation <- function(
 			dplyr::arrange(.data$`System Organ Class`, .data$`Preferred Term`)
 	}
 
-	ft <- create_hta_table(
-		summary_df,
-		title = title,
-		footnotes = c("Safety Population", "AEACN = 'DRUG WITHDRAWN'"),
-		autofit = autofit
-	)
-
-	ClinicalTable(
+	create_clinical_table(
 		data = summary_df,
-		flextable = ft,
 		type = "ae_discontinuation",
-		title = title
+		title = title,
+		footnotes = c(footnotes, "Safety Population", "AEACN = 'DRUG WITHDRAWN'"),
+		theme = theme,
+		...
 	)
 }
 
 #' @keywords internal
-create_ae_table_deaths <- function(adsl, trt_var, title, autofit) {
-	death_summary <- adsl |>
+create_ae_table_deaths <- function(
+	adsl,
+	trt_var,
+	title,
+	footnotes,
+	theme,
+	...
+) {
+	# Ensure adsl is ADaMData
+	if (!S7::S7_inherits(adsl, ADaMData)) {
+		adsl <- ADaMData(data = adsl, domain = "ADSL")
+	}
+
+	safety_data <- adsl@filtered_data
+
+	death_summary <- safety_data |>
 		dplyr::filter(.data$SAFFL == "Y") |>
 		dplyr::summarise(
 			N = dplyr::n(),
@@ -892,7 +1087,11 @@ create_ae_table_deaths <- function(adsl, trt_var, title, autofit) {
 			.by = dplyr::all_of(trt_var)
 		) |>
 		dplyr::mutate(
-			pct = safe_pct(.data$n_deaths, .data$N),
+			pct = dplyr::if_else(
+				.data$N == 0 | is.na(.data$N),
+				NA_real_,
+				round(.data$n_deaths / .data$N * 100, 1)
+			),
 			`Deaths n (%)` = dplyr::if_else(
 				is.na(.data$pct),
 				paste0(.data$n_deaths, " (--)"),
@@ -919,17 +1118,12 @@ create_ae_table_deaths <- function(adsl, trt_var, title, autofit) {
 			)
 		)
 
-	ft <- create_hta_table(
-		death_wide,
-		title = title,
-		footnotes = c("Safety Population", "DTHFL = 'Y'"),
-		autofit = autofit
-	)
-
-	ClinicalTable(
+	create_clinical_table(
 		data = death_wide,
-		flextable = ft,
 		type = "ae_deaths",
-		title = title
+		title = title,
+		footnotes = c(footnotes, "Safety Population", "DTHFL = 'Y'"),
+		theme = theme,
+		...
 	)
 }

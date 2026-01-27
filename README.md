@@ -4,9 +4,6 @@
 # pharmhand <img src="man/figures/logo.png" align="right" height="139" alt="pharmhand logo" />
 
 <!-- badges: start -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/pharmhand/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/sims1253/pharmhand/graph/badge.svg)](https://codecov.io/gh/sims1253/pharmhand)
@@ -102,6 +99,18 @@ options(
 
 # All functions now use your preferences
 create_demographics_table(adsl)  # Uses ARM instead of TRT01P
+```
+
+### Validation
+
+Scalar validation helpers reject NA values. Use `assert_no_na()` for explicit NA checking or remove NA values before passing to validation functions.
+
+```r
+# Validate and throw error if NA is present
+assert_no_na(adsl$AGE, "Age variable contains NA values")
+
+# Or filter NA values before validation
+adsl_clean <- adsl[!is.na(adsl$AGE), ]
 ```
 
 ## Advanced: ADaMData Wrapper

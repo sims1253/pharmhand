@@ -4,70 +4,37 @@
 #'   Kaplan-Meier summaries.
 NULL
 
-#' Create Time-to-Event Summary Table
+#' Internal helper function to compute TTE summary statistics.
 #'
-#' Generates a standard TTE summary table with median survival, confidence
-#' intervals, hazard ratios, and optional landmark estimates for efficacy
-#' endpoints like OS, PFS, EFS.
+#' @param df Filtered data frame with TTE data
+#' @param time_var Time variable name
+#' @param event_var Event variable name (will be inverted if "CNSR")
+#' @param trt_var Treatment variable name
+#' @param ref_group Reference group for HR calculation
+#' @param conf_level Confidence level for intervals
+#' @param check_ph Logical. Whether to test proportional hazards assumption
+#' @param landmarks Numeric vector of timepoints for landmark survival estimates
+#' @param time_unit Character string for time unit display
 #'
-#' @param data ADaMData object or data frame containing TTE data
-#' @param time_var Time variable name (default: "AVAL")
-#' @param event_var Event indicator variable. If "CNSR" (ADaM censoring flag),
-#'   it will be automatically inverted (0=event becomes 1=event).
-#'   Otherwise expects 1=event, 0=censor. Default: "CNSR"
-#' @param trt_var Treatment variable name (default: "TRT01P")
-#' @param ref_group Reference group for HR calculation. If NULL, uses first
-#'   level of treatment variable.
-#' @param conf_level Confidence level for intervals (default: 0.95)
-#' @param check_ph Logical. Whether to test proportional hazards assumption and
-#'   warn on violations (default: TRUE)
-#' @param landmarks Numeric vector of timepoints for landmark survival
-#'   estimates (e.g., c(12, 24) for 12 and 24 month rates). NULL for none.
-#' @param time_unit Character string for time unit display (default: "months")
-#' @param title Table title
-#' @param autofit Logical, whether to autofit column widths (default: TRUE)
-#'
-#' @return A ClinicalTable object with TTE summary statistics
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Basic usage
-#' tte_table <- create_tte_summary_table(
-#'   data = adtte,
-#'   time_var = "AVAL",
-#'   event_var = "CNSR",
-#'   title = "Overall Survival Summary"
-#' )
-#'
-#' # With landmark estimates
-#' tte_table <- create_tte_summary_table(
-#'   data = adtte,
-#'   landmarks = c(12, 24),
-#'   time_unit = "months",
-#'   title = "Progression-Free Survival"
-#' )
-#' }
-create_tte_summary_table <- function(
-	data,
-	time_var = "AVAL",
-	event_var = "CNSR",
-	trt_var = "TRT01P",
-	ref_group = NULL,
-	conf_level = 0.95,
-	check_ph = TRUE,
-	landmarks = NULL,
-	time_unit = "months",
-	title = "Time-to-Event Summary",
-	autofit = TRUE
+#' @return List with:
+#'   - results: Data frame with TTE summary statistics
+#'   - km_fit: Kaplan-Meier survfit object
+#'   - cox_fit: Cox coxph object (NULL if single arm)
+#'   - ph_test: PH test results (NULL if check_ph=FALSE)
+#'   - ref_group: Reference group used
+#' @noRd
+.summarize_tte <- function(
+	df,
+	time_var,
+	event_var,
+	trt_var,
+	ref_group,
+	conf_level,
+	check_ph,
+	landmarks,
+	time_unit
 ) {
-	# Calculate confidence interval percentage for dynamic column names
 	ci_pct <- round(conf_level * 100)
-	hr_col_name <- paste0("HR (", ci_pct, "% CI)")
-
-	# Get filtered data and treatment variable
-	df <- get_filtered_data(data)
-	trt_var_actual <- get_trt_var(data, default = trt_var)
 
 	# Handle CNSR inversion (ADaM: 0=event, 1=censor -> survival: 1=event)
 	if (event_var == "CNSR") {
@@ -77,8 +44,8 @@ create_tte_summary_table <- function(
 	}
 
 	# Ensure treatment is factor for consistent ordering
-	df[[trt_var_actual]] <- as.factor(df[[trt_var_actual]])
-	trt_levels <- levels(df[[trt_var_actual]])
+	df[[trt_var]] <- as.factor(df[[trt_var]])
+	trt_levels <- levels(df[[trt_var]])
 
 	if (is.null(ref_group)) {
 		ref_group <- trt_levels[1]
@@ -93,7 +60,7 @@ create_tte_summary_table <- function(
 
 	# Build survival formula
 	surv_formula <- stats::as.formula(
-		paste0("survival::Surv(", time_var, ", event) ~ ", trt_var_actual)
+		paste0("survival::Surv(", time_var, ", event) ~ ", trt_var)
 	)
 
 	# Fit Kaplan-Meier
@@ -111,7 +78,7 @@ create_tte_summary_table <- function(
 
 	# Build results data frame
 	results <- data.frame(
-		Treatment = gsub(paste0(trt_var_actual, "="), "", rownames(km_summary)),
+		Treatment = sub(paste0("^", trt_var, "="), "", rownames(km_summary)),
 		stringsAsFactors = FALSE
 	)
 
@@ -167,10 +134,7 @@ create_tte_summary_table <- function(
 	if (!is.null(landmarks) && length(landmarks) > 0) {
 		landmark_summary <- summary(km_fit, times = landmarks, extend = TRUE)
 
-		# Expand strata counts into per-row labels (e.g.,
-		# c("TRT01P=Active"=2, "TRT01P=Placebo"=2)
-		# becomes c("TRT01P=Active", "TRT01P=Active", "TRT01P=Placebo",
-		# "TRT01P=Placebo"))
+		# Expand strata counts into per-row labels
 		strata_labels <- rep(
 			names(landmark_summary$strata),
 			times = as.integer(landmark_summary$strata)
@@ -190,7 +154,7 @@ create_tte_summary_table <- function(
 				for (k in seq_along(trt_levels)) {
 					trt <- trt_levels[k]
 					# Stratum format is "TRT01P=Active", "TRT01P=Placebo", etc.
-					stratum_name <- paste0(trt_var_actual, "=", trt)
+					stratum_name <- paste0(trt_var, "=", trt)
 
 					# Find rows matching both time point and stratum
 					time_idx <- which(landmark_summary$time == time_pt)
@@ -243,10 +207,11 @@ create_tte_summary_table <- function(
 	}
 
 	# Hazard Ratio from Cox model (only if >1 treatment)
+	hr_col_name <- paste0("HR (", ci_pct, "% CI)")
 	if (length(trt_levels) > 1) {
 		# Relevel to set reference group
-		df[[trt_var_actual]] <- stats::relevel(
-			df[[trt_var_actual]],
+		df[[trt_var]] <- stats::relevel(
+			df[[trt_var]],
 			ref = ref_group
 		)
 
@@ -312,7 +277,8 @@ create_tte_summary_table <- function(
 
 		# Other groups get HR values
 		for (j in seq_len(nrow(hr_table))) {
-			trt_name <- gsub(trt_var_actual, "", rownames(hr_table)[j])
+			trt_name <- sub(paste0("^", trt_var), "", rownames(hr_table)[j])
+			trt_name <- sub("^[,\\s]+", "", trt_name)
 			trt_idx <- which(results$Treatment == trt_name)
 
 			if (length(trt_idx) > 0) {
@@ -329,12 +295,37 @@ create_tte_summary_table <- function(
 		}
 	}
 
+	list(
+		results = results,
+		km_fit = km_fit,
+		cox_fit = cox_fit,
+		ph_test = ph_test,
+		ref_group = ref_group,
+		ci_pct = ci_pct,
+		time_summary_label = time_summary_label
+	)
+}
+
+#' Internal helper function to pivot and format TTE summary data for display.
+#'
+#' @param tte_data Summary data from .summarize_tte
+#' @param landmarks Numeric vector of landmark timepoints
+#' @param time_unit Character string for time unit display
+#'
+#' @return Formatted data frame ready for flextable
+#' @noRd
+.format_tte_table <- function(tte_data, landmarks, time_unit) {
+	results <- tte_data$results
+	ci_pct <- tte_data$ci_pct
+	time_summary_label <- tte_data$time_summary_label
+	hr_col_name <- paste0("HR (", ci_pct, "% CI)")
+
 	# Select columns for display
 	display_cols <- c(
 		"Treatment",
 		"N",
 		"Events n (%)",
-		time_summary_col_name
+		paste0(time_summary_label, " (", ci_pct, "% CI)")
 	)
 
 	# Add landmark columns if present
@@ -372,41 +363,153 @@ create_tte_summary_table <- function(
 			values_from = "Value"
 		)
 
-	# Create flextable
-	ft <- create_hta_table(
-		display_transposed,
-		title = title,
-		footnotes = c(
-			paste("Time unit:", time_unit),
-			if (length(trt_levels) > 1) {
-				paste("HR reference group:", ref_group)
-			} else {
-				NULL
-			},
-			if (time_summary_label == "RMST") {
-				"RMST = Restricted mean survival time"
-			} else {
-				NULL
-			},
-			"NE = Not Estimable"
-		),
-		autofit = autofit
+	display_transposed
+}
+
+#' Create Time-to-Event Summary Table
+#'
+#' Generates a standard TTE summary table with median survival, confidence
+#' intervals, hazard ratios, and optional landmark estimates for efficacy
+#' endpoints like OS, PFS, EFS.
+#'
+#' @param data An ADaMData object (with domain "ADTTE") or an ADTTE data frame.
+#'   Required columns include: time variable (default: "AVAL"), event variable
+#'   (default: "CNSR"), and the treatment variable (default: "TRT01P" for data
+#'   frames, or @trt_var for ADaMData).
+#' @param time_var Time variable name (default: "AVAL")
+#' @param event_var Event indicator variable. If "CNSR" (ADaM censoring flag),
+#'   it will be automatically inverted (0=event becomes 1=event).
+#'   Otherwise expects 1=event, 0=censor. Default: "CNSR"
+#' @param trt_var Treatment variable name (default: "TRT01P"). Ignored for
+#'   ADaMData objects which use their own trt_var property.
+#' @param ref_group Reference group for HR calculation. If NULL, uses first
+#'   level of treatment variable.
+#' @param conf_level Confidence level for intervals (default: 0.95)
+#' @param check_ph Logical. Whether to test proportional hazards assumption and
+#'   warn on violations (default: TRUE)
+#' @param landmarks Numeric vector of timepoints for landmark survival
+#'   estimates (e.g., c(12, 24) for 12 and 24 month rates). NULL for none.
+#' @param time_unit Character string for time unit display (default: "months")
+#' @param title Table title
+#' @param footnotes Character vector of footnotes to append to the table.
+#' @param autofit Logical, whether to autofit column widths (default: TRUE)
+#' @param ... Additional arguments passed to \code{\link{create_clinical_table}}
+#'
+#' @return A ClinicalTable object with TTE summary statistics
+#'
+#' @examples
+#' # Create time-to-event summary with data frame
+#' adtte <- data.frame(
+#'   USUBJID = sprintf("SUBJ%02d", 1:40),
+#'   TRT01P = rep(c("Placebo", "Active"), each = 20),
+#'   AVAL = c(rexp(20, 0.05), rexp(20, 0.03)),
+#'   CNSR = sample(0:1, 40, replace = TRUE, prob = c(0.7, 0.3))
+#' )
+#' table <- create_tte_summary_table(adtte)
+#' print(table)
+#'
+#' @export
+create_tte_summary_table <- function(
+	data,
+	time_var = "AVAL",
+	event_var = "CNSR",
+	trt_var = "TRT01P",
+	ref_group = NULL,
+	conf_level = 0.95,
+	check_ph = TRUE,
+	landmarks = NULL,
+	time_unit = "months",
+	title = "Time-to-Event Summary",
+	footnotes = character(),
+	autofit = TRUE,
+	...
+) {
+	# Ensure ADaMData object with proper domain, passing trt_var for data frames
+	data <- .ensure_adam_data(
+		data,
+		"ADTTE",
+		trt_var = trt_var,
+		subject_var = "USUBJID"
 	)
 
-	ClinicalTable(
-		data = display_transposed,
-		flextable = ft,
+	# Use trt_var from ADaMData object (set during coercion)
+	trt_var <- data@trt_var
+
+	# Use filtered_data (respects population filter)
+	df <- data@filtered_data
+
+	# Validate required columns
+	required_cols <- c(time_var, event_var, trt_var)
+	missing_cols <- setdiff(required_cols, names(df))
+	if (length(missing_cols) > 0) {
+		ph_abort(
+			sprintf(
+				"'data' is missing required columns: %s. Required: %s",
+				paste(missing_cols, collapse = ", "),
+				paste(required_cols, collapse = ", ")
+			)
+		)
+	}
+
+	# Summarize TTE data
+	tte_summary <- .summarize_tte(
+		df = df,
+		time_var = time_var,
+		event_var = event_var,
+		trt_var = trt_var,
+		ref_group = ref_group,
+		conf_level = conf_level,
+		check_ph = check_ph,
+		landmarks = landmarks,
+		time_unit = time_unit
+	)
+
+	# Format for display
+	tte_wide <- .format_tte_table(tte_summary, landmarks, time_unit)
+
+	# Create footnotes
+	trt_levels <- levels(factor(df[[trt_var]]))
+	default_footnotes <- c(
+		paste(data@population, "Population"),
+		paste("Time unit:", time_unit),
+		if (length(trt_levels) > 1) {
+			paste("HR reference group:", tte_summary$ref_group)
+		} else {
+			NULL
+		},
+		if (tte_summary$time_summary_label == "RMST") {
+			"RMST = Restricted mean survival time"
+		} else {
+			NULL
+		},
+		"NE = Not Estimable"
+	)
+	all_footnotes <- c(footnotes, default_footnotes)
+
+	# Use factory function
+	clinical_tbl <- create_clinical_table(
+		data = tte_wide,
 		type = "tte_summary",
 		title = title,
-		metadata = list(
-			km_fit = km_fit,
-			cox_fit = cox_fit,
-			ph_test = ph_test,
-			ref_group = ref_group,
+		footnotes = all_footnotes,
+		autofit = autofit,
+		...
+	)
+
+	# Add TTE-specific metadata
+	clinical_tbl@metadata <- c(
+		clinical_tbl@metadata,
+		list(
+			km_fit = tte_summary$km_fit,
+			cox_fit = tte_summary$cox_fit,
+			ph_test = tte_summary$ph_test,
+			ref_group = tte_summary$ref_group,
 			landmarks = landmarks,
 			time_unit = time_unit
 		)
 	)
+
+	clinical_tbl
 }
 
 #' Test Proportional Hazards Assumption
@@ -414,11 +517,12 @@ create_tte_summary_table <- function(
 #' Tests the proportional hazards assumption for Cox regression models
 #' using Schoenfeld residuals (cox.zph test).
 #'
-#' @param data Data frame with time-to-event data, or a coxph model object
+#' @param data An ADaMData object (with domain "ADTTE") or an ADTTE data frame
+#'   with time-to-event data, or a coxph model object
 #' @param time_var Character. Time variable (required if data is a data frame)
 #' @param event_var Character. Event variable (required if data is a data frame)
-#' @param trt_var Character. Treatment variable (required if data is a
-#'   data frame)
+#' @param trt_var Treatment variable name (default: "TRT01P"). Ignored for
+#'   ADaMData objects which use their own trt_var property.
 #' @param covariates Character vector. Additional covariates to include
 #' @param alpha Numeric. Significance level for flagging violations
 #'   (default: 0.05)
@@ -455,7 +559,7 @@ test_ph_assumption <- function(
 	data,
 	time_var = NULL,
 	event_var = NULL,
-	trt_var = NULL,
+	trt_var = "TRT01P",
 	covariates = character(),
 	alpha = 0.05,
 	plot = FALSE
@@ -477,29 +581,62 @@ test_ph_assumption <- function(
 	assert_numeric_scalar(alpha, "alpha")
 	assert_in_range(alpha, 0, 1, "alpha")
 
+	# Save whether original input was a data frame (before coercion)
+	was_data_frame <- !inherits(data, "coxph") && !S7::S7_inherits(data, ADaMData)
+
+	# Save original trt_var argument value before any modification
+	trt_var_orig <- trt_var
+
 	if (inherits(data, "coxph")) {
 		model <- data
 	} else {
-		df <- get_filtered_data(data)
-		assert_data_frame(df, "data")
+		# Auto-coerce data.frame to ADaMData
+		data <- .ensure_adam_data(
+			data,
+			"ADTTE",
+			trt_var = trt_var,
+			subject_var = "USUBJID"
+		)
 
-		if (is.null(time_var)) {
-			ph_abort("'time_var' is required when 'data' is a data frame")
-		}
-		if (is.null(event_var)) {
-			ph_abort("'event_var' is required when 'data' is a data frame")
+		# Use trt_var from ADaMData object unconditionally after coercion
+		trt_var <- data@trt_var
+
+		# Warn only if original input was already ADaMData AND user provided
+		# an explicit non-default trt_var (non-missing and not "TRT01P")
+		if (!was_data_frame && !missing(trt_var_orig) && trt_var_orig != "TRT01P") {
+			ph_warn(
+				"'trt_var' argument is ignored for ADaMData objects. ",
+				"Using stored 'trt_var' property."
+			)
 		}
 
-		trt_var_actual <- get_trt_var(data, default = trt_var)
-		if (is.null(trt_var_actual)) {
-			ph_abort("'trt_var' is required when 'data' is a data frame")
+		# Use filtered_data (respects population filter)
+		df <- data@filtered_data
+
+		# For data frames, require time_var and event_var
+		# For ADaMData, use defaults if not specified
+		if (was_data_frame) {
+			if (is.null(time_var)) {
+				ph_abort("'time_var' is required when 'data' is a data frame")
+			}
+			if (is.null(event_var)) {
+				ph_abort("'event_var' is required when 'data' is a data frame")
+			}
+		} else {
+			# ADaMData object: use default column names
+			if (is.null(time_var)) {
+				time_var <- "AVAL"
+			}
+			if (is.null(event_var)) {
+				event_var <- "CNSR"
+			}
 		}
 
 		assert_character_scalar(time_var, "time_var")
 		assert_character_scalar(event_var, "event_var")
-		assert_character_scalar(trt_var_actual, "trt_var")
+		assert_character_scalar(trt_var, "trt_var")
 
-		required_cols <- c(time_var, event_var, trt_var_actual, covariates)
+		required_cols <- c(time_var, event_var, trt_var, covariates)
 		missing_cols <- setdiff(required_cols, names(df))
 		if (length(missing_cols) > 0) {
 			ph_abort(sprintf(
@@ -516,8 +653,8 @@ test_ph_assumption <- function(
 			event_var_use <- event_var
 		}
 
-		df[[trt_var_actual]] <- as.factor(df[[trt_var_actual]])
-		predictors <- c(trt_var_actual, covariates)
+		df[[trt_var]] <- as.factor(df[[trt_var]])
+		predictors <- c(trt_var, covariates)
 		formula_str <- paste0(
 			"survival::Surv(",
 			time_var,
